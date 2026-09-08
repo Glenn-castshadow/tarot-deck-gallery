@@ -1,0 +1,263 @@
+{
+  "version": 1,
+  "created": "2026-09-08T07:23:30.025602+00:00",
+  "suite_sha256": "32efc1b4f7e89aeefa4ec88b7284029ee5210c7a0f30535a5335ecde1aedc522",
+  "repeats": 2,
+  "order_seed": 42,
+  "candidates": [
+    {
+      "id": "builtin-image",
+      "label": "Built-in image tool",
+      "provider": "Codex built-in image_gen",
+      "model": "undisclosed",
+      "settings": {
+        "resolution_request": "highest available",
+        "seed_control": "unavailable"
+      }
+    }
+  ],
+  "trials": [
+    {
+      "id": "builtin-image--dark-seven-swords--1",
+      "candidate": "builtin-image",
+      "case": "dark-seven-swords",
+      "repeat": 1,
+      "attempts": [
+        {
+          "number": 1,
+          "recorded": "2026-09-08T07:28:00.372774+00:00",
+          "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: SEVEN OF SWORDS.\nScene: A cautious traveler carries FIVE swords while glancing back at TWO swords still planted beside a simple camp. Exactly SEVEN total. Strategy, discretion and the tension of concealment.",
+          "mode": "generate",
+          "reference": "references/dark-seven-swords.png",
+          "reference_sha256": "c6c4827240a46967455e5f3c321ad70e0e27ce3a29adc3793e7184e32b2a5108",
+          "seconds": 30.0,
+          "usd": null,
+          "note": "Fresh built-in generation; exact model version undisclosed. Latency includes tool queuing.",
+          "image": "images/builtin-image--dark-seven-swords--1--a1.png",
+          "artifact_sha256": "445d35d8a9e673148e35caa3eb695f4c2d42d792ed42dcd5d96e0d7d8646db70",
+          "technical": {
+            "width": 971,
+            "height": 1620,
+            "sha256": "445d35d8a9e673148e35caa3eb695f4c2d42d792ed42dcd5d96e0d7d8646db70",
+            "pixels_sha256": "dc7f5a0aa69945ade61abac27e48f445c73bc7df60420aed9f26ed3e45e973e7",
+            "checks": {
+              "resolution": true,
+              "aspect": true
+            },
+            "pass": true,
+            "duplicates": []
+          },
+          "review": {
+            "reviewer": "Codex",
+            "reviewer_kind": "assistant",
+            "requirements": [
+              true,
+              true
+            ],
+            "quality": {
+              "style": 4,
+              "composition": 4,
+              "detail": 3
+            },
+            "clean": true,
+            "feedback": "Five carried swords identified by five pommels, grips and guards, with five downward blades; two separate planted swords beside the camp. Black/violet and dragged ochre texture match the reference. Some blade overlap reduces small-card clarity but the count is traceable.",
+            "pass": true,
+            "recorded": "2026-09-08T07:28:03.434409+00:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "builtin-image--craft-nine-wands--2",
+      "candidate": "builtin-image",
+      "case": "craft-nine-wands",
+      "repeat": 2,
+      "attempts": [
+        {
+          "number": 1,
+          "recorded": "2026-09-08T07:28:01.131021+00:00",
+          "prompt": "Use case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: NINE OF WANDS.\nScene: A tired but alert person with a small head bandage holds ONE upright wand beside a fence of exactly EIGHT other upright wands. Exactly NINE total. Resilience and earned boundaries.",
+          "mode": "generate",
+          "reference": "references/craft-nine-wands.png",
+          "reference_sha256": "e1d97ec22e5f2a667ce7eb438c1da0bce6089c1cbf1b9654fa4a7ef730233f2a",
+          "seconds": 84.0,
+          "usd": null,
+          "note": "Fresh built-in generation; exact model version undisclosed. Latency includes tool queuing.",
+          "image": "images/builtin-image--craft-nine-wands--2--a1.png",
+          "artifact_sha256": "70672ec265859a5840f4a3f6ce1810a7f7b7bcce50abdb50d07a05ede7a4afe8",
+          "technical": {
+            "width": 971,
+            "height": 1620,
+            "sha256": "70672ec265859a5840f4a3f6ce1810a7f7b7bcce50abdb50d07a05ede7a4afe8",
+            "pixels_sha256": "afd2ca2d750671767b3025dac4dea97610ee08d2bef44fe7de2510b13b2ec7ab",
+            "checks": {
+              "resolution": true,
+              "aspect": true
+            },
+            "pass": true,
+            "duplicates": []
+          },
+          "review": {
+            "reviewer": "Codex",
+            "reviewer_kind": "assistant",
+            "requirements": [
+              false,
+              true
+            ],
+            "quality": {
+              "style": 4,
+              "composition": 3,
+              "detail": 4
+            },
+            "clean": true,
+            "feedback": "Only six fence wands are visible to the right of the figure, plus the one held = seven total. Add exactly TWO distinct fence wands so eight fence wands and one held wand are clearly countable. Preserve the existing six fence wands, held wand, person, palette, botanical border and blank cartouche.",
+            "pass": false,
+            "recorded": "2026-09-08T07:28:05.427301+00:00"
+          }
+        },
+        {
+          "number": 2,
+          "recorded": "2026-09-08T07:30:35.573332+00:00",
+          "prompt": "Use case: precise-object-edit. Edit the attached previous attempt. Correct only the listed failures; preserve the successful composition, style and objects.\nFailures: Only six fence wands are visible to the right of the figure, plus the one held = seven total. Add exactly TWO distinct fence wands so eight fence wands and one held wand are clearly countable. Preserve the existing six fence wands, held wand, person, palette, botanical border and blank cartouche.\nOriginal specification for context:\nUse case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: NINE OF WANDS.\nScene: A tired but alert person with a small head bandage holds ONE upright wand beside a fence of exactly EIGHT other upright wands. Exactly NINE total. Resilience and earned boundaries.",
+          "mode": "edit",
+          "reference": "images/builtin-image--craft-nine-wands--2--a1.png",
+          "reference_sha256": "70672ec265859a5840f4a3f6ce1810a7f7b7bcce50abdb50d07a05ede7a4afe8",
+          "seconds": 46.0,
+          "usd": null,
+          "note": "One targeted edit from the failed first attempt; built-in image tool.",
+          "image": "images/builtin-image--craft-nine-wands--2--a2.png",
+          "artifact_sha256": "88c403f465a0b25b2e1b5db31c648fc8882c915db68f41c4fda6510860869bf9",
+          "technical": {
+            "width": 971,
+            "height": 1619,
+            "sha256": "88c403f465a0b25b2e1b5db31c648fc8882c915db68f41c4fda6510860869bf9",
+            "pixels_sha256": "237b328b440550a1361a9d179a19f315e89490da1c5fbded4470e7949c7dd7c3",
+            "checks": {
+              "resolution": true,
+              "aspect": true
+            },
+            "pass": true,
+            "duplicates": []
+          },
+          "review": {
+            "reviewer": "Codex",
+            "reviewer_kind": "assistant",
+            "requirements": [
+              false,
+              true
+            ],
+            "quality": {
+              "style": 4,
+              "composition": 3,
+              "detail": 4
+            },
+            "clean": true,
+            "feedback": "The correction still shows six fence wands plus the one held = seven total. Neither missing wand was added. The figure, botanical border and blank cartouche are preserved, but the exact-count requirement fails again. Attempt cap reached; retain this as a failed trial.",
+            "pass": false,
+            "recorded": "2026-09-08T07:30:36.491680+00:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "builtin-image--dark-seven-swords--2",
+      "candidate": "builtin-image",
+      "case": "dark-seven-swords",
+      "repeat": 2,
+      "attempts": [
+        {
+          "number": 1,
+          "recorded": "2026-09-08T07:28:01.937501+00:00",
+          "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: SEVEN OF SWORDS.\nScene: A cautious traveler carries FIVE swords while glancing back at TWO swords still planted beside a simple camp. Exactly SEVEN total. Strategy, discretion and the tension of concealment.",
+          "mode": "generate",
+          "reference": "references/dark-seven-swords.png",
+          "reference_sha256": "c6c4827240a46967455e5f3c321ad70e0e27ce3a29adc3793e7184e32b2a5108",
+          "seconds": 112.0,
+          "usd": null,
+          "note": "Fresh built-in generation; exact model version undisclosed. Latency includes tool queuing.",
+          "image": "images/builtin-image--dark-seven-swords--2--a1.png",
+          "artifact_sha256": "6b413e0dc7d66e706767036eaa2d249002735449d01e803ce564250acca5e009",
+          "technical": {
+            "width": 971,
+            "height": 1619,
+            "sha256": "6b413e0dc7d66e706767036eaa2d249002735449d01e803ce564250acca5e009",
+            "pixels_sha256": "4d2ae45f91eed4f3c3f3a120134974a45c5b542901de0aabc43a48cbfd2a9a37",
+            "checks": {
+              "resolution": true,
+              "aspect": true
+            },
+            "pass": true,
+            "duplicates": []
+          },
+          "review": {
+            "reviewer": "Codex",
+            "reviewer_kind": "assistant",
+            "requirements": [
+              true,
+              true
+            ],
+            "quality": {
+              "style": 4,
+              "composition": 4,
+              "detail": 4
+            },
+            "clean": true,
+            "feedback": "Five separate carried hilts and downward blades; two upright swords beside the tent. Dark scraped texture, distorted face and bruised violet clothing maintain the reference mood. Objects remain readable against the black ground.",
+            "pass": true,
+            "recorded": "2026-09-08T07:28:04.088653+00:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "builtin-image--craft-nine-wands--1",
+      "candidate": "builtin-image",
+      "case": "craft-nine-wands",
+      "repeat": 1,
+      "attempts": [
+        {
+          "number": 1,
+          "recorded": "2026-09-08T07:28:02.658372+00:00",
+          "prompt": "Use case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: NINE OF WANDS.\nScene: A tired but alert person with a small head bandage holds ONE upright wand beside a fence of exactly EIGHT other upright wands. Exactly NINE total. Resilience and earned boundaries.",
+          "mode": "generate",
+          "reference": "references/craft-nine-wands.png",
+          "reference_sha256": "e1d97ec22e5f2a667ce7eb438c1da0bce6089c1cbf1b9654fa4a7ef730233f2a",
+          "seconds": 160.0,
+          "usd": null,
+          "note": "Fresh built-in generation; exact model version undisclosed. Latency includes tool queuing.",
+          "image": "images/builtin-image--craft-nine-wands--1--a1.png",
+          "artifact_sha256": "8cc6be106615df8530de51e06a1a750c5d193525d14e6af0fdf102b5be7d776e",
+          "technical": {
+            "width": 971,
+            "height": 1619,
+            "sha256": "8cc6be106615df8530de51e06a1a750c5d193525d14e6af0fdf102b5be7d776e",
+            "pixels_sha256": "24065c85313929709a57dfc01aa39fbc852961df164f3eb8e3dcf5576eaf13a2",
+            "checks": {
+              "resolution": true,
+              "aspect": true
+            },
+            "pass": true,
+            "duplicates": []
+          },
+          "review": {
+            "reviewer": "Codex",
+            "reviewer_kind": "assistant",
+            "requirements": [
+              true,
+              true
+            ],
+            "quality": {
+              "style": 4,
+              "composition": 4,
+              "detail": 4
+            },
+            "clean": true,
+            "feedback": "Eight fence wands: one to the far left and seven to the right of the figure, plus one tall wand held in both hands = nine. Botanical border and blank cartouche match the reference; fine contours remain legible.",
+            "pass": true,
+            "recorded": "2026-09-08T07:28:04.798479+00:00"
+          }
+        }
+      ]
+    }
+  ]
+}

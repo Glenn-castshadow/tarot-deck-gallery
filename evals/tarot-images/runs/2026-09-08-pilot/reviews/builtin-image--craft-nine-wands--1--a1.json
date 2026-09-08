@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "reviewer_kind": "assistant",
+  "requirements": [
+    true,
+    true
+  ],
+  "quality": {
+    "style": 4,
+    "composition": 4,
+    "detail": 4
+  },
+  "clean": true,
+  "feedback": "Eight fence wands: one to the far left and seven to the right of the figure, plus one tall wand held in both hands = nine. Botanical border and blank cartouche match the reference; fine contours remain legible."
+}

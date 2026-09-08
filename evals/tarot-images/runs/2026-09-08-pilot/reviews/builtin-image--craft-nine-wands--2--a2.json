@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "reviewer_kind": "assistant",
+  "requirements": [
+    false,
+    true
+  ],
+  "quality": {
+    "style": 4,
+    "composition": 3,
+    "detail": 4
+  },
+  "clean": true,
+  "feedback": "The correction still shows six fence wands plus the one held = seven total. Neither missing wand was added. The figure, botanical border and blank cartouche are preserved, but the exact-count requirement fails again. Attempt cap reached; retain this as a failed trial."
+}

@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "title": "Tarot image model trials",
+  "repeats": 3,
+  "max_attempts": 2,
+  "technical": {
+    "min_width": 950,
+    "min_height": 1500,
+    "aspect_min": 0.58,
+    "aspect_max": 0.62
+  },
+  "quality_dimensions": [
+    "style",
+    "composition",
+    "detail"
+  ],
+  "minimum_quality": 3,
+  "cases": [
+    {
+      "id": "light-eight-wands",
+      "deck": "light-minimal",
+      "name": "Eight of Wands",
+      "mode": "generate",
+      "reference": "deck-art/light-minimal/proofs/v2/01-the-magician.png",
+      "prompt": "Use case: illustration-story. Create ONE new original Moebius-inspired tarot illustration, light and minimal but with luminous, clearly saturated color. Attached image is STYLE REFERENCE ONLY; match fine precise blue-gray ink, spacious cerulean sky, warm ivory and ochre desert, coral and iris-lavender color accents, elegant surreal sculptural forms. Translate the described scene into this airy science-fiction bande dessinee world. New scene, not a variation of the reference subject. Minimal broad flat color fields, a few precise contours, sparse hatching, calm negative space in upper half. Main symbolic subject lower-middle, legible at card scale. Portrait 3:5, highest available resolution. No lettering, numbers, borders, logo, watermark, mockup, photorealism, neon, heavy gradients, or heavy shading. Keep important details central 80%.\nCard: EIGHT OF WANDS.\nScene: Exactly EIGHT long wooden wands fly in parallel diagonals through open sky above a distant river and rolling landscape. No person, no other sticks. Swift news and movement, broad negative space.",
+      "requirements": [
+        "Exactly eight separate flying wooden wands; no extra sticks.",
+        "Airy composition with visibly saturated cerulean, coral and lavender."
+      ]
+    },
+    {
+      "id": "craft-nine-wands",
+      "deck": "arts-and-crafts",
+      "name": "Nine of Wands",
+      "mode": "generate",
+      "reference": "deck-art/arts-and-crafts/proofs/01-the-magician.png",
+      "prompt": "Use case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: NINE OF WANDS.\nScene: A tired but alert person with a small head bandage holds ONE upright wand beside a fence of exactly EIGHT other upright wands. Exactly NINE total. Resilience and earned boundaries.",
+      "requirements": [
+        "Exactly nine wands: eight in the fence and one held.",
+        "Coherent botanical border and a blank bottom cartouche."
+      ]
+    },
+    {
+      "id": "craft-ten-swords",
+      "deck": "arts-and-crafts",
+      "name": "Ten of Swords",
+      "mode": "generate",
+      "reference": "deck-art/arts-and-crafts/proofs/01-the-magician.png",
+      "prompt": "Use case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: TEN OF SWORDS.\nScene: A clothed person lies face down on still earth with exactly TEN stylized swords aligned along the back. No blood, wounds or gore; abstract symbolic placement. A golden dawn opens beyond a calm sea. A difficult ending and the next beginning.",
+      "requirements": [
+        "Exactly ten distinct swords, each traceable from hilt to blade.",
+        "Symbolic clothed figure; no wounds or gore; blank cartouche."
+      ]
+    },
+    {
+      "id": "dark-star",
+      "deck": "expressive-figures",
+      "name": "The Star",
+      "mode": "generate",
+      "reference": "deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+      "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: THE STAR.\nScene: A woman in a simple light garment kneels by a pool, pouring water from TWO pitchers, one into the pool and one onto the land. ONE large eight-pointed star and SEVEN smaller stars above. Renewal, quiet hope and openness.",
+      "requirements": [
+        "Exactly one large eight-pointed star and seven smaller stars.",
+        "Two pitchers pouring separately onto land and into water.",
+        "Dark dragged paint and distorted features; stars and vessels remain readable."
+      ]
+    },
+    {
+      "id": "dark-seven-swords",
+      "deck": "expressive-figures",
+      "name": "Seven of Swords",
+      "mode": "generate",
+      "reference": "deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+      "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: SEVEN OF SWORDS.\nScene: A cautious traveler carries FIVE swords while glancing back at TWO swords still planted beside a simple camp. Exactly SEVEN total. Strategy, discretion and the tension of concealment.",
+      "requirements": [
+        "Exactly five carried swords and two planted swords; no ambiguous overlapping duplicates.",
+        "Deep black, bruised violet and scraped paint; subject and swords remain legible."
+      ]
+    },
+    {
+      "id": "craft-reversible-back",
+      "deck": "arts-and-crafts",
+      "name": "Card back",
+      "mode": "generate",
+      "reference": "deck-art/arts-and-crafts/proofs/01-the-magician.png",
+      "prompt": "One tarot CARD BACK, NO face scene. An elegant William Morris-style symmetrical botanical repeat of oak, acanthus and acacia, forest green, warm ivory, madder red and ochre. A central eight-pointed star medallion with two opposing pairs of drawing compasses and set squares woven subtly into the foliage. Fine woodcut contours, flat matte printed color, restrained geometric border. Precisely 180-degree rotational symmetry: turning the card upside down must look identical. No letters, G, numerals, title cartouche, signature or person. Flat portrait 3:5, whole artwork, highest available resolution. Match the reference's printmaking and botanical border.",
+      "requirements": [
+        "Design looks the same rotated 180 degrees, including corners and geometry.",
+        "Botanical pattern, compasses and set squares; no text, upright-only emblem or face."
+      ]
+    },
+    {
+      "id": "dark-eight-wands-edit",
+      "deck": "expressive-figures",
+      "name": "Eight of Wands \u2014 precise edit",
+      "mode": "edit",
+      "reference": "deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v3.png",
+      "prompt": "Use case: precise-object-edit. The attached image is the EDIT TARGET. Correct it to show exactly EIGHT distinct flying wooden wands. Add only the missing wand. Preserve the existing seven wands, their spacing, dark background, dragged paint texture, palette and composition. No lettering, border, new figures or other objects. Return one full portrait 3:5 artwork at highest available resolution.",
+      "requirements": [
+        "Exactly eight separate wands after the edit.",
+        "Existing seven wands and the surrounding composition preserved; only one new wand added."
+      ]
+    }
+  ]
+}

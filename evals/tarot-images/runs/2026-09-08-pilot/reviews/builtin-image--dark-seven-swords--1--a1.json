@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "reviewer_kind": "assistant",
+  "requirements": [
+    true,
+    true
+  ],
+  "quality": {
+    "style": 4,
+    "composition": 4,
+    "detail": 3
+  },
+  "clean": true,
+  "feedback": "Five carried swords identified by five pommels, grips and guards, with five downward blades; two separate planted swords beside the camp. Black/violet and dragged ochre texture match the reference. Some blade overlap reduces small-card clarity but the count is traceable."
+}

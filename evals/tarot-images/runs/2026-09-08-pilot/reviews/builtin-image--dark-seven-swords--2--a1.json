@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "reviewer_kind": "assistant",
+  "requirements": [
+    true,
+    true
+  ],
+  "quality": {
+    "style": 4,
+    "composition": 4,
+    "detail": 4
+  },
+  "clean": true,
+  "feedback": "Five separate carried hilts and downward blades; two upright swords beside the tent. Dark scraped texture, distorted face and bruised violet clothing maintain the reference mood. Objects remain readable against the black ground."
+}

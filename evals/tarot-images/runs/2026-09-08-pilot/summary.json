@@ -1,0 +1,18 @@
+[
+  {
+    "candidate": "builtin-image",
+    "planned": 4,
+    "first_pass": 3,
+    "final_pass": 3,
+    "exhausted": 1,
+    "pending": 0,
+    "attempts": 5,
+    "technical_failures": 0,
+    "generation_errors": 0,
+    "assistant_reviews": 5,
+    "seconds_total": 432.0,
+    "seconds_coverage": "5/5",
+    "usd_total": null,
+    "usd_coverage": "0/5"
+  }
+]

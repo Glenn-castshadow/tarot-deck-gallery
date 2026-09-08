@@ -40,3 +40,7 @@ deck-art/expressive-figures/print-ready/**/*.png
 deck-art/expressive-figures/generation-queue.json
 deck-art/expressive-figures/dark-generation-queue.json
 deck-art/*/*-review.jpg
+
+# Model trial images and copied references stay local; prompts and results are tracked.
+evals/tarot-images/runs/**/images/
+evals/tarot-images/runs/**/references/

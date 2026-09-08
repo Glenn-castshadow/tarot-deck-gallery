@@ -1,0 +1,14 @@
+{
+  "candidates": [
+    {
+      "id": "builtin-image",
+      "label": "Built-in image tool",
+      "provider": "Codex built-in image_gen",
+      "model": "undisclosed",
+      "settings": {
+        "resolution_request": "highest available",
+        "seed_control": "unavailable"
+      }
+    }
+  ]
+}

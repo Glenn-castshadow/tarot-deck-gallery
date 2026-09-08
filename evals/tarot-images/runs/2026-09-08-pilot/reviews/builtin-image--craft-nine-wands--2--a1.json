@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "reviewer_kind": "assistant",
+  "requirements": [
+    false,
+    true
+  ],
+  "quality": {
+    "style": 4,
+    "composition": 3,
+    "detail": 4
+  },
+  "clean": true,
+  "feedback": "Only six fence wands are visible to the right of the figure, plus the one held = seven total. Add exactly TWO distinct fence wands so eight fence wands and one held wand are clearly countable. Preserve the existing six fence wands, held wand, person, palette, botanical border and blank cartouche."
+}

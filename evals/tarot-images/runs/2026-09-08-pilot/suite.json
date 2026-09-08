@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "title": "Tarot image model trials",
+  "repeats": 3,
+  "max_attempts": 2,
+  "technical": {
+    "min_width": 950,
+    "min_height": 1500,
+    "aspect_min": 0.58,
+    "aspect_max": 0.62
+  },
+  "quality_dimensions": [
+    "style",
+    "composition",
+    "detail"
+  ],
+  "minimum_quality": 3,
+  "cases": [
+    {
+      "id": "craft-nine-wands",
+      "deck": "arts-and-crafts",
+      "name": "Nine of Wands",
+      "mode": "generate",
+      "reference": "references/craft-nine-wands.png",
+      "prompt": "Use case: illustration-story. Create ONE new original Arts and Crafts tarot card illustration. Attached image is STYLE REFERENCE ONLY. Match William Morris botanical design and Walter Crane woodcut allegorical clarity: fine hand-cut contours, flat forest-green, warm ivory, madder red, muted indigo, ochre fields and selective hatching. Elegant narrow symmetrical acanthus/oak/acacia border with red flowers, tiny sun/moon upper corner roundels, blank small bottom title cartouche. Large clearly legible central figure/scene. Subtle Freemasonry inspiration through craft, paired pillars, measured geometry and tiled thresholds where appropriate; no letter G, conspiratorial collage or gratuitous symbols. New scene with the same coherent botanical border. Portrait 3:5, highest available resolution. No lettering, numerals, signature, logo, mockup, photorealism or metallic shine.\nCard: NINE OF WANDS.\nScene: A tired but alert person with a small head bandage holds ONE upright wand beside a fence of exactly EIGHT other upright wands. Exactly NINE total. Resilience and earned boundaries.",
+      "requirements": [
+        "Exactly nine wands: eight in the fence and one held.",
+        "Coherent botanical border and a blank bottom cartouche."
+      ],
+      "reference_origin": "deck-art/arts-and-crafts/proofs/01-the-magician.png",
+      "reference_sha256": "e1d97ec22e5f2a667ce7eb438c1da0bce6089c1cbf1b9654fa4a7ef730233f2a"
+    },
+    {
+      "id": "dark-seven-swords",
+      "deck": "expressive-figures",
+      "name": "Seven of Swords",
+      "mode": "generate",
+      "reference": "references/dark-seven-swords.png",
+      "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: SEVEN OF SWORDS.\nScene: A cautious traveler carries FIVE swords while glancing back at TWO swords still planted beside a simple camp. Exactly SEVEN total. Strategy, discretion and the tension of concealment.",
+      "requirements": [
+        "Exactly five carried swords and two planted swords; no ambiguous overlapping duplicates.",
+        "Deep black, bruised violet and scraped paint; subject and swords remain legible."
+      ],
+      "reference_origin": "deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+      "reference_sha256": "c6c4827240a46967455e5f3c321ad70e0e27ce3a29adc3793e7184e32b2a5108"
+    }
+  ]
+}
