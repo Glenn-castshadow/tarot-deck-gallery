@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#20152b" />
+    <title>The Arcana Archive — Tarot Deck Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <main class="shell">
+      <header class="masthead">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> Visual research library <span class="eyebrow-line"></span> 14 decks</div>
+        <div class="masthead-row">
+          <div>
+            <h1>The Arcana <em>Archive</em></h1>
+            <p class="lede">A visual field guide to tarot decks across five centuries — their faces, their backs, and the stories in between.</p>
+          </div>
+          <div class="sun-mark" aria-hidden="true"><span>✦</span></div>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="Gallery controls">
+        <div class="filter-group" role="group" aria-label="Filter by era">
+          <button class="filter active" data-filter="all">All decks <span id="all-count">14</span></button>
+          <button class="filter" data-filter="historical">Historical <span id="historical-count">7</span></button>
+          <button class="filter" data-filter="modern">Modern <span id="modern-count">7</span></button>
+        </div>
+        <label class="search-box">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <span class="sr-only">Search decks</span>
+          <input id="search" type="search" placeholder="Search artist, tradition, use…" autocomplete="off" />
+          <kbd>/</kbd>
+        </label>
+      </section>
+
+      <section class="gallery-head">
+        <div>
+          <p class="section-kicker">The collection</p>
+          <h2 id="result-title">Every deck, every lineage</h2>
+        </div>
+        <p id="result-count" class="result-count">14 results</p>
+      </section>
+
+      <section id="gallery" class="gallery" aria-live="polite"></section>
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-symbol">✧</div>
+        <h3>No cards in that spread</h3>
+        <p>Try a different word or clear the search to see the archive again.</p>
+        <button id="clear-search" class="text-button">Clear search</button>
+      </div>
+
+      <footer class="footer">
+        <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
+        <p class="footer-mono">THE ARCANA ARCHIVE / 2026</p>
+      </footer>
+    </main>
+
+    <dialog id="detail-dialog" class="detail-dialog">
+      <button id="close-dialog" class="close-dialog" aria-label="Close details">×</button>
+      <div id="dialog-content"></div>
+    </dialog>
+    <div id="dialog-backdrop" class="dialog-backdrop" hidden></div>
+    <script src="app.js"></script>
+  </body>
+</html>
