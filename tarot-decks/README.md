@@ -52,3 +52,7 @@ Modern source pages:
 ## Extending this for new decks
 
 The gallery and the reading engine are intentionally separate. Deck entries describe artwork, provenance, and rights; the reading engine uses a standard 78-card core with suit and rank meanings. To add an original deck, add its metadata and front/back assets to `app.js` and the matching folders here. If a deck needs its own interpretive voice, add a deck-specific meaning map keyed by the same card names (`The Fool`, `Ace of Wands`, and so on) rather than changing the draw or spread logic. This keeps historical references, original artwork, and future app content in one browsable system.
+
+## Personal celestial cabinet
+
+The Reading Room also accepts a birthday profile. It currently provides a symbolic solar sky chart, sun sign and decan, element, modality, ruling planet, traditional birthstone, birth flower, moon phase, Chinese zodiac animal, and a tarot birth card. Birth time and birthplace are optional and saved locally in the browser so they can support a future exact natal-chart layer. The current sky chart is intentionally transparent about being a birthday-based visual rather than a calculated astronomical chart.

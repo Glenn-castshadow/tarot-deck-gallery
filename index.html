@@ -40,6 +40,21 @@
         </div>
         <div id="reading-output" class="reading-output" aria-live="polite"></div>
         <p class="reading-note"><span>✧</span> For reflection and creative practice. Meanings use a standard 78-card core and remain independent from any one deck's artwork or tradition.</p>
+
+        <div class="birthday-panel">
+          <div class="birthday-intro">
+            <p class="section-kicker">Your celestial cabinet</p>
+            <h3>Bring your birthday into the room</h3>
+            <p>Get a birthday horoscope, birthstone, tarot birth card, lunar phase, and a symbolic sky chart. Add a birth time and place when you want to grow this into a full natal-chart experience.</p>
+          </div>
+          <form id="birthday-form" class="birthday-form">
+            <label><span>Birthday</span><input id="birthday-input" type="date" required></label>
+            <label><span>Birth time <small>optional</small></span><input id="birth-time" type="time"></label>
+            <label><span>Birth place <small>optional</small></span><input id="birth-place" type="text" placeholder="City, country" autocomplete="address-level2"></label>
+            <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
+          </form>
+          <div id="birthday-output" class="birthday-output" aria-live="polite"></div>
+        </div>
       </section>
 
       <section class="toolbar" aria-label="Gallery controls">

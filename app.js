@@ -80,6 +80,29 @@ const minorArcana = Object.entries(suitProfiles).flatMap(([suit, suitProfile]) =
 const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
 const cardImages = Object.fromEntries(tarotCards.filter(card => card.image).map(card => [card.name, card.image]));
 
+const zodiacSigns = [
+  { name: "Aries", symbol: "♈", start: [3, 21], element: "Fire", modality: "Cardinal", ruler: "Mars", stones: "Diamond · bloodstone", flower: "Sweet pea", mantra: "I begin", horoscope: "Your spark is useful when it has somewhere to go. Give the brave idea a small, visible first move, then let momentum answer the doubts." },
+  { name: "Taurus", symbol: "♉", start: [4, 20], element: "Earth", modality: "Fixed", ruler: "Venus", stones: "Emerald · rose quartz", flower: "Poppy", mantra: "I build", horoscope: "Your steady attention is a creative force. Choose what is worth tending, protect your pace, and let pleasure become part of the plan." },
+  { name: "Gemini", symbol: "♊", start: [5, 21], element: "Air", modality: "Mutable", ruler: "Mercury", stones: "Agate · tiger's eye", flower: "Lavender", mantra: "I connect", horoscope: "Curiosity is opening more than one door. Follow the conversation that makes you sharper, and give your many interests one thread to follow." },
+  { name: "Cancer", symbol: "♋", start: [6, 21], element: "Water", modality: "Cardinal", ruler: "Moon", stones: "Ruby · moonstone", flower: "Delphinium", mantra: "I feel", horoscope: "Your sensitivity is information, not an inconvenience. Make a warm boundary around what matters and let care guide the next choice." },
+  { name: "Leo", symbol: "♌", start: [7, 23], element: "Fire", modality: "Fixed", ruler: "Sun", stones: "Peridot · onyx", flower: "Sunflower", mantra: "I shine", horoscope: "There is room for your full-hearted contribution. Let the work be seen, share the credit generously, and make joy part of your leadership." },
+  { name: "Virgo", symbol: "♍", start: [8, 23], element: "Earth", modality: "Mutable", ruler: "Mercury", stones: "Sapphire · moss agate", flower: "Morning glory", mantra: "I refine", horoscope: "A thoughtful edit can free more energy than another push. Make the useful improvement, then leave enough room for life to surprise you." },
+  { name: "Libra", symbol: "♎", start: [9, 23], element: "Air", modality: "Cardinal", ruler: "Venus", stones: "Opal · lapis lazuli", flower: "Rose", mantra: "I balance", horoscope: "Harmony starts with a clear yes and a clear no. Name the value you are protecting, then let that value shape the room around you." },
+  { name: "Scorpio", symbol: "♏", start: [10, 23], element: "Water", modality: "Fixed", ruler: "Mars · Pluto", stones: "Topaz · obsidian", flower: "Chrysanthemum", mantra: "I transform", horoscope: "You can tell which truth has weight by the way it keeps returning. Meet it directly, release the old armor, and let your next version be simpler." },
+  { name: "Sagittarius", symbol: "♐", start: [11, 22], element: "Fire", modality: "Mutable", ruler: "Jupiter", stones: "Turquoise · tanzanite", flower: "Carnation", mantra: "I seek", horoscope: "A wider horizon is calling, but the meaningful adventure begins with a direction. Choose the experience that expands your understanding, not just your itinerary." },
+  { name: "Capricorn", symbol: "♑", start: [12, 22], element: "Earth", modality: "Cardinal", ruler: "Saturn", stones: "Garnet · smoky quartz", flower: "Pansy", mantra: "I make real", horoscope: "Your long view is an advantage. Break the mountain into a promise you can keep this week, and let earned trust replace the need to rush." },
+  { name: "Aquarius", symbol: "♒", start: [1, 20], element: "Air", modality: "Fixed", ruler: "Saturn · Uranus", stones: "Amethyst · garnet", flower: "Orchid", mantra: "I imagine", horoscope: "The unusual solution deserves a fair hearing. Share the idea with people who can help it become useful, then keep enough freedom to revise it." },
+  { name: "Pisces", symbol: "♓", start: [2, 19], element: "Water", modality: "Mutable", ruler: "Jupiter · Neptune", stones: "Aquamarine · amethyst", flower: "Water lily", mantra: "I dream", horoscope: "Your imagination is picking up a meaningful signal. Give the dream a container—a page, a ritual, or a first sketch—so it can meet the real world." }
+];
+
+const birthstones = {
+  1: "Garnet", 2: "Amethyst", 3: "Aquamarine", 4: "Diamond", 5: "Emerald", 6: "Pearl · moonstone", 7: "Ruby", 8: "Peridot", 9: "Sapphire", 10: "Opal · tourmaline", 11: "Topaz · citrine", 12: "Turquoise · zircon"
+};
+
+const chineseAnimals = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
+const moonNames = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon", "Waning gibbous", "Last quarter", "Waning crescent"];
+const chartOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+
 const gallery = document.querySelector("#gallery");
 const emptyState = document.querySelector("#empty-state");
 const resultTitle = document.querySelector("#result-title");
@@ -87,6 +110,11 @@ const resultCount = document.querySelector("#result-count");
 const search = document.querySelector("#search");
 const dialog = document.querySelector("#detail-dialog");
 const dialogContent = document.querySelector("#dialog-content");
+const birthdayForm = document.querySelector("#birthday-form");
+const birthdayInput = document.querySelector("#birthday-input");
+const birthTimeInput = document.querySelector("#birth-time");
+const birthPlaceInput = document.querySelector("#birth-place");
+const birthdayOutput = document.querySelector("#birthday-output");
 
 function cardTemplate(deck, index) {
   const era = deck.category === "historical" ? "Historical" : "Modern";
@@ -141,6 +169,140 @@ function openDetails(id) {
     </div>
   </div>`;
   dialog.showModal();
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", "\"": "&quot;" }[character]));
+}
+
+function birthdayParts(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day, 12));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+  return { year, month, day, date };
+}
+
+function zodiacFor(parts) {
+  const value = parts.month * 100 + parts.day;
+  const ordered = [...zodiacSigns].sort((a, b) => (a.start[0] * 100 + a.start[1]) - (b.start[0] * 100 + b.start[1]));
+  let match = ordered[ordered.length - 1];
+  ordered.forEach(sign => {
+    if (value >= sign.start[0] * 100 + sign.start[1]) match = sign;
+  });
+  return match;
+}
+
+function decanFor(parts, sign) {
+  const signIndex = zodiacSigns.findIndex(item => item.name === sign.name);
+  const next = zodiacSigns[(signIndex + 1) % zodiacSigns.length];
+  const start = new Date(Date.UTC(parts.year, sign.start[0] - 1, sign.start[1], 12));
+  const birthday = parts.date;
+  if (sign.name === "Capricorn" && birthday < start) start.setUTCFullYear(parts.year - 1);
+  const days = Math.max(0, Math.floor((birthday - start) / 86400000));
+  return `${Math.min(3, Math.floor(days / 10) + 1)}${Math.min(3, Math.floor(days / 10) + 1) === 1 ? "st" : Math.min(3, Math.floor(days / 10) + 1) === 2 ? "nd" : "rd"} decan`;
+}
+
+function moonPhaseFor(date) {
+  const knownNewMoon = Date.UTC(2000, 0, 6, 18, 14);
+  const synodicMonth = 29.530588853;
+  const age = ((date.getTime() - knownNewMoon) / 86400000) % synodicMonth;
+  const normalized = (age + synodicMonth) % synodicMonth;
+  const index = Math.round(normalized / synodicMonth * 8) % 8;
+  const illumination = Math.round((1 - Math.cos(normalized / synodicMonth * Math.PI * 2)) / 2 * 100);
+  return { name: moonNames[index], illumination };
+}
+
+function chineseZodiacFor(year) {
+  return chineseAnimals[((year - 4) % chineseAnimals.length + chineseAnimals.length) % chineseAnimals.length];
+}
+
+function tarotBirthCardFor(parts) {
+  const digits = `${parts.year}${String(parts.month).padStart(2, "0")}${String(parts.day).padStart(2, "0")}`.split("").reduce((sum, digit) => sum + Number(digit), 0);
+  let number = digits;
+  while (number > 21) number = String(number).split("").reduce((sum, digit) => sum + Number(digit), 0);
+  return majorArcana[number] || majorArcana[0];
+}
+
+function starChartFor(sign) {
+  const active = chartOrder.indexOf(sign.name);
+  const center = 180;
+  const radius = 128;
+  const points = chartOrder.map((name, index) => {
+    const angle = (-90 + index * 30) * Math.PI / 180;
+    const x = center + Math.cos(angle) * radius;
+    const y = center + Math.sin(angle) * radius;
+    const isActive = index === active;
+    return { name, index, x, y, isActive };
+  });
+  const labels = points.map(point => `<text class="chart-label${point.isActive ? " active" : ""}" x="${point.x.toFixed(1)}" y="${(point.y + 3).toFixed(1)}">${zodiacSigns[chartOrder.indexOf(point.name)].symbol} ${point.name.slice(0, 3)}</text>`).join("");
+  const stars = Array.from({ length: 26 }, (_, index) => {
+    const x = 36 + (hashString(`${sign.name}-x-${index}`) % 248);
+    const y = 36 + (hashString(`${sign.name}-y-${index}`) % 248);
+    const size = index % 7 === 0 ? 2.2 : index % 3 === 0 ? 1.5 : 1;
+    return `<circle class="chart-star${index % 7 === 0 ? " is-bright" : ""}" cx="${x}" cy="${y}" r="${size}" />`;
+  }).join("");
+  const constellation = [0, 4, 7, 11].map((offset, index, items) => {
+    const from = points[(active + offset) % points.length];
+    const to = points[(active + items[(index + 1) % items.length]) % points.length];
+    return `<line class="chart-line" x1="${from.x.toFixed(1)}" y1="${from.y.toFixed(1)}" x2="${to.x.toFixed(1)}" y2="${to.y.toFixed(1)}" />`;
+  }).join("");
+  const spokes = points.map(point => `<line class="chart-spoke" x1="180" y1="180" x2="${point.x.toFixed(1)}" y2="${point.y.toFixed(1)}" />`).join("");
+  return `<svg class="star-chart" viewBox="0 0 360 360" role="img" aria-label="Symbolic birthday sky chart with ${sign.name} highlighted"><circle class="chart-ring" cx="180" cy="180" r="145" /><circle class="chart-ring" cx="180" cy="180" r="92" /><circle class="chart-ring" cx="180" cy="180" r="37" />${spokes}${constellation}${stars}<circle cx="180" cy="180" r="4" fill="var(--gold-light)" />${labels}</svg>`;
+}
+
+function renderBirthdayProfile(saved = null) {
+  const parts = birthdayParts(saved?.birthday || birthdayInput.value);
+  if (!parts) {
+    birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open a personal sky cabinet with your sun sign, birthstone, moon phase, tarot birth card, and zodiac wheel.</div>`;
+    return;
+  }
+  const sign = zodiacFor(parts);
+  const moon = moonPhaseFor(parts.date);
+  const birthCard = tarotBirthCardFor(parts);
+  const dateLabel = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(parts.date);
+  const timeLabel = saved?.time ? ` · ${saved.time}` : "";
+  const placeLabel = saved?.place ? ` · ${escapeHTML(saved.place)}` : "";
+  const facts = [
+    ["Sun sign", `${sign.symbol} ${sign.name}`, `${decanFor(parts, sign)} · ${sign.mantra}`],
+    ["Element", sign.element, `${sign.modality} modality`],
+    ["Ruling planet", sign.ruler, "traditional + modern ruler"],
+    ["Birthstone", birthstones[parts.month], sign.stones],
+    ["Birth flower", sign.flower, "seasonal flower lore"],
+    ["Moon phase", moon.name, `${moon.illumination}% illuminated`],
+    ["Chinese zodiac", chineseZodiacFor(parts.year), `${parts.year} cycle · solar approximation`],
+    ["Tarot birth card", `${birthCard.number} · ${birthCard.name}`, birthCard.keywords]
+  ];
+  birthdayOutput.innerHTML = `<div class="sky-summary">
+    <div class="sky-chart-wrap">${starChartFor(sign)}</div>
+    <dl class="sky-facts">${facts.map(([label, value, detail]) => `<div class="sky-fact"><dt>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
+    <article class="horoscope-card"><div><p class="reading-label">Birthday horoscope</p><h4>${sign.symbol} ${sign.name}</h4><p class="zodiac-line">${dateLabel}${timeLabel}${placeLabel}</p></div><div class="horoscope-copy"><p>${sign.horoscope}</p><p class="horoscope-meta">${sign.element} · ${sign.modality} · ruled by ${sign.ruler} · ${sign.mantra}</p></div></article>
+    <p class="birthday-footnote"><span>✧</span> This is a symbolic solar sky chart based on the birthday alone. An exact natal chart needs birth time and birthplace; the optional fields are saved here so we can add that layer next.</p>
+  </div>`;
+}
+
+birthdayForm.addEventListener("submit", event => {
+  event.preventDefault();
+  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() };
+  try { localStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
+  renderBirthdayProfile(saved);
+});
+
+try {
+  const savedBirthday = JSON.parse(localStorage.getItem("arcana-birthday-profile-v1"));
+  if (savedBirthday?.birthday) {
+    birthdayInput.value = savedBirthday.birthday;
+    birthTimeInput.value = savedBirthday.time || "";
+    birthPlaceInput.value = savedBirthday.place || "";
+    renderBirthdayProfile(savedBirthday);
+  } else {
+    renderBirthdayProfile();
+  }
+} catch (error) {
+  renderBirthdayProfile();
 }
 
 const readingOutput = document.querySelector("#reading-output");

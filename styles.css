@@ -88,6 +88,50 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-note { position: relative; z-index: 1; grid-column: 1 / -1; color: rgba(255,250,244,.47); font-size: 10px; line-height: 1.5; }
 .reading-note span { color: var(--gold-light); margin-right: 5px; }
 
+.birthday-panel { position: relative; z-index: 1; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 18px 42px; margin-top: 3px; padding-top: 25px; border-top: 1px solid rgba(255,250,244,.14); }
+.birthday-intro .section-kicker { color: var(--gold-light); }
+.birthday-intro h3 { margin-top: 7px; color: var(--cream); font: 700 clamp(23px, 2.6vw, 34px)/1.08 "Playfair Display", serif; }
+.birthday-intro > p:last-child { max-width: 400px; margin-top: 11px; color: rgba(255,250,244,.66); font-size: 12px; line-height: 1.6; }
+.birthday-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 10px; }
+.birthday-form label { display: grid; gap: 6px; color: var(--gold-light); text-transform: uppercase; letter-spacing: .1em; font: 9px "DM Mono", monospace; }
+.birthday-form label small { color: rgba(255,250,244,.42); font-size: 8px; text-transform: lowercase; letter-spacing: 0; }
+.birthday-form input { width: 100%; min-width: 0; height: 39px; border: 1px solid rgba(255,250,244,.2); border-radius: 0; outline: 0; padding: 0 9px; color: var(--cream); background: rgba(255,250,244,.07); font-size: 12px; }
+.birthday-form input:focus { border-color: var(--gold-light); box-shadow: 0 0 0 2px rgba(230,177,126,.16); }
+.birthday-form input::placeholder { color: rgba(255,250,244,.36); }
+.birthday-button { grid-column: 1 / -1; justify-self: start; border: 1px solid var(--gold-light); padding: 10px 14px; background: var(--gold-light); color: var(--plum-dark); font-size: 12px; transition: .2s ease; }
+.birthday-button:hover { background: var(--cream); border-color: var(--cream); }
+.birthday-button span { margin-right: 5px; }
+.birthday-output { grid-column: 1 / -1; }
+.birthday-empty { padding: 14px 16px; border: 1px solid rgba(255,250,244,.14); background: rgba(255,250,244,.055); color: rgba(255,250,244,.68); font-size: 12px; line-height: 1.55; }
+.birthday-empty strong { color: var(--gold-light); font-weight: 500; }
+.sky-summary { display: grid; grid-template-columns: minmax(190px, .78fr) minmax(0, 1.22fr); gap: 18px; }
+.sky-chart-wrap { position: relative; min-height: 270px; display: grid; place-items: center; padding: 8px; border: 1px solid rgba(230,177,126,.26); background: radial-gradient(circle at center, rgba(230,177,126,.12), rgba(255,250,244,.025) 57%, transparent 58%); overflow: hidden; }
+.sky-chart-wrap::before, .sky-chart-wrap::after { content: ""; position: absolute; border: 1px solid rgba(230,177,126,.13); border-radius: 50%; pointer-events: none; }
+.sky-chart-wrap::before { inset: 19px; }
+.sky-chart-wrap::after { inset: 45px; border-style: dashed; }
+.star-chart { position: relative; z-index: 1; width: min(100%, 270px); height: auto; overflow: visible; }
+.star-chart .chart-ring { fill: none; stroke: rgba(230,177,126,.45); stroke-width: 1; }
+.star-chart .chart-spoke { stroke: rgba(255,250,244,.12); stroke-width: 1; }
+.star-chart .chart-line { fill: none; stroke: rgba(230,177,126,.45); stroke-width: 1; stroke-dasharray: 3 3; }
+.star-chart .chart-star { fill: rgba(255,250,244,.78); }
+.star-chart .chart-star.is-bright { fill: var(--gold-light); }
+.star-chart .chart-label { fill: rgba(255,250,244,.63); font: 8px "DM Mono", monospace; letter-spacing: .05em; text-anchor: middle; }
+.star-chart .chart-label.active { fill: var(--gold-light); font-weight: 500; }
+.sky-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; align-content: start; }
+.sky-fact { min-height: 64px; padding: 10px 11px; border: 1px solid rgba(255,250,244,.13); background: rgba(255,250,244,.055); }
+.sky-fact dt { color: var(--gold-light); text-transform: uppercase; letter-spacing: .1em; font: 8px "DM Mono", monospace; }
+.sky-fact dd { margin: 6px 0 0; color: var(--cream); font: 600 15px/1.15 "Playfair Display", serif; }
+.sky-fact dd small { display: block; margin-top: 3px; color: rgba(255,250,244,.52); font: 10px "DM Sans", sans-serif; }
+.horoscope-card { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.35fr); gap: 22px; padding: 17px 18px; border: 1px solid rgba(230,177,126,.28); background: linear-gradient(120deg, rgba(230,177,126,.12), rgba(255,250,244,.045)); }
+.horoscope-card .reading-label { color: var(--gold-light); text-transform: uppercase; letter-spacing: .14em; font: 10px "DM Mono", monospace; }
+.horoscope-card h4 { margin-top: 6px; color: var(--cream); font: 700 27px/1.05 "Playfair Display", serif; }
+.horoscope-card .zodiac-line { margin-top: 6px; color: var(--gold-light); font-size: 12px; }
+.horoscope-copy { color: rgba(255,250,244,.8); font-size: 13px; line-height: 1.65; }
+.horoscope-copy strong { color: var(--cream); font-weight: 500; }
+.horoscope-meta { margin-top: 10px; color: rgba(255,250,244,.5); font: 10px/1.5 "DM Mono", monospace; }
+.birthday-footnote { grid-column: 1 / -1; color: rgba(255,250,244,.43); font-size: 10px; line-height: 1.5; }
+.birthday-footnote span { color: var(--gold-light); margin-right: 5px; }
+
 .toolbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 17px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .filter-group { display: flex; gap: 7px; flex-wrap: wrap; }
 .filter { border: 1px solid transparent; color: var(--ink-soft); background: transparent; border-radius: 999px; padding: 10px 14px; font-size: 13px; transition: .2s ease; }
@@ -154,6 +198,6 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .detail-copy .source-link { display: inline-block; margin-top: 25px; color: var(--plum); font-size: 12px; border-bottom: 1px solid var(--gold); text-decoration: none; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(11px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 20px; } .reading-controls { align-items: center; } }
-@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 21px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 84px minmax(0, 1fr); gap: 16px; } .drawn-card { width: 84px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 9px; } .pick3-item { grid-template-columns: 60px minmax(0, 1fr); } .pick3-item .drawn-card { width: 60px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } }
+@media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 20px; } .reading-controls { align-items: center; } .birthday-panel { grid-template-columns: 1fr; gap: 18px; } }
+@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 21px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 84px minmax(0, 1fr); gap: 16px; } .drawn-card { width: 84px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 9px; } .pick3-item { grid-template-columns: 60px minmax(0, 1fr); } .pick3-item .drawn-card { width: 60px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
