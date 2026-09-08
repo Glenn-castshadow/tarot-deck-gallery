@@ -24,6 +24,23 @@
         </div>
       </header>
 
+      <section class="reading-room" aria-labelledby="reading-title">
+        <div class="reading-intro">
+          <p class="section-kicker">The reading room</p>
+          <h2 id="reading-title">A small spread for the day ahead</h2>
+          <p>Draw one card for a daily focus, or open a three-card spread for a wider story. Your daily card stays the same until tomorrow.</p>
+        </div>
+        <div class="reading-controls">
+          <div class="reading-tabs" role="group" aria-label="Reading type">
+            <button class="reading-tab active" data-reading-mode="daily">Daily card</button>
+            <button class="reading-tab" data-reading-mode="pick3">Pick 3 cards</button>
+          </div>
+          <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
+        </div>
+        <div id="reading-output" class="reading-output" aria-live="polite"></div>
+        <p class="reading-note"><span>✧</span> For reflection and creative practice. The archive uses a Major Arcana meaning set; use the source notes to explore each deck's own tradition.</p>
+      </section>
+
       <section class="toolbar" aria-label="Gallery controls">
         <div class="filter-group" role="group" aria-label="Filter by era">
           <button class="filter active" data-filter="all">All decks <span id="all-count">14</span></button>
