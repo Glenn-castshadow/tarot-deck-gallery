@@ -78,7 +78,7 @@ const minorArcana = Object.entries(suitProfiles).flatMap(([suit, suitProfile]) =
 })));
 
 const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
-const cardImages = Object.fromEntries(tarotCards.filter(card => card.image).map(card => [card.name, card.image]));
+const cardImages = Object.fromEntries(tarotCards.map((card, index) => [card.name, `assets/ishtar-deck/cards/${String(index).padStart(2, "0")}.jpg`]));
 
 const zodiacSigns = [
   { name: "Aries", symbol: "♈", start: [3, 21], element: "Fire", modality: "Cardinal", ruler: "Mars", stones: "Diamond · bloodstone", flower: "Sweet pea", mantra: "I begin", horoscope: "Your spark is useful when it has somewhere to go. Give the brave idea a small, visible first move, then let momentum answer the doubts." },
@@ -330,6 +330,17 @@ function orientationFor(seed) {
   return hashString(seed) % 5 === 0 ? "reversed" : "upright";
 }
 
+function randomInt(maxExclusive) {
+  if (window.crypto?.getRandomValues) {
+    const values = new Uint32Array(1);
+    const range = 0x100000000;
+    const limit = Math.floor(range / maxExclusive) * maxExclusive;
+    do { window.crypto.getRandomValues(values); } while (values[0] >= limit);
+    return values[0] % maxExclusive;
+  }
+  return Math.floor(Math.random() * maxExclusive);
+}
+
 function getDailyReading() {
   const key = `arcana-daily-v2-${localDateKey()}`;
   try {
@@ -345,11 +356,14 @@ function getDailyReading() {
 }
 
 function drawPick3() {
-  const seed = `${Date.now()}-${Math.random()}`;
-  const order = tarotCards.map((card, index) => ({ card, index, sort: hashString(`${seed}-${index}`) })).sort((a, b) => a.sort - b.sort);
+  const order = tarotCards.map((card, index) => ({ card, index }));
+  for (let index = order.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(index + 1);
+    [order[index], order[swapIndex]] = [order[swapIndex], order[index]];
+  }
   return order.slice(0, 3).map((item, index) => ({
     index: item.index,
-    orientation: orientationFor(`${seed}-${index}-orientation`),
+    orientation: randomInt(5) === 0 ? "reversed" : "upright",
     position: ["Past / what shaped this", "Present / what needs attention", "Future / what is taking shape"][index]
   }));
 }
