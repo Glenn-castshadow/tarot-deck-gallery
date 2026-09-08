@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=reading-room-2" />
+    <link rel="stylesheet" href="styles.css?v=ishtar-library-1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -33,13 +33,39 @@
           <span class="reading-badge">Ishtar Insights · 78-card core</span>
         </div>
         <div class="reading-controls">
-          <div class="reading-tabs" role="group" aria-label="Reading type">
-            <button class="reading-tab active" data-reading-mode="daily">Daily card</button>
-            <button class="reading-tab" data-reading-mode="pick3">Pick 3 cards</button>
+          <div class="reading-tabs" role="group" aria-label="Reading room views">
+            <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
+            <button class="reading-tab" data-reading-mode="pick3" aria-pressed="false">Pick 3 cards</button>
+            <button class="reading-tab" data-reading-mode="deck" aria-pressed="false">Explore deck</button>
           </div>
           <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
         </div>
         <div id="reading-output" class="reading-output" aria-live="polite"></div>
+        <section id="ishtar-deck" class="ishtar-library" aria-labelledby="ishtar-title" hidden>
+          <header class="ishtar-library-header">
+            <div>
+              <p class="section-kicker">The complete deck</p>
+              <h3 id="ishtar-title">Ishtar Insights</h3>
+              <p>78 illustrated cards. One unfolding story. Explore every Major Arcana, every suit, and the mirrored card back.</p>
+            </div>
+            <span class="ishtar-library-count">22 Major · 56 Minor</span>
+          </header>
+          <div class="ishtar-library-tools">
+            <div class="ishtar-filters" role="group" aria-label="Filter Ishtar deck">
+              <button type="button" data-ishtar-filter="all" aria-pressed="true">All cards <span>78</span></button>
+              <button type="button" data-ishtar-filter="major" aria-pressed="false">Major Arcana <span>22</span></button>
+              <button type="button" data-ishtar-filter="Wands" aria-pressed="false">Wands <span>14</span></button>
+              <button type="button" data-ishtar-filter="Cups" aria-pressed="false">Cups <span>14</span></button>
+              <button type="button" data-ishtar-filter="Swords" aria-pressed="false">Swords <span>14</span></button>
+              <button type="button" data-ishtar-filter="Pentacles" aria-pressed="false">Pentacles <span>14</span></button>
+              <button type="button" data-ishtar-filter="back" aria-pressed="false">Card back</button>
+            </div>
+            <label class="ishtar-search"><span class="sr-only">Search Ishtar cards</span><input id="ishtar-search" type="search" placeholder="Find a card…" autocomplete="off"></label>
+          </div>
+          <div class="ishtar-grid-intro"><p id="ishtar-results" role="status"></p><span>Choose a card to look closer ↗</span></div>
+          <div id="ishtar-grid" class="ishtar-grid"></div>
+          <div id="ishtar-empty" class="ishtar-empty" hidden><p>No cards match this search.</p><button type="button" id="ishtar-reset">Show the full deck</button></div>
+        </section>
         <p class="reading-note"><span>✧</span> For reflection and creative practice. Click any drawn card to inspect the full artwork and meaning. Daily Card and Pick 3 use the Ishtar Insights deck artwork with a standard 78-card meaning core.</p>
 
         <div class="birthday-panel">
@@ -99,6 +125,6 @@
       <div id="dialog-content"></div>
     </dialog>
     <div id="dialog-backdrop" class="dialog-backdrop" hidden></div>
-    <script src="app.js?v=reading-room-2"></script>
+    <script src="app.js?v=ishtar-library-1"></script>
   </body>
 </html>

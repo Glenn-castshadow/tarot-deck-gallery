@@ -99,6 +99,38 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-note { position: relative; z-index: 1; grid-column: 1 / -1; color: rgba(255,250,244,.47); font-size: 10px; line-height: 1.5; }
 .reading-note span { color: var(--gold-light); margin-right: 5px; }
 
+.reading-controls { flex-wrap: wrap; }
+.reading-tabs { flex-wrap: wrap; }
+.reading-tab { min-height: 44px; }
+.ishtar-library { grid-column: 1 / -1; min-width: 0; position: relative; z-index: 1; }
+.ishtar-library[hidden], .reading-output[hidden], .draw-button[hidden], .ishtar-empty[hidden] { display: none; }
+.ishtar-library-header { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding: 26px 0; border-top: 1px solid rgba(230,177,126,.28); }
+.ishtar-library-header .section-kicker { color: var(--gold-light); }
+.ishtar-library-header h3 { font: 700 clamp(32px, 4vw, 52px)/1.1 "Playfair Display", serif; }
+.ishtar-library-header p:last-child { max-width: 550px; margin-top: 14px; color: rgba(255,250,244,.76); font-size: 14px; line-height: 1.6; }
+.ishtar-library-count { flex-shrink: 0; color: var(--gold-light); font: 11px "DM Mono", monospace; }
+.ishtar-library-tools { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; padding: 18px 0; border-block: 1px solid rgba(255,250,244,.14); }
+.ishtar-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+.ishtar-filters button { min-height: 44px; padding: 9px 11px; border: 1px solid transparent; color: rgba(255,250,244,.78); background: transparent; font-size: 12px; }
+.ishtar-filters button span { margin-left: 3px; color: var(--gold-light); font: 10px "DM Mono", monospace; }
+.ishtar-filters button:hover { border-color: rgba(230,177,126,.4); }
+.ishtar-filters button[aria-pressed="true"] { background: var(--gold-light); color: var(--plum-dark); }
+.ishtar-filters button[aria-pressed="true"] span { color: inherit; }
+.ishtar-search { flex: 1 1 190px; max-width: 280px; }
+.ishtar-search input { width: 100%; height: 44px; border: 1px solid rgba(255,250,244,.25); padding: 10px 12px; border-radius: 0; background: rgba(255,250,244,.06); color: var(--cream); font-size: 14px; }
+.ishtar-search input::placeholder { color: rgba(255,250,244,.58); }
+.ishtar-grid-intro { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; padding: 20px 0 24px; color: rgba(255,250,244,.64); font-size: 12px; }
+.ishtar-grid-intro p { color: var(--gold-light); }
+.ishtar-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px 24px; }
+.ishtar-card { display: flex; flex-direction: column; min-width: 0; appearance: none; border: 0; padding: 0; color: var(--cream); background: transparent; text-align: left; cursor: zoom-in; }
+.ishtar-card img { display: block; width: 100%; height: auto; aspect-ratio: 360 / 597; object-fit: contain; background: #1e132b; box-shadow: 0 12px 24px rgba(0,0,0,.24); transition: transform .2s ease, box-shadow .2s ease; }
+.ishtar-card:hover img { transform: translateY(-5px); box-shadow: 0 18px 30px rgba(0,0,0,.34); }
+.ishtar-card-group { margin-top: 16px; color: var(--gold-light); text-transform: uppercase; font: 9px/1.6 "DM Mono", monospace; letter-spacing: .09em; }
+.ishtar-card-name { margin-top: 5px; font: 600 clamp(17px, 1.7vw, 23px)/1.25 "Playfair Display", serif; }
+.ishtar-empty { padding: 50px 20px; text-align: center; color: var(--cream); }
+.ishtar-empty button { margin-top: 18px; min-height: 44px; padding: 10px 16px; border: 1px solid var(--gold-light); background: transparent; color: var(--gold-light); }
+.reading-tab:focus-visible, .ishtar-library button:focus-visible, .ishtar-search input:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+
 .birthday-panel { position: relative; z-index: 1; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 18px 42px; margin-top: 3px; padding-top: 25px; border-top: 1px solid rgba(255,250,244,.14); }
 .birthday-intro .section-kicker { color: var(--gold-light); }
 .birthday-intro h3 { margin-top: 7px; color: var(--cream); font: 700 clamp(23px, 2.6vw, 34px)/1.08 "Playfair Display", serif; }
@@ -215,8 +247,37 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .card-detail-fallback { width: min(100%, 330px); aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; align-content: center; gap: 20px; border: 2px solid var(--gold-light); color: var(--cream); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 12px 14px 0 rgba(0,0,0,.2); text-align: center; }
 .card-detail-fallback span { color: var(--gold-light); font: 14px "DM Mono", monospace; }
 .card-detail-fallback strong { max-width: 210px; font: 700 30px/1.05 "Playfair Display", serif; }
+.detail-dialog.is-card-view { width: min(1100px, calc(100% - 28px)); }
+.is-card-view .card-detail-layout { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.is-card-view .card-detail-art { padding: 36px 28px 48px; }
+.is-card-view .card-detail-image { width: auto; max-width: 100%; max-height: calc(100dvh - 170px); object-fit: contain; }
+.deck-review-nav { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 10px 65px 10px 18px; border-bottom: 1px solid var(--line); background: var(--cream); }
+.deck-review-nav button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); color: var(--plum); background: transparent; font-size: 13px; }
+.deck-review-nav button:disabled { opacity: .4; cursor: default; }
+.deck-review-nav button:not(:disabled):hover { background: var(--paper-deep); }
+.deck-review-nav button:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+.deck-review-nav span { color: var(--ink-soft); text-align: center; font: 11px "DM Mono", monospace; }
+.is-card-view .close-dialog { position: sticky; float: right; top: 15px; margin: 15px 18px -51px 0; z-index: 3; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(11px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 24px; } .reading-intro h2, .reading-intro > p:last-child { max-width: 680px; } .reading-controls { align-items: center; } .birthday-panel { grid-template-columns: 1fr; gap: 18px; } }
 @media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 24px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 142px minmax(0, 1fr); gap: 18px; min-height: 250px; } .daily-reading .drawn-card { width: 138px; } .drawn-card { width: 138px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 13px; } .pick3-item { min-height: 0; padding: 16px; } .pick3-item .drawn-card { width: min(52vw, 178px); margin-bottom: 18px; } .pick3-item h3 { font-size: 25px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } .card-detail-layout { grid-template-columns: 1fr; } .card-detail-art { min-height: 430px; padding: 24px; } .card-detail-image, .card-detail-fallback { width: min(100%, 260px); } .card-detail-zoom { left: 24px; bottom: 14px; } }
+@media (max-width: 1050px) {
+  .ishtar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ishtar-library-header { align-items: start; flex-direction: column; gap: 16px; }
+}
+@media (max-width: 700px) {
+  .ishtar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; }
+  .ishtar-search { max-width: none; }
+  .ishtar-filters button { padding-inline: 8px; }
+  .reading-tabs { width: 100%; }
+  .reading-tab { flex: 1; padding-inline: 8px; }
+  .is-card-view .card-detail-layout { grid-template-columns: 1fr; }
+  .is-card-view .card-detail-art { min-height: 0; padding: 24px 24px 44px; }
+  .is-card-view .card-detail-image { width: auto; max-width: 100%; }
+  .is-card-view .detail-copy dl { grid-template-columns: 70px minmax(0, 1fr); gap: 14px; }
+  .deck-review-nav { gap: 6px; padding-left: 10px; padding-right: 56px; }
+  .deck-review-nav button { padding-inline: 8px; font-size: 12px; }
+  .deck-review-nav span { font-size: 10px; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

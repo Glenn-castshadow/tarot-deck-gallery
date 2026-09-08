@@ -150,6 +150,10 @@ function render() {
 function openDetails(id) {
   const deck = decks.find(item => item.id === id);
   if (!deck) return;
+  deckReviewIndex = null;
+  dialog.classList.remove("is-card-view");
+  dialog.setAttribute("aria-label", `${deck.name} notes`);
+  dialog.removeAttribute("aria-labelledby");
   dialogContent.innerHTML = `<div class="detail-layout">
     <div class="detail-images">
       <figure><img src="${deck.front}" alt="${deck.name} front reference"><figcaption>Face / front</figcaption></figure>
@@ -309,6 +313,48 @@ const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");
 let readingMode = "daily";
 let currentPick3 = null;
+const ishtarLibrary = document.querySelector("#ishtar-deck");
+const ishtarGrid = document.querySelector("#ishtar-grid");
+const ishtarSearch = document.querySelector("#ishtar-search");
+let ishtarFilter = "all";
+let ishtarVisibleIndices = [];
+let deckReviewIndex = null;
+
+function renderIshtarDeck() {
+  const query = ishtarSearch.value.trim().toLowerCase();
+  ishtarVisibleIndices = tarotCards.flatMap((card, index) => {
+    const matchesGroup = ishtarFilter === "all" || card.type === ishtarFilter || card.suit === ishtarFilter;
+    return matchesGroup && `${card.name} ${card.keywords}`.toLowerCase().includes(query) ? [index] : [];
+  });
+  const showBack = (ishtarFilter === "all" || ishtarFilter === "back") && "card back mirrored lotus ishtar insights".includes(query);
+  if (showBack) ishtarVisibleIndices.push(tarotCards.length);
+  const frontCount = ishtarVisibleIndices.length - Number(showBack);
+  document.querySelector("#ishtar-results").textContent = `${frontCount} card${frontCount === 1 ? "" : "s"}${showBack ? " + card back" : ""}`;
+  document.querySelector("#ishtar-empty").hidden = ishtarVisibleIndices.length > 0;
+  ishtarGrid.innerHTML = ishtarVisibleIndices.map(index => {
+    const card = tarotCards[index];
+    const name = card?.name || "Card back";
+    const group = card ? (card.type === "major" ? `Major Arcana · ${card.number}` : `${card.suit} · ${card.number}`) : "The mirrored design";
+    const source = card ? cardImages[card.name] : "assets/ishtar-deck/back.jpg";
+    return `<button type="button" class="ishtar-card" data-ishtar-card="${index}" aria-label="View ${name} large">
+      <img src="${source}" alt="${name} artwork" loading="lazy" decoding="async" width="360" height="597">
+      <span class="ishtar-card-group">${group}</span><span class="ishtar-card-name">${name}</span>
+    </button>`;
+  }).join("");
+  document.querySelectorAll("[data-ishtar-filter]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.ishtarFilter === ishtarFilter));
+  });
+}
+
+function setReadingMode(mode) {
+  readingMode = mode;
+  document.querySelectorAll("[data-reading-mode]").forEach(button => {
+    const active = button.dataset.readingMode === mode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  renderReading();
+}
 
 function localDateKey() {
   const today = new Date();
@@ -382,31 +428,64 @@ function readingCopy(card, orientation) {
   return orientation === "upright" ? card.upright : card.reversed;
 }
 
-function openCardDetails(index, orientation = "upright") {
+function openCardDetails(index, orientation = "upright", browsing = false) {
   const card = tarotCards[index];
-  if (!card) return;
-  const image = cardImages[card.name];
-  const imageMarkup = image
-    ? `<img src="${image}" alt="${card.name} card artwork large" class="card-detail-image${orientation === "reversed" ? " is-reversed" : ""}">`
-    : `<div class="card-detail-fallback"><span>${card.number}</span><strong>${card.name}</strong></div>`;
-  dialogContent.innerHTML = `<div class="card-detail-layout">
-    <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">Ishtar Insights · full artwork</span></div>
-    <div class="detail-copy">
-      <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : "Minor arcana"}</span><span>${orientation}</span></div>
-      <h2>${card.name}</h2>
+  const isBack = index === tarotCards.length;
+  if (!card && !isBack) return;
+  deckReviewIndex = browsing ? index : null;
+  const name = card?.name || "Card back";
+  const image = `assets/ishtar-deck/large/${isBack ? "back" : String(index).padStart(2, "0")}.jpg`;
+  const imageMarkup = `<img src="${image}" alt="${name} artwork large" class="card-detail-image${orientation === "reversed" ? " is-reversed" : ""}">`;
+  const reviewPosition = ishtarVisibleIndices.indexOf(index);
+  const navigation = browsing ? `<nav class="deck-review-nav" aria-label="Deck review navigation">
+    <button type="button" data-review-step="-1" ${reviewPosition <= 0 ? "disabled" : ""}>← Previous</button>
+    <span role="status">${reviewPosition + 1} of ${ishtarVisibleIndices.length}</span>
+    <button type="button" data-review-step="1" ${reviewPosition >= ishtarVisibleIndices.length - 1 ? "disabled" : ""}>Next →</button>
+  </nav>` : "";
+  const notes = isBack ? `<div class="deck-meta"><span>Ishtar Insights</span><span>Reverse side</span></div>
+      <h2 id="card-detail-title">Card back</h2><p class="detail-note">The shared mirrored back design for all 78 cards. Review its lotus imagery, symmetry, and color alongside the card fronts.</p>` : `
+      <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : `Minor arcana · ${card.suit}`}</span><span>${orientation}</span></div>
+      <h2 id="card-detail-title">${card.name}</h2>
       <p class="detail-artist">${card.number} · ${card.keywords}</p>
       <dl>
         <dt>Keywords</dt><dd>${card.keywords}</dd>
         <dt>Upright</dt><dd>${card.upright}</dd>
         <dt>Reversed</dt><dd>${card.reversed}</dd>
       </dl>
-      <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>
+      <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>`;
+  dialogContent.innerHTML = `${navigation}<div class="card-detail-layout">
+    <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">Ishtar Insights · full artwork</span></div>
+    <div class="detail-copy">
+      ${notes}
+      <a class="source-link" href="${image}" target="_blank" rel="noopener">Open large artwork ↗</a>
     </div>
   </div>`;
-  dialog.showModal();
+  dialog.classList.add("is-card-view");
+  dialog.removeAttribute("aria-label");
+  dialog.setAttribute("aria-labelledby", "card-detail-title");
+  if (!dialog.open) dialog.showModal();
+  dialog.scrollTop = 0;
+}
+
+function stepDeckReview(step) {
+  if (deckReviewIndex === null) return;
+  const nextIndex = ishtarVisibleIndices[ishtarVisibleIndices.indexOf(deckReviewIndex) + step];
+  if (nextIndex === undefined) return;
+  openCardDetails(nextIndex, "upright", true);
+  const nextButton = dialogContent.querySelector(`[data-review-step="${step}"]:not(:disabled)`)
+    || dialogContent.querySelector("[data-review-step]:not(:disabled)");
+  nextButton?.focus({ preventScroll: true });
 }
 
 function renderReading() {
+  const browsing = readingMode === "deck";
+  ishtarLibrary.hidden = !browsing;
+  readingOutput.hidden = browsing;
+  drawReadingButton.hidden = browsing;
+  if (browsing) {
+    renderIshtarDeck();
+    return;
+  }
   if (readingMode === "daily") {
     const reading = getDailyReading();
     const card = tarotCards[reading.index];
@@ -442,12 +521,35 @@ function renderReading() {
 }
 
 document.querySelectorAll(".reading-tab").forEach(button => button.addEventListener("click", () => {
-  document.querySelectorAll(".reading-tab").forEach(item => item.classList.remove("active"));
-  button.classList.add("active");
-  readingMode = button.dataset.readingMode;
-  if (readingMode === "daily") currentPick3 = null;
-  renderReading();
+  setReadingMode(button.dataset.readingMode);
 }));
+ishtarLibrary.addEventListener("click", event => {
+  const filter = event.target.closest("[data-ishtar-filter]");
+  if (filter) {
+    ishtarFilter = filter.dataset.ishtarFilter;
+    renderIshtarDeck();
+  }
+  const card = event.target.closest("[data-ishtar-card]");
+  if (card) openCardDetails(Number(card.dataset.ishtarCard), "upright", true);
+});
+ishtarSearch.addEventListener("input", renderIshtarDeck);
+document.querySelector("#ishtar-reset").addEventListener("click", () => {
+  ishtarFilter = "all";
+  ishtarSearch.value = "";
+  renderIshtarDeck();
+  ishtarSearch.focus();
+});
+dialogContent.addEventListener("click", event => {
+  const button = event.target.closest("[data-review-step]");
+  if (button) stepDeckReview(Number(button.dataset.reviewStep));
+});
+dialog.addEventListener("close", () => { deckReviewIndex = null; });
+dialog.addEventListener("keydown", event => {
+  if (deckReviewIndex !== null && ["ArrowLeft", "ArrowRight"].includes(event.key)) {
+    event.preventDefault();
+    stepDeckReview(event.key === "ArrowRight" ? 1 : -1);
+  }
+});
 drawReadingButton.addEventListener("click", () => {
   if (readingMode === "pick3") currentPick3 = drawPick3();
   renderReading();
@@ -467,6 +569,14 @@ document.querySelector("#clear-search").addEventListener("click", () => { search
 gallery.addEventListener("click", event => { const button = event.target.closest("[data-open]"); if (button) openDetails(button.dataset.open); });
 document.querySelector("#close-dialog").addEventListener("click", () => dialog.close());
 dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
-document.addEventListener("keydown", event => { if (event.key === "/" && document.activeElement !== search) { event.preventDefault(); search.focus(); } });
-renderReading();
+document.addEventListener("keydown", event => {
+  if (event.key === "/" && !dialog.open && !event.target.closest("input, textarea, select, [contenteditable]")) {
+    event.preventDefault();
+    (readingMode === "deck" ? ishtarSearch : search).focus();
+  }
+});
+window.addEventListener("hashchange", () => {
+  if (location.hash === "#ishtar-deck") setReadingMode("deck");
+});
+setReadingMode(location.hash === "#ishtar-deck" ? "deck" : "daily");
 render();
