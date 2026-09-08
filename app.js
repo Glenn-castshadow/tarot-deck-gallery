@@ -118,7 +118,6 @@ const birthstones = {
   1: "Garnet", 2: "Amethyst", 3: "Aquamarine", 4: "Diamond", 5: "Emerald", 6: "Pearl · moonstone", 7: "Ruby", 8: "Peridot", 9: "Sapphire", 10: "Opal · tourmaline", 11: "Topaz · citrine", 12: "Turquoise · zircon"
 };
 
-const chineseAnimals = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
 const moonNames = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon", "Waning gibbous", "Last quarter", "Waning crescent"];
 const chartOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
 
@@ -200,14 +199,7 @@ function escapeHTML(value) {
 }
 
 function birthdayParts(value) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const date = new Date(Date.UTC(year, month - 1, day, 12));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
-  return { year, month, day, date };
+  return BirthdayInsights.parseDate(value);
 }
 
 function zodiacFor(parts) {
@@ -238,10 +230,6 @@ function moonPhaseFor(date) {
   const index = Math.round(normalized / synodicMonth * 8) % 8;
   const illumination = Math.round((1 - Math.cos(normalized / synodicMonth * Math.PI * 2)) / 2 * 100);
   return { name: moonNames[index], illumination };
-}
-
-function chineseZodiacFor(year) {
-  return chineseAnimals[((year - 4) % chineseAnimals.length + chineseAnimals.length) % chineseAnimals.length];
 }
 
 function tarotBirthCardFor(parts) {
@@ -278,17 +266,29 @@ function starChartFor(sign) {
   return `<svg class="star-chart" viewBox="0 0 360 360" role="img" aria-label="Symbolic birthday sky chart with ${sign.name} highlighted"><circle class="chart-ring" cx="180" cy="180" r="145" /><circle class="chart-ring" cx="180" cy="180" r="92" /><circle class="chart-ring" cx="180" cy="180" r="37" />${spokes}${constellation}${stars}<circle cx="180" cy="180" r="4" fill="var(--gold-light)" />${labels}</svg>`;
 }
 
+let birthdayView = "sky";
+let birthdayProfileParts = null;
+const birthdayViews = [["sky", "Your sky"], ["chinese", "Chinese zodiac"], ["numbers", "Numbers & Lo Shu"]];
+function setBirthdayView(view) {
+  if (!birthdayViews.some(([key]) => key === view)) return;
+  birthdayView = view;
+  birthdayOutput.querySelectorAll("[data-birthday-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.birthdayView === view)));
+  birthdayOutput.querySelectorAll(".birthday-view").forEach(panel => { panel.hidden = panel.id !== `birthday-${view}`; });
+}
+
 function renderBirthdayProfile(saved = null) {
   const parts = birthdayParts(saved?.birthday || birthdayInput.value);
+  birthdayProfileParts = parts;
   if (!parts) {
-    birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open a personal sky cabinet with your sun sign, birthstone, moon phase, tarot birth card, and zodiac wheel.</div>`;
+    birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and interactive Lo Shu number study. Your birthday details stay in this browser.</div>`;
     return;
   }
   const sign = zodiacFor(parts);
   const moon = moonPhaseFor(parts.date);
   const birthCard = tarotBirthCardFor(parts);
+  const chinese = BirthdayInsights.chineseProfile(parts);
   const dateLabel = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(parts.date);
-  const timeLabel = saved?.time ? ` · ${saved.time}` : "";
+  const timeLabel = saved?.time ? ` · ${escapeHTML(saved.time)}` : "";
   const placeLabel = saved?.place ? ` · ${escapeHTML(saved.place)}` : "";
   const facts = [
     ["Sun sign", `${sign.symbol} ${sign.name}`, `${decanFor(parts, sign)} · ${sign.mantra}`],
@@ -296,17 +296,32 @@ function renderBirthdayProfile(saved = null) {
     ["Ruling planet", sign.ruler, "traditional + modern ruler"],
     ["Birthstone", birthstones[parts.month], sign.stones],
     ["Birth flower", sign.flower, "seasonal flower lore"],
-    ["Moon phase", moon.name, `${moon.illumination}% illuminated`],
-    ["Chinese zodiac", chineseZodiacFor(parts.year), `${parts.year} cycle · solar approximation`],
+    ["Moon phase", moon.name, `Approx. ${moon.illumination}% illuminated`],
+    ["Chinese zodiac", chinese ? `${chinese.phase.name} ${chinese.animal.name}` : "Unavailable", chinese ? `${chinese.polarity} · lunar year ${chinese.year}` : "Calendar not supported for this date"],
     ["Tarot birth card", `${birthCard.number} · ${birthCard.name}`, birthCard.keywords]
   ];
-  birthdayOutput.innerHTML = `<div class="sky-summary">
+  birthdayOutput.innerHTML = `<div class="birthday-navigation" role="group" aria-label="Birthday perspectives">${birthdayViews.map(([key, label]) => `<button type="button" data-birthday-view="${key}" aria-controls="birthday-${key}" aria-pressed="${key === birthdayView}">${label}</button>`).join("")}</div>
+  <div id="birthday-sky" class="birthday-view sky-summary"${birthdayView === "sky" ? "" : " hidden"}>
     <div class="sky-chart-wrap">${starChartFor(sign)}</div>
     <dl class="sky-facts">${facts.map(([label, value, detail]) => `<div class="sky-fact"><dt>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
     <article class="horoscope-card"><div><p class="reading-label">Birthday horoscope</p><h4>${sign.symbol} ${sign.name}</h4><p class="zodiac-line">${dateLabel}${timeLabel}${placeLabel}</p></div><div class="horoscope-copy"><p>${sign.horoscope}</p><p class="horoscope-meta">${sign.element} · ${sign.modality} · ruled by ${sign.ruler} · ${sign.mantra}</p></div></article>
-    <p class="birthday-footnote"><span>✧</span> This is a symbolic solar sky chart based on the birthday alone. An exact natal chart needs birth time and birthplace; the optional fields are saved here so we can add that layer next.</p>
-  </div>`;
+    <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></article>`).join("")}</div>
+    <p class="birthday-footnote"><span>✧</span> A symbolic zodiac wheel and original reflection prompts. Sun signs and decans use approximate date ranges; moon phase uses an average lunar cycle. This is not an exact natal chart. Birth time supplies an optional Chinese hour association; birthplace is saved for future chart work.</p>
+  </div>
+  <div id="birthday-chinese" class="birthday-view"${birthdayView === "chinese" ? "" : " hidden"}>${BirthdayInsights.renderChinese(chinese, saved?.time || "")}</div>
+  <div id="birthday-numbers" class="birthday-view"${birthdayView === "numbers" ? "" : " hidden"}>${BirthdayInsights.renderNumbers(parts)}</div>
+  <p class="birthday-privacy">Your birthday details are saved in this browser. Choose a perspective to explore another tradition.</p>`;
 }
+
+birthdayInput.max = localDateKey();
+birthdayOutput.addEventListener("click", event => {
+  const viewButton = event.target.closest("[data-birthday-view]");
+  if (viewButton) { setBirthdayView(viewButton.dataset.birthdayView); return; }
+  const numberButton = event.target.closest("[data-lo-shu]");
+  if (!numberButton || !birthdayProfileParts) return;
+  birthdayOutput.querySelectorAll("[data-lo-shu]").forEach(button => button.setAttribute("aria-pressed", String(button === numberButton)));
+  birthdayOutput.querySelector("#lo-shu-detail").innerHTML = BirthdayInsights.numberDetail(BirthdayInsights.numberStudy(birthdayProfileParts), Number(numberButton.dataset.loShu));
+});
 
 birthdayForm.addEventListener("submit", event => {
   event.preventDefault();
