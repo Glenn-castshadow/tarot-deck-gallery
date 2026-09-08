@@ -14,6 +14,8 @@ The Moebius-inspired series uses fine ink, open cerulean skies, desert ivory, co
 
 Choose a deck in the reading room, then use **Daily card**, **Pick 3 cards** or **Explore deck**. All four reading-room decks, including Ishtar Insights, use the same 78-card meaning system. Switching artwork preserves the current draw and its orientations. A three-card draw samples three distinct cards; Daily card remains stable for the local calendar day. Explore supports suit filters, search, the matching back, and a large view with previous/next navigation.
 
+The large-card panel also has a **Deck** selector. It keeps the same card, orientation, search and suit filter while changing the artwork. To compare the Majors, choose **Major Arcana**, open a card, then switch decks inside the panel; Previous/Next stays within those 22 cards. The selector is populated from `readingDecks` in `app.js`, so future decks registered there appear automatically. New decks should follow the existing 00–77 card mapping and matching `large/back.jpg` layout.
+
 Direct gallery links accept `?deck=moebius`, `?deck=arts-and-crafts` or `?deck=bacon`, with `#ishtar-deck` opening Explore. The existing anchor remains valid for saved links.
 
 ## Source files, prompts and print layout

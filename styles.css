@@ -274,7 +274,13 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .is-card-view .card-detail-layout { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
 .is-card-view .card-detail-art { padding: 36px 28px 48px; }
 .is-card-view .card-detail-image { width: auto; max-width: 100%; max-height: calc(100dvh - 170px); object-fit: contain; }
-.deck-review-nav { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 10px 65px 10px 18px; border-bottom: 1px solid var(--line); background: var(--cream); }
+.card-detail-toolbar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 10px 72px 10px 18px; border-bottom: 1px solid var(--line); background: var(--cream); }
+.deck-review-nav { display: flex; align-items: center; gap: 12px; }
+.card-deck-switcher { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 10px; width: min(100%, 330px); min-width: 0; margin-left: auto; }
+.card-deck-switcher > span { color: var(--ink-soft); font: 11px "DM Mono", monospace; text-transform: uppercase; letter-spacing: .06em; }
+.card-deck-switcher select { width: 100%; min-width: 0; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 0; background: var(--cream); color: var(--plum); font: inherit; font-size: 14px; cursor: pointer; }
+.card-deck-switcher select:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+.card-deck-switcher small { grid-column: 2; color: var(--ink-soft); font-size: 11px; }
 .deck-review-nav button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); color: var(--plum); background: transparent; font-size: 13px; }
 .deck-review-nav button:disabled { opacity: .4; cursor: default; }
 .deck-review-nav button:not(:disabled):hover { background: var(--paper-deep); }
@@ -299,7 +305,10 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
   .is-card-view .card-detail-art { min-height: 0; padding: 24px 24px 44px; }
   .is-card-view .card-detail-image { width: auto; max-width: 100%; }
   .is-card-view .detail-copy dl { grid-template-columns: 70px minmax(0, 1fr); gap: 14px; }
-  .deck-review-nav { gap: 6px; padding-left: 10px; padding-right: 56px; }
+  .card-detail-toolbar { gap: 10px; padding-left: 10px; padding-right: 58px; }
+  .card-deck-switcher { width: 100%; margin-left: 0; }
+  .card-deck-switcher select { font-size: 16px; }
+  .deck-review-nav { gap: 6px; }
   .deck-review-nav button { padding-inline: 8px; font-size: 12px; }
   .deck-review-nav span { font-size: 10px; }
 }

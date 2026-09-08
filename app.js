@@ -170,6 +170,7 @@ function openDetails(id) {
   const deck = decks.find(item => item.id === id);
   if (!deck) return;
   deckReviewIndex = null;
+  cardDetailState = null;
   dialog.classList.remove("is-card-view");
   dialog.setAttribute("aria-label", `${deck.name} notes`);
   dialog.removeAttribute("aria-labelledby");
@@ -338,6 +339,7 @@ const ishtarSearch = document.querySelector("#ishtar-search");
 let ishtarFilter = "all";
 let ishtarVisibleIndices = [];
 let deckReviewIndex = null;
+let cardDetailState = null;
 
 function selectReadingDeck(id) {
   if (!Object.hasOwn(readingDecks, id)) return;
@@ -345,8 +347,12 @@ function selectReadingDeck(id) {
   try { localStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
   const url = new URL(location.href);
   url.searchParams.set("deck", id);
-  history.replaceState(null, "", url);
+  try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
   renderReading();
+  if (dialog.open && cardDetailState) {
+    const { index, orientation, browsing } = cardDetailState;
+    openCardDetails(index, orientation, browsing);
+  }
 }
 
 function renderIshtarDeck() {
@@ -462,6 +468,7 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
   const isBack = index === tarotCards.length;
   if (!card && !isBack) return;
   deckReviewIndex = browsing ? index : null;
+  cardDetailState = { index, orientation, browsing };
   const name = card?.name || "Card back";
   const deck = readingDecks[activeReadingDeck];
   const image = readingArt(index, "large");
@@ -472,6 +479,13 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
     <span role="status">${reviewPosition + 1} of ${ishtarVisibleIndices.length}</span>
     <button type="button" data-review-step="1" ${reviewPosition >= ishtarVisibleIndices.length - 1 ? "disabled" : ""}>Next →</button>
   </nav>` : "";
+  const deckSwitcher = `<label class="card-deck-switcher" for="card-detail-deck">
+    <span>Deck</span>
+    <select id="card-detail-deck" aria-describedby="card-deck-help">
+      ${Object.entries(readingDecks).map(([id, item]) => `<option value="${id}" ${id === activeReadingDeck ? "selected" : ""}>${item.name}</option>`).join("")}
+    </select>
+    <small id="card-deck-help">Same card, another deck</small>
+  </label>`;
   const notes = isBack ? `<div class="deck-meta"><span>${deck.name}</span><span>Reverse side</span></div>
       <h2 id="card-detail-title">Card back</h2><p class="detail-note">${deck.back}</p>` : `
       <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : `Minor arcana · ${card.suit}`}</span><span>${orientation}</span></div>
@@ -483,7 +497,7 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
         <dt>Reversed</dt><dd>${card.reversed}</dd>
       </dl>
       <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>`;
-  dialogContent.innerHTML = `${navigation}<div class="card-detail-layout">
+  dialogContent.innerHTML = `<div class="card-detail-toolbar">${navigation}${deckSwitcher}</div><div class="card-detail-layout">
     <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">${deck.name} · full artwork</span></div>
     <div class="detail-copy">
       ${notes}
@@ -581,9 +595,24 @@ dialogContent.addEventListener("click", event => {
   const button = event.target.closest("[data-review-step]");
   if (button) stepDeckReview(Number(button.dataset.reviewStep));
 });
-dialog.addEventListener("close", () => { deckReviewIndex = null; });
+dialogContent.addEventListener("change", event => {
+  if (event.target.id !== "card-detail-deck") return;
+  selectReadingDeck(event.target.value);
+  dialogContent.querySelector("#card-detail-deck")?.focus({ preventScroll: true });
+});
+
+dialog.addEventListener("close", () => {
+  const card = cardDetailState;
+  deckReviewIndex = null;
+  cardDetailState = null;
+  if (card) {
+    const selector = card.browsing ? `[data-ishtar-card="${card.index}"]` : `[data-card-view="${card.index}"]`;
+    document.querySelector(selector)?.focus({ preventScroll: true });
+  }
+});
 dialog.addEventListener("keydown", event => {
-  if (deckReviewIndex !== null && ["ArrowLeft", "ArrowRight"].includes(event.key)) {
+  if (deckReviewIndex !== null && ["ArrowLeft", "ArrowRight"].includes(event.key)
+      && !event.target.closest("input, textarea, select, [contenteditable]")) {
     event.preventDefault();
     stepDeckReview(event.key === "ArrowRight" ? 1 : -1);
   }
