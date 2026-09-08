@@ -1,0 +1,38 @@
+{
+  "deck": "Aquarian Tarot",
+  "edition": "U.S. Games Systems edition",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/aquarian-tarot-deck.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/aquarian-tarot-deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/AQ78_2_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 648,
+      "height": 1000,
+      "sha256": "77c9185d9a336cdfb9becdb6c153b15c9c2d9f7e1e919766f9e0dcd9000b05ce",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Blue-and-white patterned reverse",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/aquarian-tarot-deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/AQ78_7_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 648,
+      "height": 1000,
+      "sha256": "de8cd1c03d2cbd601261e57b132ad05f8eeb2b674fb5497c1cd242fd0665a5b9",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

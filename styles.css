@@ -283,7 +283,7 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .deck-card:hover { transform: translateY(-5px); box-shadow: 0 25px 52px rgba(34,18,44,.17); }
 .deck-visual { aspect-ratio: 1.25 / 1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 9px; padding: 9px; background: var(--paper-deep); overflow: hidden; }
 .visual-frame { position: relative; min-width: 0; overflow: hidden; background: #d8cabb; }
-.visual-frame img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; transition: transform .4s ease; }
+.visual-frame img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: center; transition: transform .4s ease; }
 .visual-frame.back-frame { background: var(--plum-dark); }
 .visual-frame.back-frame img { object-position: center; filter: saturate(.9); }
 .deck-card:hover .visual-frame img { transform: scale(1.035); }
@@ -294,6 +294,12 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .deck-artist { margin-top: 6px; color: var(--ink-soft); font-size: 12px; }
 .deck-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
 .tag { border: 1px solid var(--line); color: var(--ink-soft); padding: 5px 7px; border-radius: 2px; font: 9px "DM Mono", monospace; }
+.new-deck-tag { background: var(--plum); color: var(--cream); }
+.archive-source-links { display: flex; flex-wrap: wrap; gap: 0 18px; }
+.image-credit { margin-top: 20px; color: var(--ink-soft); font-size: 11px; line-height: 1.6; }
+.detail-images a { display: block; height: 100%; cursor: zoom-in; }
+.detail-images a:focus-visible { outline: 3px solid var(--plum); outline-offset: -3px; }
+.detail-images figcaption { pointer-events: none; }
 .card-action { margin-top: 16px; border: 0; border-bottom: 1px solid var(--gold); color: var(--plum); padding: 0 0 3px; background: transparent; font-size: 12px; }
 .card-action::after { content: "  ↗"; color: var(--gold); }
 

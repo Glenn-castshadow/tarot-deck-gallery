@@ -1,0 +1,42 @@
+{
+  "deck": "Tarot of the Cat People",
+  "edition": "U.S. Games Systems edition",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-of-the-cat-people.html"
+    },
+    {
+      "label": "Additional source",
+      "url": "https://www.usgamesinc.com/files/attachments/481/CP78_Booklet.pdf"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/tarot-of-the-cat-people.html",
+      "imageUrl": "https://www.usgamesinc.com/images/product/CP78_2_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 568,
+      "height": 1000,
+      "sha256": "6aa4fe37b4e87a5287c4eee6675add4fe0b6b09f5e8deed4145d5b126e066057",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Mirrored cat design",
+      "sourcePage": "https://www.usgamesinc.com/tarot-of-the-cat-people.html",
+      "imageUrl": "https://www.usgamesinc.com/images/product/CP78_7_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 568,
+      "height": 1000,
+      "sha256": "46459c29dc59fa42b01bee13a742c27830ce48e1b245388f6ccbec0a370493a8",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

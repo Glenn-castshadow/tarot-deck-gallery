@@ -2,6 +2,8 @@
 
 This folder is organized for visual research and prototyping:
 
+The archive now contains **32 reference decks: 15 historical and 17 modern**. The [September 2026 expansion](EXPANSION-2026-09.md) adds 18 decks with individual source records, edition labels, card counts and front/back samples. Use **New additions** in the gallery to browse them together. [catalog.csv](catalog.csv) lists the full collection.
+
 ```text
 tarot-decks/
   historical/<deck-name>/{front,back}/
@@ -51,8 +53,10 @@ Modern source pages:
 
 ## Extending this for new decks
 
-The gallery and the reading engine are intentionally separate. Deck entries describe artwork, provenance, and rights; the reading engine uses a standard 78-card core with suit and rank meanings. To add an original deck, add its metadata and front/back assets to `app.js` and the matching folders here. If a deck needs its own interpretive voice, add a deck-specific meaning map keyed by the same card names (`The Fool`, `Ace of Wands`, and so on) rather than changing the draw or spread logic. This keeps historical references, original artwork, and future app content in one browsable system.
+Reference metadata lives in `archive-decks.js`. Add a record and its front/back assets here, then update the CSV. Record the pictured edition, source pages, image URLs, retrieval date and rights in the deck's `sources.json`. An `addedBatch` date makes the latest batch discoverable through New additions; gallery counts come from the catalog automatically.
+
+The reading engine uses a standard 78-card core with suit and rank meanings. Its four complete original decks remain configured in `app.js`. A pair of research samples does not constitute a full reading deck. Deck-specific meanings can be keyed by the same card names (`The Fool`, `Ace of Wands`, and so on).
 
 ## Personal celestial cabinet
 
-The Reading Room also accepts a birthday profile. It currently provides a symbolic solar sky chart, sun sign and decan, element, modality, ruling planet, traditional birthstone, birth flower, moon phase, Chinese zodiac animal, and a tarot birth card. Birth time and birthplace are optional and saved locally in the browser so they can support a future exact natal-chart layer. The current sky chart is intentionally transparent about being a birthday-based visual rather than a calculated astronomical chart.
+The Reading Room includes a calculated natal chart when a birth date, time and location are supplied, plus a symbolic birthday guide, Chinese zodiac and Lo Shu study. See [natal methods](../docs/NATAL-CHART.md) and [birthday insights](../docs/BIRTHDAY-INSIGHTS.md). Birth details stay in the browser.

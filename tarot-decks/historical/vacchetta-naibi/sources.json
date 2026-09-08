@@ -1,0 +1,38 @@
+{
+  "deck": "Naibi di Giovanni Vacchetta",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/naibi-di-giovanni-vacchetta-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "La Luna · XVIII",
+      "sourcePage": "https://www.loscarabeo.com/products/naibi-di-giovanni-vacchetta-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA09-AnimaAntiqua-Vacchetta-CARDS4.jpg?v=1623159677",
+      "retrieved": "2026-09-08",
+      "width": 2849,
+      "height": 5492,
+      "sha256": "82e39c0e385aaacd4f2f22b35ca89c7e07d7df3cd7b0920ea216ff44a90b017d",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Ornamental reverse · facsimile edition",
+      "sourcePage": "https://www.loscarabeo.com/products/naibi-di-giovanni-vacchetta-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA09-AnimaAntiqua-Vacchetta-CARDS7.jpg?v=1623159677",
+      "retrieved": "2026-09-08",
+      "width": 2849,
+      "height": 5492,
+      "sha256": "e6646fd908778bc15f48a885360a36b318f0674f9c31e65704a26e22c1931726",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

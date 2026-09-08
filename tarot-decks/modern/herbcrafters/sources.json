@@ -1,0 +1,38 @@
+{
+  "deck": "The Herbcrafter’s Tarot",
+  "edition": "U.S. Games Systems deck and book set",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/the-herbcrafter-s-tarot.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "Four of Air · Lavender",
+      "sourcePage": "https://www.usgamesinc.com/the-herbcrafter-s-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/HCT78_3.webp",
+      "retrieved": "2026-09-08",
+      "width": 600,
+      "height": 1000,
+      "sha256": "d7224cf38403ec4cdf1cd790b8b492d6d588353eeeba0de57586f040ff2b0a9b",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Botanical specimen pattern",
+      "sourcePage": "https://www.usgamesinc.com/the-herbcrafter-s-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/HCT78_10.webp",
+      "retrieved": "2026-09-08",
+      "width": 600,
+      "height": 1000,
+      "sha256": "39cb63063d7ddd9868bff331ee9375bf317a8de4c3e2abdc89e06be456b6b72f",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

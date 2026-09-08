@@ -1,0 +1,38 @@
+{
+  "deck": "Fratelli Recchi Marseille",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/tarocchi-marsigliesi-fratelli-recchi-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "L’Impératrice",
+      "sourcePage": "https://www.loscarabeo.com/products/tarocchi-marsigliesi-fratelli-recchi-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA-MarseillaFratelliRecchi02.jpg?v=1673445397",
+      "retrieved": "2026-09-08",
+      "width": 768,
+      "height": 1358,
+      "sha256": "a451e6e3d76157348aedde1c2c9ff4dde003679bde6a448a1180710b56e3aabd",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Blue geometric reverse · facsimile edition",
+      "sourcePage": "https://www.loscarabeo.com/products/tarocchi-marsigliesi-fratelli-recchi-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA-MarseillaFratelliRecchi05.jpg?v=1673445395",
+      "retrieved": "2026-09-08",
+      "width": 768,
+      "height": 1358,
+      "sha256": "85861a689e99e4e151ebfb56329ea56e04826990a3decd76e05763c21f211b16",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

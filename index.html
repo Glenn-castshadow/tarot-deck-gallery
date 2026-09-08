@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=celestial-atlas-1" />
+    <link rel="stylesheet" href="styles.css?v=archive-32" />
     <link rel="stylesheet" href="celestial-room.css?v=celestial-atlas-1" />
   </head>
   <body>
@@ -16,7 +16,7 @@
     <main class="shell">
       <header class="masthead">
         <div class="brand-lockup"><img src="assets/ishtar-insights-logo.png" alt="Ishtar Insights lotus logo" width="768" height="512"></div>
-        <div class="eyebrow"><span class="eyebrow-dot"></span> Visual research library <span class="eyebrow-line"></span> 14 decks</div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span> Visual research library <span class="eyebrow-line"></span> <span id="archive-total">32 decks</span></div>
         <div class="masthead-row">
           <div>
             <h1>The Arcana <em>Archive</em></h1>
@@ -105,11 +105,12 @@
         </div>
       </section>
 
-      <section class="toolbar" aria-label="Gallery controls">
-        <div class="filter-group" role="group" aria-label="Filter by era">
-          <button class="filter active" data-filter="all">All decks <span id="all-count">14</span></button>
-          <button class="filter" data-filter="historical">Historical <span id="historical-count">7</span></button>
-          <button class="filter" data-filter="modern">Modern <span id="modern-count">7</span></button>
+      <section id="archive" class="toolbar" aria-label="Gallery controls">
+        <div class="filter-group" role="group" aria-label="Filter archive decks">
+          <button class="filter active" data-filter="all" aria-pressed="true">All decks <span id="all-count">32</span></button>
+          <button class="filter" data-filter="new" aria-pressed="false">New additions <span id="new-count">18</span></button>
+          <button class="filter" data-filter="historical" aria-pressed="false">Historical <span id="historical-count">15</span></button>
+          <button class="filter" data-filter="modern" aria-pressed="false">Modern <span id="modern-count">17</span></button>
         </div>
         <label class="search-box">
           <span class="search-icon" aria-hidden="true">⌕</span>
@@ -124,7 +125,7 @@
           <p class="section-kicker">The collection</p>
           <h2 id="result-title">Every deck, every lineage</h2>
         </div>
-        <p id="result-count" class="result-count">14 results</p>
+        <p id="result-count" class="result-count">32 results</p>
       </section>
 
       <section id="gallery" class="gallery" aria-live="polite"></section>
@@ -165,6 +166,7 @@
     <script src="natal-engine.js?v=celestial-atlas-1"></script>
     <script src="natal-chart.js?v=celestial-atlas-1"></script>
     <script src="sky-chart.js?v=celestial-atlas-1"></script>
-    <script src="app.js?v=celestial-atlas-1"></script>
+    <script src="archive-decks.js?v=archive-32"></script>
+    <script src="app.js?v=archive-32"></script>
   </body>
 </html>

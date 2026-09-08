@@ -1,0 +1,38 @@
+{
+  "deck": "Mitelli Tarocchino",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/tarocchino-mitelli-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "Allegorical figure · Tarocchino facsimile",
+      "sourcePage": "https://www.loscarabeo.com/products/tarocchino-mitelli-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA02-mitelli2.jpg?v=1783592183",
+      "retrieved": "2026-09-08",
+      "width": 697,
+      "height": 1441,
+      "sha256": "8f7c6b3e73c99dfc2fd6a6f25839f3b22d00318f280572b8536b938af266fff7",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Printed reverse of the facsimile edition",
+      "sourcePage": "https://www.loscarabeo.com/products/tarocchino-mitelli-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA02-mitelliretro.jpg?v=1783592183",
+      "retrieved": "2026-09-08",
+      "width": 697,
+      "height": 1441,
+      "sha256": "03e1f502345d9d2127f21ca64fe34dfaa1636300b8fdb9e271e43f3977a0e37f",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

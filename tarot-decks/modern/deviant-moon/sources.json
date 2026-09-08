@@ -1,0 +1,42 @@
+{
+  "deck": "Deviant Moon Tarot",
+  "edition": "U.S. Games Systems bordered design",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/deviant-moon-tarot-deck-premier-edition.html"
+    },
+    {
+      "label": "Additional source",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/deviant-moon-tarot-deck.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · bordered edition",
+      "sourcePage": "https://www.usgamesinc.com/deviant-moon-tarot-deck-premier-edition.html",
+      "imageUrl": "https://www.usgamesinc.com/images/product/DMBN78_2%20copy_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 535,
+      "height": 1000,
+      "sha256": "0d78a247931d631de29c67416137beea5a5496219430186f1f92f862efc32005",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Symmetrical lunar reverse",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/deviant-moon-tarot-deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/DVM78_7_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 535,
+      "height": 1000,
+      "sha256": "a9f3103d902ee54dbc8ffdef244bfc6abb93177b1bdda089e6a91a2a78f06d8a",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

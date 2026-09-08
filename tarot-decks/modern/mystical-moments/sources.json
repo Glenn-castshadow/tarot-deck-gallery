@@ -1,0 +1,38 @@
+{
+  "deck": "Tarot of Mystical Moments",
+  "edition": "U.S. Games Systems full-size edition; five alternative cards included",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/tarot-of-mystical-moments.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Fool · 0",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/tarot-of-mystical-moments.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/TOMM83_deck_-copy.webp",
+      "retrieved": "2026-09-08",
+      "width": 650,
+      "height": 1000,
+      "sha256": "a6c2b1ac594208020a2a3699ec061d7f7303d53182605e6503eff6068a6a6bfb",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Pale symmetrical patterned reverse",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/tarot-of-mystical-moments.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/TOMM83_back-of-deck-copy.webp",
+      "retrieved": "2026-09-08",
+      "width": 650,
+      "height": 1000,
+      "sha256": "bd28f30e60c7739ab446b273660c0dd9d7775baae4049c3877661cb246d5e8bd",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

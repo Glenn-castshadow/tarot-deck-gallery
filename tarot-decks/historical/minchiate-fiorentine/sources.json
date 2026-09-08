@@ -1,0 +1,38 @@
+{
+  "deck": "Minchiate Fiorentine",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile; notes by Giordano Berti",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/minchiate-fiorentine-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "Temperance · trump VI",
+      "sourcePage": "https://www.loscarabeo.com/products/minchiate-fiorentine-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA15-MinchiateFiorentine-CARDS2.jpg?v=1704892305",
+      "retrieved": "2026-09-08",
+      "width": 673,
+      "height": 1134,
+      "sha256": "27c3379c75038182ed93d1a724d1e21840de18e94847042d23decc103154d53e",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Patterned reverse · facsimile edition",
+      "sourcePage": "https://www.loscarabeo.com/products/minchiate-fiorentine-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA15-MinchiateFiorentine-CARDS7.jpg?v=1704892304",
+      "retrieved": "2026-09-08",
+      "width": 673,
+      "height": 1134,
+      "sha256": "62241bc2d3474d3087c5f43de63779f4b7933eb34a120eeea77f234895f5b0f7",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "deck": "Morgan–Greer Tarot",
+  "edition": "U.S. Games Systems edition",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/morgan-greer_tarot_deck.html"
+    },
+    {
+      "label": "Historical context",
+      "url": "https://tarotgarden.com/morgan-greer-tarot/"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/morgan-greer_tarot_deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/MG78_2_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 579,
+      "height": 1000,
+      "sha256": "8e58ae5748215a8f71f8c9ff3d02b371c387e28ef21eb20d6da9d85d1d99d66e",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "White stars on blue",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/Tarot-Decks/morgan-greer_tarot_deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/MG78_7_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 579,
+      "height": 1000,
+      "sha256": "687606ee6da1480eb69fb4fc9106bb4cb77b1aae16563e6efaf7786a852fc9fb",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "deck": "Etteilla Tarot",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile; notes by Giordano Berti",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/tarot-etteilla-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "La Justice · Etteilla numbering",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-etteilla-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA19-TarotdeEtteilla-CARDS_Pagina_03.jpg?v=1767970929",
+      "retrieved": "2026-09-08",
+      "width": 780,
+      "height": 1418,
+      "sha256": "3d8b0821a797bbb8ca07f6abc021f209dd974610322796a9565d16b2925b48da",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Small repeating pattern · facsimile reverse",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-etteilla-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA19-TarotdeEtteilla-CARDS_Pagina_11.jpg?v=1767970930",
+      "retrieved": "2026-09-08",
+      "width": 780,
+      "height": 1418,
+      "sha256": "1fe63b79e7ff579e1a05b4eb7f024b7cf2e76e07f0cafb4bfa3a414717d4756e",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

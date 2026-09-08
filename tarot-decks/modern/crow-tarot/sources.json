@@ -1,0 +1,38 @@
+{
+  "deck": "Crow Tarot",
+  "edition": "U.S. Games Systems full-size edition",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/crow-tarot.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/crow-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/CRO78-2_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 625,
+      "height": 1000,
+      "sha256": "dd7e43541c59e15e2186089b2ef39dd3f026e8b8d8c702e7364a3d1cd3922d9e",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Dark feather-like repeating reverse",
+      "sourcePage": "https://www.usgamesinc.com/crow-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/CRO78-79_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 625,
+      "height": 1000,
+      "sha256": "c227b6646dd036ba21ea723be807ef80054d363a04b3d5e00b7da77646eb94dc",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

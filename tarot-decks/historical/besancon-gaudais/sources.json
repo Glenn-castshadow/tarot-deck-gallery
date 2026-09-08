@@ -1,0 +1,38 @@
+{
+  "deck": "Besançon Tarot — Gaudais",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile; notes by Giordano Berti",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/tarot-de-besancon-gaudais-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "Trump 5 · diagonal mirror design",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-de-besancon-gaudais-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA17-GAUDAISTarot-CARDS_Pagina_02.jpg?v=1737125987",
+      "retrieved": "2026-09-08",
+      "width": 756,
+      "height": 1264,
+      "sha256": "b4e8470436728846aa1f11ce28489849b66479a56b85a7fc26755b195b090f68",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Red patterned reverse · facsimile edition",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-de-besancon-gaudais-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/files/AA17-GAUDAISTarot-CARDS_Pagina_10.jpg?v=1737125986",
+      "retrieved": "2026-09-08",
+      "width": 756,
+      "height": 1264,
+      "sha256": "6f3ac3d47cd83209bcd157b3f449ee8d325e34bef97ba0835598a207cf3cb96d",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

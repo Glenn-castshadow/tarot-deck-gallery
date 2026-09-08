@@ -1,0 +1,42 @@
+{
+  "deck": "Visconti Tarot",
+  "edition": "Lo Scarabeo restored edition; modern printing after historical artwork",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/i-tarocchi-dei-visconti"
+    },
+    {
+      "label": "Historical context",
+      "url": "https://www.themorgan.org/collection/tarot-cards"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "Justice · restored edition",
+      "sourcePage": "https://www.loscarabeo.com/products/i-tarocchi-dei-visconti",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/2559.jpg?v=1623052385",
+      "retrieved": "2026-09-08",
+      "width": 779,
+      "height": 1417,
+      "sha256": "2c8ffca9ff66065fd796790b228c251d23dabc354cb157f6c9027d17ecedf53d",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Reverse of the modern restored edition",
+      "sourcePage": "https://www.loscarabeo.com/products/i-tarocchi-dei-visconti",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/1513.jpg?v=1679990150",
+      "retrieved": "2026-09-08",
+      "width": 779,
+      "height": 1417,
+      "sha256": "3193fddbc8a811abd50319b03530944888c4be47b98fc784e3b05675a2fa4754",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

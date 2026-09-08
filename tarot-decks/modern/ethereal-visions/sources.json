@@ -1,0 +1,38 @@
+{
+  "deck": "Ethereal Visions Tarot",
+  "edition": "U.S. Games Systems Illuminated Tarot; expanded guidebook edition pictured",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/ethereal-tarot.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/ethereal-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/ETH80_2.webp",
+      "retrieved": "2026-09-08",
+      "width": 619,
+      "height": 1000,
+      "sha256": "e066746c3f4a4a0909826060bf6e7bb3745d7150b45fa297524e2e4aa584d2ad",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Card back shown in publisher layout",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/ethereal-tarot.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/ETH80_group-shot.webp",
+      "retrieved": "2026-09-08",
+      "width": 841,
+      "height": 1000,
+      "sha256": "48cfc867cac67747890de54fc3a355a590bac4221711a69e8a3679ecf5b9eb5a",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "deck": "Fyodor Pavlov Tarot",
+  "edition": "U.S. Games Systems edition; 2022 copyright on pictured reverse",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/tarot-and-inspiration/all-products/fyodor-pavlov-tarot"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Fool · 0",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/all-products/fyodor-pavlov-tarot",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/PAV78_Fyodor_Card01.webp",
+      "retrieved": "2026-09-08",
+      "width": 600,
+      "height": 1000,
+      "sha256": "8c1ae08b5b3cd73dd72b48d78f7c5df5abb44d4e2a93f0961ee2b720a1eef153",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Gold stars on blue · 2022 edition",
+      "sourcePage": "https://www.usgamesinc.com/tarot-and-inspiration/all-products/fyodor-pavlov-tarot",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/PAV78_Fyodor_CardBack.webp",
+      "retrieved": "2026-09-08",
+      "width": 600,
+      "height": 1000,
+      "sha256": "48f1d6035514109b1a954c7b6f82902dd689e503a698ebd2e9e1ccbea6c3cdd7",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

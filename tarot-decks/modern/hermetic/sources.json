@@ -1,0 +1,38 @@
+{
+  "deck": "The Hermetic Tarot",
+  "edition": "U.S. Games Systems reissue",
+  "credit": "Publisher preview images: U.S. Games Systems. Artwork credited above.",
+  "rights": "Copyrighted U.S. Games Systems edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.usgamesinc.com/hermetic-tarot-deck.html"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.webp",
+      "caption": "The Magician · I",
+      "sourcePage": "https://www.usgamesinc.com/hermetic-tarot-deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/HM78_2_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 584,
+      "height": 1000,
+      "sha256": "d5a8116e89a0fc0e9ef5cabd4ab44e1b50135e1daa17f19ea2100e09690cf11f",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.webp",
+      "caption": "Monochrome ornamental reverse",
+      "sourcePage": "https://www.usgamesinc.com/hermetic-tarot-deck.html",
+      "imageUrl": "https://www.usgamesinc.com/var/images/product/1000.1000/HM78_7_1.webp",
+      "retrieved": "2026-09-08",
+      "width": 584,
+      "height": 1000,
+      "sha256": "c41fbb36403b43fdc3abe16d136e84089b3a67bd9c78d7ac33e7613983149a7d",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "deck": "Steinberger Tarock",
+  "edition": "Lo Scarabeo Anima Antiqua facsimile; 54 cards per publisher specifications",
+  "credit": "Publisher preview images: Lo Scarabeo. Artwork credited above.",
+  "rights": "Copyrighted Lo Scarabeo edition / promotional images; research references, no reuse license granted.",
+  "sources": [
+    {
+      "label": "Publisher / pictured edition",
+      "url": "https://www.loscarabeo.com/products/tarot-steinberger-edizione-limitata"
+    }
+  ],
+  "images": [
+    {
+      "side": "front",
+      "file": "front/front-reference.jpg",
+      "caption": "Trump III · double-ended scene",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-steinberger-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA10-SteinbergerTarot-CARD03.jpg?v=1623159849",
+      "retrieved": "2026-09-08",
+      "width": 697,
+      "height": 1287,
+      "sha256": "c3b622a435e4f45243d78206565d5936a54d1362f8b951d943e63e2249910385",
+      "transformation": "None; publisher preview bytes preserved"
+    },
+    {
+      "side": "back",
+      "file": "back/back-reference.jpg",
+      "caption": "Fine repeating pattern · facsimile reverse",
+      "sourcePage": "https://www.loscarabeo.com/products/tarot-steinberger-edizione-limitata",
+      "imageUrl": "https://www.loscarabeo.com/cdn/shop/products/AA10-SteinbergerTarot-CARD10.jpg?v=1623159850",
+      "retrieved": "2026-09-08",
+      "width": 697,
+      "height": 1287,
+      "sha256": "bcdba359f80524feb626640d86fbee943ad899a65c0af9c00a429ebfb96505c0",
+      "transformation": "None; publisher preview bytes preserved"
+    }
+  ]
+}
