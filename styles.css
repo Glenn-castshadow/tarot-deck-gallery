@@ -42,7 +42,7 @@ h1 em { color: var(--plum); font-style: normal; }
 .sun-mark::after { inset: -8px; border-style: dashed; opacity: .65; }
 .sun-mark span { font-size: 31px; }
 
-.reading-room { position: relative; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 28px 42px; margin: 4px 0 48px; padding: 28px; color: var(--cream); background: var(--plum-dark); overflow: hidden; box-shadow: 0 18px 38px rgba(46,25,58,.22); }
+.reading-room { position: relative; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 30px 42px; margin: 4px 0 48px; padding: clamp(28px, 4vw, 46px); color: var(--cream); background: var(--plum-dark); overflow: hidden; box-shadow: 0 18px 38px rgba(46,25,58,.22); }
 .reading-room::before { content: ""; position: absolute; width: 270px; height: 270px; right: -82px; top: -90px; border: 1px solid rgba(230,177,126,.24); border-radius: 50%; box-shadow: 0 0 0 16px rgba(230,177,126,.06), 0 0 0 32px rgba(230,177,126,.04); pointer-events: none; }
 .reading-intro { position: relative; z-index: 1; }
 .reading-intro .section-kicker { color: var(--gold-light); }
@@ -56,12 +56,16 @@ h1 em { color: var(--plum); font-style: normal; }
 .draw-button { border: 1px solid var(--gold-light); padding: 10px 14px; background: transparent; color: var(--gold-light); font-size: 12px; white-space: nowrap; transition: .2s ease; }
 .draw-button:hover { background: var(--gold-light); color: var(--plum-dark); }
 .draw-button span { margin-right: 5px; }
-.reading-output { position: relative; z-index: 1; grid-column: 1 / -1; min-height: 164px; }
-.daily-reading { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 22px; align-items: center; }
-.drawn-card { position: relative; aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; padding: 10px; border: 1px solid rgba(230,177,126,.75); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 7px 8px 0 rgba(0,0,0,.14); transform: rotate(-3deg); }
+.reading-output { position: relative; z-index: 1; grid-column: 1 / -1; min-height: 300px; padding-top: 7px; }
+.daily-reading { display: grid; grid-template-columns: minmax(190px, 250px) minmax(0, 1fr); gap: clamp(28px, 5vw, 54px); align-items: center; min-height: 286px; }
+.daily-reading .drawn-card { width: min(100%, 232px); margin: 0 auto; transform: rotate(-4deg) scale(1.02); }
+.drawn-card { position: relative; aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; padding: 12px; border: 2px solid rgba(230,177,126,.82); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 10px 12px 0 rgba(0,0,0,.18), 0 16px 36px rgba(0,0,0,.2); transform: rotate(-3deg); }
 .drawn-card::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(255,250,244,.55); }
 .drawn-card-inner { position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 8px 4px; text-align: center; }
 .drawn-card-inner img { width: 100%; height: 100%; object-fit: cover; }
+.drawn-card-button { appearance: none; color: inherit; cursor: zoom-in; text-align: center; }
+.drawn-card-button:hover { filter: brightness(1.08); }
+.drawn-card-button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 5px; }
 .drawn-number { color: var(--gold-light); font: 10px "DM Mono", monospace; letter-spacing: .12em; }
 .drawn-sigil { color: var(--cream); font-size: 35px; line-height: 1; }
 .drawn-name { max-width: 78px; color: var(--cream); font: 700 12px/1.05 "Playfair Display", serif; }
@@ -75,17 +79,22 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-empty { min-height: 110px; display: flex; flex-direction: column; justify-content: center; padding: 14px 18px; border: 1px solid rgba(255,250,244,.14); background: rgba(255,250,244,.055); }
 .reading-empty .reading-label { color: var(--gold-light); text-transform: uppercase; letter-spacing: .14em; font: 10px "DM Mono", monospace; }
 .reading-empty p:last-child { max-width: 620px; margin-top: 8px; color: rgba(255,250,244,.78); font-size: 13px; line-height: 1.6; }
-.pick3-reading { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.pick3-item { display: grid; grid-template-columns: 52px minmax(0,1fr); gap: 13px; align-items: center; padding: 11px; border: 1px solid rgba(255,250,244,.14); background: rgba(255,250,244,.055); }
-.pick3-item .drawn-card { width: 52px; padding: 5px; box-shadow: 3px 4px 0 rgba(0,0,0,.15); }
-.pick3-item .drawn-card::before { inset: 4px; }
+.pick3-reading { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.pick3-item { position: relative; display: flex; flex-direction: column; align-items: stretch; min-width: 0; min-height: 408px; padding: 17px 16px 18px; border: 1px solid rgba(255,250,244,.2); background: linear-gradient(180deg, rgba(255,250,244,.095), rgba(255,250,244,.035)); overflow: hidden; }
+.pick3-item::before { content: ""; position: absolute; inset: 0 0 auto; height: 43%; background: radial-gradient(circle at 50% 18%, rgba(230,177,126,.2), transparent 70%); pointer-events: none; }
+.pick3-item .drawn-card { position: relative; z-index: 1; width: clamp(136px, 13vw, 178px); margin: 4px auto 20px; padding: 9px; box-shadow: 8px 9px 0 rgba(0,0,0,.17), 0 12px 24px rgba(0,0,0,.18); }
+.pick3-item:nth-child(1) .drawn-card { transform: rotate(-4deg); }
+.pick3-item:nth-child(2) .drawn-card { transform: rotate(2deg); }
+.pick3-item:nth-child(3) .drawn-card { transform: rotate(-2deg); }
+.pick3-item .drawn-card::before { inset: 6px; }
 .pick3-item .drawn-sigil { font-size: 19px; }
 .pick3-item .drawn-number { font-size: 7px; }
 .pick3-item .drawn-name { font-size: 8px; max-width: 45px; }
-.pick3-item .reading-label { color: var(--gold-light); text-transform: uppercase; letter-spacing: .1em; font: 8px "DM Mono", monospace; }
-.pick3-item h3 { margin-top: 4px; color: var(--cream); font: 700 18px/1.05 "Playfair Display", serif; }
-.pick3-item .orientation { display: block; margin-top: 4px; color: rgba(255,250,244,.54); text-transform: uppercase; letter-spacing: .08em; font: 8px "DM Mono", monospace; }
-.pick3-item p { margin-top: 8px; color: rgba(255,250,244,.72); font-size: 11px; line-height: 1.5; }
+.pick3-item > div:last-child { position: relative; z-index: 1; }
+.pick3-item .reading-label { color: var(--gold-light); text-transform: uppercase; letter-spacing: .1em; font: 9px "DM Mono", monospace; }
+.pick3-item h3 { margin-top: 6px; color: var(--cream); font: 700 clamp(20px, 2.2vw, 27px)/1.05 "Playfair Display", serif; }
+.pick3-item .orientation { display: inline-block; margin-top: 6px; padding: 3px 5px; border: 1px solid rgba(255,250,244,.18); color: rgba(255,250,244,.58); text-transform: uppercase; letter-spacing: .08em; font: 8px "DM Mono", monospace; }
+.pick3-item p { margin-top: 10px; color: rgba(255,250,244,.74); font-size: 12px; line-height: 1.55; }
 .pick3-summary { grid-column: 1/-1; padding-top: 4px; color: rgba(255,250,244,.66); font-size: 12px; line-height: 1.55; }
 .reading-note { position: relative; z-index: 1; grid-column: 1 / -1; color: rgba(255,250,244,.47); font-size: 10px; line-height: 1.5; }
 .reading-note span { color: var(--gold-light); margin-right: 5px; }
@@ -198,8 +207,16 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .detail-copy dd { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.5; }
 .detail-copy .detail-note { margin-top: 27px; color: var(--ink); font-size: 14px; line-height: 1.65; }
 .detail-copy .source-link { display: inline-block; margin-top: 25px; color: var(--plum); font-size: 12px; border-bottom: 1px solid var(--gold); text-decoration: none; }
+.card-detail-layout { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr); min-height: 560px; }
+.card-detail-art { position: relative; display: grid; place-items: center; padding: 28px; background: radial-gradient(circle at center, rgba(230,177,126,.24), transparent 68%), var(--plum-dark); }
+.card-detail-image { width: min(100%, 330px); height: auto; display: block; border: 2px solid var(--gold-light); box-shadow: 12px 14px 0 rgba(0,0,0,.2), 0 26px 50px rgba(0,0,0,.26); }
+.card-detail-image.is-reversed { transform: rotate(180deg); }
+.card-detail-zoom { position: absolute; left: 28px; bottom: 20px; color: rgba(255,250,244,.52); text-transform: uppercase; letter-spacing: .1em; font: 9px "DM Mono", monospace; }
+.card-detail-fallback { width: min(100%, 330px); aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; align-content: center; gap: 20px; border: 2px solid var(--gold-light); color: var(--cream); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 12px 14px 0 rgba(0,0,0,.2); text-align: center; }
+.card-detail-fallback span { color: var(--gold-light); font: 14px "DM Mono", monospace; }
+.card-detail-fallback strong { max-width: 210px; font: 700 30px/1.05 "Playfair Display", serif; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(11px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 20px; } .reading-controls { align-items: center; } .birthday-panel { grid-template-columns: 1fr; gap: 18px; } }
-@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 21px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 84px minmax(0, 1fr); gap: 16px; } .drawn-card { width: 84px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 9px; } .pick3-item { grid-template-columns: 60px minmax(0, 1fr); } .pick3-item .drawn-card { width: 60px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } }
+@media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 24px; } .reading-intro h2, .reading-intro > p:last-child { max-width: 680px; } .reading-controls { align-items: center; } .birthday-panel { grid-template-columns: 1fr; gap: 18px; } }
+@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 24px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 142px minmax(0, 1fr); gap: 18px; min-height: 250px; } .daily-reading .drawn-card { width: 138px; } .drawn-card { width: 138px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 13px; } .pick3-item { min-height: 0; padding: 16px; } .pick3-item .drawn-card { width: min(52vw, 178px); margin-bottom: 18px; } .pick3-item h3 { font-size: 25px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } .card-detail-layout { grid-template-columns: 1fr; } .card-detail-art { min-height: 430px; padding: 24px; } .card-detail-image, .card-detail-fallback { width: min(100%, 260px); } .card-detail-zoom { left: 24px; bottom: 14px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

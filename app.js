@@ -370,14 +370,40 @@ function drawPick3() {
 
 function cardVisual(card, orientation, compact = false) {
   const className = `drawn-card${orientation === "reversed" ? " is-reversed" : ""}`;
+  const cardIndex = tarotCards.indexOf(card);
+  const buttonAttrs = `type="button" class="${className} drawn-card-button" data-card-view="${cardIndex}" data-card-orientation="${orientation}" aria-label="View ${card.name} large"`;
   if (cardImages[card.name]) {
-    return `<div class="${className}"><div class="drawn-card-inner"><img src="${cardImages[card.name]}" alt="${card.name} card artwork"></div></div>`;
+    return `<button ${buttonAttrs}><div class="drawn-card-inner"><img src="${cardImages[card.name]}" alt="${card.name} card artwork"></div></button>`;
   }
-  return `<div class="${className}"><div class="drawn-card-inner"><span class="drawn-number">${card.number}</span><span class="drawn-sigil">${card.sigil}</span><span class="drawn-name">${card.name}</span></div></div>`;
+  return `<button ${buttonAttrs}><div class="drawn-card-inner"><span class="drawn-number">${card.number}</span><span class="drawn-sigil">${card.sigil}</span><span class="drawn-name">${card.name}</span></div></button>`;
 }
 
 function readingCopy(card, orientation) {
   return orientation === "upright" ? card.upright : card.reversed;
+}
+
+function openCardDetails(index, orientation = "upright") {
+  const card = tarotCards[index];
+  if (!card) return;
+  const image = cardImages[card.name];
+  const imageMarkup = image
+    ? `<img src="${image}" alt="${card.name} card artwork large" class="card-detail-image${orientation === "reversed" ? " is-reversed" : ""}">`
+    : `<div class="card-detail-fallback"><span>${card.number}</span><strong>${card.name}</strong></div>`;
+  dialogContent.innerHTML = `<div class="card-detail-layout">
+    <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">Ishtar Insights · full artwork</span></div>
+    <div class="detail-copy">
+      <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : "Minor arcana"}</span><span>${orientation}</span></div>
+      <h2>${card.name}</h2>
+      <p class="detail-artist">${card.number} · ${card.keywords}</p>
+      <dl>
+        <dt>Keywords</dt><dd>${card.keywords}</dd>
+        <dt>Upright</dt><dd>${card.upright}</dd>
+        <dt>Reversed</dt><dd>${card.reversed}</dd>
+      </dl>
+      <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>
+    </div>
+  </div>`;
+  dialog.showModal();
 }
 
 function renderReading() {
@@ -425,6 +451,10 @@ document.querySelectorAll(".reading-tab").forEach(button => button.addEventListe
 drawReadingButton.addEventListener("click", () => {
   if (readingMode === "pick3") currentPick3 = drawPick3();
   renderReading();
+});
+readingOutput.addEventListener("click", event => {
+  const button = event.target.closest("[data-card-view]");
+  if (button) openCardDetails(Number(button.dataset.cardView), button.dataset.cardOrientation);
 });
 
 document.querySelectorAll(".filter").forEach(button => button.addEventListener("click", () => {
