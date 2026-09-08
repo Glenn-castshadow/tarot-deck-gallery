@@ -153,6 +153,10 @@ def main():
         built.append(output)
     build_back().save(OUT / "back.png", dpi=(PPI, PPI), optimize=True)
     build_sheets(built)
+    manifest = ["index,name,raw_front,print_front,category"]
+    for index, (number, name, filename, kind) in enumerate(CARDS):
+        manifest.append(f'{index:02d},"{name}",raw-fronts/{filename},print-ready/fronts/{filename},{kind}')
+    (DECK / "manifest.csv").write_text("\n".join(manifest) + "\n", encoding="utf-8")
     print(f"Built {len(built)} fronts, 1 back, and {math.ceil(len(built) / 6)} E1 sheet layouts at {PPI} PPI.")
     print(f"Card canvas: {CARD_W} x {CARD_H} px (76 x 126 mm including bleed).")
 

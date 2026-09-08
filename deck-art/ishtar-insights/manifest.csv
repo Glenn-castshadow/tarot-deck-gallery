@@ -1,0 +1,79 @@
+index,name,raw_front,print_front,category
+00,"The Fool",raw-fronts/00-the-fool-art.png,print-ready/fronts/00-the-fool-art.png,major
+01,"The Magician",raw-fronts/01-the-magician-art.png,print-ready/fronts/01-the-magician-art.png,major
+02,"The High Priestess",raw-fronts/02-the-high-priestess-art.png,print-ready/fronts/02-the-high-priestess-art.png,major
+03,"The Empress",raw-fronts/03-the-empress-art.png,print-ready/fronts/03-the-empress-art.png,major
+04,"The Emperor",raw-fronts/04-the-emperor-art.png,print-ready/fronts/04-the-emperor-art.png,major
+05,"The Hierophant",raw-fronts/05-the-hierophant-art.png,print-ready/fronts/05-the-hierophant-art.png,major
+06,"The Lovers",raw-fronts/06-the-lovers-art.png,print-ready/fronts/06-the-lovers-art.png,major
+07,"The Chariot",raw-fronts/07-the-chariot-art.png,print-ready/fronts/07-the-chariot-art.png,major
+08,"Strength",raw-fronts/08-strength-art.png,print-ready/fronts/08-strength-art.png,major
+09,"The Hermit",raw-fronts/09-the-hermit-art.png,print-ready/fronts/09-the-hermit-art.png,major
+10,"Wheel of Fortune",raw-fronts/10-wheel-of-fortune-art.png,print-ready/fronts/10-wheel-of-fortune-art.png,major
+11,"Justice",raw-fronts/11-justice-art.png,print-ready/fronts/11-justice-art.png,major
+12,"The Hanged Man",raw-fronts/12-the-hanged-man-art.png,print-ready/fronts/12-the-hanged-man-art.png,major
+13,"Death",raw-fronts/13-death-art.png,print-ready/fronts/13-death-art.png,major
+14,"Temperance",raw-fronts/14-temperance-art.png,print-ready/fronts/14-temperance-art.png,major
+15,"The Devil",raw-fronts/15-the-devil-art.png,print-ready/fronts/15-the-devil-art.png,major
+16,"The Tower",raw-fronts/16-the-tower-art.png,print-ready/fronts/16-the-tower-art.png,major
+17,"The Star",raw-fronts/17-the-star-art.png,print-ready/fronts/17-the-star-art.png,major
+18,"The Moon",raw-fronts/18-the-moon-art.png,print-ready/fronts/18-the-moon-art.png,major
+19,"The Sun",raw-fronts/19-the-sun-art.png,print-ready/fronts/19-the-sun-art.png,major
+20,"Judgement",raw-fronts/20-judgement-art.png,print-ready/fronts/20-judgement-art.png,major
+21,"The World",raw-fronts/21-the-world-art.png,print-ready/fronts/21-the-world-art.png,major
+22,"Ace of Wands",raw-fronts/wands-ace-art.png,print-ready/fronts/wands-ace-art.png,wands
+23,"Two of Wands",raw-fronts/wands-02-art.png,print-ready/fronts/wands-02-art.png,wands
+24,"Three of Wands",raw-fronts/wands-03-art.png,print-ready/fronts/wands-03-art.png,wands
+25,"Four of Wands",raw-fronts/wands-04-art.png,print-ready/fronts/wands-04-art.png,wands
+26,"Five of Wands",raw-fronts/wands-05-art.png,print-ready/fronts/wands-05-art.png,wands
+27,"Six of Wands",raw-fronts/wands-06-art.png,print-ready/fronts/wands-06-art.png,wands
+28,"Seven of Wands",raw-fronts/wands-07-art.png,print-ready/fronts/wands-07-art.png,wands
+29,"Eight of Wands",raw-fronts/wands-08-art.png,print-ready/fronts/wands-08-art.png,wands
+30,"Nine of Wands",raw-fronts/wands-09-art.png,print-ready/fronts/wands-09-art.png,wands
+31,"Ten of Wands",raw-fronts/wands-10-art.png,print-ready/fronts/wands-10-art.png,wands
+32,"Page of Wands",raw-fronts/wands-page-art.png,print-ready/fronts/wands-page-art.png,wands
+33,"Knight of Wands",raw-fronts/wands-knight-art.png,print-ready/fronts/wands-knight-art.png,wands
+34,"Queen of Wands",raw-fronts/wands-queen-art.png,print-ready/fronts/wands-queen-art.png,wands
+35,"King of Wands",raw-fronts/wands-king-art.png,print-ready/fronts/wands-king-art.png,wands
+36,"Ace of Cups",raw-fronts/cups-ace-art.png,print-ready/fronts/cups-ace-art.png,cups
+37,"Two of Cups",raw-fronts/cups-02-art.png,print-ready/fronts/cups-02-art.png,cups
+38,"Three of Cups",raw-fronts/cups-03-art.png,print-ready/fronts/cups-03-art.png,cups
+39,"Four of Cups",raw-fronts/cups-04-art.png,print-ready/fronts/cups-04-art.png,cups
+40,"Five of Cups",raw-fronts/cups-05-art.png,print-ready/fronts/cups-05-art.png,cups
+41,"Six of Cups",raw-fronts/cups-06-art.png,print-ready/fronts/cups-06-art.png,cups
+42,"Seven of Cups",raw-fronts/cups-07-art.png,print-ready/fronts/cups-07-art.png,cups
+43,"Eight of Cups",raw-fronts/cups-08-art.png,print-ready/fronts/cups-08-art.png,cups
+44,"Nine of Cups",raw-fronts/cups-09-art.png,print-ready/fronts/cups-09-art.png,cups
+45,"Ten of Cups",raw-fronts/cups-10-art.png,print-ready/fronts/cups-10-art.png,cups
+46,"Page of Cups",raw-fronts/cups-page-art.png,print-ready/fronts/cups-page-art.png,cups
+47,"Knight of Cups",raw-fronts/cups-knight-art.png,print-ready/fronts/cups-knight-art.png,cups
+48,"Queen of Cups",raw-fronts/cups-queen-art.png,print-ready/fronts/cups-queen-art.png,cups
+49,"King of Cups",raw-fronts/cups-king-art.png,print-ready/fronts/cups-king-art.png,cups
+50,"Ace of Swords",raw-fronts/swords-ace-art.png,print-ready/fronts/swords-ace-art.png,swords
+51,"Two of Swords",raw-fronts/swords-02-art.png,print-ready/fronts/swords-02-art.png,swords
+52,"Three of Swords",raw-fronts/swords-03-art.png,print-ready/fronts/swords-03-art.png,swords
+53,"Four of Swords",raw-fronts/swords-04-art.png,print-ready/fronts/swords-04-art.png,swords
+54,"Five of Swords",raw-fronts/swords-05-art.png,print-ready/fronts/swords-05-art.png,swords
+55,"Six of Swords",raw-fronts/swords-06-art.png,print-ready/fronts/swords-06-art.png,swords
+56,"Seven of Swords",raw-fronts/swords-07-art.png,print-ready/fronts/swords-07-art.png,swords
+57,"Eight of Swords",raw-fronts/swords-08-art.png,print-ready/fronts/swords-08-art.png,swords
+58,"Nine of Swords",raw-fronts/swords-09-art.png,print-ready/fronts/swords-09-art.png,swords
+59,"Ten of Swords",raw-fronts/swords-10-art.png,print-ready/fronts/swords-10-art.png,swords
+60,"Page of Swords",raw-fronts/swords-page-art.png,print-ready/fronts/swords-page-art.png,swords
+61,"Knight of Swords",raw-fronts/swords-knight-art.png,print-ready/fronts/swords-knight-art.png,swords
+62,"Queen of Swords",raw-fronts/swords-queen-art.png,print-ready/fronts/swords-queen-art.png,swords
+63,"King of Swords",raw-fronts/swords-king-art.png,print-ready/fronts/swords-king-art.png,swords
+64,"Ace of Pentacles",raw-fronts/pentacles-ace-art.png,print-ready/fronts/pentacles-ace-art.png,pentacles
+65,"Two of Pentacles",raw-fronts/pentacles-02-art.png,print-ready/fronts/pentacles-02-art.png,pentacles
+66,"Three of Pentacles",raw-fronts/pentacles-03-art.png,print-ready/fronts/pentacles-03-art.png,pentacles
+67,"Four of Pentacles",raw-fronts/pentacles-04-art.png,print-ready/fronts/pentacles-04-art.png,pentacles
+68,"Five of Pentacles",raw-fronts/pentacles-05-art.png,print-ready/fronts/pentacles-05-art.png,pentacles
+69,"Six of Pentacles",raw-fronts/pentacles-06-art.png,print-ready/fronts/pentacles-06-art.png,pentacles
+70,"Seven of Pentacles",raw-fronts/pentacles-07-art.png,print-ready/fronts/pentacles-07-art.png,pentacles
+71,"Eight of Pentacles",raw-fronts/pentacles-08-art.png,print-ready/fronts/pentacles-08-art.png,pentacles
+72,"Nine of Pentacles",raw-fronts/pentacles-09-art.png,print-ready/fronts/pentacles-09-art.png,pentacles
+73,"Ten of Pentacles",raw-fronts/pentacles-10-art.png,print-ready/fronts/pentacles-10-art.png,pentacles
+74,"Page of Pentacles",raw-fronts/pentacles-page-art.png,print-ready/fronts/pentacles-page-art.png,pentacles
+75,"Knight of Pentacles",raw-fronts/pentacles-knight-art.png,print-ready/fronts/pentacles-knight-art.png,pentacles
+76,"Queen of Pentacles",raw-fronts/pentacles-queen-art.png,print-ready/fronts/pentacles-queen-art.png,pentacles
+77,"King of Pentacles",raw-fronts/pentacles-king-art.png,print-ready/fronts/pentacles-king-art.png,pentacles
