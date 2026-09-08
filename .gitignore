@@ -17,3 +17,8 @@ Desktop.ini
 
 # Logs
 *.log
+
+# Generated print masters are kept on the NAS; add with -f when a deployment
+# or archive intentionally needs the large binary files in Git.
+deck-art/ishtar-insights/raw-fronts/*.png
+deck-art/ishtar-insights/print-ready/**/*.png

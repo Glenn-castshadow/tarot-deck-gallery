@@ -21,3 +21,5 @@ Ishtar Insights uses deep plum and midnight indigo with luminous cyan, violet, m
 ## Current proof
 
 `raw-fronts/00-the-fool-art.png` is the first style anchor. It establishes the traveler, dawn, lotus halo, prism reflections, and celestial linework that the remaining 77 cards will follow.
+
+The current production pass contains all 78 raw fronts in `raw-fronts/`, one mirrored back in `raw-backs/`, 78 composited 600 PPI fronts in `print-ready/fronts/`, and thirteen 300 PPI EufyMake sheet layouts in `print-ready/sheets/`. The large generated PNGs are intentionally ignored by Git so the public web repository stays practical; they remain in the shared project workspace and can be force-added to an archive or deployment when needed.
