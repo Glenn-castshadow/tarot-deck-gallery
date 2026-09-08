@@ -25,6 +25,8 @@ button { cursor: pointer; }
 
 .grain { position: fixed; inset: 0; pointer-events: none; opacity: .12; z-index: 5; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
 .shell { position: relative; max-width: 1440px; margin: 0 auto; padding: 34px 58px 44px; }
+.brand-lockup { display: flex; align-items: center; min-height: 74px; margin-bottom: 8px; }
+.brand-lockup img { display: block; width: min(220px, 58vw); height: auto; }
 .masthead { padding: 18px 0 38px; }
 .eyebrow, .section-kicker { text-transform: uppercase; letter-spacing: .16em; font-family: "DM Mono", monospace; font-size: 10px; color: var(--plum); }
 .eyebrow { display: flex; gap: 10px; align-items: center; }
