@@ -119,7 +119,6 @@ const birthstones = {
 };
 
 const moonNames = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon", "Waning gibbous", "Last quarter", "Waning crescent"];
-const chartOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
 
 const gallery = document.querySelector("#gallery");
 const emptyState = document.querySelector("#empty-state");
@@ -133,6 +132,8 @@ const birthdayInput = document.querySelector("#birthday-input");
 const birthTimeInput = document.querySelector("#birth-time");
 const birthPlaceInput = document.querySelector("#birth-place");
 const birthdayOutput = document.querySelector("#birthday-output");
+const birthplacePicker = BirthplaceSearch.attach({input:birthPlaceInput,list:document.querySelector("#birth-city-list"),status:document.querySelector("#birth-city-status")});
+const skyExplorer = SkyChart.attach({dialog:document.querySelector("#sky-dialog"),signs:zodiacSigns,themes:BirthdayInsights.westernThemes});
 
 function cardTemplate(deck, index) {
   const era = deck.category === "historical" ? "Historical" : "Modern";
@@ -239,35 +240,33 @@ function tarotBirthCardFor(parts) {
   return majorArcana[number] || majorArcana[0];
 }
 
-function starChartFor(sign) {
-  const active = chartOrder.indexOf(sign.name);
-  const center = 180;
-  const radius = 128;
-  const points = chartOrder.map((name, index) => {
-    const angle = (-90 + index * 30) * Math.PI / 180;
-    const x = center + Math.cos(angle) * radius;
-    const y = center + Math.sin(angle) * radius;
-    const isActive = index === active;
-    return { name, index, x, y, isActive };
-  });
-  const labels = points.map(point => `<text class="chart-label${point.isActive ? " active" : ""}" x="${point.x.toFixed(1)}" y="${(point.y + 3).toFixed(1)}">${zodiacSigns[chartOrder.indexOf(point.name)].symbol} ${point.name.slice(0, 3)}</text>`).join("");
-  const stars = Array.from({ length: 26 }, (_, index) => {
-    const x = 36 + (hashString(`${sign.name}-x-${index}`) % 248);
-    const y = 36 + (hashString(`${sign.name}-y-${index}`) % 248);
-    const size = index % 7 === 0 ? 2.2 : index % 3 === 0 ? 1.5 : 1;
-    return `<circle class="chart-star${index % 7 === 0 ? " is-bright" : ""}" cx="${x}" cy="${y}" r="${size}" />`;
-  }).join("");
-  const constellation = [0, 4, 7, 11].map((offset, index, items) => {
-    const from = points[(active + offset) % points.length];
-    const to = points[(active + items[(index + 1) % items.length]) % points.length];
-    return `<line class="chart-line" x1="${from.x.toFixed(1)}" y1="${from.y.toFixed(1)}" x2="${to.x.toFixed(1)}" y2="${to.y.toFixed(1)}" />`;
-  }).join("");
-  const spokes = points.map(point => `<line class="chart-spoke" x1="180" y1="180" x2="${point.x.toFixed(1)}" y2="${point.y.toFixed(1)}" />`).join("");
-  return `<svg class="star-chart" viewBox="0 0 360 360" role="img" aria-label="Symbolic birthday sky chart with ${sign.name} highlighted"><circle class="chart-ring" cx="180" cy="180" r="145" /><circle class="chart-ring" cx="180" cy="180" r="92" /><circle class="chart-ring" cx="180" cy="180" r="37" />${spokes}${constellation}${stars}<circle cx="180" cy="180" r="4" fill="var(--gold-light)" />${labels}</svg>`;
-}
 
 let birthdayView = "sky";
 let birthdayProfileParts = null;
+let natalModel = null;
+let natalView = "placements";
+let natalAspectFilter = "all";
+const houseSystemInput = document.querySelector("#birth-house-system");
+const orbScaleInput = document.querySelector("#birth-orb-scale");
+const foldInput = document.querySelector("#birth-fold");
+const manualLocationInput = document.querySelector("#birth-manual-enabled");
+const manualFields = document.querySelector("#birth-manual-fields");
+function refreshNatalReport() {
+  if(natalModel) birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,natalAspectFilter);
+}
+// Include every major aspect in print, preserving the on-screen filter afterward.
+let natalPrintFocus = false;
+window.addEventListener("beforeprint", () => {
+  if (!natalModel) return;
+  natalPrintFocus = Boolean(document.activeElement?.closest(".natal-report"));
+  birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,"all");
+});
+window.addEventListener("afterprint", () => {
+  if (!natalModel) return;
+  refreshNatalReport();
+  if (natalPrintFocus) birthdayOutput.querySelector("[data-print-natal]")?.focus({preventScroll:true});
+  natalPrintFocus = false;
+});
 const birthdayViews = [["sky", "Your sky"], ["chinese", "Chinese zodiac"], ["numbers", "Numbers & Lo Shu"]];
 function setBirthdayView(view) {
   if (!birthdayViews.some(([key]) => key === view)) return;
@@ -279,34 +278,42 @@ function setBirthdayView(view) {
 function renderBirthdayProfile(saved = null) {
   const parts = birthdayParts(saved?.birthday || birthdayInput.value);
   birthdayProfileParts = parts;
+  natalModel = null;
   if (!parts) {
     birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and interactive Lo Shu number study. Your birthday details stay in this browser.</div>`;
     return;
   }
-  const sign = zodiacFor(parts);
-  const moon = moonPhaseFor(parts.date);
+  const natal = NatalEngine.calculate({birthday:saved?.birthday || birthdayInput.value,time:saved?.time || "",location:saved?.placeLocation,houseSystem:saved?.houseSystem || "placidus",fold:saved?.fold || "",orbScale:saved?.orbScale || 1});
+  if(natal.status === "ready") natalModel = natal;
+  document.querySelector("#birth-fold-field").hidden = natal.status !== "ambiguous" && !natal.ambiguousTime;
+  const sign = natalModel ? zodiacSigns[natalModel.points[0].index] : zodiacFor(parts);
+  const moon = natalModel ? {name:moonNames[Math.round(natalModel.moonPhase / 45) % 8],illumination:Math.round(natalModel.moonIllumination * 100)} : moonPhaseFor(parts.date);
+  const decan = natalModel ? `${["1st","2nd","3rd"][Math.floor((natalModel.points[0].longitude % 30) / 10)]} decan` : decanFor(parts,sign);
   const birthCard = tarotBirthCardFor(parts);
   const chinese = BirthdayInsights.chineseProfile(parts);
   const dateLabel = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(parts.date);
   const timeLabel = saved?.time ? ` · ${escapeHTML(saved.time)}` : "";
   const placeLabel = saved?.place ? ` · ${escapeHTML(saved.place)}` : "";
+  const elementMarks = {Fire:"△",Earth:"♁",Air:"≋",Water:"▽"};
+  const planetMarks = {Mars:"♂",Venus:"♀",Mercury:"☿",Moon:"☾",Sun:"☉",Jupiter:"♃",Saturn:"♄"};
   const facts = [
-    ["Sun sign", `${sign.symbol} ${sign.name}`, `${decanFor(parts, sign)} · ${sign.mantra}`],
-    ["Element", sign.element, `${sign.modality} modality`],
-    ["Ruling planet", sign.ruler, "traditional + modern ruler"],
-    ["Birthstone", birthstones[parts.month], sign.stones],
-    ["Birth flower", sign.flower, "seasonal flower lore"],
-    ["Moon phase", moon.name, `Approx. ${moon.illumination}% illuminated`],
-    ["Chinese zodiac", chinese ? `${chinese.phase.name} ${chinese.animal.name}` : "Unavailable", chinese ? `${chinese.polarity} · lunar year ${chinese.year}` : "Calendar not supported for this date"],
-    ["Tarot birth card", `${birthCard.number} · ${birthCard.name}`, birthCard.keywords]
+    ["Ruling planet", sign.ruler, "Traditional + modern ruler", planetMarks[sign.ruler.split(" · ")[0]] || "☉"],
+    ["Birthstone", birthstones[parts.month], sign.stones, "◇"],
+    ["Birth flower", sign.flower, "Seasonal flower lore", "✿"],
+    ["Moon phase", moon.name, `${natalModel ? "" : "Approx. "}${moon.illumination}% illuminated`, "☾"],
+    ["Chinese zodiac", chinese ? `${chinese.phase.name} ${chinese.animal.name}` : "Unavailable", chinese ? `${chinese.polarity} · lunar year ${chinese.year}` : "Calendar not supported for this date", "☯"],
+    ["Tarot birth card", `${birthCard.number} · ${birthCard.name}`, birthCard.keywords, "✧"]
   ];
   birthdayOutput.innerHTML = `<div class="birthday-navigation" role="group" aria-label="Birthday perspectives">${birthdayViews.map(([key, label]) => `<button type="button" data-birthday-view="${key}" aria-controls="birthday-${key}" aria-pressed="${key === birthdayView}">${label}</button>`).join("")}</div>
   <div id="birthday-sky" class="birthday-view sky-summary"${birthdayView === "sky" ? "" : " hidden"}>
-    <div class="sky-chart-wrap">${starChartFor(sign)}</div>
-    <dl class="sky-facts">${facts.map(([label, value, detail]) => `<div class="sky-fact"><dt>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
-    <article class="horoscope-card"><div><p class="reading-label">Birthday horoscope</p><h4>${sign.symbol} ${sign.name}</h4><p class="zodiac-line">${dateLabel}${timeLabel}${placeLabel}</p></div><div class="horoscope-copy"><p>${sign.horoscope}</p><p class="horoscope-meta">${sign.element} · ${sign.modality} · ruled by ${sign.ruler} · ${sign.mantra}</p></div></article>
-    <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></article>`).join("")}</div>
-    <p class="birthday-footnote"><span>✧</span> A symbolic zodiac wheel and original reflection prompts. Sun signs and decans use approximate date ranges; moon phase uses an average lunar cycle. This is not an exact natal chart. Birth time supplies an optional Chinese hour association; birthplace is saved for future chart work.</p>
+    ${natalModel ? NatalChart.bigThree(natalModel) : `<div class="natal-notice" role="status"><strong>Your full natal chart</strong><p>${escapeHTML(natal.message)}</p></div>`}
+    <div class="celestial-portrait">
+      <div class="sky-chart-wrap"><button type="button" class="sky-chart-launch" ${natalModel ? 'data-open-natal="point" data-natal-key="Sun" aria-label="Explore your full natal chart"' : `data-open-sky="${sign.name}" aria-label="Explore your ${sign.name} sky chart"`}>${natalModel ? NatalChart.renderWheel(natalModel) : SkyChart.render(zodiacSigns,sign.name)}<span class="sky-chart-invitation"><span aria-hidden="true">⌕</span> ${natalModel ? "Explore your natal chart" : "Explore your zodiac guide"} <span aria-hidden="true">↗</span></span></button><p class="sky-chart-caption">${natalModel ? "Planets · houses · aspects · open to zoom & explore" : "Symbolic zodiac guide · birth time and location needed for a natal chart"}</p></div>
+      <article class="horoscope-card"><p class="reading-label">Your sun sign · ${natalModel ? "calculated natal chart" : "birthday horoscope"}</p><h4>${sign.name}</h4><p class="zodiac-line">${dateLabel}${timeLabel}${placeLabel}</p><div class="sky-traits"><span><i aria-hidden="true">${elementMarks[sign.element]}</i> ${sign.element}</span><span>${sign.modality}</span><span>${decan}</span></div><div class="horoscope-copy"><p>${sign.horoscope}</p></div><p class="sky-mantra">${sign.mantra}<span aria-hidden="true">✦</span></p></article>
+    </div>
+    <dl class="sky-facts">${facts.map(([label, value, detail, mark]) => `<div class="sky-fact"><dt><span class="sky-fact-symbol" aria-hidden="true">${SkyChart.glyph(mark)}</span>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
+    <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><span class="lens-ornament" aria-hidden="true">${["☌","✷","☾"][index]}</span><div><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></div></article>`).join("")}</div>
+    ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
   </div>
   <div id="birthday-chinese" class="birthday-view"${birthdayView === "chinese" ? "" : " hidden"}>${BirthdayInsights.renderChinese(chinese, saved?.time || "")}</div>
   <div id="birthday-numbers" class="birthday-view"${birthdayView === "numbers" ? "" : " hidden"}>${BirthdayInsights.renderNumbers(parts)}</div>
@@ -315,6 +322,13 @@ function renderBirthdayProfile(saved = null) {
 
 birthdayInput.max = localDateKey();
 birthdayOutput.addEventListener("click", event => {
+  const natalButton = event.target.closest("[data-open-natal]");
+  if(natalButton && natalModel) {skyExplorer.openNatal(natalModel,natalButton,{kind:natalButton.dataset.openNatal,key:natalButton.dataset.natalKey});return;}
+  const reportButton = event.target.closest("[data-natal-view]");
+  if(reportButton && natalModel) {natalView = reportButton.dataset.natalView;refreshNatalReport();birthdayOutput.querySelector(`[data-natal-view="${natalView}"]`).focus({preventScroll:true});return;}
+  if(event.target.closest("[data-print-natal]")) {window.print();return;}
+  const skyButton = event.target.closest("[data-open-sky]");
+  if (skyButton) { skyExplorer.open(skyButton.dataset.openSky,skyButton); return; }
   const viewButton = event.target.closest("[data-birthday-view]");
   if (viewButton) { setBirthdayView(viewButton.dataset.birthdayView); return; }
   const numberButton = event.target.closest("[data-lo-shu]");
@@ -322,10 +336,16 @@ birthdayOutput.addEventListener("click", event => {
   birthdayOutput.querySelectorAll("[data-lo-shu]").forEach(button => button.setAttribute("aria-pressed", String(button === numberButton)));
   birthdayOutput.querySelector("#lo-shu-detail").innerHTML = BirthdayInsights.numberDetail(BirthdayInsights.numberStudy(birthdayProfileParts), Number(numberButton.dataset.loShu));
 });
+ birthdayOutput.addEventListener("change",event=>{if(event.target.id === "natal-aspect-filter") {natalAspectFilter=event.target.value;refreshNatalReport();birthdayOutput.querySelector("#natal-aspect-filter").focus({preventScroll:true});}});
+manualLocationInput.addEventListener("change",()=>{manualFields.disabled = !manualLocationInput.checked;manualFields.hidden = !manualLocationInput.checked;});
+birthdayForm.addEventListener("invalid",event=>{const details=event.target.closest("details");if(details) details.open=true;},true);
+for(const input of [birthdayInput,birthTimeInput,birthPlaceInput]) input.addEventListener("input",()=>{foldInput.value="";});
+try {document.querySelector("#birth-timezones").innerHTML=["UTC",...Intl.supportedValuesOf("timeZone")].map(zone=>`<option value="${zone}"></option>`).join("");} catch { /* Manual IANA names remain usable. */ }
 
 birthdayForm.addEventListener("submit", event => {
   event.preventDefault();
-  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() };
+  const manual = manualLocationInput.checked ? {source:"manual",label:birthPlaceInput.value.trim() || "Custom location",latitude:Number(document.querySelector("#birth-latitude").value),longitude:Number(document.querySelector("#birth-longitude").value),timeZone:document.querySelector("#birth-timezone").value.trim()} : null;
+  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value };
   try { localStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
   renderBirthdayProfile(saved);
 });
@@ -336,7 +356,23 @@ try {
     birthdayInput.value = savedBirthday.birthday;
     birthTimeInput.value = savedBirthday.time || "";
     birthPlaceInput.value = savedBirthday.place || "";
+    birthplacePicker.restore(savedBirthday.placeLocation);
+    houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
+    orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
+    foldInput.value = savedBirthday.fold || "";
+    if(savedBirthday.placeLocation?.source === "manual") {
+      manualLocationInput.checked=true;manualFields.disabled=false;manualFields.hidden=false;
+      document.querySelector("#birth-latitude").value=savedBirthday.placeLocation.latitude;
+      document.querySelector("#birth-longitude").value=savedBirthday.placeLocation.longitude;
+      document.querySelector("#birth-timezone").value=savedBirthday.placeLocation.timeZone;
+    }
     renderBirthdayProfile(savedBirthday);
+    if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
+      if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
+      savedBirthday.placeLocation=location;savedBirthday.place=location.label;
+      try {localStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+      renderBirthdayProfile(savedBirthday);
+    });
   } else {
     renderBirthdayProfile();
   }
@@ -652,7 +688,7 @@ gallery.addEventListener("click", event => { const button = event.target.closest
 document.querySelector("#close-dialog").addEventListener("click", () => dialog.close());
 dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
 document.addEventListener("keydown", event => {
-  if (event.key === "/" && !dialog.open && !event.target.closest("input, textarea, select, [contenteditable]")) {
+  if (event.key === "/" && !dialog.open && !document.querySelector("#sky-dialog").open && !event.target.closest("input, textarea, select, [contenteditable]")) {
     event.preventDefault();
     (readingMode === "deck" ? ishtarSearch : search).focus();
   }

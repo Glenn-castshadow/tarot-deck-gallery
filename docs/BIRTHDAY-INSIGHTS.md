@@ -2,6 +2,12 @@
 
 The birthday room has three perspectives: the existing Western sky portrait with expanded reflection prompts, a Chinese zodiac portrait, and an interactive Lo Shu number study. All calculations run in the browser. The existing `arcana-birthday-profile-v1` localStorage entry holds the date and optional time/place; these inputs are not sent to a service.
 
+## Celestial atlas and city suggestions
+
+The sky portrait now uses a circular vector zodiac wheel, enlarged sign typography and a blue, gold and teal palette. Opening the wheel launches an accessible dialog with 100–300% zoom, fit-to-view, scrolling/panning, and twelve selectable signs. Selecting another sign changes the guide's detail panel; it does not change the birthday or its highlighted sun sign. With birth time and location, this now opens the calculated natal chart. Without those inputs the symbolic guide remains available. See [natal methods and validation](NATAL-CHART.md).
+
+Birthplace suggestions use a same-origin GeoNames index and run entirely in the browser. The index loads on demand, supports accents and alternate names, and labels city, region and country. Keyboard users can choose with arrows/Enter and dismiss with Escape. Unlisted places can be entered manually. Selected locations add a `placeLocation` object to the existing profile, holding the GeoNames ID, label, coordinates and IANA timezone for the natal chart. Editing the text discards that selection. See [city data provenance and rebuilding](../assets/cities/README.md).
+
 ## Calendar conventions
 
 - Parse the entered Gregorian civil date at UTC noon to avoid local time-zone date shifts. Reject impossible dates. The form prevents future birthdays.
@@ -10,7 +16,7 @@ The birthday room has three perspectives: the existing Western sky portrait with
 - Derive the year stem and branch from the repeating 60-year cycle, anchored on 1984 Jia-Zi. Show the stem's phase (Wood, Fire, Earth, Metal, Water) and yin/yang. These are year associations, not a BaZi Day Master or a full personal element balance. [HKO: stems, branches and hours](https://www.hko.gov.hk/en/gts/time/stemsandbranches.htm), [animal sequence](https://www.hko.gov.hk/en/gts/time/12animals.htm), [Joey Yap: ten-stem terminology](https://joeyyap.com/dlll267/Joey%20Yap%27s%20Meet%20The%2010%20Stems_.pdf).
 - Optional birth time selects its two-hour branch association using the entered clock time. Zi/Rat spans 23:00–01:00. There is no solar-time, timezone, birthplace, day-pillar or hour-stem calculation.
 - Lunar month names come from the browser's English calendar implementation; the `bis` leap-month suffix is displayed as “(leap)”. Calendar implementations can differ in edge cases; this is not an astronomical ephemeris.
-- Western sun-sign ranges and decans remain approximate. The existing moon-phase function estimates an average lunar cycle, and the wheel is symbolic. No exact natal positions are implied.
+- Without complete natal inputs, Western sun-sign ranges and decans remain approximate, with an average lunar-cycle estimate. Complete natal inputs use calculated solar longitude, lunar phase and natal positions instead.
 
 ## Number conventions
 
@@ -24,6 +30,8 @@ Cultural notes distinguish number wordplay from original journal prompts. Four, 
 
 ## Verification
 
-Run `node --test tests/birthday-insights.test.cjs` and syntax-check `app.js` and `birthday-insights.js`. Boundary fixtures reference HKO's [2024 almanac](https://www.hko.gov.hk/en/gts/astron2024/files/HKO_almanac_2024.pdf), [2020 calendar](https://www.hko.gov.hk/en/publica/calendar/files/Cal_2020.pdf), and [1901–2100 conversion tables](https://www.hko.gov.hk/en/gts/time/conversion.htm).
+Run `node --test tests/birthday-insights.test.cjs tests/birthplace-search.test.cjs tests/natal-engine.test.cjs` and syntax-check `app.js`, `birthday-insights.js`, `birthplace-search.js`, `natal-engine.js`, `natal-chart.js` and `sky-chart.js`. Boundary fixtures reference HKO's [2024 almanac](https://www.hko.gov.hk/en/gts/astron2024/files/HKO_almanac_2024.pdf), [2020 calendar](https://www.hko.gov.hk/en/publica/calendar/files/Cal_2020.pdf), and [1901–2100 conversion tables](https://www.hko.gov.hk/en/gts/time/conversion.htm).
 
 Browser checks should cover all three perspectives, a January/February year boundary, optional time, selecting a Lo Shu number, resubmitting a different date while a perspective is open, and desktop/mobile layout. Confirm existing card draws, large-card viewing and deck comparison still work. Birthday view buttons and Lo Shu cells use native buttons with `aria-pressed`; inactive panels use `hidden`. Number details update without replacing the focused cell.
+
+For the atlas, check opening/closing the modal, keyboard sign selection, zoom limits and fit, plus focus return and mobile overflow. City checks include delayed loading, keyboard/pointer selection, Escape, stale searches after focus moves, no results, manual entry, and restoring/editing a selected place.

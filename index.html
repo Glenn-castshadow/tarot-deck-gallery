@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=birthday-insights-1" />
+    <link rel="stylesheet" href="styles.css?v=celestial-atlas-1" />
+    <link rel="stylesheet" href="celestial-room.css?v=celestial-atlas-1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -76,14 +77,28 @@
 
         <div id="birthday-room" class="birthday-panel">
           <div class="birthday-intro">
-            <p class="section-kicker">Your celestial cabinet</p>
-            <h3>Bring your birthday into the room</h3>
-            <p>Explore your sky portrait, Chinese zodiac, and the numbers in your birthday. Find birthstones, elemental themes and small prompts for reflection.</p>
+            <span class="celestial-emblem" aria-hidden="true">☉</span>
+            <p class="section-kicker">The celestial atlas</p>
+            <h3>Written in the stars</h3>
+            <p>Your natal chart, Chinese zodiac, and the numbers in your birthday. Add the time and place you were born to explore your planets, houses and connections.</p>
           </div>
           <form id="birthday-form" class="birthday-form">
             <label><span>Birthday</span><input id="birthday-input" type="date" required></label>
-            <label><span>Birth time <small>optional</small></span><input id="birth-time" type="time"></label>
-            <label><span>Birth place <small>optional</small></span><input id="birth-place" type="text" placeholder="City, country" autocomplete="address-level2"></label>
+            <label><span>Birth time <small>for natal chart</small></span><input id="birth-time" type="time"></label>
+            <div class="birthplace-field">
+              <label for="birth-place"><span>Birth place <small>for natal chart</small></span></label>
+              <div class="city-input-wrap"><input id="birth-place" type="text" placeholder="Start typing a city…" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="birth-city-list" aria-describedby="birth-city-status">
+              <div id="birth-city-list" class="city-suggestions" role="listbox" aria-label="Matching birth cities" hidden></div></div>
+              <p id="birth-city-status" class="city-search-status" role="status">Choose a city, or keep your own place name.</p>
+              <p class="city-attribution">City data: <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></p>
+            </div>
+            <label id="birth-fold-field" class="natal-full-row" hidden><span>Repeated clock time</span><select id="birth-fold"><option value="">Choose the occurrence</option><option value="earlier">Earlier occurrence</option><option value="later">Later occurrence</option></select></label>
+            <details class="natal-settings"><summary>Chart settings & custom birthplace</summary><div class="natal-settings-grid">
+              <label><span>House system</span><select id="birth-house-system"><option value="placidus">Placidus</option><option value="whole-sign">Whole Sign</option><option value="equal">Equal</option></select></label>
+              <label><span>Aspect orbs</span><select id="birth-orb-scale"><option value="1">Standard</option><option value="0.75">Tighter</option><option value="1.25">Wider</option></select></label>
+              <label class="natal-manual-toggle"><input id="birth-manual-enabled" type="checkbox"><span>Enter coordinates for an unlisted place</span></label>
+              <fieldset id="birth-manual-fields" class="natal-manual-fields" disabled hidden><legend>Custom birthplace</legend><label><span>Latitude <small>north + / south −</small></span><input id="birth-latitude" type="number" min="-89.9999" max="89.9999" step="any" required></label><label><span>Longitude <small>east + / west −</small></span><input id="birth-longitude" type="number" min="-180" max="180" step="any" required></label><label class="natal-full-row"><span>IANA time zone</span><input id="birth-timezone" type="text" list="birth-timezones" placeholder="e.g. America/Los_Angeles" autocomplete="off" required></label><datalist id="birth-timezones"></datalist></fieldset>
+            </div></details>
             <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
           </form>
           <div id="birthday-output" class="birthday-output" aria-live="polite"></div>
@@ -131,7 +146,25 @@
       <div id="dialog-content"></div>
     </dialog>
     <div id="dialog-backdrop" class="dialog-backdrop" hidden></div>
-    <script src="birthday-insights.js?v=birthday-insights-1"></script>
-    <script src="app.js?v=birthday-insights-1"></script>
+    <dialog id="sky-dialog" class="sky-dialog" aria-labelledby="sky-dialog-title">
+      <header class="sky-dialog-header"><div><p class="section-kicker">The celestial atlas</p><h2 id="sky-dialog-title">Explore your sky</h2></div><button type="button" data-close-sky aria-label="Close sky explorer">×</button></header>
+      <div class="sky-dialog-layout">
+        <section class="sky-explorer-chart" aria-label="Interactive zodiac chart">
+          <div class="sky-zoom-controls" role="group" aria-label="Chart zoom"><button type="button" data-sky-zoom="out" aria-label="Zoom out">−</button><output id="sky-zoom-level" aria-live="polite">100%</output><button type="button" data-sky-zoom="in" aria-label="Zoom in">+</button><button type="button" data-sky-zoom="fit">Fit chart</button><button type="button" data-natal-export hidden>Save SVG</button></div>
+          <label class="sky-aspect-toggle" hidden><input id="sky-show-aspects" type="checkbox" checked> Show aspect lines</label>
+          <div class="sky-zoom-viewport" tabindex="0" aria-label="Zodiac chart. Scroll to move around when zoomed."><div class="sky-zoom-canvas"></div></div>
+          <p class="sky-chart-legend"><span>✦</span> Gold marks your sun sign. Select any sign to explore it.<br>Zoom in, then scroll or swipe to move around the chart.</p>
+        </section>
+        <article class="sky-sign-detail" aria-live="polite"></article>
+      </div>
+      <p class="sky-explorer-note">Explore your natal placements or browse the symbolic zodiac guide.</p>
+    </dialog>
+    <script src="birthday-insights.js?v=celestial-atlas-1"></script>
+    <script src="birthplace-search.js?v=celestial-atlas-1"></script>
+    <script src="vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
+    <script src="natal-engine.js?v=celestial-atlas-1"></script>
+    <script src="natal-chart.js?v=celestial-atlas-1"></script>
+    <script src="sky-chart.js?v=celestial-atlas-1"></script>
+    <script src="app.js?v=celestial-atlas-1"></script>
   </body>
 </html>
