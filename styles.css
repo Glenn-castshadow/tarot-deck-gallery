@@ -46,6 +46,7 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-intro .section-kicker { color: var(--gold-light); }
 .reading-intro h2 { margin-top: 8px; max-width: 390px; color: var(--cream); font-size: clamp(28px, 3vw, 42px); }
 .reading-intro > p:last-child { max-width: 390px; margin-top: 15px; color: rgba(255,250,244,.68); font-size: 13px; line-height: 1.65; }
+.reading-badge { display: inline-block; margin-top: 18px; padding: 5px 7px; border: 1px solid rgba(230,177,126,.42); color: var(--gold-light); text-transform: uppercase; letter-spacing: .11em; font: 9px "DM Mono", monospace; }
 .reading-controls { position: relative; z-index: 1; display: flex; align-items: start; justify-content: space-between; gap: 18px; }
 .reading-tabs { display: flex; padding: 4px; border: 1px solid rgba(255,250,244,.16); background: rgba(255,250,244,.06); }
 .reading-tab { border: 0; padding: 9px 11px; background: transparent; color: rgba(255,250,244,.58); font-size: 12px; }

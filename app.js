@@ -40,7 +40,45 @@ const majorArcana = [
   { number: "XXI", name: "The World", sigil: "◎", keywords: "completion · integration · wholeness", upright: "A cycle has gathered enough wisdom to be honored. Mark the completion, take the learning with you, and let the next horizon open from solid ground.", reversed: "The final stitch is still waiting. Finish the small piece that keeps you from feeling complete, then stop asking an old chapter for new instructions.", prompt: "What completion deserves to be acknowledged before you move on?" }
 ];
 
-const cardImages = Object.fromEntries(majorArcana.filter(card => card.image).map(card => [card.name, card.image]));
+const suitProfiles = {
+  Wands: { sigil: "♨", element: "fire", focus: "passion, creativity, and initiative", noun: "your spark and momentum" },
+  Cups: { sigil: "◒", element: "water", focus: "emotion, connection, and imagination", noun: "your emotional current" },
+  Swords: { sigil: "⚔", element: "air", focus: "thought, truth, and communication", noun: "your mental weather" },
+  Pentacles: { sigil: "✹", element: "earth", focus: "body, work, resources, and home", noun: "your material foundation" }
+};
+
+const rankProfiles = {
+  Ace: { key: "seed", upright: "A seed of possibility is available", reversed: "The seed is real, but it needs more space or care", prompt: "What beginning could you protect" },
+  Two: { key: "choice", upright: "A choice or pairing asks for your attention", reversed: "A split or imbalance is making the next step harder", prompt: "Where could you make a cleaner choice" },
+  Three: { key: "collaboration", upright: "Shared effort can turn an idea into something visible", reversed: "A contribution or collaboration needs clearer expectations", prompt: "Who could make this stronger with you" },
+  Four: { key: "stability", upright: "Stability and a deliberate pause can restore your strength", reversed: "Holding too tightly is keeping useful movement out", prompt: "What kind of rest or structure would help" },
+  Five: { key: "friction", upright: "A friction point reveals what needs to change", reversed: "The struggle is lingering longer than the lesson requires", prompt: "What would make this conflict more useful" },
+  Six: { key: "exchange", upright: "An exchange can restore balance and dignity", reversed: "Give-and-take may be uneven or carrying an old debt", prompt: "Where could generosity become more mutual" },
+  Seven: { key: "assessment", upright: "A test of patience asks you to assess what is worth continuing", reversed: "Doubt or impatience is tempting you to abandon the work too soon", prompt: "What deserves one more honest look" },
+  Eight: { key: "momentum", upright: "Momentum grows through repetition and clear movement", reversed: "The current is blocked by distraction, delay, or overwork", prompt: "What simple rhythm would move this forward" },
+  Nine: { key: "ripening", upright: "Nearness to completion invites both pride and care", reversed: "Fatigue or overreach is making success feel harder to receive", prompt: "What would let you enjoy how far you have come" },
+  Ten: { key: "culmination", upright: "A full cycle brings a visible result and a new responsibility", reversed: "A load has become too heavy to carry in its current form", prompt: "What can be completed, shared, or set down" },
+  Page: { key: "message", upright: "A curious message or learner brings a fresh angle", reversed: "Inexperience or mixed signals need patience and a direct question", prompt: "What are you ready to learn" },
+  Knight: { key: "pursuit", upright: "Movement and pursuit put your values into motion", reversed: "Rushed or scattered movement is burning energy without direction", prompt: "Where should your effort actually go" },
+  Queen: { key: "embodiment", upright: "Mature inner command lets you hold this suit with generosity", reversed: "Your gifts need firmer boundaries before you can share them freely", prompt: "How can you lead from a steadier center" },
+  King: { key: "mastery", upright: "Responsible mastery turns experience into dependable guidance", reversed: "Control or certainty is crowding out listening and adaptation", prompt: "What would wise stewardship look like" }
+};
+
+const minorArcana = Object.entries(suitProfiles).flatMap(([suit, suitProfile]) => Object.entries(rankProfiles).map(([rank, rankProfile]) => ({
+  type: "minor",
+  suit,
+  rank,
+  number: rank,
+  name: `${rank} of ${suit}`,
+  sigil: suitProfile.sigil,
+  keywords: `${suitProfile.element} · ${suitProfile.focus} · ${rankProfile.key}`,
+  upright: `${rankProfile.upright} in the realm of ${suitProfile.focus}. Tend ${suitProfile.noun} with intention.`,
+  reversed: `${rankProfile.reversed} in the realm of ${suitProfile.focus}. Let the response be practical rather than punitive.`,
+  prompt: `${rankProfile.prompt} when it comes to ${suitProfile.focus}?`
+})));
+
+const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
+const cardImages = Object.fromEntries(tarotCards.filter(card => card.image).map(card => [card.name, card.image]));
 
 const gallery = document.querySelector("#gallery");
 const emptyState = document.querySelector("#empty-state");
@@ -131,14 +169,14 @@ function orientationFor(seed) {
 }
 
 function getDailyReading() {
-  const key = `arcana-daily-${localDateKey()}`;
+  const key = `arcana-daily-v2-${localDateKey()}`;
   try {
     const saved = JSON.parse(localStorage.getItem(key));
-    if (saved && Number.isInteger(saved.index) && majorArcana[saved.index]) return saved;
+    if (saved && Number.isInteger(saved.index) && tarotCards[saved.index]) return saved;
   } catch (error) {
     // Private browsing can disable localStorage; the draw still works for this session.
   }
-  const index = hashString(localDateKey()) % majorArcana.length;
+  const index = hashString(localDateKey()) % tarotCards.length;
   const reading = { index, orientation: orientationFor(`${localDateKey()}-orientation`) };
   try { localStorage.setItem(key, JSON.stringify(reading)); } catch (error) { /* no-op */ }
   return reading;
@@ -146,7 +184,7 @@ function getDailyReading() {
 
 function drawPick3() {
   const seed = `${Date.now()}-${Math.random()}`;
-  const order = majorArcana.map((card, index) => ({ card, index, sort: hashString(`${seed}-${index}`) })).sort((a, b) => a.sort - b.sort);
+  const order = tarotCards.map((card, index) => ({ card, index, sort: hashString(`${seed}-${index}`) })).sort((a, b) => a.sort - b.sort);
   return order.slice(0, 3).map((item, index) => ({
     index: item.index,
     orientation: orientationFor(`${seed}-${index}-orientation`),
@@ -169,7 +207,7 @@ function readingCopy(card, orientation) {
 function renderReading() {
   if (readingMode === "daily") {
     const reading = getDailyReading();
-    const card = majorArcana[reading.index];
+    const card = tarotCards[reading.index];
     readingOutput.innerHTML = `<div class="daily-reading">
       ${cardVisual(card, reading.orientation)}
       <div class="reading-copy">
@@ -192,7 +230,7 @@ function renderReading() {
     return;
   }
 
-  const cards = currentPick3.map(item => ({ ...item, card: majorArcana[item.index] }));
+  const cards = currentPick3.map(item => ({ ...item, card: tarotCards[item.index] }));
   readingOutput.innerHTML = `<div class="pick3-reading">${cards.map(item => `<article class="pick3-item">
     ${cardVisual(item.card, item.orientation, true)}
     <div><p class="reading-label">${item.position}</p><h3>${item.card.name}</h3><span class="orientation">${item.orientation}</span><p>${readingCopy(item.card, item.orientation)}</p></div>

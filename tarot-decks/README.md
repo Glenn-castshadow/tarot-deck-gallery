@@ -49,3 +49,6 @@ Modern source pages:
 - [Everyday Witch Tarot product image](https://www.edankest.com/everyday-witch-tarot-deck-with-instruction-book.html)
 - [Golden Thread Tarot product image](https://www.goodreads.com/book/show/48747230-golden-thread-tarot)
 
+## Extending this for new decks
+
+The gallery and the reading engine are intentionally separate. Deck entries describe artwork, provenance, and rights; the reading engine uses a standard 78-card core with suit and rank meanings. To add an original deck, add its metadata and front/back assets to `app.js` and the matching folders here. If a deck needs its own interpretive voice, add a deck-specific meaning map keyed by the same card names (`The Fool`, `Ace of Wands`, and so on) rather than changing the draw or spread logic. This keeps historical references, original artwork, and future app content in one browsable system.
