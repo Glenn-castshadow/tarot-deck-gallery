@@ -78,7 +78,26 @@ const minorArcana = Object.entries(suitProfiles).flatMap(([suit, suitProfile]) =
 })));
 
 const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
-const cardImages = Object.fromEntries(tarotCards.map((card, index) => [card.name, `assets/ishtar-deck/cards/${String(index).padStart(2, "0")}.jpg`]));
+const readingDecks = {
+  ishtar: { name: "Ishtar Insights", assets: "assets/ishtar-deck", description: "A luminous world of lotus symbolism, deep violet and holographic reflections.", back: "The shared mirrored lotus back for all 78 cards." },
+  moebius: { name: "Moebius-inspired", assets: "assets/light-minimal-deck", description: "Fine ink, open skies and strange horizons. A light, minimal deck with clear cerulean, coral and lavender color.", back: "Floating stone forms and celestial geometry echo the deck’s open skies in a reversible design." },
+  "arts-and-crafts": { name: "Arts & Crafts", assets: "assets/arts-and-crafts-deck", description: "Botanical woodcut scenes in forest green, madder red and ochre, with quiet references to craft, initiation and Masonic geometry.", back: "A botanical repeat with acacia, oak, drawing compasses and measured geometry, designed for both orientations." },
+  bacon: { name: "Francis Bacon-inspired", assets: "assets/expressive-figures-deck", description: "Erased faces, dragged paint and isolated figures inhabit deep black spaces. Bruised violet, oxblood and harsh ochre give familiar tarot symbols an unsettling psychological intensity.", back: "Opposed gestural figures and geometric enclosures carry the deck’s painterly tension into an abstract two-way back." }
+};
+let activeReadingDeck = "ishtar";
+const requestedDeck = new URLSearchParams(location.search).get("deck");
+if (Object.hasOwn(readingDecks, requestedDeck)) activeReadingDeck = requestedDeck;
+else {
+  try {
+    const savedDeck = localStorage.getItem("arcana-reading-deck-v1");
+    if (Object.hasOwn(readingDecks, savedDeck)) activeReadingDeck = savedDeck;
+  } catch { /* The room also works when storage is unavailable. */ }
+}
+
+function readingArt(index, size = "cards") {
+  const base = readingDecks[activeReadingDeck].assets;
+  return index === tarotCards.length ? `${base}/${size === "large" ? "large/" : ""}back.jpg` : `${base}/${size}/${String(index).padStart(2, "0")}.jpg`;
+}
 
 const zodiacSigns = [
   { name: "Aries", symbol: "♈", start: [3, 21], element: "Fire", modality: "Cardinal", ruler: "Mars", stones: "Diamond · bloodstone", flower: "Sweet pea", mantra: "I begin", horoscope: "Your spark is useful when it has somewhere to go. Give the brave idea a small, visible first move, then let momentum answer the doubts." },
@@ -320,13 +339,26 @@ let ishtarFilter = "all";
 let ishtarVisibleIndices = [];
 let deckReviewIndex = null;
 
+function selectReadingDeck(id) {
+  if (!Object.hasOwn(readingDecks, id)) return;
+  activeReadingDeck = id;
+  try { localStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
+  const url = new URL(location.href);
+  url.searchParams.set("deck", id);
+  history.replaceState(null, "", url);
+  renderReading();
+}
+
 function renderIshtarDeck() {
+  const deck = readingDecks[activeReadingDeck];
+  document.querySelector("#ishtar-title").textContent = deck.name;
+  document.querySelector("#reading-deck-description").textContent = deck.description + " Explore all 78 cards and the matching back.";
   const query = ishtarSearch.value.trim().toLowerCase();
   ishtarVisibleIndices = tarotCards.flatMap((card, index) => {
     const matchesGroup = ishtarFilter === "all" || card.type === ishtarFilter || card.suit === ishtarFilter;
     return matchesGroup && `${card.name} ${card.keywords}`.toLowerCase().includes(query) ? [index] : [];
   });
-  const showBack = (ishtarFilter === "all" || ishtarFilter === "back") && "card back mirrored lotus ishtar insights".includes(query);
+  const showBack = (ishtarFilter === "all" || ishtarFilter === "back") && `card back ${deck.name} ${deck.back}`.toLowerCase().includes(query);
   if (showBack) ishtarVisibleIndices.push(tarotCards.length);
   const frontCount = ishtarVisibleIndices.length - Number(showBack);
   document.querySelector("#ishtar-results").textContent = `${frontCount} card${frontCount === 1 ? "" : "s"}${showBack ? " + card back" : ""}`;
@@ -334,8 +366,8 @@ function renderIshtarDeck() {
   ishtarGrid.innerHTML = ishtarVisibleIndices.map(index => {
     const card = tarotCards[index];
     const name = card?.name || "Card back";
-    const group = card ? (card.type === "major" ? `Major Arcana · ${card.number}` : `${card.suit} · ${card.number}`) : "The mirrored design";
-    const source = card ? cardImages[card.name] : "assets/ishtar-deck/back.jpg";
+    const group = card ? (card.type === "major" ? `Major Arcana · ${card.number}` : `${card.suit} · ${card.number}`) : "The matching back";
+    const source = readingArt(index);
     return `<button type="button" class="ishtar-card" data-ishtar-card="${index}" aria-label="View ${name} large">
       <img src="${source}" alt="${name} artwork" loading="lazy" decoding="async" width="360" height="597">
       <span class="ishtar-card-group">${group}</span><span class="ishtar-card-name">${name}</span>
@@ -418,10 +450,7 @@ function cardVisual(card, orientation, compact = false) {
   const className = `drawn-card${orientation === "reversed" ? " is-reversed" : ""}`;
   const cardIndex = tarotCards.indexOf(card);
   const buttonAttrs = `type="button" class="${className} drawn-card-button" data-card-view="${cardIndex}" data-card-orientation="${orientation}" aria-label="View ${card.name} large"`;
-  if (cardImages[card.name]) {
-    return `<button ${buttonAttrs}><div class="drawn-card-inner"><img src="${cardImages[card.name]}" alt="${card.name} card artwork"></div></button>`;
-  }
-  return `<button ${buttonAttrs}><div class="drawn-card-inner"><span class="drawn-number">${card.number}</span><span class="drawn-sigil">${card.sigil}</span><span class="drawn-name">${card.name}</span></div></button>`;
+  return `<button ${buttonAttrs}><div class="drawn-card-inner"><img src="${readingArt(cardIndex)}" alt="${card.name} card artwork"></div></button>`;
 }
 
 function readingCopy(card, orientation) {
@@ -434,7 +463,8 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
   if (!card && !isBack) return;
   deckReviewIndex = browsing ? index : null;
   const name = card?.name || "Card back";
-  const image = `assets/ishtar-deck/large/${isBack ? "back" : String(index).padStart(2, "0")}.jpg`;
+  const deck = readingDecks[activeReadingDeck];
+  const image = readingArt(index, "large");
   const imageMarkup = `<img src="${image}" alt="${name} artwork large" class="card-detail-image${orientation === "reversed" ? " is-reversed" : ""}">`;
   const reviewPosition = ishtarVisibleIndices.indexOf(index);
   const navigation = browsing ? `<nav class="deck-review-nav" aria-label="Deck review navigation">
@@ -442,8 +472,8 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
     <span role="status">${reviewPosition + 1} of ${ishtarVisibleIndices.length}</span>
     <button type="button" data-review-step="1" ${reviewPosition >= ishtarVisibleIndices.length - 1 ? "disabled" : ""}>Next →</button>
   </nav>` : "";
-  const notes = isBack ? `<div class="deck-meta"><span>Ishtar Insights</span><span>Reverse side</span></div>
-      <h2 id="card-detail-title">Card back</h2><p class="detail-note">The shared mirrored back design for all 78 cards. Review its lotus imagery, symmetry, and color alongside the card fronts.</p>` : `
+  const notes = isBack ? `<div class="deck-meta"><span>${deck.name}</span><span>Reverse side</span></div>
+      <h2 id="card-detail-title">Card back</h2><p class="detail-note">${deck.back}</p>` : `
       <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : `Minor arcana · ${card.suit}`}</span><span>${orientation}</span></div>
       <h2 id="card-detail-title">${card.name}</h2>
       <p class="detail-artist">${card.number} · ${card.keywords}</p>
@@ -454,7 +484,7 @@ function openCardDetails(index, orientation = "upright", browsing = false) {
       </dl>
       <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>`;
   dialogContent.innerHTML = `${navigation}<div class="card-detail-layout">
-    <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">Ishtar Insights · full artwork</span></div>
+    <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">${deck.name} · full artwork</span></div>
     <div class="detail-copy">
       ${notes}
       <a class="source-link" href="${image}" target="_blank" rel="noopener">Open large artwork ↗</a>
@@ -478,6 +508,11 @@ function stepDeckReview(step) {
 }
 
 function renderReading() {
+  document.querySelector(".reading-room").dataset.deck = activeReadingDeck;
+  document.querySelector(".reading-badge").textContent = `${readingDecks[activeReadingDeck].name} · 78 cards`;
+  document.querySelectorAll("[data-reading-deck]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.readingDeck === activeReadingDeck));
+  });
   const browsing = readingMode === "deck";
   ishtarLibrary.hidden = !browsing;
   readingOutput.hidden = browsing;
@@ -520,6 +555,9 @@ function renderReading() {
   drawReadingButton.setAttribute("aria-label", "Draw another three-card spread");
 }
 
+document.querySelectorAll("[data-reading-deck]").forEach(button => button.addEventListener("click", () => {
+  selectReadingDeck(button.dataset.readingDeck);
+}));
 document.querySelectorAll(".reading-tab").forEach(button => button.addEventListener("click", () => {
   setReadingMode(button.dataset.readingMode);
 }));

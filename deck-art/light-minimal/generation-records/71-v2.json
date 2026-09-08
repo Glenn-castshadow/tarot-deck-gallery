@@ -1,0 +1,13 @@
+{
+  "deck": "light-minimal",
+  "index": 71,
+  "number": "Eight",
+  "name": "Eight of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/light-minimal/raw-fronts/71-eight-of-pentacles-v2.png",
+  "reference": "V:/tarot_game/deck-art/light-minimal/raw-fronts/71-eight-of-pentacles.png",
+  "prompt": "Edit the attached card illustration with this ONE precise correction. Correct the Eight of Pentacles count. The side panel currently displays NINE pentacle disks in three rows of three, with ONE more disk on the workbench. Remove ONLY TWO disks from the panel: remove the center disk in the middle row AND the center disk in the bottom row, replacing them with the plain matching ivory stone surface. Keep all other SEVEN panel disks and the ONE workbench disk. Exactly EIGHT pentacle disks total. Preserve the artisan, tools, sky, colors, layout and original style. Preserve the full portrait dimensions and everything else. No new text or watermark.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-8de5e1e2-0e30-4cb1-bae9-a7fc7eebd16c.png",
+  "tool": "image_gen.imagegen"
+}

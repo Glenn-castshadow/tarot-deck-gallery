@@ -1,0 +1,80 @@
+index,name,category,source,native_width,native_height,print_file,canvas_width,canvas_height,canvas_ppi
+00,The Fool,major,raw-fronts/00-the-fool-dark-v2.png,971,1619,print-ready/fronts/00.png,1795,2976,600
+01,The Magician,major,raw-fronts/01-the-magician-dark-v2.png,971,1619,print-ready/fronts/01.png,1795,2976,600
+02,The High Priestess,major,raw-fronts/02-the-high-priestess-dark-v2.png,972,1619,print-ready/fronts/02.png,1795,2976,600
+03,The Empress,major,raw-fronts/03-the-empress-dark-v2.png,971,1619,print-ready/fronts/03.png,1795,2976,600
+04,The Emperor,major,raw-fronts/04-the-emperor-dark-v2.png,971,1619,print-ready/fronts/04.png,1795,2976,600
+05,The Hierophant,major,raw-fronts/05-the-hierophant-dark-v2.png,971,1619,print-ready/fronts/05.png,1795,2976,600
+06,The Lovers,major,raw-fronts/06-the-lovers-dark-v2.png,971,1619,print-ready/fronts/06.png,1795,2976,600
+07,The Chariot,major,raw-fronts/07-the-chariot-dark-v2.png,971,1619,print-ready/fronts/07.png,1795,2976,600
+08,Strength,major,raw-fronts/08-strength-dark-v2.png,971,1619,print-ready/fronts/08.png,1795,2976,600
+09,The Hermit,major,raw-fronts/09-the-hermit-dark-v2.png,972,1619,print-ready/fronts/09.png,1795,2976,600
+10,Wheel of Fortune,major,raw-fronts/10-wheel-of-fortune-dark-v2.png,972,1619,print-ready/fronts/10.png,1795,2976,600
+11,Justice,major,raw-fronts/11-justice-dark-v2.png,971,1619,print-ready/fronts/11.png,1795,2976,600
+12,The Hanged Man,major,raw-fronts/12-the-hanged-man-dark-v2.png,971,1619,print-ready/fronts/12.png,1795,2976,600
+13,Death,major,raw-fronts/13-death-dark-v2.png,971,1619,print-ready/fronts/13.png,1795,2976,600
+14,Temperance,major,raw-fronts/14-temperance-dark-v2.png,971,1619,print-ready/fronts/14.png,1795,2976,600
+15,The Devil,major,raw-fronts/15-the-devil-dark-v2.png,971,1619,print-ready/fronts/15.png,1795,2976,600
+16,The Tower,major,raw-fronts/16-the-tower-dark-v2.png,971,1619,print-ready/fronts/16.png,1795,2976,600
+17,The Star,major,raw-fronts/17-the-star-dark-v4.png,971,1619,print-ready/fronts/17.png,1795,2976,600
+18,The Moon,major,raw-fronts/18-the-moon-dark-v2.png,972,1619,print-ready/fronts/18.png,1795,2976,600
+19,The Sun,major,raw-fronts/19-the-sun-dark-v2.png,971,1619,print-ready/fronts/19.png,1795,2976,600
+20,Judgement,major,raw-fronts/20-judgement-dark-v2.png,971,1619,print-ready/fronts/20.png,1795,2976,600
+21,The World,major,raw-fronts/21-the-world-dark-v2.png,971,1619,print-ready/fronts/21.png,1795,2976,600
+22,Ace of Wands,wands,raw-fronts/22-ace-of-wands-dark-v2.png,971,1619,print-ready/fronts/22.png,1795,2976,600
+23,Two of Wands,wands,raw-fronts/23-two-of-wands-dark-v3.png,971,1619,print-ready/fronts/23.png,1795,2976,600
+24,Three of Wands,wands,raw-fronts/24-three-of-wands-dark-v2.png,971,1619,print-ready/fronts/24.png,1795,2976,600
+25,Four of Wands,wands,raw-fronts/25-four-of-wands-dark-v2.png,971,1619,print-ready/fronts/25.png,1795,2976,600
+26,Five of Wands,wands,raw-fronts/26-five-of-wands-dark-v2.png,971,1619,print-ready/fronts/26.png,1795,2976,600
+27,Six of Wands,wands,raw-fronts/27-six-of-wands-dark-v3.png,971,1620,print-ready/fronts/27.png,1795,2976,600
+28,Seven of Wands,wands,raw-fronts/28-seven-of-wands-dark-v2.png,971,1620,print-ready/fronts/28.png,1795,2976,600
+29,Eight of Wands,wands,raw-fronts/29-eight-of-wands-dark-v4.png,971,1620,print-ready/fronts/29.png,1795,2976,600
+30,Nine of Wands,wands,raw-fronts/30-nine-of-wands-dark-v2.png,971,1619,print-ready/fronts/30.png,1795,2976,600
+31,Ten of Wands,wands,raw-fronts/31-ten-of-wands-dark-v2.png,972,1619,print-ready/fronts/31.png,1795,2976,600
+32,Page of Wands,wands,raw-fronts/32-page-of-wands-dark-v2.png,971,1619,print-ready/fronts/32.png,1795,2976,600
+33,Knight of Wands,wands,raw-fronts/33-knight-of-wands-dark-v2.png,971,1619,print-ready/fronts/33.png,1795,2976,600
+34,Queen of Wands,wands,raw-fronts/34-queen-of-wands-dark-v2.png,972,1619,print-ready/fronts/34.png,1795,2976,600
+35,King of Wands,wands,raw-fronts/35-king-of-wands-dark-v2.png,971,1619,print-ready/fronts/35.png,1795,2976,600
+36,Ace of Cups,cups,raw-fronts/36-ace-of-cups-dark-v2.png,971,1619,print-ready/fronts/36.png,1795,2976,600
+37,Two of Cups,cups,raw-fronts/37-two-of-cups-dark-v2.png,971,1619,print-ready/fronts/37.png,1795,2976,600
+38,Three of Cups,cups,raw-fronts/38-three-of-cups-dark-v2.png,971,1619,print-ready/fronts/38.png,1795,2976,600
+39,Four of Cups,cups,raw-fronts/39-four-of-cups-dark-v2.png,971,1619,print-ready/fronts/39.png,1795,2976,600
+40,Five of Cups,cups,raw-fronts/40-five-of-cups-dark-v2.png,971,1619,print-ready/fronts/40.png,1795,2976,600
+41,Six of Cups,cups,raw-fronts/41-six-of-cups-dark-v2.png,971,1619,print-ready/fronts/41.png,1795,2976,600
+42,Seven of Cups,cups,raw-fronts/42-seven-of-cups-dark-v2.png,971,1619,print-ready/fronts/42.png,1795,2976,600
+43,Eight of Cups,cups,raw-fronts/43-eight-of-cups-dark-v2.png,971,1619,print-ready/fronts/43.png,1795,2976,600
+44,Nine of Cups,cups,raw-fronts/44-nine-of-cups-dark-v3.png,971,1619,print-ready/fronts/44.png,1795,2976,600
+45,Ten of Cups,cups,raw-fronts/45-ten-of-cups-dark-v3.png,971,1619,print-ready/fronts/45.png,1795,2976,600
+46,Page of Cups,cups,raw-fronts/46-page-of-cups-dark-v2.png,971,1619,print-ready/fronts/46.png,1795,2976,600
+47,Knight of Cups,cups,raw-fronts/47-knight-of-cups-dark-v2.png,971,1619,print-ready/fronts/47.png,1795,2976,600
+48,Queen of Cups,cups,raw-fronts/48-queen-of-cups-dark-v2.png,971,1619,print-ready/fronts/48.png,1795,2976,600
+49,King of Cups,cups,raw-fronts/49-king-of-cups-dark-v2.png,972,1619,print-ready/fronts/49.png,1795,2976,600
+50,Ace of Swords,swords,raw-fronts/50-ace-of-swords-dark-v2.png,971,1619,print-ready/fronts/50.png,1795,2976,600
+51,Two of Swords,swords,raw-fronts/51-two-of-swords-dark-v2.png,971,1619,print-ready/fronts/51.png,1795,2976,600
+52,Three of Swords,swords,raw-fronts/52-three-of-swords-dark-v2.png,971,1619,print-ready/fronts/52.png,1795,2976,600
+53,Four of Swords,swords,raw-fronts/53-four-of-swords-dark-v2.png,971,1619,print-ready/fronts/53.png,1795,2976,600
+54,Five of Swords,swords,raw-fronts/54-five-of-swords-dark-v2.png,971,1619,print-ready/fronts/54.png,1795,2976,600
+55,Six of Swords,swords,raw-fronts/55-six-of-swords-dark-v2.png,971,1619,print-ready/fronts/55.png,1795,2976,600
+56,Seven of Swords,swords,raw-fronts/56-seven-of-swords-dark-v3.png,971,1619,print-ready/fronts/56.png,1795,2976,600
+57,Eight of Swords,swords,raw-fronts/57-eight-of-swords-dark-v2.png,971,1619,print-ready/fronts/57.png,1795,2976,600
+58,Nine of Swords,swords,raw-fronts/58-nine-of-swords-dark-v2.png,971,1619,print-ready/fronts/58.png,1795,2976,600
+59,Ten of Swords,swords,raw-fronts/59-ten-of-swords-dark-v2.png,971,1619,print-ready/fronts/59.png,1795,2976,600
+60,Page of Swords,swords,raw-fronts/60-page-of-swords-dark-v2.png,971,1619,print-ready/fronts/60.png,1795,2976,600
+61,Knight of Swords,swords,raw-fronts/61-knight-of-swords-dark-v2.png,971,1619,print-ready/fronts/61.png,1795,2976,600
+62,Queen of Swords,swords,raw-fronts/62-queen-of-swords-dark-v2.png,971,1619,print-ready/fronts/62.png,1795,2976,600
+63,King of Swords,swords,raw-fronts/63-king-of-swords-dark-v2.png,971,1619,print-ready/fronts/63.png,1795,2976,600
+64,Ace of Pentacles,pentacles,raw-fronts/64-ace-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/64.png,1795,2976,600
+65,Two of Pentacles,pentacles,raw-fronts/65-two-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/65.png,1795,2976,600
+66,Three of Pentacles,pentacles,raw-fronts/66-three-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/66.png,1795,2976,600
+67,Four of Pentacles,pentacles,raw-fronts/67-four-of-pentacles-dark-v2.png,972,1619,print-ready/fronts/67.png,1795,2976,600
+68,Five of Pentacles,pentacles,raw-fronts/68-five-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/68.png,1795,2976,600
+69,Six of Pentacles,pentacles,raw-fronts/69-six-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/69.png,1795,2976,600
+70,Seven of Pentacles,pentacles,raw-fronts/70-seven-of-pentacles-dark-v3.png,971,1619,print-ready/fronts/70.png,1795,2976,600
+71,Eight of Pentacles,pentacles,raw-fronts/71-eight-of-pentacles-dark-v3.png,971,1619,print-ready/fronts/71.png,1795,2976,600
+72,Nine of Pentacles,pentacles,raw-fronts/72-nine-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/72.png,1795,2976,600
+73,Ten of Pentacles,pentacles,raw-fronts/73-ten-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/73.png,1795,2976,600
+74,Page of Pentacles,pentacles,raw-fronts/74-page-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/74.png,1795,2976,600
+75,Knight of Pentacles,pentacles,raw-fronts/75-knight-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/75.png,1795,2976,600
+76,Queen of Pentacles,pentacles,raw-fronts/76-queen-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/76.png,1795,2976,600
+77,King of Pentacles,pentacles,raw-fronts/77-king-of-pentacles-dark-v2.png,971,1619,print-ready/fronts/77.png,1795,2976,600
+back,Card back,back,raw-backs/back-dark-v2.png,971,1619,print-ready/back.png,1795,2976,600

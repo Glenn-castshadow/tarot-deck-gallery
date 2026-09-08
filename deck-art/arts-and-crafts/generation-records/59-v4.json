@@ -1,0 +1,13 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 59,
+  "number": "Ten",
+  "name": "Ten of Swords",
+  "category": "swords",
+  "file": "deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v4.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v3.png",
+  "prompt": "Edit the attached tarot artwork with only this exact symbol correction. Remove ONLY the single LEFTMOST sword, whose round pommel is at x28%, y47.5%. Erase that one pommel, grip, crossguard and blade, restoring the fabric/sea behind it. Preserve the next sword at x32% and EVERY other sword, with NO additions. Eleven currently, ten after this single removal. Preserve full canvas dimensions, original style, palette and all other artwork. No text.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-61cbe469-08a8-48d5-aba5-4f65e0532163.png",
+  "tool": "image_gen.imagegen"
+}

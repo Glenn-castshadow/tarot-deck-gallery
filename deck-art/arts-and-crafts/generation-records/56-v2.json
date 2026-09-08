@@ -1,0 +1,11 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 56,
+  "file": "deck-art/arts-and-crafts/raw-fronts/56-seven-of-swords-v2.png",
+  "suffix": "v2",
+  "edit": "The figure currently carries FOUR swords and leaves TWO planted by the tent, SIX total. Add ONE more distinct sword to the carried bundle, at its far left, with a clearly visible separate pommel, crossguard and blade. The new pommel sits just to the left and a little below the current leftmost pommel; the new blade runs into the carried bundle. Keep the FOUR original carried swords and TWO planted swords unchanged. Result: FIVE carried plus TWO planted equals SEVEN swords. Preserve all figures, scene, botanical border and blank cartouche.",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/56-seven-of-swords.png",
+  "prompt": "Make this precise symbol-count correction to the attached tarot illustration; leave everything else unchanged. The figure currently carries FOUR swords and leaves TWO planted by the tent, SIX total. Add ONE more distinct sword to the carried bundle, at its far left, with a clearly visible separate pommel, crossguard and blade. The new pommel sits just to the left and a little below the current leftmost pommel; the new blade runs into the carried bundle. Keep the FOUR original carried swords and TWO planted swords unchanged. Result: FIVE carried plus TWO planted equals SEVEN swords. Preserve all figures, scene, botanical border and blank cartouche.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-3569ee38-d03c-403e-8e8d-dcf9e7973fe0.png",
+  "tool": "image_gen.imagegen"
+}

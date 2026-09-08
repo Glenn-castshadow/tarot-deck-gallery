@@ -1,0 +1,13 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 72,
+  "number": "Nine",
+  "name": "Nine of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/arts-and-crafts/raw-fronts/72-nine-of-pentacles-v3.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/72-nine-of-pentacles-v2.png",
+  "prompt": "Precisely edit the attached artwork. Add ONE golden pentacle disk in the empty green foliage directly ABOVE the top RIGHT disk (center of new disk x75%, y46%). Keep all FIVE left disks and THREE existing right disks unchanged. Final five on left and four on right, nine total. Do not remove any existing disk. Preserve the entire portrait image, dimensions, style, palette, figure and all other features. No text.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-55e19a9a-90d4-478c-9ca1-844ca2d72aae.png",
+  "tool": "image_gen.imagegen"
+}

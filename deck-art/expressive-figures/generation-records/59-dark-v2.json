@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 59,
+  "number": "Ten",
+  "name": "Ten of Swords",
+  "category": "swords",
+  "file": "deck-art/expressive-figures/raw-fronts/59-ten-of-swords-dark-v2.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+  "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: TEN OF SWORDS.\nScene: Exactly TEN separate swords stand planted in a clean row along the edge of an empty charcoal platform. A discarded pale cloak rests before them; far away a fully clothed person walks toward a thin golden sunrise. No blades touching a body. A stark allegory of a difficult ending and release.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-b50b68e3-40c6-4f41-80e6-dfc803f4a776.png",
+  "tool": "image_gen.imagegen"
+}

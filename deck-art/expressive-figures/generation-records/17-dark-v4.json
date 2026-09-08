@@ -1,0 +1,10 @@
+{
+  "deck": "expressive-figures",
+  "index": 17,
+  "version": "dark-v4",
+  "file": "deck-art/expressive-figures/raw-fronts/17-the-star-dark-v4.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/17-the-star-dark-v3.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. There are SIX small stars and one large central star. Add exactly ONE small eight-pointed ochre star in the empty area at x22%, y35% of canvas, below the lowest left star. Preserve all other stars and all artwork. Result exactly SEVEN small stars plus ONE large central star. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-279d0194-c8b0-4c8b-b2b4-e34594eaa018.png",
+  "tool": "image_gen.imagegen"
+}

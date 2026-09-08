@@ -1,0 +1,11 @@
+{
+  "deck": "expressive-figures",
+  "index": 27,
+  "file": "deck-art/expressive-figures/raw-fronts/27-six-of-wands-dark-v3.png",
+  "suffix": "dark-v3",
+  "edit": "The procession has SEVEN wands. Remove ONLY the shorter background wand on the left, whose pointed top sits around 24.5 percent image width and 35 percent image height. Restore the dark background and robes behind that one rod. Preserve the wreath-topped wand held by the rider and ALL FIVE other procession wands. Result: exactly SIX wands total. Preserve the dark Bacon-inspired paint, figures, horse and composition.",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/27-six-of-wands-dark-v2.png",
+  "prompt": "Make this precise symbol-count correction to the attached tarot illustration; leave everything else unchanged. The procession has SEVEN wands. Remove ONLY the shorter background wand on the left, whose pointed top sits around 24.5 percent image width and 35 percent image height. Restore the dark background and robes behind that one rod. Preserve the wreath-topped wand held by the rider and ALL FIVE other procession wands. Result: exactly SIX wands total. Preserve the dark Bacon-inspired paint, figures, horse and composition.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-2c912b25-1458-420b-9b03-b26e73e666d5.png",
+  "tool": "image_gen.imagegen"
+}

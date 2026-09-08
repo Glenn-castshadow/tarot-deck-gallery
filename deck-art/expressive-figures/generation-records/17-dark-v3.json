@@ -1,0 +1,11 @@
+{
+  "deck": "expressive-figures",
+  "index": 17,
+  "file": "deck-art/expressive-figures/raw-fronts/17-the-star-dark-v3.png",
+  "suffix": "dark-v3",
+  "edit": "The Star must have ONE large central star plus SEVEN smaller stars. The current image has NINE smaller stars. Remove ONLY TWO small stars: the lowest far-right star around 80 percent width and 42 percent height, AND the middle-left star around 27 percent width and 28 percent height. Restore the dark vertically streaked paint behind them. Keep all other SEVEN small stars and the ONE large central star, figure, pitchers, water, dark palette and all paint handling exactly.",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/17-the-star-dark-v2.png",
+  "prompt": "Make this precise symbol-count correction to the attached tarot illustration; leave everything else unchanged. The Star must have ONE large central star plus SEVEN smaller stars. The current image has NINE smaller stars. Remove ONLY TWO small stars: the lowest far-right star around 80 percent width and 42 percent height, AND the middle-left star around 27 percent width and 28 percent height. Restore the dark vertically streaked paint behind them. Keep all other SEVEN small stars and the ONE large central star, figure, pitchers, water, dark palette and all paint handling exactly.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-0f758325-a4ba-4ad8-9e90-4468686a9327.png",
+  "tool": "image_gen.imagegen"
+}

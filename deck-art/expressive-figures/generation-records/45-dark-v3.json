@@ -1,0 +1,10 @@
+{
+  "deck": "expressive-figures",
+  "index": 45,
+  "version": "dark-v3",
+  "file": "deck-art/expressive-figures/raw-fronts/45-ten-of-cups-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/45-ten-of-cups-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. The rainbow has ELEVEN chalices. Remove only the far-right, lowest chalice at x93%, y25%, including bowl stem and foot; restore rainbow and dark background. Keep the other TEN chalices unchanged. Exactly ten cups. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-73610cee-6065-4d9a-9b8b-a927d268b455.png",
+  "tool": "image_gen.imagegen"
+}

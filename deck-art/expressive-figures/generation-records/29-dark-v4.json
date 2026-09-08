@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 29,
+  "number": "Eight",
+  "name": "Eight of Wands",
+  "category": "wands",
+  "file": "deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v4.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v3.png",
+  "prompt": "Precisely edit the attached artwork. Add ONE separate wooden flying staff in the clear dark sky immediately BELOW the lowest existing staff, from x9%, y59% to x75%, y76%, parallel to the existing staffs. Keep every one of the SEVEN existing staffs unchanged, including all seven right endpoints. Exactly eight visible staffs after this addition. Keep river and sunset. Preserve the entire portrait image, dimensions, style, palette, figure and all other features. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-f795d9d4-079c-4284-8866-dea7aea7271f.png",
+  "tool": "image_gen.imagegen"
+}

@@ -1,0 +1,395 @@
+{
+  "status": "All 237 selected source illustrations reviewed. Numbered suit discrepancies corrected with built-in imagegen. Selected versions listed in each generation-plan.json.",
+  "decks": {
+    "light-minimal": {
+      "fronts": 78,
+      "backs": 1,
+      "selected_revisions": [
+        {
+          "index": 27,
+          "file": "deck-art/light-minimal/raw-fronts/27-six-of-wands-v2.png"
+        },
+        {
+          "index": 28,
+          "file": "deck-art/light-minimal/raw-fronts/28-seven-of-wands-v3.png"
+        },
+        {
+          "index": 30,
+          "file": "deck-art/light-minimal/raw-fronts/30-nine-of-wands-v3.png"
+        },
+        {
+          "index": 70,
+          "file": "deck-art/light-minimal/raw-fronts/70-seven-of-pentacles-v2.png"
+        },
+        {
+          "index": 71,
+          "file": "deck-art/light-minimal/raw-fronts/71-eight-of-pentacles-v2.png"
+        },
+        {
+          "index": 72,
+          "file": "deck-art/light-minimal/raw-fronts/72-nine-of-pentacles-v2.png"
+        }
+      ]
+    },
+    "arts-and-crafts": {
+      "fronts": 78,
+      "backs": 1,
+      "selected_revisions": [
+        {
+          "index": 26,
+          "file": "deck-art/arts-and-crafts/raw-fronts/26-five-of-wands-v3.png"
+        },
+        {
+          "index": 27,
+          "file": "deck-art/arts-and-crafts/raw-fronts/27-six-of-wands-v2.png"
+        },
+        {
+          "index": 30,
+          "file": "deck-art/arts-and-crafts/raw-fronts/30-nine-of-wands-v4.png"
+        },
+        {
+          "index": 56,
+          "file": "deck-art/arts-and-crafts/raw-fronts/56-seven-of-swords-v2.png"
+        },
+        {
+          "index": 59,
+          "file": "deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v5.png"
+        },
+        {
+          "index": 69,
+          "file": "deck-art/arts-and-crafts/raw-fronts/69-six-of-pentacles-v2.png"
+        },
+        {
+          "index": 70,
+          "file": "deck-art/arts-and-crafts/raw-fronts/70-seven-of-pentacles-v3.png"
+        },
+        {
+          "index": 72,
+          "file": "deck-art/arts-and-crafts/raw-fronts/72-nine-of-pentacles-v3.png"
+        }
+      ]
+    },
+    "expressive-figures": {
+      "fronts": 78,
+      "backs": 1,
+      "selected_revisions": [
+        {
+          "index": 0,
+          "file": "deck-art/expressive-figures/raw-fronts/00-the-fool-dark-v2.png"
+        },
+        {
+          "index": 1,
+          "file": "deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png"
+        },
+        {
+          "index": 2,
+          "file": "deck-art/expressive-figures/raw-fronts/02-the-high-priestess-dark-v2.png"
+        },
+        {
+          "index": 3,
+          "file": "deck-art/expressive-figures/raw-fronts/03-the-empress-dark-v2.png"
+        },
+        {
+          "index": 4,
+          "file": "deck-art/expressive-figures/raw-fronts/04-the-emperor-dark-v2.png"
+        },
+        {
+          "index": 5,
+          "file": "deck-art/expressive-figures/raw-fronts/05-the-hierophant-dark-v2.png"
+        },
+        {
+          "index": 6,
+          "file": "deck-art/expressive-figures/raw-fronts/06-the-lovers-dark-v2.png"
+        },
+        {
+          "index": 7,
+          "file": "deck-art/expressive-figures/raw-fronts/07-the-chariot-dark-v2.png"
+        },
+        {
+          "index": 8,
+          "file": "deck-art/expressive-figures/raw-fronts/08-strength-dark-v2.png"
+        },
+        {
+          "index": 9,
+          "file": "deck-art/expressive-figures/raw-fronts/09-the-hermit-dark-v2.png"
+        },
+        {
+          "index": 10,
+          "file": "deck-art/expressive-figures/raw-fronts/10-wheel-of-fortune-dark-v2.png"
+        },
+        {
+          "index": 11,
+          "file": "deck-art/expressive-figures/raw-fronts/11-justice-dark-v2.png"
+        },
+        {
+          "index": 12,
+          "file": "deck-art/expressive-figures/raw-fronts/12-the-hanged-man-dark-v2.png"
+        },
+        {
+          "index": 13,
+          "file": "deck-art/expressive-figures/raw-fronts/13-death-dark-v2.png"
+        },
+        {
+          "index": 14,
+          "file": "deck-art/expressive-figures/raw-fronts/14-temperance-dark-v2.png"
+        },
+        {
+          "index": 15,
+          "file": "deck-art/expressive-figures/raw-fronts/15-the-devil-dark-v2.png"
+        },
+        {
+          "index": 16,
+          "file": "deck-art/expressive-figures/raw-fronts/16-the-tower-dark-v2.png"
+        },
+        {
+          "index": 17,
+          "file": "deck-art/expressive-figures/raw-fronts/17-the-star-dark-v4.png"
+        },
+        {
+          "index": 18,
+          "file": "deck-art/expressive-figures/raw-fronts/18-the-moon-dark-v2.png"
+        },
+        {
+          "index": 19,
+          "file": "deck-art/expressive-figures/raw-fronts/19-the-sun-dark-v2.png"
+        },
+        {
+          "index": 20,
+          "file": "deck-art/expressive-figures/raw-fronts/20-judgement-dark-v2.png"
+        },
+        {
+          "index": 21,
+          "file": "deck-art/expressive-figures/raw-fronts/21-the-world-dark-v2.png"
+        },
+        {
+          "index": 22,
+          "file": "deck-art/expressive-figures/raw-fronts/22-ace-of-wands-dark-v2.png"
+        },
+        {
+          "index": 23,
+          "file": "deck-art/expressive-figures/raw-fronts/23-two-of-wands-dark-v3.png"
+        },
+        {
+          "index": 24,
+          "file": "deck-art/expressive-figures/raw-fronts/24-three-of-wands-dark-v2.png"
+        },
+        {
+          "index": 25,
+          "file": "deck-art/expressive-figures/raw-fronts/25-four-of-wands-dark-v2.png"
+        },
+        {
+          "index": 26,
+          "file": "deck-art/expressive-figures/raw-fronts/26-five-of-wands-dark-v2.png"
+        },
+        {
+          "index": 27,
+          "file": "deck-art/expressive-figures/raw-fronts/27-six-of-wands-dark-v3.png"
+        },
+        {
+          "index": 28,
+          "file": "deck-art/expressive-figures/raw-fronts/28-seven-of-wands-dark-v2.png"
+        },
+        {
+          "index": 29,
+          "file": "deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v4.png"
+        },
+        {
+          "index": 30,
+          "file": "deck-art/expressive-figures/raw-fronts/30-nine-of-wands-dark-v2.png"
+        },
+        {
+          "index": 31,
+          "file": "deck-art/expressive-figures/raw-fronts/31-ten-of-wands-dark-v2.png"
+        },
+        {
+          "index": 32,
+          "file": "deck-art/expressive-figures/raw-fronts/32-page-of-wands-dark-v2.png"
+        },
+        {
+          "index": 33,
+          "file": "deck-art/expressive-figures/raw-fronts/33-knight-of-wands-dark-v2.png"
+        },
+        {
+          "index": 34,
+          "file": "deck-art/expressive-figures/raw-fronts/34-queen-of-wands-dark-v2.png"
+        },
+        {
+          "index": 35,
+          "file": "deck-art/expressive-figures/raw-fronts/35-king-of-wands-dark-v2.png"
+        },
+        {
+          "index": 36,
+          "file": "deck-art/expressive-figures/raw-fronts/36-ace-of-cups-dark-v2.png"
+        },
+        {
+          "index": 37,
+          "file": "deck-art/expressive-figures/raw-fronts/37-two-of-cups-dark-v2.png"
+        },
+        {
+          "index": 38,
+          "file": "deck-art/expressive-figures/raw-fronts/38-three-of-cups-dark-v2.png"
+        },
+        {
+          "index": 39,
+          "file": "deck-art/expressive-figures/raw-fronts/39-four-of-cups-dark-v2.png"
+        },
+        {
+          "index": 40,
+          "file": "deck-art/expressive-figures/raw-fronts/40-five-of-cups-dark-v2.png"
+        },
+        {
+          "index": 41,
+          "file": "deck-art/expressive-figures/raw-fronts/41-six-of-cups-dark-v2.png"
+        },
+        {
+          "index": 42,
+          "file": "deck-art/expressive-figures/raw-fronts/42-seven-of-cups-dark-v2.png"
+        },
+        {
+          "index": 43,
+          "file": "deck-art/expressive-figures/raw-fronts/43-eight-of-cups-dark-v2.png"
+        },
+        {
+          "index": 44,
+          "file": "deck-art/expressive-figures/raw-fronts/44-nine-of-cups-dark-v3.png"
+        },
+        {
+          "index": 45,
+          "file": "deck-art/expressive-figures/raw-fronts/45-ten-of-cups-dark-v3.png"
+        },
+        {
+          "index": 46,
+          "file": "deck-art/expressive-figures/raw-fronts/46-page-of-cups-dark-v2.png"
+        },
+        {
+          "index": 47,
+          "file": "deck-art/expressive-figures/raw-fronts/47-knight-of-cups-dark-v2.png"
+        },
+        {
+          "index": 48,
+          "file": "deck-art/expressive-figures/raw-fronts/48-queen-of-cups-dark-v2.png"
+        },
+        {
+          "index": 49,
+          "file": "deck-art/expressive-figures/raw-fronts/49-king-of-cups-dark-v2.png"
+        },
+        {
+          "index": 50,
+          "file": "deck-art/expressive-figures/raw-fronts/50-ace-of-swords-dark-v2.png"
+        },
+        {
+          "index": 51,
+          "file": "deck-art/expressive-figures/raw-fronts/51-two-of-swords-dark-v2.png"
+        },
+        {
+          "index": 52,
+          "file": "deck-art/expressive-figures/raw-fronts/52-three-of-swords-dark-v2.png"
+        },
+        {
+          "index": 53,
+          "file": "deck-art/expressive-figures/raw-fronts/53-four-of-swords-dark-v2.png"
+        },
+        {
+          "index": 54,
+          "file": "deck-art/expressive-figures/raw-fronts/54-five-of-swords-dark-v2.png"
+        },
+        {
+          "index": 55,
+          "file": "deck-art/expressive-figures/raw-fronts/55-six-of-swords-dark-v2.png"
+        },
+        {
+          "index": 56,
+          "file": "deck-art/expressive-figures/raw-fronts/56-seven-of-swords-dark-v3.png"
+        },
+        {
+          "index": 57,
+          "file": "deck-art/expressive-figures/raw-fronts/57-eight-of-swords-dark-v2.png"
+        },
+        {
+          "index": 58,
+          "file": "deck-art/expressive-figures/raw-fronts/58-nine-of-swords-dark-v2.png"
+        },
+        {
+          "index": 59,
+          "file": "deck-art/expressive-figures/raw-fronts/59-ten-of-swords-dark-v2.png"
+        },
+        {
+          "index": 60,
+          "file": "deck-art/expressive-figures/raw-fronts/60-page-of-swords-dark-v2.png"
+        },
+        {
+          "index": 61,
+          "file": "deck-art/expressive-figures/raw-fronts/61-knight-of-swords-dark-v2.png"
+        },
+        {
+          "index": 62,
+          "file": "deck-art/expressive-figures/raw-fronts/62-queen-of-swords-dark-v2.png"
+        },
+        {
+          "index": 63,
+          "file": "deck-art/expressive-figures/raw-fronts/63-king-of-swords-dark-v2.png"
+        },
+        {
+          "index": 64,
+          "file": "deck-art/expressive-figures/raw-fronts/64-ace-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 65,
+          "file": "deck-art/expressive-figures/raw-fronts/65-two-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 66,
+          "file": "deck-art/expressive-figures/raw-fronts/66-three-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 67,
+          "file": "deck-art/expressive-figures/raw-fronts/67-four-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 68,
+          "file": "deck-art/expressive-figures/raw-fronts/68-five-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 69,
+          "file": "deck-art/expressive-figures/raw-fronts/69-six-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 70,
+          "file": "deck-art/expressive-figures/raw-fronts/70-seven-of-pentacles-dark-v3.png"
+        },
+        {
+          "index": 71,
+          "file": "deck-art/expressive-figures/raw-fronts/71-eight-of-pentacles-dark-v3.png"
+        },
+        {
+          "index": 72,
+          "file": "deck-art/expressive-figures/raw-fronts/72-nine-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 73,
+          "file": "deck-art/expressive-figures/raw-fronts/73-ten-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 74,
+          "file": "deck-art/expressive-figures/raw-fronts/74-page-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 75,
+          "file": "deck-art/expressive-figures/raw-fronts/75-knight-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 76,
+          "file": "deck-art/expressive-figures/raw-fronts/76-queen-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 77,
+          "file": "deck-art/expressive-figures/raw-fronts/77-king-of-pentacles-dark-v2.png"
+        },
+        {
+          "index": 78,
+          "file": "deck-art/expressive-figures/raw-backs/back-dark-v2.png"
+        }
+      ]
+    }
+  }
+}

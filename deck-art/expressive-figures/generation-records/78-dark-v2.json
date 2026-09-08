@@ -1,0 +1,12 @@
+{
+  "deck": "expressive-figures",
+  "index": 78,
+  "name": "Card back",
+  "category": "back",
+  "file": "deck-art/expressive-figures/raw-backs/back-dark-v2.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+  "prompt": "Create one abstract CARD BACK for the Francis Bacon-inspired dark tarot deck. Use the attached image as a style reference only: deep black void, bruised violet and blackened oxblood, raw rubbed and scraped canvas, vertical paint streaks and a few sickly ochre or chalk-white flickers. An exactly 180-degree rotationally symmetric two-way design: two opposed gestural abstract human silhouettes enclosed within two opposing fine wire ellipses and a single central dark diamond. Equal visual weight at both ends, no top-only horizon. Isolated shapes feel unsettling and fragile, abstract rather than literal injured bodies. Keep two thirds near-black, no gore, no words, numbers, signature, watermark, beige or gold ornamental border. Full-bleed near-black edges, portrait 3:5, highest resolution, one flat card back.",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-716741e6-e964-4a23-ab38-872edcdbfca6.png",
+  "tool": "image_gen.imagegen"
+}

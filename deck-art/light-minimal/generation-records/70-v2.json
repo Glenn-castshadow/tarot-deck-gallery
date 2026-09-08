@@ -1,0 +1,10 @@
+{
+  "deck": "light-minimal",
+  "index": 70,
+  "version": "v2",
+  "file": "deck-art/light-minimal/raw-fronts/70-seven-of-pentacles-v2.png",
+  "reference": "V:/tarot_game/deck-art/light-minimal/raw-fronts/70-seven-of-pentacles.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. The vine has EIGHT pentacle disks. Remove only the lowest far-right disk (approximately x50%, y77% of full canvas), replacing it with matching leaves, stem and background. Preserve all other SEVEN pentacle disks unchanged. Exactly seven pentacles. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-583c3c09-d9ec-417f-8ef3-438df95d3155.png",
+  "tool": "image_gen.imagegen"
+}

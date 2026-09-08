@@ -1,0 +1,13 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 59,
+  "number": "Ten",
+  "name": "Ten of Swords",
+  "category": "swords",
+  "file": "deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v5.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v4.png",
+  "prompt": "Edit the attached tarot image by ADDING ONE separate horizontal sword on the empty ground below the resting person's hand, inside the botanical frame and above the blank title cartouche. Place this new horizontal sword across x32% to x68% at y84% of the whole canvas: a round pommel and grip on the left, clear crossguard, single long blade pointing right. It must be clearly separate from all upright swords. Preserve all NINE existing upright swords completely unchanged, all nine round pommels must remain visible in their current row. Result nine upright plus one horizontal = ten swords total. Keep all other artwork, colors, pose, blank cartouche, and full dimensions exactly as they are. No blood or additional figures. No text.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-9ac80b7e-f40d-42de-bd4d-bb3d86c22964.png",
+  "tool": "image_gen.imagegen"
+}

@@ -1,0 +1,10 @@
+{
+  "deck": "expressive-figures",
+  "index": 44,
+  "version": "dark-v3",
+  "file": "deck-art/expressive-figures/raw-fronts/44-nine-of-cups-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/44-nine-of-cups-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. The seated figure has TEN chalices on the curved shelf. Remove only the single rightmost chalice at x91%, y32%, including bowl, stem and foot; restore uninterrupted empty shelf/black background. Keep the other NINE chalices unchanged. Exactly nine cups. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-c57ac674-1e14-4c28-a100-719064b16de4.png",
+  "tool": "image_gen.imagegen"
+}

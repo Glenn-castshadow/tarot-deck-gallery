@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 56,
+  "number": "Seven",
+  "name": "Seven of Swords",
+  "category": "swords",
+  "file": "deck-art/expressive-figures/raw-fronts/56-seven-of-swords-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/56-seven-of-swords-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with only this exact symbol correction. Replace ONLY the whole confusing bundle of swords in the traveler's arms with exactly FIVE clear swords, all pointing DOWN in the same direction. Five separate round pommels ABOVE the hands, five grips and crossguards, and five blades pointing diagonally down toward the lower left. No upward-pointing blades. Keep the TWO swords planted by the tent unchanged. Exactly FIVE carried plus TWO planted = SEVEN total. Preserve figure and pose except hand fit. Preserve full canvas dimensions, original style, palette and all other artwork. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-208305d0-65ef-4f94-9206-782b425b65a1.png",
+  "tool": "image_gen.imagegen"
+}

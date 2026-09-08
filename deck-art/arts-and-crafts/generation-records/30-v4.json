@@ -1,0 +1,13 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 30,
+  "number": "Nine",
+  "name": "Nine of Wands",
+  "category": "wands",
+  "file": "deck-art/arts-and-crafts/raw-fronts/30-nine-of-wands-v4.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/30-nine-of-wands-v3.png",
+  "prompt": "Edit the attached card illustration with this ONE precise correction. Add exactly ONE additional upright wooden wand in the large open gap between the fourth and fifth fence rods, centered approximately 43 percent across the image. Match the other pointed wooden fence wands: tip at the same height, bottom on the same ground. There are currently seven fence wands; this addition must produce EIGHT fence wands plus the ONE separate wand held by the man, NINE total. Preserve all seven existing fence wands, the man, his held wand, colors, botanical frame and blank cartouche. Do not replace, erase or move any existing wand. Preserve the full portrait dimensions and everything else. No new text or watermark.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-633d80d7-9adc-4cb0-92d3-6a99b7b081cb.png",
+  "tool": "image_gen.imagegen"
+}

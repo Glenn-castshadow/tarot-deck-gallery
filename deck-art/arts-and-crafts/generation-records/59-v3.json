@@ -1,0 +1,10 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 59,
+  "version": "v3",
+  "file": "deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v3.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v2.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. There are NINE swords in the row. Add exactly ONE complete matching upright sword immediately to the LEFT of the existing leftmost sword: pommel centered x32%, y47%, blade tip x33%, y63%, on the pale upper back fabric. Keep all other NINE swords unchanged. Total TEN swords. Preserve the peaceful symbolic scene, no blood or wounds. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-3244676f-e37b-4e55-9ec9-6e5621b80fcf.png",
+  "tool": "image_gen.imagegen"
+}

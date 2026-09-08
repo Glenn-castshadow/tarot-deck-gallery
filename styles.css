@@ -100,6 +100,29 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-note span { color: var(--gold-light); margin-right: 5px; }
 
 .reading-controls { flex-wrap: wrap; }
+.reading-intro, .reading-controls, .reading-deck-picker { grid-column: 1 / -1; }
+.reading-intro h2 { max-width: 700px; }
+.reading-deck-picker { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.reading-deck-picker button { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 12px; border: 1px solid rgba(255,250,244,.2); background: rgba(255,250,244,.04); color: var(--cream); text-align: left; }
+.reading-deck-picker button[aria-pressed="true"] { border-color: var(--gold-light); background: rgba(230,177,126,.13); box-shadow: inset 0 -3px var(--gold-light); }
+.reading-deck-picker button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+.reading-deck-picker img { width: 48px; height: 80px; object-fit: contain; flex-shrink: 0; }
+.reading-deck-picker strong { display: block; font: 600 clamp(16px, 1.7vw, 21px)/1.2 "Playfair Display", serif; }
+.reading-deck-picker small { display: block; margin-top: 7px; font-size: 11px; line-height: 1.5; color: rgba(255,250,244,.7); }
+.reading-room:not([data-deck="ishtar"]) .drawn-card { padding: 0; border: 0; aspect-ratio: 3 / 5; background: transparent; }
+.reading-room:not([data-deck="ishtar"]) .drawn-card::before { display: none; }
+.reading-room:not([data-deck="ishtar"]) .drawn-card-inner { padding: 0; }
+.reading-room:not([data-deck="ishtar"]) .drawn-card-inner img { object-fit: contain; }
+@media (max-width: 1000px) {
+  .reading-deck-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .reading-deck-picker { gap: 8px; }
+  .reading-deck-picker button { flex-direction: column; align-items: start; gap: 10px; padding: 10px 8px; }
+  .reading-deck-picker img { width: 42px; height: 70px; }
+  .reading-deck-picker strong { font-size: 14px; }
+  .reading-deck-picker small { font-size: 10px; }
+}
 .reading-tabs { flex-wrap: wrap; }
 .reading-tab { min-height: 44px; }
 .ishtar-library { grid-column: 1 / -1; min-width: 0; position: relative; z-index: 1; }

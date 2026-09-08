@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 12,
+  "number": "XII",
+  "name": "The Hanged Man",
+  "category": "major",
+  "file": "deck-art/expressive-figures/raw-fronts/12-the-hanged-man-dark-v2.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+  "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: THE HANGED MAN.\nScene: A serene fully clothed adult floats freely upside down inside a spare geometric enclosure, supported by dreamlike levitation. One leg straight, the other bent across it, arms relaxed behind the back, a small painted halo. No rope or restraints. An impossible allegory of voluntary pause and changed perspective.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-a3cacc7b-09c0-491f-b037-78763fe09966.png",
+  "tool": "image_gen.imagegen"
+}

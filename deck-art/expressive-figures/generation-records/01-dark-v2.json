@@ -1,0 +1,11 @@
+{
+  "deck": "expressive-figures",
+  "index": 1,
+  "name": "The Magician",
+  "file": "deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+  "reference": "User supplied Francis Bacon painting, codex-clipboard-faf44d41-d3c8-418f-8037-8d87da10ec2f.png",
+  "prompt": "Create one NEW ORIGINAL tarot illustration, THE MAGICIAN, using the attached Francis Bacon painting ONLY as a stylistic and emotional reference. Translate its disturbing psychological intensity, obliterated facial features, open dark mouth, vertical dragged paint streaks, rough exposed canvas, sickly ochre and bruised violet against deep black, and thin claustrophobic geometric cage into an original Magician composition. Do not reproduce the reference painting, costume, chair or pose. A solitary adult magician in a black and deep-violet suit stands in a sparse cage, one hand raising a short wand and the other pointing down. Their head is partly rubbed out into a black vertical curtain, an ambiguous open mouth and small ash-white facial fragments catch the light; the figure feels unstable, isolated and unnervingly alive. On one severe dark table, clearly separate: ONE chalice, ONE sword, ONE pentacle disk and ONE short wooden wand. A thin imperfect infinity loop floats above. Strong black void and vertical ochre-black streaks dominate the upper half, purple smears in the suit, an isolated harsh yellow accent. Raw dry-brush and scraped canvas, thin translucent paint, broad rubbed-out passages, abrupt contour deformation. No decorative fantasy illustration, no polite oil portrait, no horizontal speed-line effect, no little tiled impasto strokes. The human distortion is pictorial abstraction, not literal injury; no gore. Near-black edges, FULL BLEED, no beige/parchment border, lettering, numerals, signature or watermark. Portrait 3:5, highest resolution, one flat artwork, all essential symbols safely inside central 85%.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-b0785ba8-ed2a-47a4-bcb2-fb4ca21d43c7.png",
+  "tool": "image_gen.imagegen",
+  "revision": "dark-v2"
+}

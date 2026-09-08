@@ -1,0 +1,11 @@
+{
+  "deck": "expressive-figures",
+  "index": 0,
+  "name": "The Fool",
+  "file": "deck-art/expressive-figures/raw-fronts/00-the-fool-dark-v2.png",
+  "prompt": "Create ONE original tarot card illustration: THE FOOL, in the dark, psychologically disturbing figurative oil-painting language of Francis Bacon. This is a substantially darker, more radical direction for the deck. An isolated adult in a dislocated black suit takes an uncertain step from a thin tilted elliptical platform over a bottomless void. The body is twisted through several incompatible viewpoints, the ash-white and bruised violet face brutally dragged and partly erased by broad curved sweeps of paint, mouth an ambiguous dark oval, a small tied travel bundle and a ghostlike white dog still recognizable at the feet. A thin clinical geometric cage encloses the figure; a severe vermilion-orange vertical plane cuts through the black behind it. At least TWO THIRDS of the canvas is dense near-black, blackened oxblood and deep aubergine void. A few searing orange accents, chalk-white flickers and sickly violet smears. Brutal flat empty color fields versus agitated, rubbed, scraped flesh-colored paint; existential dread, isolation, visceral unease. Not decorative, not romantic, not a warm classical fantasy portrait. Radically distorted anatomy as painted abstraction, without literal injuries or gore. Avoid repeated little impasto tiles or horizontal speed lines; use broad dragged paint, scumbling, erased features and raw canvas tension. NO ivory clothing, parchment border, beige paper, gold ornament, floral frame, sunshine, lettering, title, number, signature or watermark. FULL BLEED near-black outer edges. One flat portrait 3:5 card artwork, highest resolution, important symbols central 85%. Entire composition visible, no mockup.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-4262dc77-acd9-4297-a4ed-ff4db8085baf.png",
+  "tool": "image_gen.imagegen",
+  "revision": "dark-v2",
+  "reason": "User requested a darker Bacon-inspired deck."
+}

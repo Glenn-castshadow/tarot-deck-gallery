@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 70,
+  "number": "Seven",
+  "name": "Seven of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/expressive-figures/raw-fronts/70-seven-of-pentacles-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/70-seven-of-pentacles-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with only this exact symbol correction. Remove ONLY the single lowest-right pentacle disk centered x75%, y75%, restoring matching vine leaves and black background. Preserve the other SEVEN disks. No additions. Exactly seven pentacles. Preserve full canvas dimensions, original style, palette and all other artwork. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-964137f9-2048-4eb9-8705-bbc26f0b2747.png",
+  "tool": "image_gen.imagegen"
+}

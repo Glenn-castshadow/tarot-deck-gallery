@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 64,
+  "number": "Ace",
+  "name": "Ace of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/expressive-figures/raw-fronts/64-ace-of-pentacles-dark-v2.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/01-the-magician-dark-v2.png",
+  "prompt": "Create ONE new original tarot illustration inspired by Francis Bacon. The attached revised Magician is STYLE AND MOOD REFERENCE ONLY; create a different composition appropriate to the specified card, never repeat the Magician scene. Match its psychological intensity, rough dry-brushed canvas, vertical dragged paint, erased and distorted human features, thin clinical geometric enclosures, deep black void, blackened oxblood, bruised violet and isolated sickly ochre or harsh orange accents. At least two thirds of the scene stays very dark; symbolic objects catch enough light to remain readable. Faces may be rubbed away, doubled, stretched or reduced to an ambiguous dark mouth; vary the expression to fit the card instead of making every figure identical. Bold spare architecture and unsettling negative space, raw scumbling and scraped paint, abrupt deformed contours. Fully clothed figures in dark garments. Interpret any bright or serene scene motifs below through this same dark expressive palette. Original tarot symbolism must remain recognizable, and every specified suit object must be distinct and countable, never hidden behind figures. No literal injuries, gore, decorative fantasy portrait, warm classical painting, tiled impasto, horizontal speed lines, ivory robes or beige parchment. Full bleed near-black edges; no lettering, numerals, title, signature, border or watermark. One flat portrait 3:5 artwork at highest resolution, important subjects central 85%.\nCard: ACE OF PENTACLES.\nScene: ONE hand emerges from a cloud offering ONE large golden disk marked with a simple five-point star. Below, a small flowering garden path passes through an open arch toward distant mountains. Material opportunity.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-14b90f00-c0c1-4b90-8bc2-47ad3c965add.png",
+  "tool": "image_gen.imagegen"
+}

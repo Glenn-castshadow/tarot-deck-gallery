@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 71,
+  "number": "Eight",
+  "name": "Eight of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/expressive-figures/raw-fronts/71-eight-of-pentacles-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/71-eight-of-pentacles-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with only this exact symbol correction. Remove ONLY the single lowest-left wall pentacle disk centered x24%, y58%, restoring dark dragged paint background. Keep the other SEVEN wall disks and ONE workbench disk. Exactly EIGHT pentacles total. No additions. Preserve full canvas dimensions, original style, palette and all other artwork. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-e9942828-3ae4-42bd-8249-b9b1355eff37.png",
+  "tool": "image_gen.imagegen"
+}

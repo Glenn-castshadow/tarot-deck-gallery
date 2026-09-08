@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=ishtar-library-1" />
+    <link rel="stylesheet" href="styles.css?v=four-decks-1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -32,6 +32,12 @@
           <p>Draw one card for a daily focus, or open a three-card spread for a wider story. Your daily card stays the same until tomorrow.</p>
           <span class="reading-badge">Ishtar Insights · 78-card core</span>
         </div>
+        <div class="reading-deck-picker" role="group" aria-label="Choose your deck">
+          <button type="button" data-reading-deck="ishtar" aria-pressed="true"><img src="assets/ishtar-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Ishtar Insights</strong><small>Lotus &amp; luminous color</small></span></button>
+          <button type="button" data-reading-deck="moebius" aria-pressed="false"><img src="assets/light-minimal-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Moebius-inspired</strong><small>Light, open &amp; otherworldly</small></span></button>
+          <button type="button" data-reading-deck="arts-and-crafts" aria-pressed="false"><img src="assets/arts-and-crafts-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Arts &amp; Crafts</strong><small>Botanical &amp; symbolic</small></span></button>
+          <button type="button" data-reading-deck="bacon" aria-pressed="false"><img src="assets/expressive-figures-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Francis Bacon-inspired</strong><small>Raw &amp; expressive</small></span></button>
+        </div>
         <div class="reading-controls">
           <div class="reading-tabs" role="group" aria-label="Reading room views">
             <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
@@ -46,12 +52,12 @@
             <div>
               <p class="section-kicker">The complete deck</p>
               <h3 id="ishtar-title">Ishtar Insights</h3>
-              <p>78 illustrated cards. One unfolding story. Explore every Major Arcana, every suit, and the mirrored card back.</p>
+              <p id="reading-deck-description">78 illustrated cards. One unfolding story. Explore every Major Arcana, every suit, and the matching card back.</p>
             </div>
             <span class="ishtar-library-count">22 Major · 56 Minor</span>
           </header>
           <div class="ishtar-library-tools">
-            <div class="ishtar-filters" role="group" aria-label="Filter Ishtar deck">
+            <div class="ishtar-filters" role="group" aria-label="Filter deck cards">
               <button type="button" data-ishtar-filter="all" aria-pressed="true">All cards <span>78</span></button>
               <button type="button" data-ishtar-filter="major" aria-pressed="false">Major Arcana <span>22</span></button>
               <button type="button" data-ishtar-filter="Wands" aria-pressed="false">Wands <span>14</span></button>
@@ -60,13 +66,13 @@
               <button type="button" data-ishtar-filter="Pentacles" aria-pressed="false">Pentacles <span>14</span></button>
               <button type="button" data-ishtar-filter="back" aria-pressed="false">Card back</button>
             </div>
-            <label class="ishtar-search"><span class="sr-only">Search Ishtar cards</span><input id="ishtar-search" type="search" placeholder="Find a card…" autocomplete="off"></label>
+            <label class="ishtar-search"><span class="sr-only">Search cards</span><input id="ishtar-search" type="search" placeholder="Find a card…" autocomplete="off"></label>
           </div>
           <div class="ishtar-grid-intro"><p id="ishtar-results" role="status"></p><span>Choose a card to look closer ↗</span></div>
           <div id="ishtar-grid" class="ishtar-grid"></div>
           <div id="ishtar-empty" class="ishtar-empty" hidden><p>No cards match this search.</p><button type="button" id="ishtar-reset">Show the full deck</button></div>
         </section>
-        <p class="reading-note"><span>✧</span> For reflection and creative practice. Click any drawn card to inspect the full artwork and meaning. Daily Card and Pick 3 use the Ishtar Insights deck artwork with a standard 78-card meaning core.</p>
+        <p class="reading-note"><span>✧</span> For reflection and creative practice. Choose a deck for Daily Card, Pick 3 or a closer look at all 78 cards. Changing decks keeps your current cards so you can compare the artwork. Each deck uses the same 78-card meaning core.</p>
 
         <div class="birthday-panel">
           <div class="birthday-intro">
@@ -125,6 +131,6 @@
       <div id="dialog-content"></div>
     </dialog>
     <div id="dialog-backdrop" class="dialog-backdrop" hidden></div>
-    <script src="app.js?v=ishtar-library-1"></script>
+    <script src="app.js?v=four-decks-1"></script>
   </body>
 </html>

@@ -1,0 +1,13 @@
+{
+  "deck": "expressive-figures",
+  "index": 10,
+  "number": "X",
+  "name": "Wheel of Fortune",
+  "category": "major",
+  "file": "deck-art/expressive-figures/raw-fronts/10-wheel-of-fortune.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/00-the-fool.png",
+  "prompt": "Use case: illustration-story. Create ONE new original tarot illustration inspired by the painter Francis Bacon. The attached Fool image is a STYLE REFERENCE ONLY: match its raw, smeared and scumbled oil paint, expressive distorted human contours, severe open geometric enclosures, isolated symbolic figures, burnt orange, oxblood, smoky mauve, pale cream and charcoal color fields. Create an ORIGINAL different composition for the specified tarot card, not a copy of a known painting or the reference scene. Strong central subject, readable tarot symbols, tension between flat empty space and vigorously worked paint. Fully clothed figures. Express distortion through paint and layered motion, not physical injury. All symbolic objects must remain distinct and countable, especially the specified number of cups, swords, wands or pentacle disks. No blood, wounds, gore, suffering animals, nudity, lettering, numerals, signature, decorative border, mockup or watermark. One flat portrait 3:5 illustration, highest available resolution. Important imagery inside central 85%, quiet outer margins for later typesetting.\nCard: WHEEL OF FORTUNE.\nScene: A large eight-spoked wheel stands upright or floats over a landscape, an ascending small animal on one side and descending serpent on the other. A composed sphinx atop the wheel, small winged beings in four corners. Cycles and change. No letters on the wheel.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-9d674201-9b86-44db-8540-1b44dcf6be4e.png",
+  "tool": "image_gen.imagegen"
+}

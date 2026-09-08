@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 29,
+  "number": "Eight",
+  "name": "Eight of Wands",
+  "category": "wands",
+  "file": "deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/29-eight-of-wands-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with ONE exact count correction. The Eight of Wands currently shows SIX diagonal staffs. Add precisely TWO matching separate diagonal flying wooden staffs parallel to the existing ones in the upper dark sky, one between the top and second staff, another in the clear topmost sky above the current top staff. Each must have its own continuous shaft and clear end. Keep the existing six. Exactly EIGHT total. Preserve the river and dark palette. Preserve all other artwork, full portrait dimensions, style and layout. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-ab8984bd-f621-45cf-bed2-cfcf72c35ad3.png",
+  "tool": "image_gen.imagegen"
+}

@@ -22,3 +22,21 @@ Desktop.ini
 # or archive intentionally needs the large binary files in Git.
 deck-art/ishtar-insights/raw-fronts/*.png
 deck-art/ishtar-insights/print-ready/**/*.png
+deck-art/light-minimal/raw-fronts/*.png
+deck-art/light-minimal/raw-backs/*.png
+deck-art/light-minimal/proofs/**/*.png
+deck-art/light-minimal/print-ready/**/*.png
+deck-art/arts-and-crafts/raw-fronts/*.png
+deck-art/arts-and-crafts/raw-backs/*.png
+deck-art/arts-and-crafts/proofs/*.png
+deck-art/arts-and-crafts/print-ready/**/*.png
+deck-art/companion-generation-queue.json
+__pycache__/
+deck-art/*/generation-records/*.error.json
+deck-art/*/major-review.jpg
+deck-art/expressive-figures/raw-fronts/*.png
+deck-art/expressive-figures/raw-backs/*.png
+deck-art/expressive-figures/print-ready/**/*.png
+deck-art/expressive-figures/generation-queue.json
+deck-art/expressive-figures/dark-generation-queue.json
+deck-art/*/*-review.jpg

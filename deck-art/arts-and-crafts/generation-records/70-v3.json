@@ -1,0 +1,13 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 70,
+  "number": "Seven",
+  "name": "Seven of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/arts-and-crafts/raw-fronts/70-seven-of-pentacles-v3.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/70-seven-of-pentacles-v2.png",
+  "prompt": "Precisely edit the attached artwork. Erase the lowest golden star disk, the one closest to the bottom crosspiece of the wooden trellis (center x71%, y62%). The erased area must be green leaves only, no circle and no star. Keep the seven disks higher on the plant exactly unchanged. Do not replace or relocate the erased disk. Preserve the entire portrait image, dimensions, style, palette, figure and all other features. No text.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-6b4a5fae-4478-4725-8468-8b64f123d7d3.png",
+  "tool": "image_gen.imagegen"
+}

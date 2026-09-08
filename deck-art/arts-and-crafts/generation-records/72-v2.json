@@ -1,0 +1,10 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 72,
+  "version": "v2",
+  "file": "deck-art/arts-and-crafts/raw-fronts/72-nine-of-pentacles-v2.png",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/72-nine-of-pentacles.png",
+  "prompt": "Edit the attached tarot artwork with this single exact symbol-count correction. There are EIGHT pentacle disks, four on each side of the woman. Add exactly ONE matching pentacle disk in the leafy area on the LEFT at x24%, y38%, above the current highest left disk. Preserve all other eight disks and the figure. Result FIVE left, FOUR right, NINE total. Preserve blank title cartouche. Preserve the entire composition, dimensions, paint style, palette, framing and other symbols. No additional text or watermark.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-af7cfccf-1b5c-4dc7-a09d-312f20d781b1.png",
+  "tool": "image_gen.imagegen"
+}

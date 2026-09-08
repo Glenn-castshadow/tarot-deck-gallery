@@ -1,0 +1,14 @@
+{
+  "deck": "expressive-figures",
+  "index": 23,
+  "number": "Two",
+  "name": "Two of Wands",
+  "category": "wands",
+  "file": "deck-art/expressive-figures/raw-fronts/23-two-of-wands-dark-v3.png",
+  "reference": "V:/tarot_game/deck-art/expressive-figures/raw-fronts/23-two-of-wands-dark-v2.png",
+  "prompt": "Edit the attached tarot artwork with ONE exact count correction. The Two of Wands currently shows only ONE staff on the right. Add ONE matching tall staff at the left edge of the balcony, x17%, from y29% to y91%, with a clear round finial and continuous dark-ochre shaft. Preserve the globe, figure and existing right staff. Exactly TWO staves total. Preserve all other artwork, full portrait dimensions, style and layout. No text.",
+  "source": "new generation",
+  "revision": "dark-v2",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-e2723df5-a1bc-46f2-bf83-c241ef889aa4.png",
+  "tool": "image_gen.imagegen"
+}

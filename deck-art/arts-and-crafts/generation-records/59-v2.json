@@ -1,0 +1,11 @@
+{
+  "deck": "arts-and-crafts",
+  "index": 59,
+  "file": "deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords-v2.png",
+  "suffix": "v2",
+  "edit": "There are ELEVEN swords in the central arc. Remove ONLY the leftmost sword, whose pommel is around 28.5 percent image width and 48 percent image height. Erase that whole sword and restore the fabric and background behind it. Preserve the other TEN swords exactly, and preserve the resting figure, all fabric, sunrise, botanical frame and blank title cartouche. Exactly TEN swords after this one removal. No blood or gore.",
+  "reference": "V:/tarot_game/deck-art/arts-and-crafts/raw-fronts/59-ten-of-swords.png",
+  "prompt": "Make this precise symbol-count correction to the attached tarot illustration; leave everything else unchanged. There are ELEVEN swords in the central arc. Remove ONLY the leftmost sword, whose pommel is around 28.5 percent image width and 48 percent image height. Erase that whole sword and restore the fabric and background behind it. Preserve the other TEN swords exactly, and preserve the resting figure, all fabric, sunrise, botanical frame and blank title cartouche. Exactly TEN swords after this one removal. No blood or gore.",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-538dcb7b-a814-4d01-b8bd-7dfc0e85a1bb.png",
+  "tool": "image_gen.imagegen"
+}

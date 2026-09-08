@@ -1,0 +1,13 @@
+{
+  "deck": "light-minimal",
+  "index": 72,
+  "number": "Nine",
+  "name": "Nine of Pentacles",
+  "category": "pentacles",
+  "file": "deck-art/light-minimal/raw-fronts/72-nine-of-pentacles-v2.png",
+  "reference": "V:/tarot_game/deck-art/light-minimal/raw-fronts/72-nine-of-pentacles.png",
+  "prompt": "Edit the attached card illustration with this ONE precise correction. Correct the Nine of Pentacles count. There are currently only SEVEN pentacle disks in the garden, three to the left and four to the right. Add TWO distinct matching golden pentacle disks among the vines on the LEFT: one above the existing three, around 20 percent image width and 57 percent image height, and one below them, around 20 percent width and 82 percent height. Keep all seven original disks, woman, falcon, robe, flowers, sky and style. Exactly FIVE disks left of the woman and FOUR right, NINE total. Do not obscure any disk. Preserve the full portrait dimensions and everything else. No new text or watermark.",
+  "source": "new generation",
+  "generated_source": "C:\\Users\\glenn\\.codex\\generated_images\\01a07e5f-b009-7ec0-946a-8b1b430375d2\\exec-146eb159-54ef-4229-a90b-18ae64d66b01.png",
+  "tool": "image_gen.imagegen"
+}
