@@ -58,3 +58,4 @@ server/ishtar/.venv/
 server/ishtar/staticfiles/
 server/ishtar/*.sqlite3
 server/ishtar/*.sqlite3-*
+server/ishtar/.dev-secret-key

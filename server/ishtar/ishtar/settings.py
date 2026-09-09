@@ -6,7 +6,36 @@ from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or get_random_secret_key()
+
+def _development_secret_key():
+    """A SECRET_KEY for local development that is stable across process restarts.
+
+    Session cookies (and allauth's in-progress login-by-code state, which lives
+    in request.session) are signed with SECRET_KEY. get_random_secret_key()
+    alone would mint a new key on every process start, and runserver's
+    autoreloader restarts the process on every saved file -- silently
+    invalidating every open session mid-edit. Persist the generated key next
+    to manage.py (gitignored) and reuse it instead of regenerating it.
+    """
+    key_path = BASE_DIR / '.dev-secret-key'
+    try:
+        existing = key_path.read_text(encoding='utf-8').strip()
+        if existing:
+            return existing
+    except OSError:
+        pass  # missing, unreadable, etc. -- generate a fresh one below.
+    key = get_random_secret_key()
+    try:
+        key_path.write_text(key, encoding='utf-8')
+    except OSError:
+        # Read-only filesystem or similar -- management commands must still
+        # work, so fall back to this in-memory key rather than raising. It
+        # just won't be stable across process restarts in this environment.
+        pass
+    return key
+
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or _development_secret_key()
 DEBUG = os.environ.get('DJANGO_DEBUG') == '1'
 ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',') if h]
 CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o]
