@@ -43,3 +43,44 @@ Browser QA: reveals, artwork Face/Back dialog, rune symbols, geomancy shield,
 and 320/390px responsive layouts. Removed the root 320px minimum width to avoid
 scrollbar-induced overflow at a 320px viewport. Changes deployed from the working tree;
 not committed or pushed by this release operation.
+
+## 2026-09-09 Resend transactional email
+
+Login codes for the accounts service (docs/superpowers/plans/2026-09-09-accounts.md) are sent
+through Resend. Account team `castshadow`, owner glenn@castshadow.com, signed up via GitHub.
+Free tier: 3,000 emails/month, 100/day, 3 domains. The 100/day cap is the limit that would
+force a Pro upgrade; nothing else about the tier constrains this project.
+
+Sending domain is the apex `ishtarinsights.com` (Resend domain id
+b754ed9e-a723-41a0-9a68-2f16530a6bd5, region us-east-1 to match the Ashburn VPS). The apex was
+chosen over a `send.` subdomain because the domain carried no existing mail at all, so there was
+no sending reputation or SPF conflict to isolate, and `hello@ishtarinsights.com` is a better
+sender for a login code. Verified 2026-09-09 16:19.
+
+DNS is edited only through the Bluehost account panel: My Account > Domains > ishtarinsights.com
+> Manage Advanced DNS Records. Neither shared cPanel account can reach this zone -- `cpapi2
+ZoneEdit fetchzone` from both box2042 (vegbycmy) and box5508 (gkdesig2) returns "You do not
+possess permission to read the zone". The zone lives at Bluehost account level. Records added:
+
+    TXT    resend._domainkey   p=MIGfMA0G...lPiQIDAQAB   (DKIM)
+    CNAME  rsend               rsend.forge.rmta.net      (sending)
+    CNAME  send                send.forge.rmta.net       (sending)
+    TXT    _dmarc              v=DMARC1; p=none;         (monitoring only)
+
+Both A records for @ and www were left untouched. There is no classic `v=spf1` TXT record --
+Resend delegates sending through the two CNAMEs, so adding a mail provider later will not
+collide. Resend's "Enable Receiving" MX record (inbound-smtp.us-east-1.amazonaws.com) was
+deliberately NOT added: it would route all inbound mail for the domain into Resend and block
+real mailboxes on the domain. Add it only if inbound mail is ever wanted.
+
+Credentials live in `/etc/ishtar-app.env`, mode 600, owned by root, holding `RESEND_API_KEY` and
+`DJANGO_FROM_EMAIL`. The remaining variables from the accounts plan (DJANGO_SECRET_KEY,
+DJANGO_ALLOWED_HOSTS, DJANGO_CSRF_TRUSTED_ORIGINS, NEWSLETTER_ORIGINS) are added when the
+Django service is deployed. Values containing spaces must stay quoted so the file can be sourced
+by a shell as well as read by systemd `EnvironmentFile`. The key is a sending-only key scoped to
+ishtarinsights.com named `ishtar-app-vps`; it cannot create domains or read account data.
+
+Validation: a live message was sent from the VPS with
+`set -a; . /etc/ishtar-app.env; set +a` and a curl POST to https://api.resend.com/emails,
+returning HTTP 200 and id 7cb8ee77-8c69-48c8-97d1-d2cf7a14e226, which Resend recorded as Sent
+and then Delivered at 16:22.

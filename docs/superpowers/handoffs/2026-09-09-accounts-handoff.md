@@ -38,16 +38,26 @@ the plan's header and Global Constraints. Review each result against the spec be
   on the directory fails because it picks up non-test files; always pass the glob.
 - Bash tool is Git Bash. CRLF warnings on commit are normal; use `git -c core.safecrlf=false`.
 
-## Waiting on Glenn (Task 13 only)
+## Resend: DONE (was "Waiting on Glenn", Task 13)
 
-Glenn has to create the Resend account himself. Task 13 needs from him:
+Completed 2026-09-09. Task 13 is no longer blocked on Glenn; nothing is outstanding here.
 
-1. A Resend API key with sending access (goes into `/etc/ishtar-app.env` on the VPS, never in Git).
-2. The SPF and DKIM records for `ishtarinsights.com`. Try adding them via Bluehost cPanel UAPI
-   first (the plan lists the two candidate accounts); otherwise hand him the records.
+- Resend account exists (team `castshadow`, glenn@castshadow.com, GitHub sign-in).
+- Sending domain `ishtarinsights.com` is **Verified** (id b754ed9e-a723-41a0-9a68-2f16530a6bd5,
+  region us-east-1). DKIM TXT, the two sending CNAMEs and a monitoring DMARC record are live in
+  the Bluehost zone. Resend's inbound MX was deliberately not added.
+- `/etc/ishtar-app.env` already exists on the VPS, mode 600 root-owned, holding `RESEND_API_KEY`
+  (sending-only key `ishtar-app-vps`, scoped to the domain) and `DJANGO_FROM_EMAIL`. Task 12/13
+  should ADD the remaining variables to this file rather than overwriting it. Keep values with
+  spaces quoted so the file can be sourced by a shell as well as read by systemd.
+- End-to-end proven: a live send from the VPS returned HTTP 200 and Resend recorded Delivered.
 
-Tasks 1 through 12 do not need any of this. Build them, then ask Glenn for the key before Task 13.
-Do not create the Resend account, and never type the key into a page or a log.
+Correction to the old note: the SPF/DKIM records are NOT reachable through Bluehost cPanel UAPI.
+Both candidate accounts return "You do not possess permission to read the zone for
+ishtarinsights.com". The zone is edited only in the Bluehost account panel under
+Domains > ishtarinsights.com > Manage Advanced DNS Records. Full details in docs/deployment.md.
+
+Tasks 1 through 12 never needed any of this. Still true: never type the key into a page or a log.
 
 ## Conventions to keep
 
