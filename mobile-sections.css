@@ -1,0 +1,59 @@
+/* Desktop retains the original grids; disclosure controls appear on phones. */
+.mobile-fold, .mobile-fold > .fold-body { display: contents; }
+.mobile-fold > .fold-heading, .mobile-section-index, .mobile-section-return { display: none; }
+.mobile-fold > .fold-body[hidden] { display: none !important; }
+@media screen and (max-width: 700px) {
+  .mobile-section-index { display: block; margin: 0 0 17px; color: #6d586f; font-size: 13px; line-height: 1.7; }
+  .reading-room { gap: 0; padding: 0; margin-bottom: 0; overflow: visible; background: transparent; box-shadow: none; }
+  .reading-room::before { display: none; }
+  .mobile-fold { display: block; min-width: 0; grid-column: 1 / -1; }
+  .mobile-fold > .fold-heading { display: block; margin: 0 !important; font: inherit; }
+  .mobile-fold > .fold-heading > button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 56px; padding: 17px 0; margin: 0; border: 0; border-top: 1px solid #e3c88f44; border-radius: 0; color: #f1d5a4; background: transparent; text-align: left; font: 500 17px/1.35 'Playfair Display', serif; cursor: pointer; }
+  .mobile-fold > .fold-heading > button:focus-visible { outline: 2px solid #a1d7d2; outline-offset: -3px; }
+  .fold-label { min-width: 0; overflow-wrap: anywhere; }
+  .fold-label small { display: block; margin-top: 6px; color: #b9c7cf; font: 11px/1.5 'DM Sans', sans-serif; }
+  .fold-chevron { flex: 0 0 9px; width: 9px; height: 9px; margin: 0 5px 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+  .is-open > .fold-heading .fold-chevron { transform: rotate(225deg); margin-top: 7px; }
+  .mobile-fold > .fold-body { display: block; min-width: 0; }
+  .main-fold { margin-bottom: 10px; border: 1px solid #73566d; background: #2d1d37; color: #fff6e8; scroll-margin-top: 12px; }
+  .main-fold > .fold-heading > button { padding: 21px 18px; border: 0; font-size: 21px; min-height: 96px; scroll-margin-top: 12px; }
+  .main-fold > .fold-heading .fold-label small { font-size: 11px; color: #d2c3d4; }
+  .main-fold.is-open > .fold-heading { border-bottom: 1px solid #ad897444; }
+  .main-fold[data-fold-key='tarot'] > .fold-body { display: grid; grid-template-columns: minmax(0,1fr); gap: 22px; padding: 22px 16px; }
+  .main-fold[data-fold-key='tarot'] .reading-intro { display: none; }
+  .main-fold #birthday-room, .main-fold #astrocartography-room, .main-fold #celestial-extras { margin: 0; border: 0; }
+  .main-fold #birthday-room { padding: 22px 16px; gap: 18px; }
+  .main-fold #birthday-room .celestial-emblem, .main-fold #birthday-room .birthday-intro > .section-kicker,
+  .main-fold #birthday-room .birthday-intro > h3, .main-fold .acg-heading, .main-fold .cx-heading { display: none; }
+  .main-fold #birthday-room .celestial-intro-copy { margin-top: 0; }
+  .main-fold #birthday-room .birthday-navigation { margin-bottom: 18px; }
+  .main-fold[data-fold-key='archive'] { margin-top: 0; }
+  .main-fold[data-fold-key='archive'] > .fold-body { padding: 20px 14px; background: #f3ede4; color: #36223f; }
+  .main-fold[data-fold-key='archive'] .toolbar { margin-top: 0; }
+  .main-fold[data-fold-key='archive'] .gallery-head { margin-top: 22px; }
+  .main-fold[data-fold-key='archive'] .gallery { margin-bottom: 0; }
+  .mobile-section-return:not([hidden]) { position: fixed; z-index: 40; right: max(17px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); display: block; min-height: 46px; padding: 11px 18px; border: 1px solid #ead1a6; border-radius: 26px; color: #fff0d6; background: #241a30; box-shadow: 0 4px 20px #0005; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; }
+  .mobile-section-return:focus-visible { outline: 3px solid #a1d7d2; outline-offset: 3px; }
+  .shell { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  .num-intro { padding-bottom: 18px; gap: 0; }
+  .num-intro h4 { font-size: 30px; }
+  .num-intro > div > p:not(.num-kicker) { font-size: 13px; line-height: 1.7; }
+  .num-reading .mobile-fold { margin-top: 21px; }
+  .num-reading .num-reading-pair { margin-top: 5px; border-top: 0; padding-top: 5px; }
+  .num-weave, .num-letter-study, .num-cycle-overview { margin-top: 0; padding-top: 10px; }
+  .num-weave > .num-kicker, .num-letter-study .num-overview-heading h5,
+  .num-cycle-overview .num-overview-heading h5 { display: none; }
+  .num-name-cards { margin-bottom: 18px; }
+  #num-name-results > .num-reading { margin-top: 18px; }
+  .tarot-chapters-grid { gap: 0; }
+  .tarot-chapters-grid .fold-heading > button { color: #ffeed8; font-size: 20px; }
+  .tarot-chapters-grid .tarot-position-reading { border: 0; padding: 5px 0 20px; }
+  .tarot-chapters-grid .tarot-position-reading > :is(.reading-label,h4,.tarot-orientation) { display: none; }
+  .tarot-connections { margin-top: 0; }
+  .tarot-connections > :is(.reading-label,h3) { display: none; }
+  .tarot-synthesis { margin: 0 0 20px; }
+  .num-life-lenses, .num-reading-pair { grid-column: 1 / -1; }
+}
+@media print {
+  .mobile-fold > .fold-body[hidden] { display: contents !important; }
+}

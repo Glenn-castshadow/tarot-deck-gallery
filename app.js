@@ -544,6 +544,7 @@ function updateSpreadReport(lastSlot) {
     button.setAttribute("aria-label", open ? `Read ${slot+1}: ${position.name}, ${tarotCards[currentSpread.cards[slot].index].name}` : `Reveal ${slot+1}: ${position.name}`);
   });
   readingOutput.querySelectorAll('[data-tarot-action="next"], [data-tarot-action="all"]').forEach(button=>{button.disabled=complete;});
+  window.MobileSections?.enhance();
 }
 
 function readingCopy(card, orientation) {
@@ -718,9 +719,10 @@ readingOutput.addEventListener("click", event => {
     const slot=Number(positionButton.dataset.tarotPosition);
     if (!revealedSpread.has(slot)) revealCard(readingOutput.querySelector(`[data-reveal-slot="${slot}"]`));
     const chapter = readingOutput.querySelector(`#tarot-position-${slot}`);
-    chapter.setAttribute("tabindex", "-1");
-    chapter.focus({preventScroll:true});
-    chapter.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+    const chapterTarget = window.MobileSections?.reveal(chapter) || chapter;
+    if (chapterTarget === chapter) chapter.setAttribute("tabindex", "-1");
+    chapterTarget.focus({preventScroll:true});
+    chapterTarget.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
     return;
   }
   const actionButton = event.target.closest("[data-tarot-action]");
@@ -767,7 +769,9 @@ dialog.addEventListener("click", event => { if (event.target === dialog) dialog.
 document.addEventListener("keydown", event => {
   if (event.key === "/" && !dialog.open && !document.querySelector("#sky-dialog").open && !event.target.closest("input, textarea, select, [contenteditable]")) {
     event.preventDefault();
-    (readingMode === "deck" ? ishtarSearch : search).focus();
+    const target = readingMode === "deck" ? ishtarSearch : search;
+    window.MobileSections?.reveal(target);
+    target.focus();
   }
 });
 window.addEventListener("hashchange", () => {

@@ -1,0 +1,187 @@
+/* Mobile disclosures move existing elements without recreating readings or forms. */
+window.MobileSections = (() => {
+  'use strict';
+  const phone = matchMedia('(max-width: 700px)');
+  const states = new Map();
+  const folds = new Set();
+  let serial = 0, observer, returnButton, activeMain = '', enhancing = false;
+
+  function apply(fold) {
+    const open = !phone.matches || Boolean(states.get(fold.dataset.foldKey));
+    fold.classList.toggle('is-open', open);
+    fold.firstElementChild.firstElementChild.setAttribute('aria-expanded', String(open));
+    fold.lastElementChild.hidden = !open;
+  }
+  function refreshReturn() {
+    if (returnButton) returnButton.hidden = !phone.matches || !activeMain;
+  }
+  function setOpen(fold, open) {
+    const group = fold.dataset.foldGroup;
+    if (open && group) for (const other of folds) {
+      if (other !== fold && other.dataset.foldGroup === group) {
+        states.set(other.dataset.foldKey, false); apply(other);
+      }
+    }
+    states.set(fold.dataset.foldKey, open); apply(fold);
+    if (group === 'main') activeMain = open ? fold.dataset.foldKey : '';
+    refreshReturn();
+  }
+  function wrap(elements, title, {key, subtitle = '', group = '', level = 5, open = false} = {}) {
+    elements = elements.filter(Boolean);
+    if (!elements.length || (elements[0].parentElement?.classList.contains('fold-body') &&
+      elements[0].parentElement.parentElement.dataset.foldKey === key)) return;
+    const fold = document.createElement('div');
+    fold.className = `mobile-fold${group === 'main' ? ' main-fold' : ''}`;
+    fold.dataset.foldKey = key;
+    if (group) fold.dataset.foldGroup = group;
+    const heading = document.createElement(`h${level}`);
+    heading.className = 'fold-heading';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = `fold-control-${++serial}`;
+    button.setAttribute('aria-controls', `fold-content-${serial}`);
+    const label = document.createElement('span');
+    label.className = 'fold-label'; label.textContent = title;
+    if (subtitle) {
+      const small = document.createElement('small'); small.textContent = subtitle;
+      label.append(small);
+    }
+    const icon = document.createElement('span');
+    icon.className = 'fold-chevron'; icon.setAttribute('aria-hidden', 'true');
+    button.append(label, icon); heading.append(button);
+    const body = document.createElement('div');
+    body.className = 'fold-body'; body.id = `fold-content-${serial}`;
+    elements[0].before(fold); fold.append(heading, body); body.append(...elements);
+    if (!states.has(key)) states.set(key, open);
+    folds.add(fold); apply(fold);
+    button.addEventListener('click', () => {
+      const opening = !states.get(key);
+      setOpen(fold, opening);
+      // Closing an earlier section can move this row far above the viewport.
+      if (group === 'main' || group === 'card-chapters') button.scrollIntoView({block: 'start', behavior: 'instant'});
+    });
+    return fold;
+  }
+  function enhance() {
+    if (enhancing) return;
+    enhancing = true;
+    const focused = document.activeElement;
+    observer?.disconnect();
+    for (const fold of folds) if (!fold.isConnected) folds.delete(fold);
+    const deckPicker = document.querySelector('.reading-deck-picker');
+    const selectedDeck = deckPicker.querySelector('[aria-pressed="true"] strong').textContent;
+    wrap([deckPicker], 'Your deck', {key: 'deck-choice', level: 3, subtitle: selectedDeck});
+    deckPicker.closest('.mobile-fold').querySelector('.fold-label small').textContent = selectedDeck;
+    document.querySelectorAll('.num-reading-pair').forEach(pair => {
+      const article = pair.parentElement;
+      if (!article.classList.contains('num-reading')) return;
+      const view = article.closest('.num-view').id;
+      wrap([pair, article.querySelector('.num-life-lenses'), article.querySelector('blockquote')],
+        'Explore this number', {key: `${view}-depth`, subtitle: 'Strengths, growth & everyday practice', level: 6});
+    });
+    document.querySelectorAll('.num-weave').forEach(el => wrap([el],
+      el.closest('#num-name') ? 'Name & birth date together' : 'Read the numbers together',
+      {key: `${el.closest('.num-view').id}-weave`}));
+    document.querySelectorAll('.num-letter-study').forEach(el => wrap([el], 'Letter-by-letter calculation', {key: 'name-letters'}));
+    document.querySelectorAll('.num-cycle-overview').forEach((el, i) => wrap([el],
+      el.querySelector('h5').textContent, {key: `cycles-overview-${i}`}));
+    document.querySelectorAll('.tarot-position-reading').forEach(el => wrap([el],
+      el.querySelector('h4').textContent,
+      {key: `${el.id}-${el.querySelector('h4').textContent}`, group: 'card-chapters', level: 4,
+        subtitle: `${el.querySelector('.reading-label').textContent} · ${el.querySelector('.tarot-orientation').textContent}`}));
+    document.querySelectorAll('.tarot-synthesis').forEach(el => wrap([el], 'Your reading, gathered', {key: 'tarot-synthesis', level: 3, subtitle: 'The overall story & your next steps'}));
+    document.querySelectorAll('.tarot-connections').forEach(el => wrap([el], 'The cards in conversation', {key: 'tarot-connections', level: 3}));
+    document.querySelectorAll('.sky-facts').forEach(el => wrap([el], 'Your sky at a glance', {key: 'sky-facts', level: 4}));
+    document.querySelectorAll('.horoscope-lenses').forEach(el => wrap([el], 'Explore your sky reading', {key: 'sky-lenses', level: 4}));
+    document.querySelectorAll('.natal-report').forEach(el => wrap([el], 'Your natal chart in detail', {key: 'natal-report', level: 4, subtitle: 'Placements, houses & aspects'}));
+    // Moving a focused control into its disclosure can otherwise drop keyboard focus.
+    if (focused && focused !== document.body && focused.isConnected &&
+      focused !== document.activeElement && !focused.closest('[hidden]')) focused.focus({preventScroll: true});
+    enhancing = false;
+    observer?.observe(document.querySelector('.reading-room'), {childList: true, subtree: true});
+  }
+  function reveal(target) {
+    if (!target || !phone.matches) return target;
+    enhance();
+    const parents = [];
+    for (let el = target; el; el = el.parentElement) if (el.classList.contains('mobile-fold')) parents.unshift(el);
+    parents.forEach(fold => setOpen(fold, true));
+    return target.closest('.mobile-fold')?.firstElementChild.firstElementChild || target;
+  }
+  function hashTarget() {
+    if (!location.hash) return null;
+    try { return document.getElementById(decodeURIComponent(location.hash.slice(1))) ||
+      (location.hash === '#birthday-numbers' ? document.querySelector('#birthday-room') : null); }
+    catch { return null; }
+  }
+  function followHash() {
+    const target = hashTarget();
+    if (!target) return;
+    reveal(target);
+    if (phone.matches) requestAnimationFrame(() => {
+      target.scrollIntoView({block: 'start', behavior: 'instant'});
+    });
+  }
+  function init() {
+    const room = document.querySelector('.reading-room');
+    const tarotElements = Array.from(room.children).slice(0, Array.from(room.children).findIndex(el => el.id === 'birthday-room'));
+    wrap(tarotElements, 'Tarot readings', {key: 'tarot', group: 'main', level: 2, subtitle: 'Daily card · full reading · explore a deck'});
+    wrap([document.querySelector('#birthday-room')], 'Birth sky & numerology', {key: 'birthday', group: 'main', level: 2, subtitle: 'Your sky · Chinese zodiac · number readings'});
+    wrap([document.querySelector('#astrocartography-room')], 'Astrocartography', {key: 'world', group: 'main', level: 2, subtitle: 'Explore your sky across the world'});
+    wrap([document.querySelector('#celestial-extras')], 'More astrology charts', {key: 'charts', group: 'main', level: 2, subtitle: 'Sky today · two skies · Four Pillars'});
+    wrap(Array.from(document.querySelectorAll('#archive,.gallery-head,#gallery,#empty-state')), 'The deck archive', {key: 'archive', group: 'main', level: 2, subtitle: `Browse ${document.querySelector('#archive-total').textContent} across five centuries`});
+    wrap([document.querySelector('#birthday-form')], 'Birth details', {key: 'birth-form', level: 4,
+      subtitle: 'Birthday, time & birthplace', open: !document.querySelector('#birthday-input').value});
+    const intro = document.createElement('p');
+    intro.id = 'mobile-section-index'; intro.className = 'mobile-section-index';
+    intro.textContent = 'Choose a section to begin. Open only what you want to explore.';
+    room.before(intro);
+    returnButton = document.createElement('button');
+    returnButton.type = 'button'; returnButton.className = 'mobile-section-return';
+    returnButton.textContent = '↑ Sections'; returnButton.setAttribute('aria-label', 'Close this section and return to all sections');
+    returnButton.hidden = true; document.body.append(returnButton);
+    returnButton.addEventListener('click', () => {
+      const current = Array.from(folds).find(f => f.dataset.foldKey === activeMain);
+      for (const fold of folds) if (fold.dataset.foldGroup === 'main') setOpen(fold, false);
+      const focus = current?.firstElementChild.firstElementChild;
+      focus?.focus({preventScroll: true});
+      intro.scrollIntoView({block: 'start', behavior: 'instant'});
+    });
+    observer = new MutationObserver(enhance);
+    enhance();
+    phone.addEventListener('change', () => {
+      const focused = document.activeElement;
+      for (const fold of folds) apply(fold);
+      if (phone.matches && focused && focused !== document.body) reveal(focused);
+      if (!phone.matches && focused?.closest('.fold-heading')) {
+        const content = focused.closest('.mobile-fold').lastElementChild;
+        const control = Array.from(content.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href]'))
+          .find(el => !el.closest('[hidden]') && el.getClientRects().length);
+        const next = control || content.firstElementChild;
+        if (next) {
+          if (!control) next.setAttribute('tabindex', '-1');
+          next.focus({preventScroll: true});
+        }
+      }
+      refreshReturn();
+    });
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-acg-birth],[data-cx-birth]')) reveal(document.querySelector('#birthday-input'));
+      const link = event.target.closest('a[href^="#"]');
+      if (link) {
+        const target = document.getElementById(link.hash.slice(1));
+        reveal(target);
+        if (link.hash === location.hash && target && phone.matches) requestAnimationFrame(() => target.scrollIntoView({block: 'start', behavior: 'instant'}));
+      }
+    }, true);
+    window.addEventListener('hashchange', followHash);
+    window.addEventListener('beforeprint', () => {
+      for (const fold of folds) fold.lastElementChild.hidden = false;
+    });
+    window.addEventListener('afterprint', () => {for (const fold of folds) apply(fold);});
+    followHash();
+    refreshReturn();
+  }
+  return {init, enhance, reveal};
+})();
+MobileSections.init();
