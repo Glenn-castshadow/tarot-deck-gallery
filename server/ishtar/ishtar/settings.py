@@ -9,6 +9,11 @@ DEBUG = os.environ.get('DJANGO_DEBUG') == '1'
 ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',') if h]
 CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o]
 
+# Guard: fail closed if SECRET_KEY is unset in production
+from django.core.exceptions import ImproperlyConfigured
+if not DEBUG and SECRET_KEY == 'insecure-development-key-change-me':
+    raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set in production.')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
