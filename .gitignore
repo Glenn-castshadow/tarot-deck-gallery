@@ -52,3 +52,9 @@ tmp/imagegen/
 
 # Superpowers SDD scratch workspace (ledger, briefs, review packages)
 .superpowers/
+
+# Django app local state
+server/ishtar/.venv/
+server/ishtar/staticfiles/
+server/ishtar/*.sqlite3
+server/ishtar/*.sqlite3-*
