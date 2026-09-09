@@ -1,0 +1,20 @@
+[Unit]
+Description=Ishtar Insights newsletter signup
+After=network.target
+[Service]
+User=ishtar-newsletter
+Group=ishtar-newsletter
+WorkingDirectory=/opt/ishtar-newsletter
+ExecStart=/usr/bin/python3 /opt/ishtar-newsletter/newsletter.py
+Restart=on-failure
+StateDirectory=ishtar-newsletter
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ishtar-newsletter
+RestrictAddressFamilies=AF_INET AF_UNIX
+[Install]
+WantedBy=multi-user.target

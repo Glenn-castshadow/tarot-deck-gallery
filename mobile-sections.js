@@ -108,18 +108,21 @@ window.MobileSections = (() => {
     parents.forEach(fold => setOpen(fold, true));
     return target.closest('.mobile-fold')?.firstElementChild.firstElementChild || target;
   }
-  function hashTarget() {
-    if (!location.hash) return null;
-    try { return document.getElementById(decodeURIComponent(location.hash.slice(1))) ||
-      (location.hash === '#birthday-numbers' ? document.querySelector('#birthday-room') : null); }
+  function hashTarget(hash = location.hash) {
+    if (!hash) return null;
+    if (hash === '#birthday-numbers') setBirthdayView('numbers');
+    if (hash === '#birthday-chinese') setBirthdayView('chinese');
+    if (hash === '#birthday-room') setBirthdayView('sky');
+    try { return document.getElementById(decodeURIComponent(hash.slice(1))) ||
+      (['#birthday-numbers', '#birthday-chinese'].includes(hash) ? document.querySelector('#birthday-room') : null); }
     catch { return null; }
   }
   function followHash() {
     const target = hashTarget();
     if (!target) return;
-    reveal(target);
+    const scrollTarget = reveal(target);
     if (phone.matches) requestAnimationFrame(() => {
-      target.scrollIntoView({block: 'start', behavior: 'instant'});
+      window.scrollTo({top: window.scrollY + scrollTarget.getBoundingClientRect().top - document.querySelector('.section-nav').offsetHeight - 20, behavior: 'instant'});
     });
   }
   function init() {
@@ -129,6 +132,7 @@ window.MobileSections = (() => {
     wrap([document.querySelector('#birthday-room')], 'Birth sky & numerology', {key: 'birthday', group: 'main', level: 2, subtitle: 'Your sky · Chinese zodiac · number readings'});
     wrap([document.querySelector('#astrocartography-room')], 'Astrocartography', {key: 'world', group: 'main', level: 2, subtitle: 'Explore your sky across the world'});
     wrap([document.querySelector('#celestial-extras')], 'More astrology charts', {key: 'charts', group: 'main', level: 2, subtitle: 'Sky today · two skies · Four Pillars'});
+    wrap([document.querySelector('#divination-room')], 'Cards & divination', {key: 'divination', group: 'main', level: 2, subtitle: 'Lenormand · oracle cards · runes · geomancy'});
     wrap(Array.from(document.querySelectorAll('#archive,.gallery-head,#gallery,#empty-state')), 'The deck archive', {key: 'archive', group: 'main', level: 2, subtitle: `Browse ${document.querySelector('#archive-total').textContent} across five centuries`});
     wrap([document.querySelector('#birthday-form')], 'Birth details', {key: 'birth-form', level: 4,
       subtitle: 'Birthday, time & birthplace', open: !document.querySelector('#birthday-input').value});
@@ -169,9 +173,15 @@ window.MobileSections = (() => {
       if (event.target.closest('[data-acg-birth],[data-cx-birth]')) reveal(document.querySelector('#birthday-input'));
       const link = event.target.closest('a[href^="#"]');
       if (link) {
-        const target = document.getElementById(link.hash.slice(1));
-        reveal(target);
-        if (link.hash === location.hash && target && phone.matches) requestAnimationFrame(() => target.scrollIntoView({block: 'start', behavior: 'instant'}));
+        const target = hashTarget(link.hash);
+        const scrollTarget = reveal(target);
+        if (link.closest('.section-nav') && scrollTarget && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+          event.preventDefault();
+          if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+          requestAnimationFrame(() => window.scrollTo({top: window.scrollY + scrollTarget.getBoundingClientRect().top - document.querySelector('.section-nav').offsetHeight - 20, behavior: 'instant'}));
+          return;
+        }
+        if (link.hash === location.hash && scrollTarget && phone.matches) requestAnimationFrame(() => window.scrollTo({top: window.scrollY + scrollTarget.getBoundingClientRect().top - document.querySelector('.section-nav').offsetHeight - 20, behavior: 'instant'}));
       }
     }, true);
     window.addEventListener('hashchange', followHash);

@@ -1,0 +1,933 @@
+{
+  "model": "gpt-image-2",
+  "version": 2,
+  "jobs": [
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-00.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A graceful messenger on a richly harnessed chestnut horse approaching along a flower-lined road at dawn, wind in a blue cloak. The rider and horse are the unmistakable subject."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-01.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A dewy four-leaf clover, four clear heart-shaped leaflets on one stem, rendered like a precious botanical discovery amid tiny white wildflowers and morning light."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-02.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A magnificent three-masted sailing ship with billowing ivory sails traveling on luminous teal water, distant islands and golden clouds."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-03.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A welcoming ivy-covered stone country house with a blue door, glowing windows, a garden gate and late afternoon roses."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-04.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A magnificent ancient tree, visible strong roots and a generous living canopy, sunlit leaves and a deep woodland atmosphere."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-05.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: Layers of dramatic silver and violet clouds, one side stormy and one side opening to warm sunlight, sky as the primary subject."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-06.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single elegant emerald snake winding around a flowering branch, detailed scales, alert graceful head, lush plum-colored background."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-07.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A closed ornate dark wooden coffin surrounded by pale lilies in a quiet moonlit garden. Symbolic dignified ending, beautiful gothic still life, no corpse and no horror."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-08.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: An abundant hand-tied bouquet of roses, peonies, cornflowers and foliage in a vintage glass vase, exquisite petals and a silk ribbon."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-09.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single antique curved steel scythe with wooden handle, gleaming blade over a golden wheat field and tiny blue flowers, no person and no violence."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-10.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: An antique coiled leather riding whip and a bound bundle of slender birch twigs resting on deep burgundy velvet, evocative still life, no person or violence."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-11.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: Two small songbirds perched close together on a flowering branch, one with open beak, intricate feathers and warm morning mist."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-12.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A fully clothed curious child in a blue coat discovering a tiny seedling in a sunlit garden, gentle wonder, child is the central subject."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-13.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A beautiful alert red fox among ferns and autumn berries at the edge of a twilight forest, expressive face and luxuriant fur."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-14.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A powerful calm brown bear beside a woodland stream, copper-lit fur, mossy stones and dark green forest, protective and majestic."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-15.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A breathtaking luminous constellation-filled night sky above a quiet mountain lake, many clearly visible stars and a brilliant guiding star reflected in the water."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-16.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A graceful white stork standing in a lush waterside meadow, long red beak, elegant long legs and luminous wings, spring atmosphere."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-17.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A friendly faithful golden-brown dog sitting by a garden gate, warm intelligent eyes, detailed fur and late afternoon light."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-18.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A tall solitary pale stone tower rising above cypress trees, elegant architecture, distant mountains and a contemplative blue sky."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-19.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A beautiful formal public garden with a fountain, curved paths, trellised roses and distant small fully clothed visitors, abundant cultivated beauty."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-20.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A dramatic high mountain with pale snow summit and immense dark rocky slopes above misty evergreen forest, clearly a mountain landscape."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-21.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A clear fork in a woodland path, two distinct inviting routes diverging around a flowering tree, visible choice, no signposts or text."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-22.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: Two tiny field mice among scattered grain and a loosely woven basket, charming detailed fur and whiskers, quiet amber still life."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-23.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single unmistakable sculpted heart of deep ruby glass resting in a nest of roses and ivy, luminous reflections, elegant symbolic centerpiece."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-24.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single exquisite gold ring with a luminous gemstone resting on ivory silk with a loop of myrtle, commitment as a precious still life."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-25.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A mysterious old bound book partly open on a velvet-covered table, beautiful embossed cover and gilded page edges, no readable writing on cover or pages."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-26.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A folded ivory letter in an open elegant envelope with a red wax seal, quill and a few petals on a dark polished desk, no readable writing."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-27.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A dignified adult man with warm thoughtful expression in elegant timeless fully clothed attire, half-length portrait in a botanical garden, richly detailed painterly realism."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-28.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A dignified adult woman with warm thoughtful expression in elegant timeless fully clothed attire, half-length portrait in a botanical garden, richly detailed painterly realism."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-29.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: Three exquisite white lilies with visible gold stamens, elegant long green stems in soft ivory light, graceful botanical still life."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-30.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A glorious radiant golden sun above a flowering landscape, rays through dawn mist, warmth and vitality, clearly solar imagery."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-31.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A luminous pearl crescent moon above dark blue water, silver reflected light and deep midnight flowers, quiet magical atmosphere."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-32.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single large ornate antique brass skeleton key lying diagonally across deep teal velvet with flowering ivy and a pool of warm light."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-33.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: Two beautiful shimmering fish swimming through clear turquoise water with aquatic plants, sunlight and flowing movement."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-34.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A substantial antique iron anchor resting on smooth shore stones with coiled rope, blue sea and soft distant sails, clear stable central silhouette."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-35.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: jewel-toned botanical storybook realism, luminous gouache and fine engraved gold details, verdigris teal, deep lapis, cream, wine-purple and warm amber highlights. A delicate coherent frame of curling leaves and slender antique gold lines at the extreme edges, with a captivating central scene. Strong recognizability of the named traditional Lenormand subject at thumbnail size. Intricate but purposeful details; avoid clutter and generic mandalas.  Subject: A single ornate gold Latin cross, one vertical beam and one horizontal crossbar, resting amid purple irises on deep violet velvet. Respectful contemplative religious still life."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-00.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A beautiful antique lantern glowing amber on a mossy path through a blue twilight garden, fireflies and soft lotus blossoms."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-01.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An open arched stone doorway between a quiet garden and a luminous landscape, threshold full of possibility, beautiful climbing flowers."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-02.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A deep old stone well with clear luminous water reflecting stars, ferns and silver vines, a sense of restoration."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-03.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A single luminous silk thread winding through flowers and linking two delicate spools, intimate symbolic still life with magical depth."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-04.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A tiny seed opening into a tender green shoot, rich dark soil, dewdrops and radiant morning light, beautiful close-up."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-05.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An elegant antique oval mirror framed by moonflowers, reflecting a tranquil sky and a soft dawn rather than a person."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-06.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A breathtaking meeting of soft foaming sea and smooth pale sand with shells, a clear curving boundary, dusk rose and blue."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-07.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A single glowing ember within a small carefully tended hearth, warm orange light illuminating intricate dark wood grain and tiny sparks."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-08.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A secret lush garden with a winding stone path, flowering herbs and luminous butterflies, cultivation and possibility."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-09.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A beautifully handmade ceramic vessel with iridescent glaze holding clear water, petals and reflected stars, grounded generous form."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-10.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An open window in an old stone wall, sheer fabric moving gently, a wide luminous landscape outside, fresh perspective."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-11.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A delicate arched footbridge over a calm stream, flowering vines linking two verdant banks, warm mist and a sense of repair."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-12.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A delicately woven empty bird nest sheltered in a flowering branch, soft moss and warm reflected light, no eggs necessary."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-13.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An exquisite antique compass with a clearly directional needle on a quiet velvet surface, no letters or numbers, soft paths visible in reflection."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-14.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: Fine luminous rain falling through an evening garden, ripples in a shallow pool, silver blue and soft pink light, release and renewal."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-15.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A narrow inviting mountain footpath winding upward through flowers and soft cloud, distance and patient effort in a beautiful landscape."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-16.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An intricate wooden loom weaving glowing rose, lavender and gold threads into a beautiful textile, no person, rich tactile detail."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-17.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A single small bronze bell suspended from a flowering branch, a delicate silk cord and a suggestion of sound in the light."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-18.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A welcoming stone hearth with a gently glowing fire, folded blanket, handmade cup and amber evening light, no person."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-19.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: An elegant adult open hand gently holding a fallen pale flower, fully natural anatomy, no extra fingers, soft luminous garden setting."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-20.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A sunlit orchard heavy with ripe golden fruit, beautiful branching trees and dappled light, calm abundance."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-21.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A perfectly still mountain lake reflecting a luminous violet dawn, reeds, mist and a quiet shore, no people."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-22.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A graceful small bird returning toward a flowering archway with a thread of sunlight on its wings, homecoming and renewal."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-23.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: poetic dreamlike fine-art illustration, luminous layered oil and gouache, iridescent dusk blues, rose gold, muted lavender, glowing apricot light. Exquisite subtle lotus-petal filigree only at the extreme edges. A beautifully composed meaningful scene with atmospheric depth, tactile surfaces and a gentle sense of wonder. Keep the main symbol unmistakable rather than abstract ornament.  Subject: A richly textured blue wooden door standing open into a radiant morning garden, fresh flowers at the threshold and golden light."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-00.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses stewardship: Resources become useful through care and circulation. Notice what you have, what it costs to maintain, and how it can support a meaningful effort. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-01.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses strength: Strength includes endurance and the ability to work within your limits. Build capacity through manageable effort rather than proving yourself through exhaustion. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-02.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses boundary: A threshold asks for attention before action. Pause long enough to distinguish a useful protective boundary from an impulsive defensive response. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-03.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses expression: Listen for language that clarifies rather than impresses. Learning, conversation and careful expression can change how a problem is understood. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-04.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses journey: Movement becomes a journey when direction and rhythm work together. Review your route and the agreements that help you travel with others. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-05.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses illumination: A focused light reveals detail. Craft, study and curiosity can make a vague idea easier to shape into something useful. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-06.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses exchange: A gift changes a relationship through the way it is offered and received. Look for reciprocity that leaves both people free. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-07.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses belonging: Joy can emerge from shared purpose and small satisfactions. Notice the relationships and practices in which you do not need to perform belonging. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-08.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses disruption: An interruption may expose what needs protection or repair. Work with the actual conditions rather than demanding that everything continue as planned. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-09.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses necessity: A constraint can clarify essentials. Start with what is needed, and avoid confusing a temporary limitation with your whole identity. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-10.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses stillness: A pause may preserve energy or reveal a stuck pattern. Give stillness a purpose, then decide what would signal readiness to move. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-11.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses season: Effort and outcome unfold on different schedules. Attend to repetition, timing and what can be tended now without forcing the harvest. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-12.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses continuity: A dependable inner structure can help you meet transitions. Flexibility and persistence need not cancel one another. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-13.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses uncertainty: Not everything is visible in advance. Leave room for discovery while taking responsibility for the choices you can make now. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-14.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses protection: Protection can be active and relational: asking for support, noticing limits and creating room to respond. It is a practice, not invulnerability. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-15.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses clarity: A clear aim can gather scattered effort. Let confidence grow from what you can observe and practice rather than an expectation of guaranteed success. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-16.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses integrity: A principle becomes real through a choice that honors it. Consider fairness, accountability and the cost you are actually willing to carry. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-17.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses nurture: New growth benefits from shelter and repeated care. This is an invitation to cultivate, not a prediction of pregnancy or family events. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-18.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses cooperation: Shared movement depends on trust, communication and compatible pace. Discuss the route rather than assuming everyone wants the same destination. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-19.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses humanity: Self-understanding develops alongside other people. Make room for your limits, contributions and the perspectives that challenge your assumptions. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-20.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses flow: Feelings can carry useful information without deciding every action. Give them room, then choose a channel that supports you. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-21.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses potential: Some efforts need a protected interval before they are shared. Gather resources and let development have its own pace. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-22.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses perspective: A change in light can reveal another way to understand familiar circumstances. Try a new frame without dismissing what you already know. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-23.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: mythic Nordic woodland still life, museum-quality carved charcoal basalt and jade-green slate, luminous moss, frosted silver, amber firelight, tiny roots and natural mineral veins. A SINGLE large flat oval rune stone fills most of the portrait frame, nestled in a beautiful symbolic environment. The front face of the stone is an uninterrupted dark smooth central area; the exact rune will be overlaid there by the website. DO NOT put any runic glyph, carving, writing, letters, crosses, sigils or symbols on the central stone face. Details and storytelling surround the stone and along its outer rim. The central 40% of the image must remain dark, uncluttered stone, beautifully lit.  Subject: Surrounding environment expresses inheritance: What you inherit may include place, stories, skills and expectations. Choose what to carry forward and what no longer fits your values. Use tangible natural details to convey this theme while preserving the central BLANK stone."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-00.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes movement: The Way emphasizes change and passage. A flexible route may suit this situation better than an attempt to make every condition permanent. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-01.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes collective: The People emphasizes the surrounding group and its rhythms. Listen to shared experience while keeping your own judgment available. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-02.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes lasting support: Greater Fortune suggests strength developed through sustained foundations. Look for the resources that remain useful after immediate enthusiasm passes. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-03.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes passing support: Lesser Fortune suggests help tied to a particular moment or condition. Use the opening thoughtfully while preparing to carry your own momentum. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-04.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes meeting: Conjunction brings paths into contact. An exchange or combination may be useful if the terms and intentions are made clear. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-05.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes containment: Prison points to restriction or a firm container. A limit may focus effort, but examine whether it is protective, chosen or ready to change. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-06.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes gathering: Gain invites attention to what you are taking in. More is useful only when it serves a purpose you can sustain. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-07.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes letting go: Loss asks what can be released or spent. A chosen letting-go may create room, while an unwanted change deserves acknowledgment. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-08.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes uplift: Joy brings an upward movement of spirit. Let encouragement support a real action rather than treating a good feeling as proof of an outcome. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-09.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes grounding: Sorrow brings weight and stillness. Meet disappointment gently and look for practical support rather than forcing optimism. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-10.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes composure: White suggests calm observation and measured response. A quieter approach can reveal distinctions that urgency has obscured. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-11.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes intensity: Red brings heat, appetite and agitation. Strong feeling asks for a constructive channel, especially before making an irreversible choice. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-12.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes initiative: The Boy emphasizes directness and forceful beginnings. Courage works best when it includes awareness of consequences. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-13.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes harmony: The Girl emphasizes attraction, ease and relationship. Seek an honest peace that does not require avoiding a necessary conversation. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-14.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes entry: The Dragon's Head marks an opening and a movement inward. Consider what conditions would make a beginning welcome and sustainable. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "geomancy-15.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. Art direction: sumptuous ancient celestial instrument, antique brass, dark blue enamel, tiny garnets and fine desert sand, warm low light and lapis sky. A SINGLE upright dark polished rectangular plaque with softly rounded corners fills most of the frame, surrounded by a beautiful symbolic environment. The central 40% must be quiet uninterrupted dark enamel, with NO dots or symbols; exact geomantic points will be added by the website. Elaborate refined arabesque engraving only around the outer rim. No invented writing.  Subject: Surrounding environment evokes departure: The Dragon's Tail marks completion and a movement outward. Finish what needs finishing before carrying it into a new setting. The plaque center remains BLANK for exact dots."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "lenormand-back.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. A breathtaking reversible Lenormand card back with exact 180-degree rotational symmetry: two mirrored flowering branches, tiny songbirds, golden keys, clover leaves and intertwining vines around a central intricate eight-point star rosette. Dark lapis and peacock teal ground, ruby berries, cream petals, exquisite antique gold engraving. Rich tactile painted enamel, elegant botanical border. Symmetric top and bottom; no upright-only objects, no text."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "960x1536",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "oracle-back.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. A breathtaking reversible oracle card back with exact 180-degree rotational symmetry: a luminous lotus mandala framed by mirrored crescent moons, flowing rose-gold ribbons, tiny stars and delicate night-blooming flowers. Midnight plum, iridescent lavender, coral-pink and soft gold. Exquisite layered painterly texture, magical depth, refined coherent border. No text."
+    },
+    {
+      "model": "gpt-image-2",
+      "quality": "medium",
+      "size": "768x960",
+      "output_format": "webp",
+      "output_compression": 92,
+      "out": "runes-back.webp",
+      "prompt": "Use case: stylized-concept. Asset: finished flat full-bleed portrait divination card illustration for Ishtar Insights. Create an exceptionally beautiful, interesting, collectible-quality image, lovingly hand-painted detail, refined composition and rich luminous color. This is the complete card artwork viewed perfectly straight on, not a photograph of a physical card, not a product mockup. No text, no letters, no numbers, no labels, no watermark, no outside margin. No additional cards in the image. Keep a quiet narrow band at the very bottom for a label added by the website. A breathtaking ornamental rune stone reverse: a single large oval charcoal basalt stone fills most of the portrait image, with exquisite carved interlacing roots and silver-gold Nordic knotwork that is rotationally balanced around a central polished jade cabochon. Beautiful moss and tiny amber crystals along the outer edge. Magical woodland light, photoreal painterly detail, tactile depth. No runic characters, no letters, no text."
+    }
+  ]
+}

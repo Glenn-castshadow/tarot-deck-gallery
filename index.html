@@ -8,13 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=card-flip-1" />
+    <link rel="stylesheet" href="styles.css?v=divination-art2" />
     <link rel="stylesheet" href="tarot-readings.css?v=1" />
     <link rel="stylesheet" href="astrocartography.css?v=1" />
     <link rel="stylesheet" href="celestial-extras.css?v=1" />
     <link rel="stylesheet" href="celestial-room.css?v=celestial-atlas-1" />
     <link rel="stylesheet" href="numerology.css?v=1" />
     <link rel="stylesheet" href="mobile-sections.css?v=1" />
+    <link rel="stylesheet" href="divination.css?v=art2" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -31,6 +32,17 @@
         </div>
       </header>
 
+      <nav class="section-nav" aria-label="Page sections">
+        <a href="#tarot-readings">Tarot readings</a>
+        <a href="#divination-room">Cards &amp; divination</a>
+        <a href="#birthday-room">Birth sky</a>
+        <a href="#birthday-numbers">Numerology</a>
+        <a href="#birthday-chinese">Chinese zodiac</a>
+        <a href="#astrocartography-room">Astrocartography</a>
+        <a href="#celestial-extras">More astrology</a>
+        <a href="#archive">Deck archive</a>
+      </nav>
+
       <section class="reading-room" aria-labelledby="reading-title">
         <div class="reading-intro">
           <p class="section-kicker">The reading room</p>
@@ -44,7 +56,7 @@
           <button type="button" data-reading-deck="arts-and-crafts" aria-pressed="false"><img src="assets/arts-and-crafts-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Arts &amp; Crafts</strong><small>Botanical &amp; symbolic</small></span></button>
           <button type="button" data-reading-deck="bacon" aria-pressed="false"><img src="assets/expressive-figures-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Francis Bacon-inspired</strong><small>Raw &amp; expressive</small></span></button>
         </div>
-        <div class="reading-controls">
+        <div id="tarot-readings" class="reading-controls" tabindex="-1">
           <div class="reading-tabs" role="group" aria-label="Reading room views">
             <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
             <button class="reading-tab" data-reading-mode="spread" aria-pressed="false">Full reading</button>
@@ -111,6 +123,15 @@
               <label class="natal-manual-toggle"><input id="birth-manual-enabled" type="checkbox"><span>Enter coordinates for an unlisted place</span></label>
               <fieldset id="birth-manual-fields" class="natal-manual-fields" disabled hidden><legend>Custom birthplace</legend><label><span>Latitude <small>north + / south −</small></span><input id="birth-latitude" type="number" min="-89.9999" max="89.9999" step="any" required></label><label><span>Longitude <small>east + / west −</small></span><input id="birth-longitude" type="number" min="-180" max="180" step="any" required></label><label class="natal-full-row"><span>IANA time zone</span><input id="birth-timezone" type="text" list="birth-timezones" placeholder="e.g. America/Los_Angeles" autocomplete="off" required></label><datalist id="birth-timezones"></datalist></fieldset>
             </div></details>
+            <fieldset class="newsletter-signup">
+              <legend>Stay in the circle <small>optional</small></legend>
+              <label for="newsletter-email">Email address</label>
+              <input id="newsletter-email" form="newsletter-form" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" aria-describedby="newsletter-help">
+              <label class="newsletter-consent"><input id="newsletter-consent" form="newsletter-form" type="checkbox"><span>Yes, email me the Ishtar Insights newsletter and occasional updates about new readings and features.</span></label>
+              <p id="newsletter-help">Your reading is available without signing up. Only your email and signup permission are sent to us; your birth details stay in this browser. You can unsubscribe at any time. <a href="newsletter-privacy.html">Newsletter privacy</a></p>
+              <button id="newsletter-join" form="newsletter-form" type="submit">Join the newsletter</button>
+              <p id="newsletter-status" role="status" aria-live="polite"></p>
+            </fieldset>
             <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
           </form>
           <div id="birthday-output" class="birthday-output" aria-live="polite"></div>
@@ -118,6 +139,8 @@
         <section id="astrocartography-room" class="astrocartography-room" aria-labelledby="acg-title"></section>
         <section id="celestial-extras" class="celestial-extras" aria-label="Transits, relationship chart and Four Pillars"></section>
       </section>
+
+      <section id="divination-room" class="divination-room" aria-labelledby="divination-title"></section>
 
       <section id="archive" class="toolbar" aria-label="Gallery controls">
         <div class="filter-group" role="group" aria-label="Filter archive decks">
@@ -152,7 +175,7 @@
 
       <footer class="footer">
         <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
-        <p class="footer-mono">THE ARCANA ARCHIVE / 2026</p>
+        <p><a href="cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
       </footer>
     </main>
 
@@ -174,6 +197,16 @@
       </div>
       <p class="sky-explorer-note">Explore your natal placements or browse the symbolic zodiac guide.</p>
     </dialog>
+    <form id="newsletter-form"></form>
+    <section id="storage-notice" class="storage-notice" aria-labelledby="storage-title" hidden>
+      <h2 id="storage-title">A little space for your next visit</h2>
+      <p>May we save your birth details, deck choice and daily card in this browser? This is optional. You can use every reading without saving. We do not use advertising or analytics cookies.</p>
+      <p><a href="cookie-policy.html">Cookies &amp; browser storage policy</a></p>
+      <p id="storage-status"></p>
+      <div class="storage-actions"><button type="button" data-storage-choice="decline">No optional saving</button><button type="button" data-storage-choice="allow">Allow saving</button></div>
+    </section>
+    <script src="newsletter.js?v=1"></script>
+    <script src="storage-preferences.js?v=1"></script>
     <script src="birthday-insights.js?v=celestial-atlas-1"></script>
     <script src="birthplace-search.js?v=atlas-2"></script>
     <script src="vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
@@ -188,7 +221,11 @@
     <script src="tarot-readings.js?v=1"></script>
     <script src="numerology-engine.js?v=1"></script>
     <script src="numerology.js?v=1"></script>
-    <script src="app.js?v=mobile-sections-1"></script>
-    <script src="mobile-sections.js?v=1"></script>
+    <script src="app.js?v=perspectives-2"></script>
+    <script src="divination-data.js?v=1"></script>
+    <script src="divination-engine.js?v=1"></script>
+    <script src="divination-art.js?v=art2"></script>
+    <script src="divination.js?v=art2"></script>
+    <script src="mobile-sections.js?v=divination-1"></script>
   </body>
 </html>

@@ -76,7 +76,7 @@ const requestedDeck = new URLSearchParams(location.search).get("deck");
 if (Object.hasOwn(readingDecks, requestedDeck)) activeReadingDeck = requestedDeck;
 else {
   try {
-    const savedDeck = localStorage.getItem("arcana-reading-deck-v1");
+    const savedDeck = IshtarStorage.getItem("arcana-reading-deck-v1");
     if (Object.hasOwn(readingDecks, savedDeck)) activeReadingDeck = savedDeck;
   } catch { /* The room also works when storage is unavailable. */ }
 }
@@ -233,7 +233,7 @@ function tarotBirthCardFor(parts) {
 }
 
 
-let birthdayView = location.hash === "#birthday-numbers" ? "numbers" : "sky";
+let birthdayView = location.hash === "#birthday-numbers" ? "numbers" : location.hash === "#birthday-chinese" ? "chinese" : "sky";
 let numerologyRoom = null;
 let birthdayProfileParts = null;
 let natalModel = null;
@@ -347,12 +347,12 @@ birthdayForm.addEventListener("submit", event => {
   event.preventDefault();
   const manual = manualLocationInput.checked ? {source:"manual",label:birthPlaceInput.value.trim() || "Custom location",latitude:Number(document.querySelector("#birth-latitude").value),longitude:Number(document.querySelector("#birth-longitude").value),timeZone:document.querySelector("#birth-timezone").value.trim()} : null;
   const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value };
-  try { localStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
+  try { IshtarStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
   renderBirthdayProfile(saved);
 });
 
 try {
-  const savedBirthday = JSON.parse(localStorage.getItem("arcana-birthday-profile-v1"));
+  const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
   if (savedBirthday?.birthday) {
     birthdayInput.value = savedBirthday.birthday;
     birthTimeInput.value = savedBirthday.time || "";
@@ -371,7 +371,7 @@ try {
     if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
       if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
       savedBirthday.placeLocation=location;savedBirthday.place=location.label;
-      try {localStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+      try {IshtarStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
       renderBirthdayProfile(savedBirthday);
     });
   } else {
@@ -402,7 +402,7 @@ let cardDetailState = null;
 function selectReadingDeck(id) {
   if (!Object.hasOwn(readingDecks, id)) return;
   activeReadingDeck = id;
-  try { localStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
+  try { IshtarStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
   const url = new URL(location.href);
   url.searchParams.set("deck", id);
   try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
@@ -486,14 +486,14 @@ function randomInt(maxExclusive) {
 function getDailyReading() {
   const key = `arcana-daily-v2-${localDateKey()}`;
   try {
-    const saved = JSON.parse(localStorage.getItem(key));
+    const saved = JSON.parse(IshtarStorage.getItem(key));
     if (saved && Number.isInteger(saved.index) && tarotCards[saved.index]) return saved;
   } catch (error) {
     // Private browsing can disable localStorage; the draw still works for this session.
   }
   const index = hashString(localDateKey()) % tarotCards.length;
   const reading = { index, orientation: orientationFor(`${localDateKey()}-orientation`) };
-  try { localStorage.setItem(key, JSON.stringify(reading)); } catch (error) { /* no-op */ }
+  try { IshtarStorage.setItem(key, JSON.stringify(reading)); } catch (error) { /* no-op */ }
   return reading;
 }
 

@@ -44,3 +44,8 @@ deck-art/*/*-review.jpg
 # Model trial images and copied references stay local; prompts and results are tracked.
 evals/tarot-images/runs/**/images/
 evals/tarot-images/runs/**/references/
+
+# Divination generation masters remain on the NAS; keep the prompt manifest.
+output/imagegen/divination-v2/*.webp
+output/imagegen/divination-v2/review/
+tmp/imagegen/
