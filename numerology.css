@@ -1,0 +1,147 @@
+.numerology-room { --num-gold: #efd19a; --num-teal: #a1d7d2; --num-text: #d5e0e5; --num-muted: #aabcc8; --num-line: #dbbd823b; min-width: 0; }
+.numerology-room[hidden], .numerology-room [hidden] { display: none !important; }
+.numerology-room button:focus-visible, .numerology-room input:focus-visible, .numerology-room summary:focus-visible { outline: 2px solid var(--num-teal); outline-offset: 4px; }
+.num-intro { display: grid; grid-template-columns: minmax(0,1fr) 205px; gap: 30px; align-items: center; padding: 10px 0 28px; }
+.numerology-room .num-kicker { color: var(--num-gold); font: 10px/1.6 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .15em; }
+.num-intro h4 { margin: 11px 0 15px; font: 600 clamp(34px, 4vw, 48px)/1.1 'Playfair Display', serif; color: #fff5e5; }
+.num-intro > div > p:not(.num-kicker) { max-width: 570px; color: var(--num-text); font-size: 14px; line-height: 1.85; }
+.num-birth-caption { display: inline-block; color: var(--num-teal); font-size: 11px; line-height: 1.7; margin-top: 18px; }
+.num-intro-orbit { position: relative; width: 184px; height: 184px; border: 1px solid var(--num-line); border-radius: 50%; margin: 13px auto; outline: 1px solid #dbbd8219; outline-offset: -20px; }
+.num-intro-orbit::before { content: ''; position: absolute; inset: 43px; border: 1px solid var(--num-line); transform: rotate(45deg); }
+.num-intro-orbit span { position: absolute; left: calc(50% - 10px); top: calc(50% - 12px); width: 20px; color: var(--num-gold); text-align: center; font: 20px 'Playfair Display', serif; transform: rotate(var(--orbit-angle)) translateY(-91px) rotate(calc(-1 * var(--orbit-angle))); background: #122331; }
+.num-intro-orbit span:nth-child(1) { --orbit-angle: 0deg; }
+.num-intro-orbit span:nth-child(2) { --orbit-angle: 40deg; }
+.num-intro-orbit span:nth-child(3) { --orbit-angle: 80deg; }
+.num-intro-orbit span:nth-child(4) { --orbit-angle: 120deg; }
+.num-intro-orbit span:nth-child(5) { --orbit-angle: 160deg; }
+.num-intro-orbit span:nth-child(6) { --orbit-angle: 200deg; }
+.num-intro-orbit span:nth-child(7) { --orbit-angle: 240deg; }
+.num-intro-orbit span:nth-child(8) { --orbit-angle: 280deg; }
+.num-intro-orbit span:nth-child(9) { --orbit-angle: 320deg; }
+.num-intro-orbit i { position: absolute; inset: 0; display: grid; place-items: center; font-size: 48px; font-style: normal; color: var(--num-teal); }
+.num-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; padding: 0 0 24px; margin-bottom: 26px; border-bottom: 1px solid var(--num-line); }
+.num-tabs button { min-height: 70px; padding: 13px 10px; border: 1px solid var(--num-line); border-radius: 3px; background: #ffffff04; color: #e2e8e9; font-size: 13px; text-align: left; }
+.num-tabs button small { display: block; color: var(--num-muted); margin-top: 6px; font-size: 10px; }
+.num-tabs button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }
+.num-tabs button[aria-pressed='true'] small { color: var(--num-gold); }
+.num-core-cards, .num-cycle-cards, .num-name-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin: 0 0 26px; }
+.num-name-cards { grid-template-columns: repeat(4,minmax(0,1fr)); }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 22px 9px 18px; border: 1px solid var(--num-line); border-radius: 5px; color: var(--num-text); background: radial-gradient(ellipse at top, #9ccfca0d, transparent 75%), #0b1c2733; }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button > span { font: 10px/1.5 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button strong { color: var(--num-teal); font: 500 clamp(40px,5vw,67px)/1.2 'Playfair Display', serif; margin: 13px 0; }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button small { color: var(--num-muted); font-size: 11px; line-height: 1.5; }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button[aria-pressed='true'] { border-color: var(--num-gold); background: linear-gradient(160deg,#c5a86d21,#c5a86d08); }
+:is(.num-core-cards,.num-cycle-cards,.num-name-cards) button[aria-pressed='true'] strong { color: var(--num-gold); }
+.num-reading { padding: clamp(22px,3vw,36px); border: 1px solid var(--num-line); background: #07172266; border-radius: 6px; }
+.num-reading > header { display: flex; gap: 25px; align-items: center; margin-bottom: 24px; }
+.num-seal { position: relative; flex: 0 0 94px; height: 94px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #d6b47b80; border-radius: 50%; outline: 1px solid #d6b47b30; outline-offset: -7px; color: var(--num-gold); }
+.num-seal > span { font: 500 49px/1.1 'Playfair Display', serif; }
+.num-seal > small { margin-top: 3px; font: 9px 'DM Mono', monospace; color: var(--num-teal); }
+.numerology-room h5 { margin: 10px 0 14px; color: #fff3e0; font: 500 clamp(25px,2.5vw,32px)/1.22 'Playfair Display', serif; }
+.num-reading .num-keywords { margin-top: 12px; color: var(--num-teal); font-size: 11px; }
+.num-reading p, .num-weave p, .num-cycle-reading p, .num-section-heading > p:not(.num-kicker) { color: var(--num-text); font-size: 14px; line-height: 1.85; }
+.num-reading > p + p { margin-top: 18px; }
+.num-reading .num-role-lens { color: var(--num-muted); font-size: 13px; }
+.num-reading-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin: 26px 0; padding-top: 24px; border-top: 1px solid var(--num-line); }
+.num-reading h6 { color: var(--num-gold); margin: 0 0 10px; font: 500 17px/1.4 'Playfair Display', serif; }
+.num-life-lenses { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 23px; padding-top: 23px; border-top: 1px solid var(--num-line); }
+.num-life-lenses p { font-size: 12px; line-height: 1.8; }
+.numerology-room blockquote { margin: 27px 0 18px; border-left: 2px solid #afd3c48c; padding: 0 0 0 21px; color: #e8d5ae; font: italic 21px/1.65 'Playfair Display', serif; }
+.num-method { margin-top: 20px; color: var(--num-muted); font-size: 12px; line-height: 1.8; }
+.num-method summary { cursor: pointer; padding: 10px 0; color: var(--num-gold); }
+.num-method p { margin-top: 14px; color: var(--num-muted); font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.num-method a { color: var(--num-gold); text-underline-offset: 3px; }
+.num-calculation { list-style: none; padding: 0; margin: 13px 0; }
+.num-calculation li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 5px 18px; padding: 10px 0; border-bottom: 1px solid #dbbd8224; font-size: 12px; }
+.num-calculation strong { color: var(--num-text); font-family: 'DM Mono', monospace; font-weight: 400; }
+.num-weave { padding: 28px 0 8px; margin-top: 21px; }
+.num-weave p + p { margin-top: 17px; }
+.num-weave strong { color: #e6d2ad; font-weight: 500; }
+.num-section-heading { max-width: 690px; padding: 0 0 24px; }
+.num-date-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 18px; }
+.num-date-controls input { width: 158px; min-width: 0; height: 44px; padding: 9px 11px; font-size: 14px; border: 1px solid var(--num-line); background: #fff9ef09; color: #f5e3c7; color-scheme: dark; border-radius: 2px; }
+.num-date-controls button { min-width: 43px; height: 44px; padding: 8px 11px; background: #fff9ef09; border: 1px solid var(--num-line); color: var(--num-gold); font-size: 12px; }
+.num-date-controls button:disabled, .num-years button:disabled, .num-months button:disabled { opacity: .3; cursor: default; }
+.num-date-caption { color: var(--num-muted); font: 10px/1.7 'DM Mono', monospace; margin: 0 0 23px; }
+.num-cycle-reading { padding: 25px 29px; background: linear-gradient(120deg,#7daa9610,#07172288); border-left: 2px solid var(--num-teal); }
+.num-cycle-reading .num-cycle-context { font-size: 12px; color: var(--num-muted); margin-top: 16px; }
+.num-cycle-overview { margin-top: 34px; }
+.num-overview-heading h5 { font-size: 23px; margin-bottom: 10px; }
+.num-overview-heading p { color: var(--num-muted); font-size: 12px; line-height: 1.7; margin-bottom: 20px; }
+.num-years { display: grid; grid-template-columns: repeat(9,minmax(0,1fr)); gap: 5px; }
+.num-years button { display: flex; flex-direction: column; align-items: center; min-width: 0; border: 1px solid var(--num-line); padding: 13px 3px; border-radius: 35px 35px 5px 5px; background: #ffffff03; color: var(--num-text); }
+.num-years button span { font: 10px 'DM Mono', monospace; }
+.num-years button strong { color: var(--num-teal); font: 33px 'Playfair Display', serif; margin: 12px 0; }
+.num-years button small { font-size: 8px; }
+.num-years button[aria-pressed='true'], .num-months button[aria-pressed='true'] { background: #d9bf8830; border-color: var(--num-gold); }
+.num-years button[aria-pressed='true'] strong, .num-months button[aria-pressed='true'] strong { color: var(--num-gold); }
+.num-months { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; }
+.num-months button { position: relative; padding: 15px; border: 1px solid var(--num-line); border-radius: 4px; background: #ffffff03; color: var(--num-text); text-align: left; min-height: 100px; }
+.num-months button span { display: block; font-size: 12px; }
+.num-months button strong { display: block; color: var(--num-teal); font: 33px/1.2 'Playfair Display', serif; margin: 8px 0 6px; }
+.num-months button small { font-size: 10px; color: #b9c9d1; }
+#num-name-form { margin-bottom: 26px; }
+#num-name-form > label { display: block; color: var(--num-gold); font-size: 12px; margin-bottom: 9px; }
+.num-name-entry { display: flex; flex-wrap: wrap; gap: 10px; }
+.num-name-entry input { flex: 1 1 240px; min-width: 0; max-width: 100%; height: 48px; border: 1px solid var(--num-line); border-radius: 3px; background: #fff9ef08; color: #f5e8d3; padding: 10px 13px; font-size: 16px; }
+.num-name-entry input::placeholder { color: #a7b7c0; }
+.num-name-entry button { min-height: 48px; padding: 10px 20px; background: var(--num-gold); border: 1px solid var(--num-gold); color: #162332; font-size: 13px; border-radius: 3px; }
+.num-name-entry button span { margin-left: 8px; }
+#num-name-help, #num-name-status { color: var(--num-muted); font-size: 11px; line-height: 1.8; margin-top: 12px; overflow-wrap: anywhere; }
+#num-name-status { color: var(--num-teal); }
+#num-y-options { min-width: 0; padding: 17px 20px; border: 1px solid var(--num-line); margin: 25px 0 16px; }
+#num-y-options legend { color: var(--num-gold); font: 15px 'Playfair Display', serif; padding: 0 8px; }
+#num-y-options > p { color: var(--num-muted); font-size: 12px; line-height: 1.8; margin-bottom: 12px; }
+#num-y-choices label { display: flex; align-items: center; gap: 10px; min-height: 44px; color: var(--num-text); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+#num-y-choices input { flex: 0 0 18px; width: 18px; height: 18px; accent-color: var(--num-gold); }
+.num-name-invitation { text-align: center; padding: 30px 20px; border: 1px solid var(--num-line); border-radius: 5px; background: #fff8e704; }
+.num-name-invitation > span { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 15px; color: var(--num-teal); font: 25px 'Playfair Display', serif; margin: 10px 0 25px; }
+.num-name-invitation i { font-style: normal; color: var(--num-gold); }
+.num-name-invitation p { color: var(--num-muted); font-size: 13px; line-height: 1.8; max-width: 540px; margin: auto; }
+.num-letter-study { padding: 23px 0 27px; margin-bottom: 25px; border-block: 1px solid var(--num-line); overflow-wrap: anywhere; }
+.num-letter-words { display: flex; flex-wrap: wrap; gap: 16px 23px; }
+.num-letter-word { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.num-letter { display: flex; flex-direction: column; gap: 7px; align-items: center; width: 31px; padding: 10px 2px; border: 1px solid #e3c88f66; background: #e3c88f16; color: var(--num-gold); }
+.num-letter b { font: 18px 'Playfair Display', serif; }
+.num-letter small { font: 10px 'DM Mono', monospace; color: var(--num-teal); }
+.num-letter.is-muted { opacity: .4; background: transparent; border-color: #e3c88f22; }
+.num-letter-totals { color: var(--num-muted); font: 10px/1.8 'DM Mono', monospace; margin-top: 18px; }
+.num-empty p { color: var(--num-muted); }
+.num-error { padding: 20px; border: 1px solid #d5a391; color: #f0cebc; font-size: 13px; line-height: 1.7; }
+.num-footnote { border-top: 1px solid var(--num-line); padding-top: 23px; margin-top: 28px; }
+.num-footnote > p { color: var(--num-muted); font-size: 11px; line-height: 1.8; }
+@media (max-width: 1100px) {
+  .num-intro { grid-template-columns: 1fr; }
+  .num-intro-orbit { display: none; }
+  .num-life-lenses { grid-template-columns: 1fr; gap: 20px; }
+  .num-years { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .num-years button { border-radius: 4px; display: grid; grid-template-columns: 1fr auto; text-align: left; padding: 12px; }
+  .num-years button strong { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+  .num-years button small { grid-row: 2; margin-top: 5px; font-size: 9px; }
+  .num-name-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .num-tabs { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .num-tabs button { padding: 12px; font-size: 12px; }
+  .num-core-cards, .num-cycle-cards { gap: 6px; }
+  :is(.num-core-cards,.num-cycle-cards) button { padding: 15px 3px; }
+  :is(.num-core-cards,.num-cycle-cards) button > span { font-size: 8px; letter-spacing: .02em; }
+  :is(.num-core-cards,.num-cycle-cards) button strong { font-size: 32px; margin: 10px 0; }
+  :is(.num-core-cards,.num-cycle-cards) button small { font-size: 9px; }
+  .num-reading { padding: 23px 17px; }
+  .num-reading > header { display: block; }
+  .num-seal { width: 85px; height: 85px; margin-bottom: 25px; }
+  .num-reading-pair { grid-template-columns: 1fr; }
+  .num-reading p, .num-weave p, .num-cycle-reading p { font-size: 13px; }
+  .num-months { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+  .num-months button { padding: 10px 6px; }
+  .num-months button span { font-size: 10px; }
+  .num-months button small { font-size: 8px; }
+  .num-date-controls { gap: 6px; }
+  .num-date-controls input { font-size: 16px; width: 148px; padding-inline: 6px; }
+  .num-date-controls button { min-width: 39px; padding-inline: 9px; }
+  .num-cycle-reading { padding: 23px 17px; }
+  .num-name-entry button { width: 100%; }
+  .num-letter { width: 29px; }
+  .numerology-room blockquote { font-size: 19px; padding-left: 16px; }
+}

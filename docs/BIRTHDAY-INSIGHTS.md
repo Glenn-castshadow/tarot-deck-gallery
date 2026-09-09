@@ -20,6 +20,10 @@ Birthplace suggestions use a same-origin GeoNames index and run entirely in the 
 
 ## Number conventions
 
+The number perspective now includes an expanded Pythagorean numerology studio.
+See [NUMEROLOGY.md](NUMEROLOGY.md) for its birth, name and cycle conventions.
+The Lo Shu study below is preserved as a separate view inside that studio.
+
 The Lo Shu arrangement is `4 9 2 / 3 5 7 / 8 1 6`. Every row, column and main diagonal totals 15. See [Wolfram MathWorld](https://mathworld.wolfram.com/LoShu.html).
 
 Counting digits from `YYYYMMDD` is explicitly presented as a **modern birthday overlay**, not an ancient Chinese personality system. Zero is counted but has no square cell. Each cell shows its frequency, including zero occurrences, and remains selectable. Repeated and absent digits have no assigned strength, weakness or fortune score.

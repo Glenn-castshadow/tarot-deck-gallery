@@ -233,7 +233,8 @@ function tarotBirthCardFor(parts) {
 }
 
 
-let birthdayView = "sky";
+let birthdayView = location.hash === "#birthday-numbers" ? "numbers" : "sky";
+let numerologyRoom = null;
 let birthdayProfileParts = null;
 let natalModel = null;
 let natalView = "placements";
@@ -259,7 +260,7 @@ window.addEventListener("afterprint", () => {
   if (natalPrintFocus) birthdayOutput.querySelector("[data-print-natal]")?.focus({preventScroll:true});
   natalPrintFocus = false;
 });
-const birthdayViews = [["sky", "Your sky"], ["chinese", "Chinese zodiac"], ["numbers", "Numbers & Lo Shu"]];
+const birthdayViews = [["sky", "Your sky"], ["chinese", "Chinese zodiac"], ["numbers", "Numerology"]];
 function setBirthdayView(view) {
   if (!birthdayViews.some(([key]) => key === view)) return;
   birthdayView = view;
@@ -268,13 +269,16 @@ function setBirthdayView(view) {
 }
 
 function renderBirthdayProfile(saved = null) {
+  const numberState = numerologyRoom?.getState();
+  numerologyRoom?.destroy();
+  numerologyRoom = null;
   const parts = birthdayParts(saved?.birthday || birthdayInput.value);
   birthdayProfileParts = parts;
   natalModel = null;
   if (!parts) {
     worldAtlas.setBirthChart(null);
     celestialExtras.setBirthChart(null);
-    birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and interactive Lo Shu number study. Your birthday details stay in this browser.</div>`;
+    birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and numerology studio. Numerology needs only your birth date. Your birthday details stay in this browser.</div>`;
     return;
   }
   const natal = NatalEngine.calculate({birthday:saved?.birthday || birthdayInput.value,time:saved?.time || "",location:saved?.placeLocation,houseSystem:saved?.houseSystem || "placidus",fold:saved?.fold || "",orbScale:saved?.orbScale || 1});
@@ -312,8 +316,9 @@ function renderBirthdayProfile(saved = null) {
     ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
   </div>
   <div id="birthday-chinese" class="birthday-view"${birthdayView === "chinese" ? "" : " hidden"}>${BirthdayInsights.renderChinese(chinese, saved?.time || "")}</div>
-  <div id="birthday-numbers" class="birthday-view"${birthdayView === "numbers" ? "" : " hidden"}>${BirthdayInsights.renderNumbers(parts)}</div>
+  <div id="birthday-numbers" class="birthday-view"${birthdayView === "numbers" ? "" : " hidden"}></div>
   <p class="birthday-privacy">Your birthday details are saved in this browser. Choose a perspective to explore another tradition.</p>`;
+  numerologyRoom = Numerology.attach(birthdayOutput.querySelector("#birthday-numbers"), parts, numberState);
 }
 
 birthdayInput.max = localDateKey();
@@ -767,6 +772,10 @@ document.addEventListener("keydown", event => {
 });
 window.addEventListener("hashchange", () => {
   if (location.hash === "#ishtar-deck") setReadingMode("deck");
+  if (location.hash === "#birthday-numbers") {
+    setBirthdayView("numbers");
+    (document.querySelector("#birthday-numbers") || document.querySelector("#birthday-room")).scrollIntoView({block:"start"});
+  }
 });
 setReadingMode(location.hash === "#ishtar-deck" ? "deck" : "daily");
 const archiveCounts = {all:decks.length,new:decks.filter(isNewArchiveDeck).length,historical:decks.filter(deck=>deck.category==='historical').length,modern:decks.filter(deck=>deck.category==='modern').length};
