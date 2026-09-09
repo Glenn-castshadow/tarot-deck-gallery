@@ -49,3 +49,6 @@ evals/tarot-images/runs/**/references/
 output/imagegen/divination-v2/*.webp
 output/imagegen/divination-v2/review/
 tmp/imagegen/
+
+# Superpowers SDD scratch workspace (ledger, briefs, review packages)
+.superpowers/
