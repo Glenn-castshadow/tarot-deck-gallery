@@ -110,7 +110,7 @@ h1 em { color: var(--plum); font-style: normal; }
 .reading-deck-picker strong { display: block; font: 600 clamp(16px, 1.7vw, 21px)/1.2 "Playfair Display", serif; }
 .reading-deck-picker small { display: block; margin-top: 7px; font-size: 11px; line-height: 1.5; color: rgba(255,250,244,.7); }
 .reading-room:not([data-deck="ishtar"]) .drawn-card { padding: 0; border: 0; aspect-ratio: 3 / 5; background: transparent; }
-.reading-room:not([data-deck="ishtar"]) .drawn-card::before { display: none; }
+.reading-room:not([data-deck="ishtar"]) .drawn-card:not(.flip-card)::before { display: none; }
 .reading-room:not([data-deck="ishtar"]) .drawn-card-inner { padding: 0; }
 .reading-room:not([data-deck="ishtar"]) .drawn-card-inner img { object-fit: contain; }
 @media (max-width: 1000px) {
@@ -382,3 +382,24 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
   .deck-review-nav span { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+/* Face-down reading decks: the top card turns above layered paper edges. */
+.reading-output { padding-bottom: 24px; }
+.drawn-card.flip-card { display: block; padding: 0; border: 0; aspect-ratio: 3 / 5; background: transparent; perspective: 1100px; isolation: isolate; cursor: pointer; box-shadow: none; }
+.drawn-card.flip-card::before { inset: 0; border: 1px solid #c7a77d; border-radius: 7px; background: repeating-linear-gradient(to bottom, #eadcc6 0 2px, #b19a80 2px 3px); transform: translate(9px, 12px); box-shadow: 2px 3px 0 #b19a80, 4px 6px 0 #e5d3b6, 8px 16px 24px rgba(0,0,0,.35); z-index: -1; }
+.flip-card-rotor { display: block; position: relative; width: 100%; height: 100%; aspect-ratio: inherit; transform-style: preserve-3d; transform: rotateY(0deg); transition: transform 850ms cubic-bezier(.22,.7,.2,1); }
+.is-revealed .flip-card-rotor { transform: rotateY(180deg); }
+.flip-card-side { position: absolute; inset: 0; display: block; padding: 7px; border: 1px solid #d9b785; border-radius: 7px; background: #24182c; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+.flip-card-side img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 3px; }
+.flip-card-back { transform: rotateY(0deg) translateZ(1px); }
+.flip-card-front { transform: rotateY(180deg) translateZ(1px); }
+.flip-card-front.is-reversed img { transform: rotate(180deg); }
+.drawn-card.flip-card.is-revealed { cursor: zoom-in; }
+.revealed-copy[hidden], .reveal-invitation[hidden] { display: none; }
+.revealed-copy:not([hidden]) { animation: reading-copy-reveal 900ms ease both; }
+@keyframes reading-copy-reveal { 0%, 45% { opacity: 0; } 100% { opacity: 1; } }
+@media (max-width: 480px) {
+  .daily-reading { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .daily-reading .drawn-card { width: min(56vw, 210px); }
+  .daily-reading .reading-copy { text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .flip-card-rotor { transition: none; } .revealed-copy:not([hidden]) { animation: none; } }

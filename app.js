@@ -374,6 +374,8 @@ const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");
 let readingMode = "daily";
 let currentPick3 = null;
+let revealedDailyDate = null;
+const revealedPick3 = new Set();
 const ishtarLibrary = document.querySelector("#ishtar-deck");
 const ishtarGrid = document.querySelector("#ishtar-grid");
 const ishtarSearch = document.querySelector("#ishtar-search");
@@ -493,11 +495,27 @@ function drawPick3() {
   }));
 }
 
-function cardVisual(card, orientation, compact = false) {
-  const className = `drawn-card${orientation === "reversed" ? " is-reversed" : ""}`;
+function cardVisual(card, orientation, slot = "daily") {
   const cardIndex = tarotCards.indexOf(card);
-  const buttonAttrs = `type="button" class="${className} drawn-card-button" data-card-view="${cardIndex}" data-card-orientation="${orientation}" aria-label="View ${card.name} large"`;
-  return `<button ${buttonAttrs}><div class="drawn-card-inner"><img src="${readingArt(cardIndex)}" alt="${card.name} card artwork"></div></button>`;
+  const revealed = slot === "daily" ? revealedDailyDate === localDateKey() : revealedPick3.has(slot);
+  return `<button type="button" class="drawn-card drawn-card-button flip-card${revealed ? " is-revealed" : ""}" data-card-view="${cardIndex}" data-card-orientation="${orientation}" data-reveal-slot="${slot}" aria-label="${revealed ? `View ${card.name} large` : "Tap to reveal your card"}">
+    <span class="flip-card-rotor">
+      <span class="flip-card-side flip-card-back" aria-hidden="true"><img src="${readingArt(tarotCards.length)}" alt=""></span>
+      <span class="flip-card-side flip-card-front${orientation === "reversed" ? " is-reversed" : ""}" aria-hidden="true"><img src="${readingArt(cardIndex)}" alt=""></span>
+    </span>
+  </button>`;
+}
+
+function revealCard(button) {
+  if (!button || button.classList.contains("is-revealed")) return;
+  const slot = button.dataset.revealSlot;
+  if (slot === "daily") revealedDailyDate = localDateKey();
+  else revealedPick3.add(Number(slot));
+  button.classList.add("is-revealed");
+  button.setAttribute("aria-label", `View ${tarotCards[Number(button.dataset.cardView)].name} large`);
+  const container = button.closest(".daily-reading, .pick3-item");
+  container.querySelector(".reveal-invitation").hidden = true;
+  container.querySelector(".revealed-copy").hidden = false;
 }
 
 function readingCopy(card, orientation) {
@@ -582,11 +600,13 @@ function renderReading() {
     readingOutput.innerHTML = `<div class="daily-reading">
       ${cardVisual(card, reading.orientation)}
       <div class="reading-copy">
+        <div class="reveal-invitation" ${revealedDailyDate === localDateKey() ? "hidden" : ""}><p class="reading-label">Today · ${localDateKey()}</p><h3>A moment for you</h3><p>Take a breath, then tap the deck to turn over your daily card.</p></div>
+        <div class="revealed-copy" ${revealedDailyDate === localDateKey() ? "" : "hidden"}>
         <p class="reading-label">Today · ${localDateKey()}</p>
         <h3>${card.name}</h3>
         <span class="orientation">${reading.orientation}</span>
         <p>${readingCopy(card, reading.orientation)}</p>
-        <p class="prompt"><strong>Try this:</strong> ${card.prompt}</p>
+        <p class="prompt"><strong>Try this:</strong> ${card.prompt}</p></div>
       </div>
     </div>`;
     drawReadingButton.innerHTML = "<span>✦</span> Show today's card";
@@ -594,17 +614,12 @@ function renderReading() {
     return;
   }
 
-  if (!currentPick3) {
-    readingOutput.innerHTML = `<div class="reading-empty"><p class="reading-label">Three-card spread</p><p>Set an intention, then draw three cards for context, attention, and direction.</p></div>`;
-    drawReadingButton.innerHTML = "<span>✦</span> Draw 3 cards";
-    drawReadingButton.setAttribute("aria-label", "Draw three cards");
-    return;
-  }
+  if (!currentPick3) currentPick3 = drawPick3();
 
   const cards = currentPick3.map(item => ({ ...item, card: tarotCards[item.index] }));
-  readingOutput.innerHTML = `<div class="pick3-reading">${cards.map(item => `<article class="pick3-item">
-    ${cardVisual(item.card, item.orientation, true)}
-    <div><p class="reading-label">${item.position}</p><h3>${item.card.name}</h3><span class="orientation">${item.orientation}</span><p>${readingCopy(item.card, item.orientation)}</p></div>
+  readingOutput.innerHTML = `<div class="pick3-reading">${cards.map((item, slot) => `<article class="pick3-item">
+    ${cardVisual(item.card, item.orientation, slot)}
+    <div><p class="reading-label">${item.position}</p><p class="reveal-invitation" ${revealedPick3.has(slot) ? "hidden" : ""}>Tap the deck to reveal this card.</p><div class="revealed-copy" ${revealedPick3.has(slot) ? "" : "hidden"}><h3>${item.card.name}</h3><span class="orientation">${item.orientation}</span><p>${readingCopy(item.card, item.orientation)}</p></div></div>
   </article>`).join("")}<p class="pick3-summary"><span class="reading-label">Read the thread</span> Notice how the three positions speak to one another. The spread is a prompt for reflection, so keep the parts that feel useful and leave the rest.</p></div>`;
   drawReadingButton.innerHTML = "<span>✦</span> Draw another 3";
   drawReadingButton.setAttribute("aria-label", "Draw another three-card spread");
@@ -659,12 +674,21 @@ dialog.addEventListener("keydown", event => {
   }
 });
 drawReadingButton.addEventListener("click", () => {
-  if (readingMode === "pick3") currentPick3 = drawPick3();
+  if (readingMode === "daily") {
+    const button = readingOutput.querySelector("[data-reveal-slot]");
+    if (button?.classList.contains("is-revealed")) openCardDetails(Number(button.dataset.cardView), button.dataset.cardOrientation);
+    else revealCard(button);
+    return;
+  }
+  currentPick3 = drawPick3();
+  revealedPick3.clear();
   renderReading();
 });
 readingOutput.addEventListener("click", event => {
   const button = event.target.closest("[data-card-view]");
-  if (button) openCardDetails(Number(button.dataset.cardView), button.dataset.cardOrientation);
+  if (!button) return;
+  if (!button.classList.contains("is-revealed")) revealCard(button);
+  else openCardDetails(Number(button.dataset.cardView), button.dataset.cardOrientation);
 });
 
 function setArchiveFilter(filter) {
