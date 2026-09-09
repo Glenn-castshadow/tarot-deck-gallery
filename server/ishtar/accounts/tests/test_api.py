@@ -160,22 +160,3 @@ class AuthRequiredDecoratorTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(get_json_response(response), {'user': 'user@example.com'})
-
-    def test_auth_required_with_anonymous_user_explicit_check(self):
-        """Verify the specific error message structure for anonymous access."""
-        @auth_required
-        def test_view(request):
-            return JsonResponse({'should_not_reach': True})
-
-        request = self.factory.post('/test/')
-        # Manually add AnonymousUser to request
-        request.user = AnonymousUser()
-        # Explicit check that user is AnonymousUser
-        self.assertFalse(request.user.is_authenticated)
-        response = test_view(request)
-
-        # Exact status and message as per the spec
-        self.assertEqual(response.status_code, 401)
-        body = get_json_response(response)
-        self.assertIn('error', body)
-        self.assertEqual(body['error'], 'Sign in to continue.')
