@@ -127,9 +127,3 @@ LOGGING = {
     'handlers': {'console': {'class': 'logging.StreamHandler'}},
     'root': {'handlers': ['console'], 'level': 'WARNING'},
 }
-
-# Temporary (Task 1 -> Task 2 gap): ACCOUNT_ADAPTER above names ishtar.adapter,
-# which Task 2 creates. Until then, allauth's adapter_check system check
-# crashes `manage.py test` on import. See ishtar/test_runner.py for details;
-# it becomes a no-op automatically once ishtar/adapter.py exists.
-TEST_RUNNER = 'ishtar.test_runner.ChecklessDiscoverRunner'
