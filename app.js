@@ -62,7 +62,7 @@ const minorArcana = Object.entries(suitProfiles).flatMap(([suit, suitProfile]) =
   upright: `${rankProfile.upright} in the realm of ${suitProfile.focus}. Tend ${suitProfile.noun} with intention.`,
   reversed: `${rankProfile.reversed} in the realm of ${suitProfile.focus}. Let the response be practical rather than punitive.`,
   prompt: `${rankProfile.prompt} when it comes to ${suitProfile.focus}?`
-})));
+}))).map(TarotReadings.enrichMinor);
 
 const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
 const readingDecks = {
@@ -121,6 +121,8 @@ const birthPlaceInput = document.querySelector("#birth-place");
 const birthdayOutput = document.querySelector("#birthday-output");
 const birthplacePicker = BirthplaceSearch.attach({input:birthPlaceInput,list:document.querySelector("#birth-city-list"),status:document.querySelector("#birth-city-status")});
 const skyExplorer = SkyChart.attach({dialog:document.querySelector("#sky-dialog"),signs:zodiacSigns,themes:BirthdayInsights.westernThemes});
+const worldAtlas = Astrocartography.attach(document.querySelector("#astrocartography-room"));
+const celestialExtras = CelestialExtras.attach(document.querySelector("#celestial-extras"));
 
 function cardTemplate(deck, index) {
   const era = deck.category === "historical" ? "Historical" : "Modern";
@@ -270,11 +272,15 @@ function renderBirthdayProfile(saved = null) {
   birthdayProfileParts = parts;
   natalModel = null;
   if (!parts) {
+    worldAtlas.setBirthChart(null);
+    celestialExtras.setBirthChart(null);
     birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and interactive Lo Shu number study. Your birthday details stay in this browser.</div>`;
     return;
   }
   const natal = NatalEngine.calculate({birthday:saved?.birthday || birthdayInput.value,time:saved?.time || "",location:saved?.placeLocation,houseSystem:saved?.houseSystem || "placidus",fold:saved?.fold || "",orbScale:saved?.orbScale || 1});
   if(natal.status === "ready") natalModel = natal;
+  worldAtlas.setBirthChart(natal);
+  celestialExtras.setBirthChart(natal);
   document.querySelector("#birth-fold-field").hidden = natal.status !== "ambiguous" && !natal.ambiguousTime;
   const sign = natalModel ? zodiacSigns[natalModel.points[0].index] : zodiacFor(parts);
   const moon = natalModel ? {name:moonNames[Math.round(natalModel.moonPhase / 45) % 8],illumination:Math.round(natalModel.moonIllumination * 100)} : moonPhaseFor(parts.date);
@@ -373,9 +379,13 @@ try {
 const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");
 let readingMode = "daily";
-let currentPick3 = null;
+let currentSpread = null;
 let revealedDailyDate = null;
-const revealedPick3 = new Set();
+const revealedSpread = new Set();
+const tarotSettings = document.querySelector("#tarot-settings");
+const tarotSpreadSelect = document.querySelector("#tarot-spread");
+const tarotFocusSelect = document.querySelector("#tarot-focus");
+const tarotQuestionInput = document.querySelector("#tarot-question");
 const ishtarLibrary = document.querySelector("#ishtar-deck");
 const ishtarGrid = document.querySelector("#ishtar-grid");
 const ishtarSearch = document.querySelector("#ishtar-search");
@@ -482,23 +492,17 @@ function getDailyReading() {
   return reading;
 }
 
-function drawPick3() {
-  const order = tarotCards.map((card, index) => ({ card, index }));
-  for (let index = order.length - 1; index > 0; index -= 1) {
-    const swapIndex = randomInt(index + 1);
-    [order[index], order[swapIndex]] = [order[swapIndex], order[index]];
-  }
-  return order.slice(0, 3).map((item, index) => ({
-    index: item.index,
-    orientation: randomInt(5) === 0 ? "reversed" : "upright",
-    position: ["Past / what shaped this", "Present / what needs attention", "Future / what is taking shape"][index]
-  }));
+function dealSpread() {
+  currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value);
+  revealedSpread.clear();
+  renderReading(true);
 }
 
 function cardVisual(card, orientation, slot = "daily") {
   const cardIndex = tarotCards.indexOf(card);
-  const revealed = slot === "daily" ? revealedDailyDate === localDateKey() : revealedPick3.has(slot);
-  return `<button type="button" class="drawn-card drawn-card-button flip-card${revealed ? " is-revealed" : ""}" data-card-view="${cardIndex}" data-card-orientation="${orientation}" data-reveal-slot="${slot}" aria-label="${revealed ? `View ${card.name} large` : "Tap to reveal your card"}">
+  const revealed = slot === "daily" ? revealedDailyDate === localDateKey() : revealedSpread.has(slot);
+  const positionLabel = slot === "daily" ? "your daily card" : `${slot + 1}: ${TarotReadings.spreads[currentSpread.id].positions[slot].name}`;
+  return `<button type="button" class="drawn-card drawn-card-button flip-card${revealed ? " is-revealed" : ""}" data-card-view="${cardIndex}" data-card-orientation="${orientation}" data-reveal-slot="${slot}" aria-label="${revealed ? `View ${card.name}, ${orientation}, large` : `Reveal ${positionLabel}`}">
     <span class="flip-card-rotor">
       <span class="flip-card-side flip-card-back" aria-hidden="true"><img src="${readingArt(tarotCards.length)}" alt=""></span>
       <span class="flip-card-side flip-card-front${orientation === "reversed" ? " is-reversed" : ""}" aria-hidden="true"><img src="${readingArt(cardIndex)}" alt=""></span>
@@ -510,12 +514,31 @@ function revealCard(button) {
   if (!button || button.classList.contains("is-revealed")) return;
   const slot = button.dataset.revealSlot;
   if (slot === "daily") revealedDailyDate = localDateKey();
-  else revealedPick3.add(Number(slot));
+  else revealedSpread.add(Number(slot));
   button.classList.add("is-revealed");
-  button.setAttribute("aria-label", `View ${tarotCards[Number(button.dataset.cardView)].name} large`);
-  const container = button.closest(".daily-reading, .pick3-item");
-  container.querySelector(".reveal-invitation").hidden = true;
-  container.querySelector(".revealed-copy").hidden = false;
+  button.setAttribute("aria-label", `View ${tarotCards[Number(button.dataset.cardView)].name}, ${button.dataset.cardOrientation}, large`);
+  if (slot === "daily") {
+    const container = button.closest(".daily-reading");
+    container.querySelector(".reveal-invitation").hidden = true;
+    container.querySelector(".revealed-copy").hidden = false;
+    container.querySelector(".reading-copy").setAttribute("aria-live", "polite");
+  } else updateSpreadReport(Number(slot));
+}
+
+function updateSpreadReport(lastSlot) {
+  if (readingMode !== "spread" || !currentSpread) return;
+  const complete = revealedSpread.size === currentSpread.cards.length;
+  readingOutput.querySelector("#tarot-reading-report").innerHTML = TarotReadings.reportHTML(currentSpread, tarotCards, revealedSpread);
+  const last = Number.isInteger(lastSlot) ? currentSpread.cards[lastSlot] : null;
+  readingOutput.querySelector("#tarot-reveal-status").textContent = `${revealedSpread.size} of ${currentSpread.cards.length} cards revealed${last ? ` · ${tarotCards[last.index].name}, ${last.orientation}` : ""}${complete ? " · Your full reading is ready below." : ""}`;
+  readingOutput.querySelectorAll("[data-tarot-position]").forEach(button => {
+    const slot = Number(button.dataset.tarotPosition), open = revealedSpread.has(slot);
+    const position = TarotReadings.spreads[currentSpread.id].positions[slot];
+    button.classList.toggle("is-open", open);
+    button.querySelector("small").textContent = open ? "Read meaning ↓" : "Turn over";
+    button.setAttribute("aria-label", open ? `Read ${slot+1}: ${position.name}, ${tarotCards[currentSpread.cards[slot].index].name}` : `Reveal ${slot+1}: ${position.name}`);
+  });
+  readingOutput.querySelectorAll('[data-tarot-action="next"], [data-tarot-action="all"]').forEach(button=>{button.disabled=complete;});
 }
 
 function readingCopy(card, orientation) {
@@ -580,13 +603,14 @@ function stepDeckReview(step) {
   nextButton?.focus({ preventScroll: true });
 }
 
-function renderReading() {
+function renderReading(animateDeal = false) {
   document.querySelector(".reading-room").dataset.deck = activeReadingDeck;
   document.querySelector(".reading-badge").textContent = `${readingDecks[activeReadingDeck].name} · 78 cards`;
   document.querySelectorAll("[data-reading-deck]").forEach(button => {
     button.setAttribute("aria-pressed", String(button.dataset.readingDeck === activeReadingDeck));
   });
   const browsing = readingMode === "deck";
+  tarotSettings.hidden = readingMode !== "spread";
   ishtarLibrary.hidden = !browsing;
   readingOutput.hidden = browsing;
   drawReadingButton.hidden = browsing;
@@ -606,7 +630,8 @@ function renderReading() {
         <h3>${card.name}</h3>
         <span class="orientation">${reading.orientation}</span>
         <p>${readingCopy(card, reading.orientation)}</p>
-        <p class="prompt"><strong>Try this:</strong> ${card.prompt}</p></div>
+        <p class="prompt"><strong>Try this:</strong> ${card.prompt}</p>
+        <div class="tarot-daily-depth"><p><strong>A theme to carry:</strong> ${card.keywords}.</p><p>Notice one moment today when this theme comes into view. Before bed, return to the card and write down what you noticed, what surprised you, and one choice you want to carry into tomorrow.</p></div></div>
       </div>
     </div>`;
     drawReadingButton.innerHTML = "<span>✦</span> Show today's card";
@@ -614,15 +639,14 @@ function renderReading() {
     return;
   }
 
-  if (!currentPick3) currentPick3 = drawPick3();
-
-  const cards = currentPick3.map(item => ({ ...item, card: tarotCards[item.index] }));
-  readingOutput.innerHTML = `<div class="pick3-reading">${cards.map((item, slot) => `<article class="pick3-item">
-    ${cardVisual(item.card, item.orientation, slot)}
-    <div><p class="reading-label">${item.position}</p><p class="reveal-invitation" ${revealedPick3.has(slot) ? "hidden" : ""}>Tap the deck to reveal this card.</p><div class="revealed-copy" ${revealedPick3.has(slot) ? "" : "hidden"}><h3>${item.card.name}</h3><span class="orientation">${item.orientation}</span><p>${readingCopy(item.card, item.orientation)}</p></div></div>
-  </article>`).join("")}<p class="pick3-summary"><span class="reading-label">Read the thread</span> Notice how the three positions speak to one another. The spread is a prompt for reflection, so keep the parts that feel useful and leave the rest.</p></div>`;
-  drawReadingButton.innerHTML = "<span>✦</span> Draw another 3";
-  drawReadingButton.setAttribute("aria-label", "Draw another three-card spread");
+  if (!currentSpread) {
+    currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value);
+    animateDeal = true;
+  }
+  readingOutput.innerHTML = TarotReadings.tableHTML(currentSpread, tarotCards, revealedSpread, cardVisual, animateDeal);
+  updateSpreadReport();
+  drawReadingButton.innerHTML = "<span>✦</span> Shuffle &amp; deal";
+  drawReadingButton.setAttribute("aria-label", "Shuffle and deal a new reading with your selected focus and question");
 }
 
 document.querySelectorAll("[data-reading-deck]").forEach(button => button.addEventListener("click", () => {
@@ -680,11 +704,40 @@ drawReadingButton.addEventListener("click", () => {
     else revealCard(button);
     return;
   }
-  currentPick3 = drawPick3();
-  revealedPick3.clear();
-  renderReading();
+  dealSpread();
 });
+tarotSpreadSelect.addEventListener("change", dealSpread);
 readingOutput.addEventListener("click", event => {
+  const positionButton = event.target.closest("[data-tarot-position]");
+  if (positionButton) {
+    const slot=Number(positionButton.dataset.tarotPosition);
+    if (!revealedSpread.has(slot)) revealCard(readingOutput.querySelector(`[data-reveal-slot="${slot}"]`));
+    const chapter = readingOutput.querySelector(`#tarot-position-${slot}`);
+    chapter.setAttribute("tabindex", "-1");
+    chapter.focus({preventScroll:true});
+    chapter.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+    return;
+  }
+  const actionButton = event.target.closest("[data-tarot-action]");
+  if (actionButton) {
+    const action=actionButton.dataset.tarotAction;
+    if (action === "zoom") {
+      const table=readingOutput.querySelector(".tarot-layout-scroll");
+      const enlarged=table.classList.toggle("is-enlarged");
+      actionButton.setAttribute("aria-pressed", String(enlarged));
+      actionButton.textContent=enlarged?'Fit layout':'Enlarge layout';
+      return;
+    }
+    const pending=[...readingOutput.querySelectorAll('[data-reveal-slot]:not(.is-revealed)')];
+    if(action==='next') revealCard(pending[0]);
+    if(action==='all') {
+      const draw=currentSpread;
+      actionButton.disabled=true;
+      const interval=matchMedia('(prefers-reduced-motion: reduce)').matches?0:180;
+      pending.forEach((button,i)=>setTimeout(()=>{if(button.isConnected && currentSpread===draw)revealCard(button);},i*interval));
+    }
+    return;
+  }
   const button = event.target.closest("[data-card-view]");
   if (!button) return;
   if (!button.classList.contains("is-revealed")) revealCard(button);

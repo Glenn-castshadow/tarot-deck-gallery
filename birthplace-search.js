@@ -67,7 +67,7 @@ const BirthplaceSearch = (() => {
         results=search(cities,query); active=-1; list.replaceChildren(); input.removeAttribute('aria-activedescendant');
         results.forEach((city,index) => {
           const option=document.createElement('button'); option.type='button'; option.tabIndex=-1;
-          option.id=`birth-city-${index}`; option.dataset.cityIndex=index; option.setAttribute('role','option'); option.setAttribute('aria-selected','false');
+          option.id=`${list.id}-${index}`; option.dataset.cityIndex=index; option.setAttribute('role','option'); option.setAttribute('aria-selected','false');
           const title=document.createElement('strong'); title.textContent=city.name;
           const area=document.createElement('span'); area.textContent=[city.region,city.country].filter(Boolean).join(', ');
           option.append(title,area); list.append(option);

@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=card-flip-1" />
+    <link rel="stylesheet" href="tarot-readings.css?v=1" />
+    <link rel="stylesheet" href="astrocartography.css?v=1" />
+    <link rel="stylesheet" href="celestial-extras.css?v=1" />
     <link rel="stylesheet" href="celestial-room.css?v=celestial-atlas-1" />
   </head>
   <body>
@@ -29,8 +32,8 @@
       <section class="reading-room" aria-labelledby="reading-title">
         <div class="reading-intro">
           <p class="section-kicker">The reading room</p>
-          <h2 id="reading-title">A small spread for the day ahead</h2>
-          <p>Draw one card for a daily focus, or open a three-card spread for a wider story. Your daily card stays the same until tomorrow.</p>
+          <h2 id="reading-title">A question. A ritual. A fuller story.</h2>
+          <p>Begin with a daily card, or settle into a full reading. Let the cards find their places, turn them over, and follow the story they create together.</p>
           <span class="reading-badge">Ishtar Insights · 78-card core</span>
         </div>
         <div class="reading-deck-picker" role="group" aria-label="Choose your deck">
@@ -42,12 +45,18 @@
         <div class="reading-controls">
           <div class="reading-tabs" role="group" aria-label="Reading room views">
             <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
-            <button class="reading-tab" data-reading-mode="pick3" aria-pressed="false">Pick 3 cards</button>
+            <button class="reading-tab" data-reading-mode="spread" aria-pressed="false">Full reading</button>
             <button class="reading-tab" data-reading-mode="deck" aria-pressed="false">Explore deck</button>
           </div>
           <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
         </div>
-        <div id="reading-output" class="reading-output" aria-live="polite"></div>
+        <div id="tarot-settings" class="tarot-settings" hidden>
+          <label>Choose a traditional spread<select id="tarot-spread"><option value="celtic">Celtic Cross · 10 cards</option><option value="horseshoe">Horseshoe · 7 cards</option><option value="three">Past, Present &amp; Possibility · 3 cards</option></select></label>
+          <label>Your focus<select id="tarot-focus"><option value="general">An open reading</option><option value="relationships">Relationships</option><option value="work">Work &amp; creativity</option><option value="growth">Personal growth</option></select></label>
+          <label class="tarot-question">A question to hold <small>Optional · something open, such as “What can help me move forward?”</small><input id="tarot-question" type="text" maxlength="240" placeholder="What would you like to explore?" autocomplete="off" aria-describedby="tarot-settings-note"></label>
+          <p id="tarot-settings-note" class="tarot-settings-note">Choose your focus and question, then use Shuffle &amp; deal to begin a fresh reading. Your question stays on this page.</p>
+        </div>
+        <div id="reading-output" class="reading-output"></div>
         <section id="ishtar-deck" class="ishtar-library" aria-labelledby="ishtar-title" hidden>
           <header class="ishtar-library-header">
             <div>
@@ -73,14 +82,15 @@
           <div id="ishtar-grid" class="ishtar-grid"></div>
           <div id="ishtar-empty" class="ishtar-empty" hidden><p>No cards match this search.</p><button type="button" id="ishtar-reset">Show the full deck</button></div>
         </section>
-        <p class="reading-note"><span>✧</span> For reflection and creative practice. Choose a deck for Daily Card, Pick 3 or a closer look at all 78 cards. Changing decks keeps your current cards so you can compare the artwork. Each deck uses the same 78-card meaning core.</p>
+        <p class="reading-note"><span>✧</span> For reflection and creative practice. Your daily card stays the same until tomorrow. Full readings stay on this page until you deal again or reload. Changing decks keeps your current cards and their meanings, so you can compare the artwork.</p>
 
         <div id="birthday-room" class="birthday-panel">
           <div class="birthday-intro">
             <span class="celestial-emblem" aria-hidden="true">☉</span>
             <p class="section-kicker">The celestial atlas</p>
             <h3>Written in the stars</h3>
-            <p>Your natal chart, Chinese zodiac, and the numbers in your birthday. Add the time and place you were born to explore your planets, houses and connections.</p>
+            <p class="celestial-intro-copy">Explore your birth sky, your world map, and the patterns between people. Add your birth time and place to make the charts personal.</p>
+            <nav class="celestial-jumps" aria-label="Explore the chart collection"><a href="#astrocartography-room">Your world map ↗</a><a href="#cx-transits">Sky today</a><a href="#cx-synastry">Two skies</a><a href="#cx-bazi">Four Pillars</a></nav>
           </div>
           <form id="birthday-form" class="birthday-form">
             <label><span>Birthday</span><input id="birthday-input" type="date" required></label>
@@ -103,6 +113,8 @@
           </form>
           <div id="birthday-output" class="birthday-output" aria-live="polite"></div>
         </div>
+        <section id="astrocartography-room" class="astrocartography-room" aria-labelledby="acg-title"></section>
+        <section id="celestial-extras" class="celestial-extras" aria-label="Transits, relationship chart and Four Pillars"></section>
       </section>
 
       <section id="archive" class="toolbar" aria-label="Gallery controls">
@@ -161,12 +173,17 @@
       <p class="sky-explorer-note">Explore your natal placements or browse the symbolic zodiac guide.</p>
     </dialog>
     <script src="birthday-insights.js?v=celestial-atlas-1"></script>
-    <script src="birthplace-search.js?v=celestial-atlas-1"></script>
+    <script src="birthplace-search.js?v=atlas-2"></script>
     <script src="vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
     <script src="natal-engine.js?v=celestial-atlas-1"></script>
     <script src="natal-chart.js?v=celestial-atlas-1"></script>
     <script src="sky-chart.js?v=celestial-atlas-1"></script>
     <script src="archive-decks.js?v=archive-32"></script>
-    <script src="app.js?v=card-flip-1"></script>
+    <script src="astrocartography-engine.js?v=1"></script>
+    <script src="astrocartography.js?v=1"></script>
+    <script src="celestial-extras-engine.js?v=1"></script>
+    <script src="celestial-extras.js?v=1"></script>
+    <script src="tarot-readings.js?v=1"></script>
+    <script src="app.js?v=full-readings-1"></script>
   </body>
 </html>

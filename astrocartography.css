@@ -1,0 +1,86 @@
+.astrocartography-room { grid-column: 1/-1; min-width: 0; margin-top: 28px; padding: clamp(20px,3vw,40px); color: #f3e9d6; background: #071622; border: 1px solid #3c555b; position: relative; }
+.acg-heading { display: flex; justify-content: space-between; gap: 24px; align-items: center; padding-bottom: 28px; }
+.acg-eyebrow, .acg-small-label { color: #c9b88f; text-transform: uppercase; letter-spacing: .13em; font: 10px/1.6 "DM Mono",monospace; }
+.acg-heading h3 { margin: 12px 0 18px; font: 500 clamp(36px,4.5vw,64px)/1.02 "Playfair Display",serif; letter-spacing: -.035em; }
+.acg-heading h3 em { color: #99cbbf; font-weight: 400; }
+.acg-heading > div > p:last-child { max-width: 520px; color: #bdc9cc; font-size: 14px; line-height: 1.7; }
+.acg-seal { display: grid; place-content: center; text-align: center; width: 125px; height: 125px; flex: 0 0 125px; border: 1px solid #a48d6066; border-radius: 50%; color: #d8bd80; font-size: 35px; outline: 1px solid #a48d6022; outline-offset: 9px; }
+.acg-seal small { margin-top: 8px; font: 8px/1.6 "DM Mono",monospace; letter-spacing: .16em; }
+.acg-birth-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 16px; border: 1px solid #8aa8a333; background: #8aa8a30b; }
+.acg-mode-badge { font: 10px "DM Mono",monospace; color: #cce5d6; text-transform: uppercase; letter-spacing: .1em; }
+.acg-birth-caption { font-size: 12px; color: #bbc5c5; line-height: 1.6; margin-top: 5px; }
+.astrocartography-room button { color: #e5e9df; border: 1px solid #76908c55; background: #102430; font: 12px/1.35 "DM Sans",sans-serif; padding: 10px 12px; cursor: pointer; }
+.astrocartography-room button:hover { border-color: #b1cfc5; background: #1e3b43; }
+.astrocartography-room button:disabled { opacity: .4; cursor: default; }
+.astrocartography-room :is(button,input,select,summary,svg):focus-visible { outline: 2px solid #f4c66d; outline-offset: 4px; }
+.acg-birth-banner button { flex-shrink: 0; }
+.acg-toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 24px 0 16px; }
+.acg-projections { display: flex; }
+.acg-projections button[aria-pressed="true"] { color: #0c2029; background: #dfc894; border-color: #dfc894; }
+.acg-angle-label { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 12px; color: #b7c8c7; }
+.astrocartography-room select, .astrocartography-room input { border: 1px solid #607e7e77; background: #102734; color: #f2e7d1; border-radius: 0; padding: 10px; font: 13px "DM Sans",sans-serif; min-width: 0; max-width: 100%; }
+.astrocartography-room input::placeholder { color: #a4b7b9; }
+.acg-planets { display: flex; flex-wrap: wrap; gap: 7px; padding-bottom: 22px; }
+.acg-planets button { display: flex; gap: 7px; align-items: center; padding: 8px 10px; font-size: 11px; color: #a9b5b7; }
+.acg-planets button span { color: var(--planet-color); font: 20px/1 serif; }
+.acg-planets button[aria-pressed="true"] { color: #f6ecd9; border-color: var(--planet-color); background: #aaccca12; box-shadow: inset 0 -2px var(--planet-color); }
+.acg-explorer { display: grid; grid-template-columns: minmax(0,1fr) 270px; border: 1px solid #5d7f7944; }
+.acg-stage { min-width: 0; position: relative; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at 50% 48%,#25484c33,transparent 65%),radial-gradient(circle at 14% 19%,#a9c4c7 0 .7px,transparent 1px),radial-gradient(circle at 67% 72%,#8aa6b5 0 .7px,transparent 1px),#060f1d; background-size: auto,113px 127px,173px 137px,auto; }
+.acg-map-meta { display: flex; justify-content: space-between; gap: 12px; position: relative; padding: 15px 18px 0; font: 9px/1.5 "DM Mono",monospace; text-transform: uppercase; letter-spacing: .08em; color: #a5bdbb; }
+.acg-map-identity { color: #dfc894; }
+.acg-map { width: 100%; display: block; aspect-ratio: 9/7; touch-action: none; cursor: grab; flex: 1; min-height: 0; }
+.acg-map:active { cursor: grabbing; }
+.acg-line-hit { cursor: pointer; }
+.acg-loading { position: absolute; inset: 35% 10% auto; padding: 20px; text-align: center; background: #071622ee; color: #d7d8c8; font-size: 14px; }
+.acg-loading[hidden] { display: none; }
+.acg-map-controls { display: flex; justify-content: center; gap: 5px; padding: 8px; flex-wrap: wrap; }
+.acg-map-controls button { min-width: 36px; padding: 8px 10px; }
+#acg-map-help { text-align: center; padding: 0 12px 18px; color: #9ab0b7; font-size: 11px; }
+.acg-sidebar { padding: 20px; border-left: 1px solid #5d7f7944; background: #0b1e2a; min-width: 0; }
+.acg-place-search { position: relative; }
+.acg-place-search label { display: block; margin-bottom: 10px; font: 500 21px/1.2 "Playfair Display",serif; }
+#acg-city { width: 100%; font-size: 16px; }
+#acg-city-status { font-size: 10px; line-height: 1.6; color: #9eb1b6; margin: 7px 0; }
+#acg-city-results { position: absolute; top: 77px; left: 0; right: 0; z-index: 4; max-height: 285px; overflow: auto; box-shadow: 0 15px 30px #0008; border: 1px solid #9ab5a7; }
+#acg-city-results[hidden] { display: none; }
+#acg-city-results button { display: block; width: 100%; text-align: left; background: #142d39; }
+#acg-city-results button[aria-selected="true"] { background: #305154; }
+#acg-city-results span { display: block; font-size: 10px; margin-top: 4px; color: #bed0cb; }
+.acg-destinations { display: flex; flex-wrap: wrap; gap: 5px; margin: 14px 0 22px; }
+.acg-destinations button { font-size: 10px; padding: 7px 8px; border-radius: 20px; }
+.acg-place-detail { padding: 0 0 20px; margin-bottom: 18px; border-bottom: 1px solid #5d7f7955; }
+.acg-place-detail > p:not(.acg-small-label), .acg-line-detail > p { margin-top: 8px; font-size: 12px; line-height: 1.75; color: #bbc9cb; }
+.acg-place-detail h4 { font: 500 25px/1.3 "Playfair Display",serif; margin: 7px 0; }
+.acg-place-detail .acg-coordinates { font: 10px "DM Mono",monospace; margin-bottom: 16px; }
+.acg-nearest { margin-top: 8px; }
+.acg-nearest button { border: 0; border-bottom: 1px solid #5d7f7933; background: transparent; display: flex; justify-content: space-between; width: 100%; padding: 10px 0; text-align: left; font-size: 11px; }
+.acg-nearest button span { color: var(--planet-color); }
+.acg-nearest small { color: #bdc8c4; white-space: nowrap; }
+.acg-line-label { display: block; font-size: 10px; color: #bcc6c2; margin-bottom: 7px; }
+#acg-line { width: 100%; font-size: 12px; }
+.acg-line-heading { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
+.acg-line-heading > span { color: var(--planet-color); font-size: 40px; font-family: serif; }
+.acg-line-heading .acg-small-label { font-size: 8px; letter-spacing: .06em; }
+.acg-line-heading h4 { margin-top: 5px; color: #f2e7d1; font: 500 23px/1.1 "Playfair Display",serif; }
+.acg-line-detail blockquote { border-left: 1px solid #b6a376; padding: 3px 0 3px 12px; margin: 18px 0 0; color: #dfc894; font: italic 17px/1.5 "Playfair Display",serif; }
+.acg-angle-key { display: flex; flex-wrap: wrap; gap: 15px 24px; padding: 20px 0; color: #acc1c1; font-size: 10px; }
+.acg-angle-key span { display: flex; align-items: center; gap: 6px; }
+.acg-angle-key svg { width: 24px; height: 8px; fill: none; stroke: #d9c594; stroke-width: 1.5; }
+.acg-angle-key strong { color: #e7d9b8; font-weight: 400; }
+.acg-method { border-top: 1px solid #5d7f7955; padding-top: 16px; color: #adbec1; font-size: 12px; line-height: 1.8; }
+.acg-method summary { cursor: pointer; color: #d8d9c3; }
+.acg-method p { margin-top: 12px; max-width: 850px; }
+.acg-method a { color: #b8d9d0; text-underline-offset: 3px; }
+.acg-expanded { position: fixed; inset: 12px; z-index: 30; overflow: auto; margin: 0; box-shadow: 0 0 0 20px #030a12e8; }
+.acg-expanded .acg-heading { display: none; }
+.acg-expanded .acg-explorer { grid-template-columns: minmax(0,1fr) 300px; }
+.acg-expanded .acg-map { max-height: 72vh; }
+@media (max-width: 1100px) { .acg-explorer { grid-template-columns: minmax(0,1fr); } .acg-sidebar { border-left: 0; border-top: 1px solid #5d7f7944; display: grid; grid-template-columns: 1fr 1fr; column-gap: 30px; } .acg-place-search, .acg-destinations, .acg-place-detail { grid-column: 1; } .acg-line-label { grid-column: 2; grid-row: 1; align-self: start; } #acg-line { grid-column: 2; grid-row: 1; margin-top: 25px; align-self: start; } .acg-line-detail { grid-column: 2; grid-row: 2/5; } .acg-map { max-height: 670px; } }
+@media (max-width: 650px) { .astrocartography-room { padding: 20px 12px; margin-top: 16px; } .acg-heading { padding: 4px 6px 24px; } .acg-seal { display: none; } .acg-heading h3 { font-size: 38px; } .acg-birth-banner { flex-direction: column; align-items: flex-start; gap: 12px; } .acg-toolbar { gap: 10px; } .acg-angle-label { margin-left: 0; flex: 1; } .acg-angle-label select { width: 100%; font-size: 12px; } .acg-all-planets { margin-left: auto; } .acg-planets { gap: 5px; } .acg-planets button { padding: 8px; } .acg-planets button span { font-size: 17px; } .acg-sidebar { display: block; padding: 20px 16px; } .acg-line-label { margin-top: 15px; } #acg-line { margin-top: 0; } .acg-explorer { margin: 0 -5px; } .acg-map-meta { padding-inline: 10px; font-size: 8px; } .acg-map { min-height: 270px; max-height: 70vh; } .acg-expanded { inset: 5px; margin: 0; } .acg-expanded .acg-explorer { grid-template-columns: minmax(0,1fr); } .acg-angle-key { gap: 10px; font-size: 9px; } }
+@media print { .astrocartography-room { break-before: page; } .acg-toolbar, .acg-planets, .acg-map-controls, .acg-place-search, .acg-destinations { display: none; } }
+@media (max-width: 650px) {
+  .acg-angle-label { flex-basis: 100%; order: 2; }
+  .acg-angle-label select { flex: 1; }
+  .acg-projections button, .acg-all-planets { padding: 9px; font-size: 11px; }
+  .acg-planets button, .acg-map-controls button { min-height: 42px; }
+}
