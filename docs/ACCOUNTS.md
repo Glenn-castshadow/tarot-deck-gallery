@@ -67,9 +67,12 @@ exists on the VPS (mode 600, root-owned) with a working `RESEND_API_KEY` and `DJ
 verified end-to-end with a real delivered send (see docs/deployment.md, "Resend transactional
 email"). Deploying this service means appending the remaining variables --
 `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`, `NEWSLETTER_ORIGINS` --
-to the existing file, not regenerating it. `deploy-app.sh` only ever reads this file (to source it,
-and to `chown`/`chmod` it); nothing in it writes, truncates or regenerates the file's content, and
-it refuses to proceed if any of the six variables the app needs is missing or empty.
+to the existing file, not regenerating it. `deploy-app.sh` never chowns or chmods this file -- even
+tightening its permissions would mean silently modifying a file that holds a live key. Instead it
+asserts the file is not group- or world-readable (systemd reads `EnvironmentFile=` as root, in PID
+1, before dropping to `User=ishtar-app`, so the service itself never needs group-read) and refuses
+to deploy, naming the problem, if it is; it also refuses to proceed if any of the six variables the
+app needs is missing or empty.
 
 Values containing spaces must stay quoted (e.g. `DJANGO_FROM_EMAIL="Ishtar Insights
 <hello@ishtarinsights.com>"`) so the file works both when sourced by POSIX `sh` and when read by
@@ -80,10 +83,11 @@ systemd's `EnvironmentFile=`.
 See docs/deployment.md, section "Accounts service".
 
 `server/deploy-app.sh` installs or updates `/opt/ishtar-app`, migrates, creates the cache table,
-collects static files, (re)starts the `ishtar-app` unit, wires the new locations into nginx, and
-health-checks `http://127.0.0.1:8138/api/health/`. It is safe to re-run: user creation, directory
-creation, the venv, `pip install`, `migrate`, `createcachetable`, `collectstatic`, `systemctl
-enable`/`restart`, and the nginx edit are all no-ops or converge to the same result when nothing
+collects static files, (re)starts the `ishtar-app` unit, wires the new locations into nginx,
+installs the nightly backup script and its cron entry (see "Backups" below), and health-checks
+`http://127.0.0.1:8138/api/health/`. It is safe to re-run: user creation, directory creation, the
+venv, `pip install`, `migrate`, `createcachetable`, `collectstatic`, `systemctl enable`/`restart`,
+the nginx edit, and the backup install are all no-ops or converge to the same result when nothing
 changed. Never stops, disables, or reconfigures the separate `ishtar-newsletter` unit or its nginx
 route.
 
@@ -138,10 +142,14 @@ request, and only then consider retiring the `ishtar-newsletter` unit.
 
 ## Backups
 
-`server/backup-ishtar-app.sh` runs nightly (suggested via `/etc/cron.d/ishtar-app-backup`, see the
-script's header) into `/var/backups/ishtar-app/`, keeping fourteen copies. Each backup is taken
-with SQLite's online backup API (safe against a live WAL-mode database), then independently
-reopened and checked -- non-zero size, `PRAGMA integrity_check`, and the same table count the
-source had -- before the script allows it to count toward rotation; any check failing aborts the
-whole run (`set -eu`) before any older backup is deleted, so a bad backup can never age out a good
-one.
+`deploy-app.sh` installs `server/backup-ishtar-app.sh` to `/opt/ishtar-app/backup-ishtar-app.sh`
+(root-owned, mode 755, outside the app's own `app/` tree so `rsync --delete` never touches it, and
+unwritable by `ishtar-app` so a compromised app process can't tamper with the script that reads the
+database) and writes root's `/etc/cron.d/ishtar-app-backup` pointing at it, on every deploy. Both
+steps write identical content each run, so re-deploying converges rather than duplicating or
+drifting the cron entry. It runs nightly at 03:17 into `/var/backups/ishtar-app/`, keeping fourteen
+copies. Each backup is taken with SQLite's online backup API (safe against a live WAL-mode
+database), then independently reopened and checked -- non-zero size, `PRAGMA integrity_check`, and
+the same table count the source had -- before the script allows it to count toward rotation; any
+check failing aborts the whole run (`set -eu`) before any older backup is deleted, so a bad backup
+can never age out a good one.

@@ -1,9 +1,10 @@
 #!/bin/sh
 # Run as root on the VPS after uploading server/ishtar to /tmp/ishtar-app-src
-# and this script, server/ishtar-app.service and server/nginx-ishtar-app.conf
-# to /tmp. Safe to re-run: every step below either only acts when something
-# is not already correct, or converges to the same end state when repeated
-# (see docs/ACCOUNTS.md, "Deploy", for the reasoning behind each one).
+# and this script, server/ishtar-app.service, server/nginx-ishtar-app.conf
+# and server/backup-ishtar-app.sh to /tmp. Safe to re-run: every step below
+# either only acts when something is not already correct, or converges to
+# the same end state when repeated (see docs/ACCOUNTS.md, "Deploy", for the
+# reasoning behind each one).
 set -eu
 
 APP=/opt/ishtar-app
@@ -16,9 +17,9 @@ id ishtar-app >/dev/null 2>&1 || useradd --system --home-dir /var/lib/ishtar-app
 # box that can only half-start. /etc/ishtar-app.env already exists on a
 # previously-deployed VPS with a working RESEND_API_KEY and DJANGO_FROM_EMAIL
 # (see server/ishtar-app.env.example and docs/ACCOUNTS.md) -- this script
-# only ever reads that file (source it, and chown/chmod it below); it never
-# writes, truncates or regenerates its content, so re-running this can never
-# clobber a working key.
+# only ever reads that file (source it, and check -- never change -- its
+# permissions below); it never writes, truncates or regenerates its content,
+# so re-running this can never clobber a working key.
 [ -f "$ENV_FILE" ] || { echo "Missing $ENV_FILE (see server/ishtar-app.env.example)" >&2; exit 1; }
 set -a
 . "$ENV_FILE"
@@ -36,8 +37,39 @@ rsync -a --delete --exclude '.venv' --exclude '*.sqlite3*' --exclude 'staticfile
 "$APP/venv/bin/pip" install -q --upgrade pip
 "$APP/venv/bin/pip" install -q -r "$APP/app/requirements.txt"
 
-chown root:ishtar-app "$ENV_FILE" && chmod 640 "$ENV_FILE"
+# /etc/ishtar-app.env already exists on the VPS: root-owned, mode 600, and
+# holding a live, verified RESEND_API_KEY (see server/ishtar-app.env.example
+# and docs/ACCOUNTS.md, "Environment file"). This script must never chown or
+# chmod it -- even tightening permissions here would mean silently modifying
+# a file we promised never to touch. Refuse to deploy instead, the same way
+# the missing-file check above refuses: assert it is not group- or
+# world-readable, and fail loudly, naming the problem, if it is.
+python3 - "$ENV_FILE" <<'PY'
+import stat
+import sys
+from pathlib import Path
+
+path = sys.argv[1]
+mode = stat.S_IMODE(Path(path).stat().st_mode)
+if mode & (stat.S_IRGRP | stat.S_IROTH):
+    raise SystemExit(
+        '%s is mode %04o (group- or world-readable) -- refusing to deploy '
+        'onto it. This script never chmods this file; fix permissions by '
+        'hand (chmod 600 %s) and re-run.' % (path, mode, path)
+    )
+PY
 install -m 644 /tmp/ishtar-app.service /etc/systemd/system/ishtar-app.service
+
+# Nightly backup script + cron. Installed outside $APP/app so `rsync
+# --delete` above never touches it, root-owned and mode 755 so the
+# ishtar-app service account -- the one this script's whole job is to take
+# backups out from under, in case that account is ever compromised -- can't
+# write to it. Both lines write identical content on every run, so
+# re-running this deploy converges instead of duplicating or drifting the
+# cron entry.
+install -o root -g root -m 755 /tmp/backup-ishtar-app.sh "$APP/backup-ishtar-app.sh"
+printf '17 3 * * * root %s/backup-ishtar-app.sh\n' "$APP" > /etc/cron.d/ishtar-app-backup
+chmod 644 /etc/cron.d/ishtar-app-backup
 
 export DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3
 cd "$APP/app"
@@ -73,7 +105,12 @@ if marker not in text:
     if anchor not in text:
         raise SystemExit('Expected anchor %r not found in %s' % (anchor, site))
     idx = text.index(anchor)
-    site.with_suffix('.before-accounts').write_text(text)
+    # site.with_suffix() would replace '.com' (pathlib treats it as this
+    # filename's suffix), silently producing
+    # 'ishtarinsights.before-accounts' -- with_name() appends instead,
+    # matching the sibling convention deploy-newsletter.sh sets
+    # ('ishtarinsights.com.before-newsletter').
+    site.with_name(site.name + '.before-accounts').write_text(text)
     site.write_text(text[:idx] + snippet + text[idx:])
 PY
 

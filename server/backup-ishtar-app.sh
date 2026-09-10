@@ -1,10 +1,12 @@
 #!/bin/sh
 # Nightly SQLite backup via the sqlite3 online backup API. Keeps 14 dated
-# copies. Suggested crontab: run as root from /etc/cron.d/ishtar-app-backup
-# (root can read /var/lib/ishtar-app even though that directory is 0700
-# owned by ishtar-app, and /var/backups/ishtar-app is created root-owned
-# below rather than shared with the app's own service account, so a
-# compromised app process cannot read or tamper with its own backups):
+# copies. deploy-app.sh installs this script to
+# /opt/ishtar-app/backup-ishtar-app.sh (root-owned, mode 755) and writes the
+# crontab line below to /etc/cron.d/ishtar-app-backup on every deploy (root
+# can read /var/lib/ishtar-app even though that directory is 0700 owned by
+# ishtar-app, and /var/backups/ishtar-app is created root-owned below rather
+# than shared with the app's own service account, so a compromised app
+# process cannot read or tamper with its own backups):
 #   17 3 * * * root /opt/ishtar-app/backup-ishtar-app.sh
 set -eu
 DEST=/var/backups/ishtar-app
