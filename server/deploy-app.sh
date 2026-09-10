@@ -43,19 +43,40 @@ rsync -a --delete --exclude '.venv' --exclude '*.sqlite3*' --exclude 'staticfile
 # chmod it -- even tightening permissions here would mean silently modifying
 # a file we promised never to touch. Refuse to deploy instead, the same way
 # the missing-file check above refuses: assert it is not group- or
-# world-readable, and fail loudly, naming the problem, if it is.
+# world-readable AND that it is root-owned, and fail loudly, naming every
+# problem found, if not. Ownership matters here even though root bypasses
+# permission checks, because the actor this defends against is not systemd
+# (which reads EnvironmentFile= as root, in PID 1, before dropping to
+# User=ishtar-app -- ownership was never relevant to that read) but the
+# gunicorn worker itself, running as User=ishtar-app under ProtectSystem=
+# strict and ProtectHome=true, neither of which covers /etc. A file owned
+# by ishtar-app at mode 0600 would pass a mode-only check while still being
+# directly readable -- and writable -- by that same account.
 python3 - "$ENV_FILE" <<'PY'
 import stat
 import sys
 from pathlib import Path
 
 path = sys.argv[1]
-mode = stat.S_IMODE(Path(path).stat().st_mode)
-if mode & (stat.S_IRGRP | stat.S_IROTH):
+try:
+    st = Path(path).stat()
+except OSError as exc:
     raise SystemExit(
-        '%s is mode %04o (group- or world-readable) -- refusing to deploy '
-        'onto it. This script never chmods this file; fix permissions by '
-        'hand (chmod 600 %s) and re-run.' % (path, mode, path)
+        'Could not stat %s (%s) -- refusing to deploy. This script never '
+        'chmods or chowns this file; fix the problem by hand and re-run.'
+        % (path, exc)
+    )
+mode = stat.S_IMODE(st.st_mode)
+problems = []
+if mode & (stat.S_IRGRP | stat.S_IROTH):
+    problems.append('mode %04o (group- or world-readable)' % mode)
+if st.st_uid != 0:
+    problems.append('owned by uid %d, not root' % st.st_uid)
+if problems:
+    raise SystemExit(
+        '%s: %s -- refusing to deploy onto it. This script never chmods or '
+        'chowns this file; fix it by hand (chown root:root %s; chmod 600 '
+        '%s) and re-run.' % (path, '; '.join(problems), path, path)
     )
 PY
 install -m 644 /tmp/ishtar-app.service /etc/systemd/system/ishtar-app.service

@@ -69,10 +69,13 @@ email"). Deploying this service means appending the remaining variables --
 `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`, `NEWSLETTER_ORIGINS` --
 to the existing file, not regenerating it. `deploy-app.sh` never chowns or chmods this file -- even
 tightening its permissions would mean silently modifying a file that holds a live key. Instead it
-asserts the file is not group- or world-readable (systemd reads `EnvironmentFile=` as root, in PID
-1, before dropping to `User=ishtar-app`, so the service itself never needs group-read) and refuses
-to deploy, naming the problem, if it is; it also refuses to proceed if any of the six variables the
-app needs is missing or empty.
+asserts the file is not group- or world-readable and is owned by root, refusing to deploy and
+naming every problem found, if not; it also refuses to proceed if any of the six variables the app
+needs is missing or empty. Readability alone would not be enough to check: systemd reads
+`EnvironmentFile=` as root, in PID 1, before dropping to `User=ishtar-app`, so ownership was never
+relevant to *that* read -- but the gunicorn worker itself runs as `User=ishtar-app` under
+`ProtectSystem=strict`/`ProtectHome=true`, neither of which covers `/etc`, so a file merely mode
+600 but owned by `ishtar-app` would still be directly readable, and writable, by that same account.
 
 Values containing spaces must stay quoted (e.g. `DJANGO_FROM_EMAIL="Ishtar Insights
 <hello@ishtarinsights.com>"`) so the file works both when sourced by POSIX `sh` and when read by
