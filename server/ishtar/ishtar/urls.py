@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 
 from accounts.views import SignupOrRequestLoginCodeView
@@ -12,4 +13,12 @@ urlpatterns = [
     path('_allauth/', include('allauth.headless.urls')),
     path('api/health/', health),
     path('api/account/', include('accounts.urls')),
+    path('api/readings/', include('readings.urls')),
 ]
+
+
+def not_found(request, exception=None):
+    return JsonResponse({'error': 'Not found.'}, status=404)
+
+
+handler404 = 'ishtar.urls.not_found'
