@@ -59,6 +59,27 @@ DJANGO_DEBUG=1 .venv/Scripts/python.exe manage.py runserver 8000
 
 Without `RESEND_API_KEY` the login code prints to the console.
 
+The session cookie is same-origin only, so exercising the sign-in dialog, account panel, or
+journal in a browser needs the static site and the API served from one origin. Nginx does that in
+production, and continues to at every future stage including after the newsletter cutover (see
+"Newsletter cutover" below) -- Django never serves the static site. `runserver` alone only serves
+`/api/`, `/admin/`, and `/_allauth/`, so to check the signed-in UI locally, temporarily append this
+to `ishtar/urls.py` -- **do not commit it**:
+
+```python
+from django.conf import settings
+from django.views.static import serve
+if settings.DEBUG:
+    from django.urls import re_path
+    urlpatterns += [re_path(r'^(?P<path>.*)$', lambda request, path: serve(request, path or 'index.html', document_root=settings.BASE_DIR.parent.parent))]
+```
+
+It only takes effect when `DEBUG` is true, which never happens in production (`DJANGO_DEBUG`
+appears in neither `ishtar-app.env.example` nor `deploy-app.sh`'s required-variable check), but
+revert it (`git checkout -- ishtar/urls.py`) before committing anything else -- nginx serving the
+static site is the permanent design, not a placeholder this route will ever graduate into filling.
+Then run the server as above with `DJANGO_DEBUG=1` and open `http://127.0.0.1:8000/`.
+
 ## Environment file
 
 `server/ishtar-app.env.example` documents every variable the app reads from the environment, but

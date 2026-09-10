@@ -47,7 +47,7 @@
     $('#journal-empty').hidden = data.count > 0;
     $('#journal-page').textContent = data.count ? `Page ${data.page} of ${data.pages} · ${data.count} saved` : '';
     $('#journal-prev').disabled = data.page <= 1; $('#journal-next').disabled = data.page >= data.pages;
-    list.innerHTML = data.readings.map(r => `<li data-reading-id="${r.id}"><div><strong>${esc(kindLabel[r.kind] || r.kind)}${r.layout ? ' · ' + esc(r.layout) : ''}</strong><div class="journal-meta">${new Date(r.created_at).toLocaleString()}${r.deck ? ' · ' + esc(r.deck) : ''}</div>${r.question ? `<div class="journal-question">“${esc(r.question)}”</div>` : ''}</div><div class="journal-actions"><button type="button" data-journal-open>Open</button><button type="button" data-journal-note aria-expanded="false">Note</button><button type="button" data-journal-delete>Delete</button></div><div class="journal-note" hidden><textarea maxlength="4000" aria-label="Journal note">${esc(r.note || '')}</textarea><button type="button" data-journal-save-note>Save note</button></div></li>`).join('');
+    list.innerHTML = data.readings.map(r => `<li data-reading-id="${esc(r.id)}"><div><strong>${esc(kindLabel[r.kind] || r.kind)}${r.layout ? ' · ' + esc(r.layout) : ''}</strong><div class="journal-meta">${new Date(r.created_at).toLocaleString()}${r.deck ? ' · ' + esc(r.deck) : ''}</div>${r.question ? `<div class="journal-question">“${esc(r.question)}”</div>` : ''}</div><div class="journal-actions"><button type="button" data-journal-open>Open</button><button type="button" data-journal-note aria-expanded="false">Note</button><button type="button" data-journal-delete>Delete</button></div><div class="journal-note" hidden><textarea maxlength="4000" aria-label="Journal note">${esc(r.note || '')}</textarea><button type="button" data-journal-save-note>Save note</button></div></li>`).join('');
     if (data.error) status.textContent = data.error;
   }
 
@@ -78,9 +78,10 @@
     const result = await account.confirmCode($('#account-code-input').value);
     submit.disabled = false;
     if (!result.ok) { dialogStatus.textContent = result.message; if (result.message.includes('Enter your email again')) showStep('email'); return; }
-    $('#account-code-input').value = ''; dialog.close();
+    $('#account-code-input').value = '';
     status.textContent = 'You are signed in.';
-    openPanel();
+    dialog.addEventListener('close', openPanel, {once: true});
+    dialog.close();
   });
   $('#account-resend').addEventListener('click', () => emailForm.requestSubmit());
   $('#account-restart').addEventListener('click', () => showStep('email'));
