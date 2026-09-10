@@ -52,6 +52,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
+
+from ishtar.api import auth_required, error, json_view
+from .models import Profile
+
+PROFILE_KEYS = {'birthday', 'time', 'place', 'placeLocation', 'houseSystem', 'orbScale', 'fold'}
+PROFILE_MAX_BYTES = 4 * 1024
 
 
 class SignupOrRequestLoginCodeView(RequestLoginCodeView):
@@ -82,3 +91,44 @@ class SignupOrRequestLoginCodeView(RequestLoginCodeView):
                     email=email, defaults={'password': make_password(None)},
                 )
         return super().dispatch(request, *args, **kwargs)
+
+
+def account_summary(user):
+    profile = Profile.objects.filter(user=user).first()
+    return {
+        'email': user.email,
+        'features': [],
+        'profile': profile.data if profile else None,
+        'newsletter': False,
+    }
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET'])
+@auth_required
+def account(request):
+    return JsonResponse(account_summary(request.user))
+
+
+def validate_profile(data):
+    if not isinstance(data, dict):
+        return 'A profile object is required.'
+    extra = set(data) - PROFILE_KEYS
+    if extra:
+        return 'Unexpected profile fields: ' + ', '.join(sorted(extra)) + '.'
+    if len(json.dumps(data)) > PROFILE_MAX_BYTES:
+        return 'The profile is too large to save.'
+    return None
+
+
+@json_view(methods=('PUT', 'DELETE'))
+@auth_required
+def profile(request):
+    if request.method == 'DELETE':
+        Profile.objects.filter(user=request.user).delete()
+        return JsonResponse({'ok': True})
+    message = validate_profile(request.json)
+    if message:
+        return error(message)
+    saved, _ = Profile.objects.update_or_create(user=request.user, defaults={'data': request.json, 'version': 1})
+    return JsonResponse({'ok': True, 'updated_at': saved.updated_at.isoformat()})

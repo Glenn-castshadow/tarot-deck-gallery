@@ -11,4 +11,5 @@ urlpatterns = [
     path('_allauth/browser/v1/auth/code/request', SignupOrRequestLoginCodeView.as_api_view(client='browser')),
     path('_allauth/', include('allauth.headless.urls')),
     path('api/health/', health),
+    path('api/account/', include('accounts.urls')),
 ]

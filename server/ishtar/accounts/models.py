@@ -40,3 +40,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Profile(models.Model):
+    """The birth profile object the frontend writes to localStorage, stored as-is."""
+    user = models.OneToOneField('accounts.User', on_delete=models.CASCADE, related_name='profile')
+    version = models.PositiveSmallIntegerField(default=1)
+    data = models.JSONField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'Profile of {self.user}'

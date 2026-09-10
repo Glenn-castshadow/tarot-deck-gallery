@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import Profile, User
 
 
 @admin.register(User)
@@ -15,3 +15,10 @@ class UserAdmin(BaseUserAdmin):
         ('Dates', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = ((None, {'classes': ('wide',), 'fields': ('email', 'password1', 'password2')}),)
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'version', 'updated_at')
+    search_fields = ('user__email',)
+    readonly_fields = ('updated_at',)
