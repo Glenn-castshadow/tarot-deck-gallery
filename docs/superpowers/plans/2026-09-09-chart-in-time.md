@@ -180,7 +180,7 @@ and bump `celestial-extras.js?v=1` to `?v=2`.
 
 - [ ] **Step 8: Verify nothing regressed**
 
-Run: `node --check celestial-extras.js && node --check bi-wheel.js && node --test tests/`
+Run: `node --check celestial-extras.js && node --check bi-wheel.js && node --test tests/*.test.cjs`
 Expected: all existing tests still pass, plus the 4 new ones.
 
 Then confirm no orphan references: `grep -n "CelestialExtras.wheel\|[^.]wheel(" celestial-extras.js` should return nothing.
@@ -778,10 +778,12 @@ Open `tests/fixtures/chart-in-time-reference.json` and sanity-check that each `m
 
 Append to `tests/chart-in-time.test.cjs`:
 
-```js
-const reference=require('./fixtures/chart-in-time-reference.json');
+Name the import `swissReference`, not `reference` — several tests written in Tasks 3 and 4 already declare a local `const reference` for the reference *date*, and a module-level `reference` would be legal but silently shadowed inside exactly those tests.
 
-for(const fixture of reference.cases) test(`independent ephemeris: ${fixture.id}`,()=>{
+```js
+const swissReference=require('./fixtures/chart-in-time-reference.json');
+
+for(const fixture of swissReference.cases) test(`independent ephemeris: ${fixture.id}`,()=>{
   const birth=natal.calculate(fixture.input);
   assert.equal(birth.status,'ready');
   const result=engine.returnChart({chart:birth,kind:fixture.kind,location:birth.location,reference:new Date(`${fixture.reference}T00:00:00Z`)});
@@ -819,7 +821,8 @@ git commit -m "test(chart-in-time): independent Swiss Ephemeris return fixtures"
 **Interfaces:**
 - Consumes: nothing.
 - Produces: `ChartInTimeText` with:
-  - `.returnSunHouse[1..12] -> {title, body, prompt}`
+  - `.returnSunHouse[1..12] -> {title, body, prompt}` — for solar returns
+  - `.returnMoonHouse[1..12] -> {title, body, prompt}` — for lunar returns
   - `.returnAscendant[signName] -> {title, body, prompt}`
   - `.lunation[phaseName] -> {title, body, prompt}`
   - `.progressedSunSign[signName] -> {title, body, prompt}`
@@ -848,6 +851,13 @@ const ChartInTimeText = (() => {
     // ... houses 3-12, same shape
   };
 
+  // Same twelve houses, read for a month rather than a year, and about
+  // emotional weather rather than identity. Do not reuse the solar wording.
+  const returnMoonHouse = {
+    1: {title:'A month close to the surface', body:'The return Moon in the first house is traditionally associated with feeling more visible, and with moods that show before they are named.', prompt:'What are you feeling before you have words for it?'},
+    // ... houses 2-12, same shape
+  };
+
   const returnAscendant = { /* one entry per NatalEngine.signNames value */ };
   const lunation = {
     New: {title:'A beginning without a shape yet', body:'The progressed New phase is traditionally read as a start made before its outline is visible.', prompt:'What is beginning that you cannot describe yet?'},
@@ -870,19 +880,19 @@ const ChartInTimeText = (() => {
     'solar-arc': {label:'Solar arc directions', summary:'Every natal placement advances by the same arc the progressed Sun has travelled.', conventions:'The arc is taken from the secondary progressed Sun. The Naibod variant, which substitutes mean solar motion, is not used. Directed points carry no daily motion, so applying and separating are not reported for this method.'}
   };
 
-  return {planetTheme, returnSunHouse, returnAscendant, lunation, progressedSunSign, contact, method};
+  return {planetTheme, returnSunHouse, returnMoonHouse, returnAscendant, lunation, progressedSunSign, contact, method};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = ChartInTimeText;
 ```
 
-Fill every ellipsis with real entries: 12 houses, 12 signs for `returnAscendant`, 8 lunation phases, 12 signs for `progressedSunSign`. Each is a `{title, body, prompt}` written fresh — do not paraphrase a published source.
+Fill every ellipsis with real entries — 56 in total: 12 for `returnSunHouse`, 12 for `returnMoonHouse`, 12 for `returnAscendant`, 8 for `lunation`, 12 for `progressedSunSign`. Each is a `{title, body, prompt}` written fresh — do not paraphrase a published source, and do not let the Moon entries restate the Sun entries.
 
 - [ ] **Step 2: Verify completeness**
 
 Run:
 
 ```bash
-node -e "const t=require('./chart-in-time-text.js');const n=require('./natal-engine.js');const miss=[];for(let h=1;h<=12;h++)if(!t.returnSunHouse[h])miss.push('house '+h);for(const s of n.signNames){if(!t.returnAscendant[s])miss.push('asc '+s);if(!t.progressedSunSign[s])miss.push('sun '+s);}for(const p of ['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'])if(!t.lunation[p])miss.push('phase '+p);console.log(miss.length?'MISSING: '+miss.join(', '):'complete');"
+node -e "const t=require('./chart-in-time-text.js');const n=require('./natal-engine.js');const miss=[];for(let h=1;h<=12;h++){if(!t.returnSunHouse[h])miss.push('sun house '+h);if(!t.returnMoonHouse[h])miss.push('moon house '+h);if(t.returnSunHouse[h]&&t.returnMoonHouse[h]&&t.returnSunHouse[h].body===t.returnMoonHouse[h].body)miss.push('moon house '+h+' duplicates sun');}for(const s of n.signNames){if(!t.returnAscendant[s])miss.push('asc '+s);if(!t.progressedSunSign[s])miss.push('sun sign '+s);}for(const p of ['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'])if(!t.lunation[p])miss.push('phase '+p);for(const k of ['solar','lunar','secondary','tertiary','solar-arc'])if(!t.method[k])miss.push('method '+k);console.log(miss.length?'MISSING: '+miss.join(', '):'complete');"
 ```
 
 Expected: `complete`
@@ -999,8 +1009,10 @@ const ChartInTime = (() => {
       if (model.status === 'missing') { output.innerHTML = missing(model.message); return; }
       if (model.status === 'error') { output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
       const text = ChartInTimeText.method[kind];
+      // The lunar return reads the Moon's house, and must use the Moon's own
+      // text table — the solar wording is about a year and about identity.
       const sun = model.chart.points.find(point => point.name === (kind === 'solar' ? 'Sun' : 'Moon'));
-      const house = ChartInTimeText.returnSunHouse[sun.house];
+      const house = (kind === 'solar' ? ChartInTimeText.returnSunHouse : ChartInTimeText.returnMoonHouse)[sun.house];
       const rising = ChartInTimeText.returnAscendant[model.chart.axes[0].sign];
       if (kind === 'solar') $('#cit-solar-label').textContent = new Date(model.moment).getUTCFullYear();
       output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}Exact return: <strong>${esc(readable(model.moment))}</strong> · cast for ${esc(place().label || 'the selected place')}</p>
@@ -1055,7 +1067,17 @@ const ChartInTime = (() => {
 })();
 ```
 
-- [ ] **Step 3: Wire it into app.js**
+- [ ] **Step 3: Write chart-in-time.css**
+
+Create `chart-in-time.css`. Read `celestial-extras.css` first and follow it — this section sits directly beneath that one and must not look like a different site. Reuse its palette (`#0a202c` chart ground, `#bba477` rules, `#e8cd93` inner ring, `#97d3d6` outer ring) and its type scale.
+
+The markup in Step 2 deliberately reuses several existing class names — `cx-profile-bar`, `cx-missing`, `cx-error`, `cx-comparison`, `cx-chart-art`, `cx-ring-key`, `cx-placements`, `cx-method`, `cx-table-wrap`, `acg-eyebrow`, `acg-small-label`, `birthplace-field`, `city-input-wrap`, `city-suggestions`, `city-search-status` — so those are already styled and need no new rules. Style only the new `cit-` classes:
+
+`.chart-in-time`, `.cit-heading`, `.cit-tabs` (matching `.cx-tabs`), `.cit-profile-status`, `.cit-place-form`, `.cit-custom-place`, `.cit-manual-toggle`, `.cit-primary` (matching `.cx-primary`), `.cit-view`, `.cit-view-heading`, `.cit-nav`, `.cit-controls`, `.cit-moment`, `.cit-reading`, `.cit-contacts`.
+
+Requirements: no horizontal overflow at 390px; `.cit-nav` and `.cit-controls` wrap rather than scroll; `.cit-contacts ul` is a plain list with no bullets; the section prints legibly (follow the existing print rules in `celestial-extras.css`).
+
+- [ ] **Step 4: Wire it into app.js**
 
 After `app.js:125`:
 
@@ -1070,7 +1092,7 @@ chartInTime.setBirthChart(null);   // in the branch that clears
 chartInTime.setBirthChart(natal);  // in the branch that sets
 ```
 
-- [ ] **Step 4: Register the mobile fold**
+- [ ] **Step 5: Register the mobile fold**
 
 After `mobile-sections.js:134`:
 
@@ -1078,14 +1100,14 @@ After `mobile-sections.js:134`:
 wrap([document.querySelector('#chart-in-time')], 'Chart in time', {key: 'chart-in-time', group: 'main', level: 2, subtitle: 'Solar & lunar returns · progressions'});
 ```
 
-- [ ] **Step 5: Verify**
+- [ ] **Step 6: Verify**
 
-Run: `node --check chart-in-time.js && node --test tests/`
-Expected: syntax clean, all tests still pass.
+Run: `node --check chart-in-time.js && node --test tests/*.test.cjs`
+Expected: syntax clean, 101 tests pass (72 baseline + 3 from Task 2 + 4 bi-wheel + 22 chart-in-time).
 
 Then open `index.html` over a local static server and confirm: the section renders, the solar tab shows a wheel and a return moment, previous/next steps the year, "This year" returns to the current one, and the browser console is empty. Enter birth details and confirm the chart becomes personal.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add chart-in-time.js chart-in-time.css index.html app.js mobile-sections.js
@@ -1208,7 +1230,7 @@ The write already goes through `IshtarStorage.setItem`, so consent gating is inh
 
 - [ ] **Step 5: Verify**
 
-Run: `node --check chart-in-time.js && node --check app.js && node --test tests/`
+Run: `node --check chart-in-time.js && node --check app.js && node --test tests/*.test.cjs`
 
 In the browser: switch to the lunar tab, confirm ~27-day steps and that thirteen or fourteen steps forward covers about a year. Choose a return city different from the birthplace, press "Update return charts", and confirm the angles change while the planets do not. Reload and confirm the city comes back. Enter custom coordinates instead and confirm those persist too. Then decline optional saving in the cookie banner, reload, and confirm nothing comes back.
 
@@ -1281,7 +1303,7 @@ Extend the `change` handler created in Task 8 — do not register a second liste
 
 - [ ] **Step 4: Verify**
 
-Run: `node --check chart-in-time.js && node --test tests/`
+Run: `node --check chart-in-time.js && node --test tests/*.test.cjs`
 
 In the browser: switch methods and confirm the arc line appears only for solar arc; confirm tertiary moves the chart much further than secondary for the same date; confirm an out-of-range date shows the error rather than a chart.
 
@@ -1317,8 +1339,10 @@ It must state explicitly:
 
 - [ ] **Step 2: Run everything**
 
-Run: `node --test tests/`
-Expected: every suite passes — the pre-existing suites plus `bi-wheel` (4) and `chart-in-time` (22).
+Run: `node --test tests/*.test.cjs`
+Expected: 101 passing, 0 failing. That is the 72-test baseline measured on this branch before Task 1, plus 3 added to `natal-engine` in Task 2, 4 in `bi-wheel`, and 22 in `chart-in-time`.
+
+Note the glob: `node --test tests/` fails on Node 24 with `MODULE_NOT_FOUND`, so the test path must be expanded by the shell. Run it from Bash, not PowerShell.
 
 Run: `for f in *.js; do node --check "$f" || echo "FAILED $f"; done`
 Expected: no failures.
