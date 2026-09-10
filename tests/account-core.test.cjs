@@ -101,7 +101,9 @@ test('readings, newsletter, sign out and delete account call the right endpoints
   await account.refresh();
   const saved = await account.saveReading({kind: 'runes', payload: {ids: [1]}});
   assert.equal(saved.reading.id, 7);
-  assert.equal((await account.getReading(7)).payload.ids[0], 1);
+  const fetched = await account.getReading(7);
+  assert.equal(fetched.ok, true);
+  assert.equal(fetched.reading.payload.ids[0], 1);
   assert.equal((await account.updateNote(7, 'ok')).reading.note, 'ok');
   assert.equal((await account.deleteReading(7)).ok, true);
   assert.equal((await account.setNewsletter(false)).ok, true);
@@ -160,4 +162,134 @@ test('CSRF header is attached on unsafe methods only', async () => {
   assert.equal(putCall.headers['X-CSRFToken'], 'csrf-9');
   assert.equal(deleteCall.method, 'DELETE');
   assert.equal(deleteCall.headers['X-CSRFToken'], 'csrf-9');
+});
+
+// Fix round 1 additions below. The eight brief/gap tests above are unchanged except for the
+// getReading call at line ~104, which now reads the {ok, reading} wrapper instead of the bare
+// object, because Finding 2 changed getReading's return shape (see below).
+
+// Finding 1: listReadings() hardcoded page: 1, pages: 1 in its failure shape regardless of which
+// page was requested, so a failed fetch of page 3 would render as "page 1 of 1" -- silently wrong
+// rather than visibly broken. This pins the fix: the requested page must survive into the failure
+// object.
+test('listReadings preserves the requested page in the failure shape', async () => {
+  const {fetch} = fakeFetch({
+    'GET /api/account/': [200, summary],
+    'GET /api/readings/?page=3': [500, {error: 'Server error.'}]
+  });
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  const result = await account.listReadings(3);
+  assert.equal(result.page, 3);
+  assert.equal(result.pages, 1);
+  assert.equal(result.count, 0);
+  assert.deepEqual(result.readings, []);
+  assert.equal(result.error, 'Server error.');
+});
+
+// Finding 2: getReading(id) used to collapse every failure (404, 500, network outage) into a bare
+// null, indistinguishable from each other and with no message to show. It now matches its siblings'
+// {ok, reading|message} shape, documented in the brief's Interfaces section though not its code block.
+test('getReading returns an ok/message failure shape instead of null', async () => {
+  const {fetch} = fakeFetch({
+    'GET /api/account/': [200, summary],
+    'GET /api/readings/9/': [404, {error: 'Not found.'}]
+  });
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  const result = await account.getReading(9);
+  assert.equal(result.ok, false);
+  assert.equal(result.message, 'Not found.');
+  assert.equal(result.reading, undefined);
+});
+
+// Finding 3: onChange's unsubscribe function was correct but untested. Task 11 will wire it to
+// component mount/unmount, where a leaked listener is silent and cumulative.
+test('onChange unsubscribe stops that listener without affecting others', async () => {
+  const {fetch} = fakeFetch({'GET /api/account/': [200, summary]});
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  const a = [];
+  const b = [];
+  const unsubscribeA = account.onChange(s => a.push(s.signedIn));
+  account.onChange(s => b.push(s.signedIn));
+  unsubscribeA();
+  await account.refresh();
+  assert.deepEqual(a, [], 'unsubscribed listener must not be notified');
+  assert.deepEqual(b, [true], 'remaining listener must still be notified');
+});
+
+// Finding 4, path 1: a successful saveProfile after a failed one must clear syncError.
+test('syncError clears after a successful saveProfile following a failed one', async () => {
+  let fail = true;
+  const {fetch} = fakeFetch({
+    'GET /api/account/': [200, summary],
+    'PUT /api/account/profile/': () => fail ? [503, {error: 'down'}] : [200, {ok: true}]
+  });
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  await account.saveProfile({birthday: '1992-02-02'});
+  assert.equal(account.state().syncError, true);
+  fail = false;
+  const result = await account.saveProfile({birthday: '1993-03-03'});
+  assert.equal(result.ok, true);
+  assert.equal(account.state().syncError, false);
+  assert.equal(account.state().profile.birthday, '1993-03-03');
+});
+
+// Finding 4, path 2: a successful refresh() after a failed write must clear syncError and replace
+// the unsynced local profile with the server's copy.
+test('syncError clears and the local profile is replaced by the server copy after a successful refresh following a failed write', async () => {
+  const {fetch} = fakeFetch({
+    'GET /api/account/': [200, summary],
+    'PUT /api/account/profile/': [503, {error: 'down'}]
+  });
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  await account.saveProfile({birthday: '1999-09-09'});
+  assert.equal(account.state().syncError, true);
+  assert.equal(account.state().profile.birthday, '1999-09-09');
+  await account.refresh();
+  assert.equal(account.state().syncError, false);
+  assert.equal(account.state().profile.birthday, summary.profile.birthday);
+});
+
+// Added assertion: state() must return a defensive copy. Mutating the returned object, its
+// features array, or its profile must never reach internal state.
+test('state() returns a defensive copy that cannot reach internal state', async () => {
+  const {fetch} = fakeFetch({'GET /api/account/': [200, summary]});
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  const snap = account.state();
+  snap.email = 'tampered@example.com';
+  snap.features.push('hacked');
+  snap.profile.birthday = 'tampered';
+  const fresh = account.state();
+  assert.equal(fresh.email, 'reader@example.com');
+  assert.deepEqual(fresh.features, ['member']);
+  assert.equal(fresh.profile.birthday, '1990-05-04');
+});
+
+// Added assertion: clearProfile() is exercised by the CSRF test above but neither its return value
+// nor its effect on state() is asserted anywhere.
+test('clearProfile clears the profile and reports ok', async () => {
+  const {fetch} = fakeFetch({'GET /api/account/': [200, summary], 'DELETE /api/account/profile/': [200, {ok: true}]});
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  assert.equal(account.state().profile.birthday, '1990-05-04');
+  const result = await account.clearProfile();
+  assert.deepEqual(result, {ok: true});
+  assert.equal(account.state().profile, null);
+});
+
+// Added assertion: listReadings(page) with a non-default page must forward the correct query string.
+test('listReadings forwards the requested page in the query string', async () => {
+  const {fetch, calls} = fakeFetch({
+    'GET /api/account/': [200, summary],
+    'GET /api/readings/?page=4': [200, {readings: [], page: 4, pages: 5, count: 40}]
+  });
+  const account = createAccount({fetch, getCookie: () => 'c'});
+  await account.refresh();
+  await account.listReadings(4);
+  const readingsCall = calls.find(c => c.method === 'GET' && c.url.startsWith('/api/readings/'));
+  assert.equal(readingsCall.url, '/api/readings/?page=4');
 });

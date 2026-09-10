@@ -63,9 +63,12 @@
     }
     async function listReadings(page = 1) {
       const {status, data} = await call('GET', `${API}/readings/?page=${page}`);
-      return status === 200 ? data : {readings: [], page: 1, pages: 1, count: 0, error: firstError(data, 'Could not load your journal.')};
+      return status === 200 ? data : {readings: [], page, pages: 1, count: 0, error: firstError(data, 'Could not load your journal.')};
     }
-    async function getReading(id) { const {status, data} = await call('GET', `${API}/readings/${id}/`); return status === 200 ? data : null; }
+    async function getReading(id) {
+      const {status, data} = await call('GET', `${API}/readings/${id}/`);
+      return status === 200 ? {ok: true, reading: data} : {ok: false, message: firstError(data, 'Could not load that reading.')};
+    }
     async function saveReading(reading) {
       const {status, data} = await call('POST', `${API}/readings/`, reading);
       return status === 201 ? {ok: true, reading: data} : {ok: false, message: firstError(data, 'The reading could not be saved.')};
