@@ -351,35 +351,40 @@ birthdayForm.addEventListener("submit", event => {
   renderBirthdayProfile(saved);
 });
 
-try {
-  const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
-  if (savedBirthday?.birthday) {
-    birthdayInput.value = savedBirthday.birthday;
-    birthTimeInput.value = savedBirthday.time || "";
-    birthPlaceInput.value = savedBirthday.place || "";
-    birthplacePicker.restore(savedBirthday.placeLocation);
-    houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
-    orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
-    foldInput.value = savedBirthday.fold || "";
-    if(savedBirthday.placeLocation?.source === "manual") {
-      manualLocationInput.checked=true;manualFields.disabled=false;manualFields.hidden=false;
-      document.querySelector("#birth-latitude").value=savedBirthday.placeLocation.latitude;
-      document.querySelector("#birth-longitude").value=savedBirthday.placeLocation.longitude;
-      document.querySelector("#birth-timezone").value=savedBirthday.placeLocation.timeZone;
-    }
-    renderBirthdayProfile(savedBirthday);
-    if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
-      if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
-      savedBirthday.placeLocation=location;savedBirthday.place=location.label;
-      try {IshtarStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+function restoreBirthdayProfile() {
+  try {
+    const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
+    if (savedBirthday?.birthday) {
+      manualLocationInput.checked = false; manualFields.disabled = true; manualFields.hidden = true;
+      birthdayInput.value = savedBirthday.birthday;
+      birthTimeInput.value = savedBirthday.time || "";
+      birthPlaceInput.value = savedBirthday.place || "";
+      birthplacePicker.restore(savedBirthday.placeLocation);
+      houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
+      orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
+      foldInput.value = savedBirthday.fold || "";
+      if(savedBirthday.placeLocation?.source === "manual") {
+        manualLocationInput.checked=true;manualFields.disabled=false;manualFields.hidden=false;
+        document.querySelector("#birth-latitude").value=savedBirthday.placeLocation.latitude;
+        document.querySelector("#birth-longitude").value=savedBirthday.placeLocation.longitude;
+        document.querySelector("#birth-timezone").value=savedBirthday.placeLocation.timeZone;
+      }
       renderBirthdayProfile(savedBirthday);
-    });
-  } else {
+      if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
+        if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
+        savedBirthday.placeLocation=location;savedBirthday.place=location.label;
+        try {IshtarStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+        renderBirthdayProfile(savedBirthday);
+      });
+    } else {
+      renderBirthdayProfile();
+    }
+  } catch (error) {
     renderBirthdayProfile();
   }
-} catch (error) {
-  renderBirthdayProfile();
 }
+restoreBirthdayProfile();
+window.BirthRoom = { restore: restoreBirthdayProfile };
 
 const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");

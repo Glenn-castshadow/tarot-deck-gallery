@@ -11,16 +11,23 @@ window.IshtarStorage = (() => {
         .forEach(key => localStorage.removeItem(key));
     } catch {}
   }
+  const remotes = new Map();
+  const localItem = key => { if (allowed()) { try { return localStorage.getItem(key); } catch {} } return null; };
   const api = {
     getItem(key) {
+      const remote = remotes.get(key);
+      if (remote) return remote.get();
       if (memory.has(key)) return memory.get(key);
-      if (allowed()) { try { return localStorage.getItem(key); } catch {} }
-      return null;
+      return localItem(key);
     },
     setItem(key, value) {
       memory.set(key, value);
+      const remote = remotes.get(key);
+      if (remote) { remote.set(value); return; }
       if (allowed()) { try { localStorage.setItem(key, value); } catch {} }
-    }
+    },
+    localItem(key) { return localItem(key); },
+    setRemote(key, remote) { if (remote) remotes.set(key, remote); else remotes.delete(key); }
   };
   document.addEventListener('DOMContentLoaded', () => {
     const notice = document.querySelector('#storage-notice');
