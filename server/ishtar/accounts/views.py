@@ -48,7 +48,7 @@ import json
 
 from allauth.core import ratelimit
 from allauth.headless.account.views import RequestLoginCodeView
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -176,3 +176,14 @@ def newsletter(request):
     else:
         Subscriber.objects.filter(email=request.user.email).delete()
     return JsonResponse({'ok': True, 'newsletter': request.json['subscribed']})
+
+
+@json_view(methods=('POST',))
+@auth_required
+def delete_account(request):
+    if request.json.get('confirm') is not True:
+        return error('Confirm deletion to continue.')
+    user = request.user
+    logout(request)
+    user.delete()
+    return JsonResponse({'ok': True})

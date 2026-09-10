@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.account),
     path('profile/', views.profile),
     path('newsletter/', views.newsletter),
+    path('delete/', views.delete_account),
 ]
