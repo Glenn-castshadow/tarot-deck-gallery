@@ -1,6 +1,6 @@
 import json
 
-from django.core.paginator import Paginator
+from django.core.paginator import InvalidPage, Paginator
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -42,16 +42,16 @@ def collection(request):
         paginator = Paginator(Reading.objects.filter(user=request.user), PAGE_SIZE)
         try:
             page = paginator.page(int(request.GET.get('page', '1')))
-        except (ValueError, Exception):
+        except (ValueError, InvalidPage):
             return error('That page does not exist.', 404)
         return JsonResponse({'readings': [serialize(r) for r in page.object_list], 'page': page.number,
                              'pages': paginator.num_pages, 'count': paginator.count})
     body = request.json
     if set(body) - CREATE_KEYS or 'kind' not in body or 'payload' not in body:
         return error('Send kind, payload and optional deck, layout, question, focus.')
-    if body['kind'] not in KINDS:
+    if not isinstance(body['kind'], str) or body['kind'] not in KINDS:
         return error('Unknown reading kind.')
-    if not isinstance(body['payload'], dict) or len(json.dumps(body['payload'])) > PAYLOAD_MAX_BYTES:
+    if not isinstance(body['payload'], dict) or len(json.dumps(body['payload'], ensure_ascii=False).encode('utf-8')) > PAYLOAD_MAX_BYTES:
         return error('The reading payload must be an object under 8 KB.')
     try:
         fields = {'deck': text(body.get('deck'), 40, 'Deck'), 'layout': text(body.get('layout'), 40, 'Layout'),

@@ -22,7 +22,7 @@ def json_view(methods=('POST',)):
                     return error('JSON required.', 415)
                 try:
                     request.json = json.loads(request.body or b'null')
-                except (ValueError, UnicodeDecodeError):
+                except (ValueError, UnicodeDecodeError, RecursionError):
                     return error('Invalid JSON.', 400)
                 if not isinstance(request.json, dict):
                     return error('A JSON object is required.', 400)

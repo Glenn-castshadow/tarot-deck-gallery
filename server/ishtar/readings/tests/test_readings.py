@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -60,3 +62,39 @@ class ReadingApiTests(TestCase):
     def test_requires_login(self):
         self.client.logout()
         self.assertEqual(self.client.get('/api/readings/').status_code, 401)
+
+    def test_non_string_kind_returns_400_not_500(self):
+        # Finding 1: `body['kind'] not in KINDS` raises TypeError when `kind`
+        # is an unhashable type (e.g. a list), which without a type guard
+        # escapes as an uncaught 500 instead of the normal validation 400.
+        response = self.create(dict(SPREAD, kind=['tarot-spread']))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Unknown reading kind.'})
+
+    def test_deeply_nested_json_returns_400_not_500_pre_auth(self):
+        # Finding 2: json.loads inside ishtar.api.json_view raises
+        # RecursionError on hostile nesting. json_view wraps auth_required
+        # (parsing happens before the auth check), so this is reachable
+        # without logging in -- confirmed here by logging out first.
+        self.client.logout()
+        nested = ('[' * 1200) + (']' * 1200)
+        response = self.client.post('/api/readings/', nested, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'error': 'Invalid JSON.'})
+
+    def test_non_ascii_payload_under_true_byte_limit_is_accepted(self):
+        # Finding 3: the payload cap must measure real UTF-8 bytes, not the
+        # inflated character count `json.dumps` produces by default (every
+        # non-ASCII codepoint becomes a 6-character \uXXXX escape). Build a
+        # payload whose true UTF-8 size is comfortably under the 8 KB cap but
+        # whose naive escaped-character count is well over it, and confirm
+        # the naive count really would have rejected it before asserting the
+        # fixed check accepts it.
+        payload = {'blob': 'á' * 2048}
+        naive_char_count = len(json.dumps(payload))
+        true_byte_size = len(json.dumps(payload, ensure_ascii=False).encode('utf-8'))
+        self.assertGreater(naive_char_count, 8 * 1024)
+        self.assertLess(true_byte_size, 6 * 1024)
+        response = self.create(dict(SPREAD, payload=payload))
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['payload'], payload)
