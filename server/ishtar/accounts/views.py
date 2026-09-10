@@ -118,7 +118,7 @@ def account_summary(user):
         'email': user.email,
         'features': Entitlement.objects.active_features(user),
         'profile': profile.data if profile else None,
-        'newsletter': False,
+        'newsletter': Subscriber.objects.filter(email=user.email).exists(),
     }
 
 
@@ -160,3 +160,19 @@ def profile(request):
         return error(message)
     saved, _ = Profile.objects.update_or_create(user=request.user, defaults={'data': request.json, 'version': 1})
     return JsonResponse({'ok': True, 'updated_at': saved.updated_at.isoformat()})
+
+
+from newsletter.models import Subscriber
+from newsletter.views import subscribe_email
+
+
+@json_view(methods=('POST',))
+@auth_required
+def newsletter(request):
+    if set(request.json) != {'subscribed'} or not isinstance(request.json['subscribed'], bool):
+        return error('Send {"subscribed": true or false}.')
+    if request.json['subscribed']:
+        subscribe_email(request.user.email)
+    else:
+        Subscriber.objects.filter(email=request.user.email).delete()
+    return JsonResponse({'ok': True, 'newsletter': request.json['subscribed']})

@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/health/', health),
     path('api/account/', include('accounts.urls')),
     path('api/readings/', include('readings.urls')),
+    path('api/newsletter/', include('newsletter.urls')),
 ]
 
 
