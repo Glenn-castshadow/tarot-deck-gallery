@@ -23,11 +23,14 @@ window.IshtarStorage = (() => {
     setItem(key, value) {
       memory.set(key, value);
       const remote = remotes.get(key);
-      if (remote) { remote.set(value); return; }
+      if (remote) { try { remote.set(value); } catch {} return; }
       if (allowed()) { try { localStorage.setItem(key, value); } catch {} }
     },
     localItem(key) { return localItem(key); },
-    setRemote(key, remote) { if (remote) remotes.set(key, remote); else remotes.delete(key); }
+    setRemote(key, remote) {
+      if (remote) { remotes.set(key, remote); return; }
+      if (remotes.delete(key)) memory.delete(key);
+    }
   };
   document.addEventListener('DOMContentLoaded', () => {
     const notice = document.querySelector('#storage-notice');
@@ -43,7 +46,7 @@ window.IshtarStorage = (() => {
       if (!allowed()) clearSaved();
       try {
         localStorage.setItem(choiceKey, choice);
-        if (allowed()) memory.forEach((value, key) => localStorage.setItem(key, value));
+        if (allowed()) memory.forEach((value, key) => { if (!remotes.has(key)) localStorage.setItem(key, value); });
       } catch {}
       notice.hidden = true;
       document.querySelector('[data-storage-settings]').focus({preventScroll: true});
