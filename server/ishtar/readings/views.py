@@ -1,11 +1,9 @@
-import json
-
 from django.core.paginator import InvalidPage, Paginator
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from ishtar.api import auth_required, error, json_view
+from ishtar.api import auth_required, error, json_byte_size, json_view
 from .models import Reading
 
 KINDS = {k for k, _ in Reading.KINDS}
@@ -51,7 +49,16 @@ def collection(request):
         return error('Send kind, payload and optional deck, layout, question, focus.')
     if not isinstance(body['kind'], str) or body['kind'] not in KINDS:
         return error('Unknown reading kind.')
-    if not isinstance(body['payload'], dict) or len(json.dumps(body['payload'], ensure_ascii=False).encode('utf-8')) > PAYLOAD_MAX_BYTES:
+    try:
+        payload_invalid = not isinstance(body['payload'], dict) or json_byte_size(body['payload']) > PAYLOAD_MAX_BYTES
+    except ValueError:
+        # json_byte_size raises when the payload contains text that cannot be
+        # encoded as UTF-8 (e.g. a lone surrogate that survived json.loads --
+        # see json_byte_size's docstring). That is not valid payload content
+        # either way, so it is rejected with the same message an oversize
+        # payload gets, rather than propagating as an uncaught 500.
+        payload_invalid = True
+    if payload_invalid:
         return error('The reading payload must be an object under 8 KB.')
     try:
         fields = {'deck': text(body.get('deck'), 40, 'Deck'), 'layout': text(body.get('layout'), 40, 'Layout'),

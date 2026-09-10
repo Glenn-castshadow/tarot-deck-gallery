@@ -56,7 +56,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 
-from ishtar.api import auth_required, error, json_view
+from ishtar.api import auth_required, error, json_byte_size, json_view
 from .models import Entitlement, Profile
 
 PROFILE_KEYS = {'birthday', 'time', 'place', 'placeLocation', 'houseSystem', 'orbScale', 'fold'}
@@ -68,6 +68,25 @@ class SignupOrRequestLoginCodeView(RequestLoginCodeView):
         if request.method == 'POST':
             try:
                 data = json.loads(request.body or b'{}')
+            except RecursionError:
+                # allauth's own RESTView._parse_json (allauth/headless/internal/
+                # restkit/views.py) independently re-parses request.body inside
+                # super().dispatch() below, and its except clause only catches
+                # (UnicodeDecodeError, json.JSONDecodeError) -- not RecursionError.
+                # Left alone, the same hostile body blows the recursion limit a
+                # second time, a few stack frames deeper, and crashes there
+                # instead (confirmed empirically: identical traceback shape, from
+                # allauth/headless/internal/restkit/views.py:62 rather than the
+                # line below). request.body is a cached property
+                # (django.http.request.HttpRequest.body sets self._body once and
+                # returns that same value on every later read), so overwriting
+                # the cache with the same empty-object fallback already used
+                # above stops the second parse from ever seeing those bytes
+                # again. Scoped to RecursionError only: allauth's own _parse_json
+                # already handles ValueError/UnicodeDecodeError without crashing,
+                # so those keep producing exactly the response they do today.
+                request._body = b'{}'
+                data = None
             except (ValueError, UnicodeDecodeError):
                 data = None
             raw_email = data.get('email') if isinstance(data, dict) else None
@@ -116,7 +135,16 @@ def validate_profile(data):
     extra = set(data) - PROFILE_KEYS
     if extra:
         return 'Unexpected profile fields: ' + ', '.join(sorted(extra)) + '.'
-    if len(json.dumps(data)) > PROFILE_MAX_BYTES:
+    try:
+        oversized = json_byte_size(data) > PROFILE_MAX_BYTES
+    except ValueError:
+        # data contains text that cannot be encoded as UTF-8 (e.g. a lone
+        # surrogate that survived json.loads -- see json_byte_size's
+        # docstring in ishtar/api.py). Not valid content either way, so it
+        # gets the same message an oversize profile gets, rather than
+        # propagating as an uncaught 500.
+        oversized = True
+    if oversized:
         return 'The profile is too large to save.'
     return None
 

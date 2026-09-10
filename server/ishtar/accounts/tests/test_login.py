@@ -93,6 +93,27 @@ class LoginByCodeTests(TestCase):
         self.assertEqual(response.json()['errors'][0]['param'], 'email')
         self.assertEqual(get_user_model().objects.count(), 0)
 
+    def test_deeply_nested_body_does_not_crash(self):
+        # Fix round 2, Item C: json.loads inside SignupOrRequestLoginCodeView.
+        # dispatch can raise RecursionError on hostile nesting, exactly like
+        # Finding 2's ishtar.api.json_view case in fix round 1 -- and this
+        # endpoint requires no authentication at all. Catching it in our own
+        # dispatch() is necessary but not sufficient by itself: allauth's own
+        # RESTView._parse_json (allauth/headless/internal/restkit/views.py)
+        # independently re-parses request.body inside super().dispatch(), and
+        # its except clause does not catch RecursionError either (confirmed
+        # empirically by reverting the request._body reset below and watching
+        # the crash reappear from that allauth source line instead). The fix
+        # also overwrites the cached request.body so that second parse never
+        # sees the hostile bytes again.
+        nested = ('[' * 1200) + (']' * 1200)
+        response = self.client.post(REQUEST, nested, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('errors', response.json())
+        # No email was ever extracted from this body, so no row should exist --
+        # same invariant test_malformed_email_with_at_sign_creates_no_user checks.
+        self.assertEqual(get_user_model().objects.count(), 0)
+
     def test_rate_limited_request_creates_no_user_row(self):
         # ACCOUNT_RATE_LIMITS['request_login_code'] defaults to "20/m/ip,3/m/key"
         # (allauth/account/app_settings.py) and isn't overridden in settings.py.

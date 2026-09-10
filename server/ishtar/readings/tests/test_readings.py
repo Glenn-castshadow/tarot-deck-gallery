@@ -98,3 +98,21 @@ class ReadingApiTests(TestCase):
         response = self.create(dict(SPREAD, payload=payload))
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['payload'], payload)
+
+    def test_surrogate_in_payload_returns_4xx_not_500(self):
+        # Fix round 2, Item A: json.loads does not validate UTF-16 surrogate
+        # pairing (a CPython quirk), so a JSON body containing a literal
+        # \ud800 escape parses cleanly into a Python str holding a lone
+        # surrogate. json_byte_size's json.dumps(..., ensure_ascii=False)
+        # passes that character straight through, and .encode('utf-8') then
+        # raises UnicodeEncodeError. Sending the literal backslash-u escape
+        # text below -- what a hostile client actually puts on the wire --
+        # rather than building '\ud800' as an in-memory Python string is what
+        # makes this reach json.loads's real surrogate-tolerant behavior;
+        # Django's test client would otherwise re-escape an in-memory
+        # surrogate back to this same text anyway (ensure_ascii=True on the
+        # way out), so this is also the more direct, less incidental route.
+        body = '{"kind": "oracle", "payload": {"blob": "\\ud800"}}'
+        response = self.client.post('/api/readings/', body, content_type='application/json')
+        self.assertTrue(400 <= response.status_code < 500, response.status_code)
+        self.assertIn('error', response.json())

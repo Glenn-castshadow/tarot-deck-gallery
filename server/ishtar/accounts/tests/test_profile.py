@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -42,3 +44,34 @@ class ProfileApiTests(TestCase):
     def test_profile_requires_json_object(self):
         response = self.client.put('/api/account/profile/', '[1]', content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_profile_surrogate_returns_4xx_not_500(self):
+        # Fix round 2, Item B: same defect as readings' Item A, but for the
+        # profile's 4 KB cap. json.loads does not validate UTF-16 surrogate
+        # pairing, so a JSON body containing a literal \ud800 escape parses
+        # cleanly into a Python str holding a lone surrogate; measuring its
+        # UTF-8 byte size then raises UnicodeEncodeError unless something
+        # catches it. Sending the literal backslash-u escape text below is
+        # what a hostile client actually puts on the wire.
+        body = '{"birthday": "\\ud800"}'
+        response = self.client.put('/api/account/profile/', body, content_type='application/json')
+        self.assertTrue(400 <= response.status_code < 500, response.status_code)
+        self.assertIn('error', response.json())
+
+    def test_profile_accented_text_under_true_byte_limit_is_accepted(self):
+        # The naive char-count check (len(json.dumps(data))) escapes every
+        # non-ASCII character to a 6-char \uXXXX sequence by default, wildly
+        # over-counting accented text -- exactly what a real birthplace field
+        # ("Bogota", "Reykjavik", ...) contains. Build a profile whose true
+        # UTF-8 size is comfortably under the 4 KB cap but whose naive
+        # escaped-character count is well over it, and confirm the naive
+        # count really would have rejected it before asserting the fixed
+        # check accepts it.
+        data = {'place': 'á' * 1000}
+        naive_char_count = len(json.dumps(data))
+        true_byte_size = len(json.dumps(data, ensure_ascii=False).encode('utf-8'))
+        self.assertGreater(naive_char_count, 4 * 1024)
+        self.assertLess(true_byte_size, 3 * 1024)
+        response = self.client.put('/api/account/profile/', data, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.get('/api/account/').json()['profile'], data)
