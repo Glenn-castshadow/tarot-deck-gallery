@@ -76,7 +76,17 @@ test('chartAtInstant keeps sub-minute precision that a HH:MM round trip would lo
 test('chartAtInstant rejects invalid and out-of-range instants without inventing angles',()=>{
   const location=reference.cases[1].input.location;
   assert.equal(engine.chartAtInstant(new Date('nope'),location).status,'error');
-  assert.equal(engine.chartAtInstant(new Date('1899-01-01T00:00:00Z'),location).status,'error');
-  assert.equal(engine.chartAtInstant(new Date('2101-01-01T00:00:00Z'),location).status,'error');
+  assert.equal(engine.chartAtInstant(new Date('1900-12-30T00:00:00Z'),location).status,'error');
+  assert.equal(engine.chartAtInstant(new Date('2101-01-03T00:00:00Z'),location).status,'error');
   assert.equal(engine.chartAtInstant(new Date('2000-01-01T00:00:00Z'),null).status,'missing');
+});
+
+test('chartAtInstant accepts the real Tokyo instant inside the lower-bound slack',()=>{
+  const location=reference.cases[1].input.location;
+  assert.equal(engine.chartAtInstant(new Date('1900-12-31T15:30:00Z'),location).status,'ready');
+});
+
+test('chartAtInstant accepts an instant inside the upper-bound slack',()=>{
+  const location=reference.cases[1].input.location;
+  assert.equal(engine.chartAtInstant(new Date('2101-01-01T10:59:00Z'),location).status,'ready');
 });

@@ -97,12 +97,8 @@ const NatalEngine = (() => {
     if(![0.75,1,1.25].includes(Number(orbScale))) orbScale=1;
     orbScale=Number(orbScale);
     if(!(date instanceof Date) || !Number.isFinite(+date)) return {status:'error',message:'A valid instant is required.'};
-    // A civil birth date that is validly within 1901-2100 can still resolve (via calculate(),
-    // below) to a UTC instant just across the 1901 boundary for positive-offset zones -- e.g.
-    // 1901-01-01 00:30 Asia/Tokyo is 1900-12-31T15:30:00Z. calculate() already enforces the
-    // true range on the civil date itself, in localTimeCandidates, before it ever reaches here,
-    // so give only the lower edge a day of slack rather than double-rejecting that instant.
-    if(+date<Date.UTC(1901,0,1)-86400000 || date.getUTCFullYear()>2100) return {status:'error',message:'Calculations support dates from 1901 to 2100.'};
+    // A supported local birth date may resolve to an adjacent UTC calendar year.
+    if(+date<Date.UTC(1900,11,31) || +date>=Date.UTC(2101,0,2)) return {status:'error',message:'Calculations support dates from 1901 to 2100.'};
     if(!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || Math.abs(location.latitude)>=90 || Math.abs(location.longitude)>180 || !location.timeZone) return {status:'missing',message:'Select a city suggestion, or enter coordinates and a time zone, to calculate this chart.'};
     const angles=anglesAt(date,location.latitude,location.longitude);
     let cusps=houseCusps(angles,location.latitude,houseSystem),notice='';
