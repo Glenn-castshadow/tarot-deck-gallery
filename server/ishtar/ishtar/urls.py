@@ -22,4 +22,16 @@ def not_found(request, exception=None):
     return JsonResponse({'error': 'Not found.'}, status=404)
 
 
+def server_error(request):
+    # Django calls the handler500 callback with just `request` (no
+    # `exception` kwarg -- see handle_uncaught_exception in
+    # django/core/handlers/exception.py), and only when DEBUG is False;
+    # locally (DJANGO_DEBUG=1) Django's own technical 500 page still shows
+    # instead. Without this, an uncaught exception in production renders
+    # Django's default HTML error page, breaking the {"error": ...} JSON
+    # shape every other endpoint in this API promises.
+    return JsonResponse({'error': 'Something went wrong.'}, status=500)
+
+
 handler404 = 'ishtar.urls.not_found'
+handler500 = 'ishtar.urls.server_error'

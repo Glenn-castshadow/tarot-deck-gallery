@@ -14,10 +14,10 @@ SESSION = '/_allauth/browser/v1/auth/session'
 @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class LoginByCodeTests(TestCase):
     def setUp(self):
-        # allauth's rate limiter lives in Django's cache (settings.py has no
-        # CACHES override, so it's the process-wide LocMemCache), which
-        # Django's TestCase does not reset between tests on its own. Every
-        # test in this class hits the same 'request_login_code' IP bucket via
+        # allauth's rate limiter lives in Django's cache (settings.py configures
+        # CACHES as DatabaseCache, shared across processes -- see the comment
+        # there), which Django's TestCase does not reset between tests on its
+        # own. Every test in this class hits the same 'request_login_code' IP bucket via
         # the shared test-client IP, so without this, an earlier test's real
         # ratelimit.consume() calls would silently shrink the headroom a later
         # test (e.g. test_rate_limited_request_creates_no_user_row) sees --

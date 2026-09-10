@@ -90,6 +90,28 @@ DATABASES = {'default': {
     },
 }}
 
+# Shared across processes on purpose: gunicorn runs 2 worker processes
+# (gunicorn.conf.py), and allauth's rate limiter (allauth/core/internal/
+# ratelimit.py) keeps its hit counters in django.core.cache.cache via plain
+# get()/set() calls -- including the request_login_code bucket
+# (ACCOUNT_RATE_LIMITS, "20/m/ip,3/m/key") that accounts/views.py also
+# consults. With no CACHES override Django falls back to LocMemCache, which
+# is a per-process in-memory dict: each worker would keep an isolated
+# counter, so the configured limit would effectively run at up to 2x across
+# the pool, and a request throttled on one worker would not count against
+# the other. DatabaseCache uses the same sqlite3 file as DATABASES (same
+# WAL journal mode and busy_timeout above), so both workers see one shared
+# bucket -- verified locally by writing from one OS process and reading the
+# same history back from a second, separate process. Requires its table to
+# exist (`manage.py createcachetable`, run by deploy-app.sh); the table is
+# created automatically for the test database by Django's own test runner
+# (django/db/backends/base/creation.py calls createcachetable for every
+# test run), so the test suite needs no extra setup.
+CACHES = {'default': {
+    'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+    'LOCATION': 'django_cache',
+}}
+
 AUTH_USER_MODEL = 'accounts.User'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
