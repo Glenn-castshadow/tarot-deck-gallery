@@ -84,3 +84,13 @@ test('each minor card has a distinct upright/reversed interpretation and a speci
   assert.match(cards.find(c=>c.name==='Eight of Cups').upright,/change/);
   assert.match(cards.find(c=>c.name==='Ten of Wands').upright,/heavy/);
 });
+
+test('validDraw accepts a dealt spread and rejects malformed payloads', () => {
+  const draw = Tarot.deal('celtic', cards, seeded(3), 'Q', 'work');
+  assert.equal(Tarot.validDraw(draw, cards.length), true);
+  assert.equal(Tarot.validDraw({...draw, id: 'nope'}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.slice(1)}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.map(c => ({...c, index: 99}))}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.map(c => ({...c, orientation: 'sideways'}))}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: [draw.cards[0], ...draw.cards.slice(0, 9)]}, cards.length), false, 'duplicate cards rejected');
+});

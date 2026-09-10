@@ -67,7 +67,7 @@
     const cards=r.ids.map(id=>items()[id]),labels=positions(cards.length),all=s.revealed.size===cards.length;
     out.innerHTML=`${r.question?`<p class="dv-held-question">Your question <strong>${esc(r.question)}</strong></p>`:''}<div class="dv-spread" data-count="${cards.length}">${cards.map((card,i)=>`<div class="dv-card-place"><span class="dv-position">${i+1} / ${labels[i]}</span><button type="button" class="dv-card ${s.revealed.has(i)?'is-revealed':''}" data-dv-reveal="${i}" aria-label="${s.revealed.has(i)?'Enlarge '+card.name:'Reveal '+(mode==='runes'?'rune':'card')+' '+(i+1)+': '+labels[i]}">${s.revealed.has(i)?`<span class="dv-card-number">${String(card.id+1).padStart(2,'0')}</span>${visual(mode,card)}<strong>${card.name}</strong><small>${card.keyword}</small>`:`<span class="dv-card-back" aria-hidden="true">✧</span><span class="dv-turn">Tap to reveal</span>`}</button></div>`).join('')}</div>
       ${!all?'<div class="dv-reveal-controls"><button type="button" data-dv-next>Reveal next</button><button type="button" data-dv-all>Reveal all</button></div>':''}
-      <div class="dv-readings">${cards.map((card,i)=>s.revealed.has(i)?`<article id="dv-reading-${i}" tabindex="-1"><p class="dv-kicker">${labels[i]} · ${card.keyword}</p><h4>${card.name}</h4><p class="dv-position-note">${positionMeaning(i,cards.length)}</p><p>${card.meaning}</p><blockquote>${card.prompt}</blockquote><button type="button" class="dv-view-art" data-dv-art="${card.id}">View artwork</button></article>`:'').join('')}</div>${all?summary(cards):'<p class="dv-pending">Reveal the remaining symbols to read the whole pattern.</p>'}`;
+      <div class="dv-readings">${cards.map((card,i)=>s.revealed.has(i)?`<article id="dv-reading-${i}" tabindex="-1"><p class="dv-kicker">${labels[i]} · ${card.keyword}</p><h4>${card.name}</h4><p class="dv-position-note">${positionMeaning(i,cards.length)}</p><p>${card.meaning}</p><blockquote>${card.prompt}</blockquote><button type="button" class="dv-view-art" data-dv-art="${card.id}">View artwork</button></article>`:'').join('')}</div>${all?summary(cards):'<p class="dv-pending">Reveal the remaining symbols to read the whole pattern.</p>'}${saveControl()}`;
   }
   function summary(cards) {
     if(cards.length===1) return `<aside class="dv-synthesis"><p class="dv-kicker">Take it into your day</p><h4>Make ${cards[0].keyword.toLowerCase()} concrete.</h4><p>Choose one small action in response to this question: ${cards[0].prompt} Notice what changes through your action, rather than waiting for the symbol to prove itself.</p></aside>`;
@@ -78,13 +78,45 @@
     }
     return `<aside class="dv-synthesis"><p class="dv-kicker">The symbols in conversation</p><h4>${cards[0].keyword}. ${cards[1].keyword}. ${cards[2].keyword}.</h4><p>${mode==='runes'?`Start with ${cards[0].name} as a lens on the situation. Let ${cards[1].name} name a tension to examine, then use ${cards[2].name} to consider your response.`:`Notice the theme of ${cards[0].name}, offer care to what ${cards[1].name} brings up, and make ${cards[2].name} your practice.`}</p><p>These symbols need not agree. Look for where ${cards[0].keyword.toLowerCase()} supports or complicates ${cards[1].keyword.toLowerCase()}. Choose an action that honors what you learn from both.</p><blockquote>${cards[2].prompt}</blockquote></aside>`;
   }
+  function saveControl() {
+    return window.IshtarAccount?.state().signedIn ? '<p class="save-reading"><button type="button" data-save-reading="divination">Save this reading to my journal</button><span role="status" aria-live="polite"></span></p>' : '';
+  }
+  window.DivinationRoom = {
+    currentDraw() {
+      const s = states[mode], r = s.reading;
+      if (!r) return null;
+      if (mode === 'geomancy') return {kind: 'geomancy', deck: '', layout: 'shield', question: r.question || '', focus: '', payload: {mothers: r.chart.mothers, selected: r.selected}};
+      return {kind: mode, deck: '', layout: String(r.ids.length), question: r.question || '', focus: '', payload: {ids: r.ids}};
+    },
+    loadDraw(reading) {
+      const kind = reading?.kind, p = reading?.payload;
+      if (!Object.hasOwn(modes, kind) || !p) return false;
+      const s = states[kind];
+      if (kind === 'geomancy') {
+        let chart; try { chart = E.shield(p.mothers); } catch { return false; }
+        s.reading = {chart, selected: Number.isInteger(p.selected) && p.selected >= 0 && p.selected < 16 ? p.selected : 14, question: typeof reading.question === 'string' ? reading.question.slice(0, 240) : ''};
+        s.mothers = chart.mothers.map(f => [...f]); s.manual = true;
+      } else {
+        const size = D[kind].length;
+        if (!Array.isArray(p.ids) || !p.ids.length || p.ids.length > 5 || new Set(p.ids).size !== p.ids.length || !p.ids.every(id => Number.isInteger(id) && id >= 0 && id < size)) return false;
+        s.reading = {ids: [...p.ids], question: typeof reading.question === 'string' ? reading.question.slice(0, 240) : ''};
+        s.count = modes[kind].options.some(([n]) => n === p.ids.length) ? p.ids.length : s.count;
+        s.revealed = new Set(p.ids.map((_, i) => i));
+      }
+      s.question = s.reading.question;
+      mode = kind; render();
+      (window.MobileSections?.reveal(root) || root).scrollIntoView({behavior: 'smooth', block: 'start'});
+      return true;
+    }
+  };
+  document.addEventListener('ishtar-account-change', () => output());
   const figure=points=>D.figures.find(f=>f.symbol===points.join(''));
   function shieldOutput(out,r) {
     const s=states.geomancy,chart=r.chart;
     const labels=[...Array.from({length:4},(_,i)=>`Mother ${i+1}`),...Array.from({length:4},(_,i)=>`Daughter ${i+1}`),...Array.from({length:4},(_,i)=>`Niece ${i+1}`),'Right witness','Left witness','Judge','Reconciler'];
     const f=figure(chart.all[r.selected]);
     const cell=i=>{const item=figure(chart.all[i]);return `<button type="button" class="dv-shield-cell" data-dv-figure="${i}" aria-pressed="${r.selected===i}"><small>${labels[i]}</small>${visual('geomancy',item)}<strong>${item.name}</strong><span class="sr-only">Rows top to bottom: ${item.symbol.split('').join(', ')} points.</span></button>`;};
-    out.innerHTML=`${r.question?`<p class="dv-held-question">Your question <strong>${esc(r.question)}</strong></p>`:''}<p class="dv-shield-hint">Read each row from right to left. Select any figure to explore it.</p><div class="dv-shield"><div class="dv-shield-row">${[0,1,2,3,4,5,6,7].map(cell).join('')}</div><div class="dv-shield-row">${[8,9,10,11].map(cell).join('')}</div><div class="dv-shield-row">${[12,13].map(cell).join('')}</div><div class="dv-shield-row">${cell(14)}</div><div class="dv-shield-row">${cell(15)}</div></div><article class="dv-figure-reading" tabindex="-1"><p class="dv-kicker">${labels[r.selected]} · ${f.keyword}</p><h4>${f.name}</h4><p>${f.meaning}</p><blockquote>${f.prompt}</blockquote><button type="button" class="dv-view-art" data-dv-art="${f.id}">View artwork</button></article><aside class="dv-synthesis"><p class="dv-kicker">The shield gathered</p><h4>${figure(chart.judge).name}: ${figure(chart.judge).keyword.toLowerCase()}.</h4><p>The right witness, ${figure(chart.witnesses[0]).name}, develops the first four figures. The left witness, ${figure(chart.witnesses[1]).name}, develops the daughters. Their combination produces the judge, ${figure(chart.judge).name}.</p><p>Read ${figure(chart.witnesses[0]).keyword.toLowerCase()} alongside ${figure(chart.witnesses[1]).keyword.toLowerCase()}. The judge offers a theme to reflect on; it does not pronounce a factual verdict. The reconciler, ${figure(chart.reconciler).name}, brings that theme back to the first mother.</p><blockquote>${figure(chart.reconciler).prompt}</blockquote></aside>`;
+    out.innerHTML=`${r.question?`<p class="dv-held-question">Your question <strong>${esc(r.question)}</strong></p>`:''}<p class="dv-shield-hint">Read each row from right to left. Select any figure to explore it.</p><div class="dv-shield"><div class="dv-shield-row">${[0,1,2,3,4,5,6,7].map(cell).join('')}</div><div class="dv-shield-row">${[8,9,10,11].map(cell).join('')}</div><div class="dv-shield-row">${[12,13].map(cell).join('')}</div><div class="dv-shield-row">${cell(14)}</div><div class="dv-shield-row">${cell(15)}</div></div><article class="dv-figure-reading" tabindex="-1"><p class="dv-kicker">${labels[r.selected]} · ${f.keyword}</p><h4>${f.name}</h4><p>${f.meaning}</p><blockquote>${f.prompt}</blockquote><button type="button" class="dv-view-art" data-dv-art="${f.id}">View artwork</button></article><aside class="dv-synthesis"><p class="dv-kicker">The shield gathered</p><h4>${figure(chart.judge).name}: ${figure(chart.judge).keyword.toLowerCase()}.</h4><p>The right witness, ${figure(chart.witnesses[0]).name}, develops the first four figures. The left witness, ${figure(chart.witnesses[1]).name}, develops the daughters. Their combination produces the judge, ${figure(chart.judge).name}.</p><p>Read ${figure(chart.witnesses[0]).keyword.toLowerCase()} alongside ${figure(chart.witnesses[1]).keyword.toLowerCase()}. The judge offers a theme to reflect on; it does not pronounce a factual verdict. The reconciler, ${figure(chart.reconciler).name}, brings that theme back to the first mother.</p><blockquote>${figure(chart.reconciler).prompt}</blockquote></aside>${saveControl()}`;
   }
   root.addEventListener('input',event=>{if(event.target.id==='dv-question') states[mode].question=event.target.value;});
   root.addEventListener('change',event=>{

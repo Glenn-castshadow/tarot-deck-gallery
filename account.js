@@ -5,7 +5,7 @@
   window.IshtarAccount = account;
   const PROFILE_KEY = 'arcana-birthday-profile-v1';
   const $ = selector => document.querySelector(selector);
-  const button = $('#account-button'), room = $('#account-room'), dialog = $('#account-dialog');
+  const button = $('#account-button'), panel = $('#account-room'), dialog = $('#account-dialog');
   const emailForm = $('#account-email-form'), codeForm = $('#account-code-form'), dialogStatus = $('#account-dialog-status');
   const status = $('#account-status'), list = $('#journal-list');
   let opener = null, journalPage = 1, journalPages = 1;
@@ -32,7 +32,7 @@
     button.textContent = state.signedIn ? state.email : 'Sign in';
     button.classList.toggle('is-signed-in', state.signedIn);
     button.setAttribute('aria-haspopup', state.signedIn ? 'false' : 'dialog');
-    room.hidden = !state.signedIn;
+    panel.hidden = !state.signedIn;
     if (!state.signedIn) return;
     $('#account-email').textContent = state.email;
     $('#account-newsletter').checked = state.newsletter;
@@ -56,7 +56,7 @@
     (step === 'email' ? $('#account-email-input') : $('#account-code-input')).focus();
   }
   function openSignIn() { opener = document.activeElement; showStep('email'); if (!dialog.open) dialog.showModal(); }
-  function openPanel() { room.hidden = false; room.scrollIntoView({behavior: 'smooth', block: 'start'}); $('#account-signout').focus({preventScroll: true}); }
+  function openPanel() { panel.hidden = false; panel.scrollIntoView({behavior: 'smooth', block: 'start'}); $('#account-signout').focus({preventScroll: true}); }
 
   button.addEventListener('click', () => account.state().signedIn ? openPanel() : openSignIn());
   dialog.querySelector('[data-close-account]').addEventListener('click', () => dialog.close());
@@ -119,6 +119,19 @@
     }
   });
 
+  document.addEventListener('click', async event => {
+    const trigger = event.target.closest('[data-save-reading]'); if (!trigger) return;
+    const room = trigger.dataset.saveReading === 'tarot' ? window.TarotRoom : window.DivinationRoom;
+    const draw = room?.currentDraw();
+    const note = trigger.nextElementSibling;
+    if (!draw) { note.textContent = 'Nothing to save yet.'; return; }
+    trigger.disabled = true; note.textContent = 'Saving…';
+    const result = await account.saveReading(draw);
+    trigger.disabled = false;
+    note.textContent = result.ok ? 'Saved to your journal.' : result.message;
+    if (result.ok && !room.hidden) renderJournal(1);
+  });
+
   account.onChange(async state => {
     wireRemoteProfile(state);
     renderHeader(state);
@@ -133,7 +146,7 @@
   let lastSignedIn = false;
   account.onChange(async state => {
     if (state.signedIn && !lastSignedIn) { await reconcileProfile(); window.BirthRoom?.restore(); renderJournal(1); }
-    if (!state.signedIn && lastSignedIn) { room.hidden = true; }
+    if (!state.signedIn && lastSignedIn) { panel.hidden = true; }
     lastSignedIn = state.signedIn;
   });
 })();

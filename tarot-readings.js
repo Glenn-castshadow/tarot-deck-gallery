@@ -150,6 +150,17 @@
     }
     return {id,question:String(question).trim().slice(0,240),focus:Object.hasOwn(focuses,focus)?focus:'general',cards:order.slice(0,spread.positions.length).map(index=>({index,orientation:randomInt(5)===0?'reversed':'upright'}))};
   }
+  function validDraw(draw, cardCount) {
+    if (!draw || !Object.hasOwn(spreads, draw.id) || !Array.isArray(draw.cards)) return false;
+    if (draw.cards.length !== spreads[draw.id].positions.length) return false;
+    const seen = new Set();
+    for (const item of draw.cards) {
+      if (!item || !Number.isInteger(item.index) || item.index < 0 || item.index >= cardCount || seen.has(item.index)) return false;
+      if (item.orientation !== 'upright' && item.orientation !== 'reversed') return false;
+      seen.add(item.index);
+    }
+    return typeof draw.question === 'string' && draw.question.length <= 240 && Object.hasOwn(focuses, draw.focus);
+  }
   const meaning = (card, orientation) => orientation === 'reversed' ? card.reversed : card.upright;
   const themeOf = card => suitThemes[card.suit] || suitThemes.major;
   function connection(a,b) {
@@ -190,5 +201,5 @@
     const spread=spreads[draw.id];
     return `<section class="tarot-session"><header class="tarot-spread-heading"><p class="reading-label">${escape(spread.subtitle)}</p><h3>${escape(spread.name)}</h3><p>${escape(spread.description)}</p>${draw.question?`<blockquote>${escape(draw.question)}</blockquote>`:''}<span class="tarot-focus-caption">${escape(focuses[draw.focus].label)}</span></header><div class="tarot-layout-scroll" tabindex="0" role="region" aria-label="${escape(spread.name)} card layout; enlarge to scroll across the table"><div class="tarot-layout tarot-layout-${spread.shape}${animate?' is-dealing':''}" role="group" aria-label="Cards in traditional reading positions"><div class="tarot-cloth-mark" aria-hidden="true">✧</div>${draw.cards.map((item,i)=>{const p=spread.positions[i];return `<div class="tarot-place${p.cross?' tarot-crossing':''}" style="--x:${p.x}%;--y:${p.y}%;--deal-delay:${i*110}ms;--deal-x:${50-p.x}%;--deal-y:${100-p.y}%"><div class="tarot-dealt-card">${cardVisual(cards[item.index],item.orientation,i)}<span class="tarot-position-number" aria-hidden="true">${i+1}</span></div><span class="tarot-table-label" aria-hidden="true">${escape(p.short)}</span></div>`;}).join('')}</div></div><div class="tarot-table-tools"><p id="tarot-reveal-status" role="status">${revealed.size} of ${draw.cards.length} cards revealed</p><div><button type="button" data-tarot-action="next">Reveal next</button><button type="button" data-tarot-action="all">Reveal all</button><button type="button" data-tarot-action="zoom" aria-pressed="false">Enlarge layout</button></div></div><nav class="tarot-position-nav" aria-label="Reveal or read a spread position">${spread.positions.map((p,i)=>`<button type="button" data-tarot-position="${i}" aria-label="Reveal ${i+1}: ${escape(p.name)}"><span>${i+1}</span>${escape(p.short)}<small>Turn over</small></button>`).join('')}</nav><details class="tarot-layout-guide"><summary>About this layout &amp; how to read it</summary><p>${escape(spread.tradition)}</p><p>Turn the cards in order or follow your curiosity. Tap a revealed card to see its artwork large. The numbered buttons let you return to a position’s interpretation. Reversed cards are read from the marked orientation, including the sideways crossing card.</p><p>This reading offers symbolic reflection. Take what helps you understand your experience, leave what does not fit, and treat future positions as possibilities.</p></details><div id="tarot-reading-report">${reportHTML(draw,cards,revealed)}</div></section>`;
   }
-  return {spreads,focuses,enrichMinor,deal,report,reportHTML,tableHTML,escape};
+  return {spreads,focuses,enrichMinor,deal,validDraw,report,reportHTML,tableHTML,escape};
 });
