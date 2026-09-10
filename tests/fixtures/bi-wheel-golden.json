@@ -1,0 +1,256 @@
+{
+  "cases": {
+    "with-contact": [
+      [
+        {
+          "name": "Sun",
+          "symbol": "☉",
+          "longitude": 12.5,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "12°30′"
+        },
+        {
+          "name": "Moon",
+          "symbol": "☾",
+          "longitude": 100.25,
+          "index": 3,
+          "sign": "Cancer",
+          "glyph": "♋",
+          "element": "Water",
+          "quality": "Cardinal",
+          "degrees": "10°15′"
+        },
+        {
+          "name": "Mars",
+          "symbol": "♂",
+          "longitude": 187.75,
+          "index": 6,
+          "sign": "Libra",
+          "glyph": "♎",
+          "element": "Air",
+          "quality": "Cardinal",
+          "degrees": "7°45′"
+        }
+      ],
+      [
+        {
+          "name": "Venus",
+          "symbol": "♀",
+          "longitude": 42,
+          "index": 1,
+          "sign": "Taurus",
+          "glyph": "♉",
+          "element": "Earth",
+          "quality": "Fixed",
+          "degrees": "12°00′"
+        },
+        {
+          "name": "Jupiter",
+          "symbol": "♃",
+          "longitude": 250.5,
+          "index": 8,
+          "sign": "Sagittarius",
+          "glyph": "♐",
+          "element": "Fire",
+          "quality": "Mutable",
+          "degrees": "10°30′"
+        },
+        {
+          "name": "Saturn",
+          "symbol": "♄",
+          "longitude": 333.125,
+          "index": 11,
+          "sign": "Pisces",
+          "glyph": "♓",
+          "element": "Water",
+          "quality": "Mutable",
+          "degrees": "3°07′"
+        }
+      ],
+      {
+        "type": "Square",
+        "symbol": "□",
+        "aLongitude": 12.5,
+        "bLongitude": 100.25
+      },
+      [
+        "Birth sky",
+        "Selected day"
+      ]
+    ],
+    "no-contact": [
+      [
+        {
+          "name": "Sun",
+          "symbol": "☉",
+          "longitude": 12.5,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "12°30′"
+        },
+        {
+          "name": "Moon",
+          "symbol": "☾",
+          "longitude": 100.25,
+          "index": 3,
+          "sign": "Cancer",
+          "glyph": "♋",
+          "element": "Water",
+          "quality": "Cardinal",
+          "degrees": "10°15′"
+        },
+        {
+          "name": "Mars",
+          "symbol": "♂",
+          "longitude": 187.75,
+          "index": 6,
+          "sign": "Libra",
+          "glyph": "♎",
+          "element": "Air",
+          "quality": "Cardinal",
+          "degrees": "7°45′"
+        }
+      ],
+      [
+        {
+          "name": "Venus",
+          "symbol": "♀",
+          "longitude": 42,
+          "index": 1,
+          "sign": "Taurus",
+          "glyph": "♉",
+          "element": "Earth",
+          "quality": "Fixed",
+          "degrees": "12°00′"
+        },
+        {
+          "name": "Jupiter",
+          "symbol": "♃",
+          "longitude": 250.5,
+          "index": 8,
+          "sign": "Sagittarius",
+          "glyph": "♐",
+          "element": "Fire",
+          "quality": "Mutable",
+          "degrees": "10°30′"
+        },
+        {
+          "name": "Saturn",
+          "symbol": "♄",
+          "longitude": 333.125,
+          "index": 11,
+          "sign": "Pisces",
+          "glyph": "♓",
+          "element": "Water",
+          "quality": "Mutable",
+          "degrees": "3°07′"
+        }
+      ],
+      null,
+      [
+        "Your birth sky",
+        "Other person"
+      ]
+    ],
+    "crowded-labels": [
+      [
+        {
+          "name": "Sun",
+          "symbol": "☉",
+          "longitude": 10,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "10°00′"
+        },
+        {
+          "name": "Mercury",
+          "symbol": "☿",
+          "longitude": 13,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "13°00′"
+        },
+        {
+          "name": "Venus",
+          "symbol": "♀",
+          "longitude": 15,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "15°00′"
+        },
+        {
+          "name": "Mars",
+          "symbol": "♂",
+          "longitude": 18,
+          "index": 0,
+          "sign": "Aries",
+          "glyph": "♈",
+          "element": "Fire",
+          "quality": "Cardinal",
+          "degrees": "18°00′"
+        }
+      ],
+      [
+        {
+          "name": "Venus",
+          "symbol": "♀",
+          "longitude": 42,
+          "index": 1,
+          "sign": "Taurus",
+          "glyph": "♉",
+          "element": "Earth",
+          "quality": "Fixed",
+          "degrees": "12°00′"
+        },
+        {
+          "name": "Jupiter",
+          "symbol": "♃",
+          "longitude": 250.5,
+          "index": 8,
+          "sign": "Sagittarius",
+          "glyph": "♐",
+          "element": "Fire",
+          "quality": "Mutable",
+          "degrees": "10°30′"
+        },
+        {
+          "name": "Saturn",
+          "symbol": "♄",
+          "longitude": 333.125,
+          "index": 11,
+          "sign": "Pisces",
+          "glyph": "♓",
+          "element": "Water",
+          "quality": "Mutable",
+          "degrees": "3°07′"
+        }
+      ],
+      null,
+      [
+        "Birth sky",
+        "Selected day"
+      ]
+    ]
+  },
+  "golden": {
+    "with-contact": "<svg class=\"cx-wheel\" viewBox=\"0 0 600 600\" role=\"img\" aria-label=\"Two-ring astrology chart: Birth sky inside, Selected day outside. Exact placements are listed below.\"><circle cx=\"300\" cy=\"300\" r=\"282\" fill=\"#0a202c\" stroke=\"#bba47777\"/><circle cx=\"300\" cy=\"300\" r=\"276\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"240\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"205\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"170\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"144\" fill=\"none\" stroke=\"#a0bfb733\"/><line x1=\"95\" y1=\"300\" x2=\"24\" y2=\"299.99999999999994\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"237.70704827334453\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♈︎</text><line x1=\"122.46479222419006\" y1=\"197.5\" x2=\"60.97698855549493\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"121.15223689149764\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♉︎</text><line x1=\"197.50000000000006\" y1=\"122.46479222419006\" x2=\"162.00000000000006\" y2=\"60.97698855549493\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♊︎</text><line x1=\"300\" y1=\"95\" x2=\"300\" y2=\"24\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♋︎</text><line x1=\"402.5\" y1=\"122.46479222419009\" x2=\"438\" y2=\"60.976988555494955\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"121.15223689149767\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♌︎</text><line x1=\"477.5352077758099\" y1=\"197.5\" x2=\"539.0230114445051\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"237.7070482733446\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♍︎</text><line x1=\"505\" y1=\"300\" x2=\"576\" y2=\"300\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"372.29295172665536\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♎︎</text><line x1=\"477.5352077758099\" y1=\"402.5\" x2=\"539.0230114445051\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♏︎</text><line x1=\"402.5\" y1=\"477.5352077758099\" x2=\"438\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♐︎</text><line x1=\"300\" y1=\"505\" x2=\"300\" y2=\"576\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♑︎</text><line x1=\"197.50000000000006\" y1=\"477.5352077758099\" x2=\"162.00000000000006\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♒︎</text><line x1=\"122.46479222419006\" y1=\"402.5\" x2=\"60.97698855549493\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"372.2929517266555\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♓︎</text><g><title>Sun: Aries 12°30′</title><line x1=\"145.74523087505054\" y1=\"265.8025409977797\" x2=\"132.07708677537147\" y2=\"262.77238640264625\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"145.74523087505054\" cy=\"265.8025409977797\" r=\"2\" fill=\"#e8cd93\"/><text x=\"132.07708677537147\" y=\"268.77238640264625\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☉︎</text></g><g><title>Moon: Cancer 10°15′</title><line x1=\"328.115080184867\" y1=\"144.52156977188605\" x2=\"330.6062898215008\" y2=\"130.74500000483798\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"328.115080184867\" cy=\"144.52156977188605\" r=\"2\" fill=\"#e8cd93\"/><text x=\"330.6062898215008\" y=\"136.74500000483798\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☾︎</text></g><g><title>Mars: Libra 7°45′</title><line x1=\"456.5568117871274\" y1=\"321.30644698324824\" x2=\"470.4289343505437\" y2=\"323.1943600070804\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"456.5568117871274\" cy=\"321.30644698324824\" r=\"2\" fill=\"#e8cd93\"/><text x=\"470.4289343505437\" y=\"329.1943600070804\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">♂︎</text></g><g><title>Venus: Taurus 12°00′</title><line x1=\"140.96700734783767\" y1=\"156.80605023920432\" x2=\"130.56297979115413\" y2=\"147.4382217501803\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"140.96700734783767\" cy=\"156.80605023920432\" r=\"2\" fill=\"#97d3d6\"/><text x=\"130.56297979115413\" y=\"153.4382217501803\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♀︎</text></g><g><title>Jupiter: Sagittarius 10°30′</title><line x1=\"371.434667876027\" y1=\"501.72527909372616\" x2=\"376.1079639052998\" y2=\"514.9222599690166\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"371.434667876027\" cy=\"501.72527909372616\" r=\"2\" fill=\"#97d3d6\"/><text x=\"376.1079639052998\" y=\"520.9222599690166\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♃︎</text></g><g><title>Saturn: Pisces 3°07′</title><line x1=\"109.11310068988678\" y1=\"396.73774688181805\" x2=\"96.62517269763637\" y2=\"403.06638452829213\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"109.11310068988678\" cy=\"396.73774688181805\" r=\"2\" fill=\"#97d3d6\"/><text x=\"96.62517269763637\" y=\"409.06638452829213\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♄︎</text></g><line x1=\"145.74523087505054\" y1=\"265.8025409977797\" x2=\"338.07991873140213\" y2=\"89.41529070369376\" stroke=\"#e6a6a1\" stroke-width=\"2\"/><circle cx=\"145.74523087505054\" cy=\"265.8025409977797\" r=\"5\" fill=\"#e8cd93\"/><circle cx=\"338.07991873140213\" cy=\"89.41529070369376\" r=\"5\" fill=\"#97d3d6\"/><circle cx=\"300\" cy=\"300\" r=\"58\" fill=\"#0b202be8\" stroke=\"#bba47755\"/><text x=\"300\" y=\"308\" text-anchor=\"middle\" fill=\"#ddc694\" font-size=\"28\">□</text><text x=\"300\" y=\"335\" text-anchor=\"middle\" fill=\"#a0b5b9\" font-size=\"9\" letter-spacing=\"2\">SQUARE</text></svg>",
+    "no-contact": "<svg class=\"cx-wheel\" viewBox=\"0 0 600 600\" role=\"img\" aria-label=\"Two-ring astrology chart: Your birth sky inside, Other person outside. Exact placements are listed below.\"><circle cx=\"300\" cy=\"300\" r=\"282\" fill=\"#0a202c\" stroke=\"#bba47777\"/><circle cx=\"300\" cy=\"300\" r=\"276\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"240\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"205\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"170\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"144\" fill=\"none\" stroke=\"#a0bfb733\"/><line x1=\"95\" y1=\"300\" x2=\"24\" y2=\"299.99999999999994\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"237.70704827334453\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♈︎</text><line x1=\"122.46479222419006\" y1=\"197.5\" x2=\"60.97698855549493\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"121.15223689149764\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♉︎</text><line x1=\"197.50000000000006\" y1=\"122.46479222419006\" x2=\"162.00000000000006\" y2=\"60.97698855549493\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♊︎</text><line x1=\"300\" y1=\"95\" x2=\"300\" y2=\"24\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♋︎</text><line x1=\"402.5\" y1=\"122.46479222419009\" x2=\"438\" y2=\"60.976988555494955\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"121.15223689149767\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♌︎</text><line x1=\"477.5352077758099\" y1=\"197.5\" x2=\"539.0230114445051\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"237.7070482733446\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♍︎</text><line x1=\"505\" y1=\"300\" x2=\"576\" y2=\"300\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"372.29295172665536\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♎︎</text><line x1=\"477.5352077758099\" y1=\"402.5\" x2=\"539.0230114445051\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♏︎</text><line x1=\"402.5\" y1=\"477.5352077758099\" x2=\"438\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♐︎</text><line x1=\"300\" y1=\"505\" x2=\"300\" y2=\"576\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♑︎</text><line x1=\"197.50000000000006\" y1=\"477.5352077758099\" x2=\"162.00000000000006\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♒︎</text><line x1=\"122.46479222419006\" y1=\"402.5\" x2=\"60.97698855549493\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"372.2929517266555\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♓︎</text><g><title>Sun: Aries 12°30′</title><line x1=\"145.74523087505054\" y1=\"265.8025409977797\" x2=\"132.07708677537147\" y2=\"262.77238640264625\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"145.74523087505054\" cy=\"265.8025409977797\" r=\"2\" fill=\"#e8cd93\"/><text x=\"132.07708677537147\" y=\"268.77238640264625\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☉︎</text></g><g><title>Moon: Cancer 10°15′</title><line x1=\"328.115080184867\" y1=\"144.52156977188605\" x2=\"330.6062898215008\" y2=\"130.74500000483798\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"328.115080184867\" cy=\"144.52156977188605\" r=\"2\" fill=\"#e8cd93\"/><text x=\"330.6062898215008\" y=\"136.74500000483798\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☾︎</text></g><g><title>Mars: Libra 7°45′</title><line x1=\"456.5568117871274\" y1=\"321.30644698324824\" x2=\"470.4289343505437\" y2=\"323.1943600070804\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"456.5568117871274\" cy=\"321.30644698324824\" r=\"2\" fill=\"#e8cd93\"/><text x=\"470.4289343505437\" y=\"329.1943600070804\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">♂︎</text></g><g><title>Venus: Taurus 12°00′</title><line x1=\"140.96700734783767\" y1=\"156.80605023920432\" x2=\"130.56297979115413\" y2=\"147.4382217501803\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"140.96700734783767\" cy=\"156.80605023920432\" r=\"2\" fill=\"#97d3d6\"/><text x=\"130.56297979115413\" y=\"153.4382217501803\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♀︎</text></g><g><title>Jupiter: Sagittarius 10°30′</title><line x1=\"371.434667876027\" y1=\"501.72527909372616\" x2=\"376.1079639052998\" y2=\"514.9222599690166\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"371.434667876027\" cy=\"501.72527909372616\" r=\"2\" fill=\"#97d3d6\"/><text x=\"376.1079639052998\" y=\"520.9222599690166\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♃︎</text></g><g><title>Saturn: Pisces 3°07′</title><line x1=\"109.11310068988678\" y1=\"396.73774688181805\" x2=\"96.62517269763637\" y2=\"403.06638452829213\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"109.11310068988678\" cy=\"396.73774688181805\" r=\"2\" fill=\"#97d3d6\"/><text x=\"96.62517269763637\" y=\"409.06638452829213\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♄︎</text></g><circle cx=\"300\" cy=\"300\" r=\"58\" fill=\"#0b202be8\" stroke=\"#bba47755\"/><text x=\"300\" y=\"308\" text-anchor=\"middle\" fill=\"#ddc694\" font-size=\"28\">✧</text><text x=\"300\" y=\"335\" text-anchor=\"middle\" fill=\"#a0b5b9\" font-size=\"9\" letter-spacing=\"2\">TWO SKIES</text></svg>",
+    "crowded-labels": "<svg class=\"cx-wheel\" viewBox=\"0 0 600 600\" role=\"img\" aria-label=\"Two-ring astrology chart: Birth sky inside, Selected day outside. Exact placements are listed below.\"><circle cx=\"300\" cy=\"300\" r=\"282\" fill=\"#0a202c\" stroke=\"#bba47777\"/><circle cx=\"300\" cy=\"300\" r=\"276\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"240\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"205\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"170\" fill=\"none\" stroke=\"#a0bfb733\"/><circle cx=\"300\" cy=\"300\" r=\"144\" fill=\"none\" stroke=\"#a0bfb733\"/><line x1=\"95\" y1=\"300\" x2=\"24\" y2=\"299.99999999999994\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"237.70704827334453\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♈︎</text><line x1=\"122.46479222419006\" y1=\"197.5\" x2=\"60.97698855549493\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"121.15223689149764\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♉︎</text><line x1=\"197.50000000000006\" y1=\"122.46479222419006\" x2=\"162.00000000000006\" y2=\"60.97698855549493\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♊︎</text><line x1=\"300\" y1=\"95\" x2=\"300\" y2=\"24\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"53.85928516484225\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♋︎</text><line x1=\"402.5\" y1=\"122.46479222419009\" x2=\"438\" y2=\"60.976988555494955\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"121.15223689149767\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♌︎</text><line x1=\"477.5352077758099\" y1=\"197.5\" x2=\"539.0230114445051\" y2=\"162.00000000000003\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"237.7070482733446\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♍︎</text><line x1=\"505\" y1=\"300\" x2=\"576\" y2=\"300\" stroke=\"#99b5b044\"/><text x=\"551.1407148351577\" y=\"372.29295172665536\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♎︎</text><line x1=\"477.5352077758099\" y1=\"402.5\" x2=\"539.0230114445051\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"483.84776310850236\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♏︎</text><line x1=\"402.5\" y1=\"477.5352077758099\" x2=\"438\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"367.29295172665536\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♐︎</text><line x1=\"300\" y1=\"505\" x2=\"300\" y2=\"576\" stroke=\"#99b5b044\"/><text x=\"232.70704827334458\" y=\"556.1407148351577\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♑︎</text><line x1=\"197.50000000000006\" y1=\"477.5352077758099\" x2=\"162.00000000000006\" y2=\"539.0230114445051\" stroke=\"#99b5b044\"/><text x=\"116.15223689149767\" y=\"488.84776310850236\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♒︎</text><line x1=\"122.46479222419006\" y1=\"402.5\" x2=\"60.97698855549493\" y2=\"438\" stroke=\"#99b5b044\"/><text x=\"48.85928516484228\" y=\"372.2929517266555\" text-anchor=\"middle\" fill=\"#cbb681\" font-size=\"20\">♓︎</text><g><title>Sun: Aries 10°00′</title><line x1=\"144.40037502407114\" y1=\"272.563587928625\" x2=\"130.61306648190023\" y2=\"270.132513441288\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"144.40037502407114\" cy=\"272.563587928625\" r=\"2\" fill=\"#e8cd93\"/><text x=\"130.61306648190023\" y=\"276.132513441288\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☉︎</text></g><g><title>Mercury: Aries 13°00′</title><line x1=\"146.04952976393284\" y1=\"264.45773341366936\" x2=\"140.5243770145126\" y2=\"235.56766593246311\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"146.04952976393284\" cy=\"264.45773341366936\" r=\"2\" fill=\"#e8cd93\"/><text x=\"140.5243770145126\" y=\"241.56766593246311\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">☿︎</text></g><g><title>Venus: Aries 15°00′</title><line x1=\"147.38371944632723\" y1=\"259.1065908738017\" x2=\"133.86075787828028\" y2=\"255.4831242423664\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"147.38371944632723\" cy=\"259.1065908738017\" r=\"2\" fill=\"#e8cd93\"/><text x=\"133.86075787828028\" y=\"261.4831242423664\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">♀︎</text></g><g><title>Mars: Aries 18°00′</title><line x1=\"149.73307042536575\" y1=\"251.1753148887583\" x2=\"146.74687783960073\" y2=\"221.91363404479796\" stroke=\"#e8cd93\" stroke-opacity=\".4\"/><circle cx=\"149.73307042536575\" cy=\"251.1753148887583\" r=\"2\" fill=\"#e8cd93\"/><text x=\"146.74687783960073\" y=\"227.91363404479796\" text-anchor=\"middle\" font-size=\"19\" fill=\"#e8cd93\">♂︎</text></g><g><title>Venus: Taurus 12°00′</title><line x1=\"140.96700734783767\" y1=\"156.80605023920432\" x2=\"130.56297979115413\" y2=\"147.4382217501803\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"140.96700734783767\" cy=\"156.80605023920432\" r=\"2\" fill=\"#97d3d6\"/><text x=\"130.56297979115413\" y=\"153.4382217501803\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♀︎</text></g><g><title>Jupiter: Sagittarius 10°30′</title><line x1=\"371.434667876027\" y1=\"501.72527909372616\" x2=\"376.1079639052998\" y2=\"514.9222599690166\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"371.434667876027\" cy=\"501.72527909372616\" r=\"2\" fill=\"#97d3d6\"/><text x=\"376.1079639052998\" y=\"520.9222599690166\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♃︎</text></g><g><title>Saturn: Pisces 3°07′</title><line x1=\"109.11310068988678\" y1=\"396.73774688181805\" x2=\"96.62517269763637\" y2=\"403.06638452829213\" stroke=\"#97d3d6\" stroke-opacity=\".4\"/><circle cx=\"109.11310068988678\" cy=\"396.73774688181805\" r=\"2\" fill=\"#97d3d6\"/><text x=\"96.62517269763637\" y=\"409.06638452829213\" text-anchor=\"middle\" font-size=\"19\" fill=\"#97d3d6\">♄︎</text></g><circle cx=\"300\" cy=\"300\" r=\"58\" fill=\"#0b202be8\" stroke=\"#bba47755\"/><text x=\"300\" y=\"308\" text-anchor=\"middle\" fill=\"#ddc694\" font-size=\"28\">✧</text><text x=\"300\" y=\"335\" text-anchor=\"middle\" fill=\"#a0b5b9\" font-size=\"9\" letter-spacing=\"2\">TWO SKIES</text></svg>"
+  }
+}
