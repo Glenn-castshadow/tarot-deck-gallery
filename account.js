@@ -80,8 +80,8 @@
     if (!result.ok) { dialogStatus.textContent = result.message; if (result.message.includes('Enter your email again')) showStep('email'); return; }
     $('#account-code-input').value = '';
     status.textContent = 'You are signed in.';
-    dialog.addEventListener('close', openPanel, {once: true});
-    dialog.close();
+    if (dialog.open) { dialog.addEventListener('close', openPanel, {once: true}); dialog.close(); }
+    else openPanel();
   });
   $('#account-resend').addEventListener('click', () => emailForm.requestSubmit());
   $('#account-restart').addEventListener('click', () => showStep('email'));
