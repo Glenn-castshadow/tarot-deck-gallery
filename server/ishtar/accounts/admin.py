@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Profile, User
+from .models import Entitlement, Profile, User
 
 
 @admin.register(User)
@@ -22,3 +22,11 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'version', 'updated_at')
     search_fields = ('user__email',)
     readonly_fields = ('updated_at',)
+
+
+@admin.register(Entitlement)
+class EntitlementAdmin(admin.ModelAdmin):
+    list_display = ('user', 'feature', 'source', 'starts_at', 'ends_at')
+    list_filter = ('feature', 'source')
+    search_fields = ('user__email', 'reference')
+    autocomplete_fields = ('user',)

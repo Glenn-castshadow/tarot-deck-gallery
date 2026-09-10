@@ -57,7 +57,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 
 from ishtar.api import auth_required, error, json_view
-from .models import Profile
+from .models import Entitlement, Profile
 
 PROFILE_KEYS = {'birthday', 'time', 'place', 'placeLocation', 'houseSystem', 'orbScale', 'fold'}
 PROFILE_MAX_BYTES = 4 * 1024
@@ -97,7 +97,7 @@ def account_summary(user):
     profile = Profile.objects.filter(user=user).first()
     return {
         'email': user.email,
-        'features': [],
+        'features': Entitlement.objects.active_features(user),
         'profile': profile.data if profile else None,
         'newsletter': False,
     }

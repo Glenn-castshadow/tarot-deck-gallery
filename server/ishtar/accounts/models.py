@@ -51,3 +51,30 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Profile of {self.user}'
+
+
+class EntitlementQuerySet(models.QuerySet):
+    def active(self):
+        now = timezone.now()
+        return self.filter(starts_at__lte=now).filter(models.Q(ends_at__isnull=True) | models.Q(ends_at__gt=now))
+
+    def active_features(self, user):
+        return sorted(set(self.filter(user=user).active().values_list('feature', flat=True)))
+
+
+class Entitlement(models.Model):
+    """A feature grant. Manual today; Stripe writes these later."""
+    SOURCES = [('manual', 'Manual'), ('stripe', 'Stripe')]
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='entitlements')
+    feature = models.SlugField(max_length=40)
+    source = models.CharField(max_length=10, choices=SOURCES, default='manual')
+    starts_at = models.DateTimeField(default=timezone.now)
+    ends_at = models.DateTimeField(null=True, blank=True)
+    reference = models.CharField(max_length=120, blank=True, help_text='Stripe subscription id once billing exists.')
+    objects = EntitlementQuerySet.as_manager()
+
+    class Meta:
+        indexes = [models.Index(fields=['user', 'feature'])]
+
+    def __str__(self):
+        return f'{self.user}: {self.feature}'
