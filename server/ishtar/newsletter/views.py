@@ -3,6 +3,7 @@ import json
 import re
 
 from django.conf import settings
+from django.core.exceptions import RequestDataTooBig
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -62,10 +63,18 @@ def public(handler):
             return JsonResponse({'error': 'Please use the form on Ishtar Insights.'}, status=403)
         if request.content_type != 'application/json':
             return JsonResponse({'error': 'JSON required.'}, status=415)
-        if not request.body or len(request.body) > MAX_BODY:
+        # request.body raises here (before we ever see the bytes) once Content-Length
+        # exceeds DATA_UPLOAD_MAX_MEMORY_SIZE, so the size guard has to wrap the access
+        # itself rather than test its result -- and request.body must not be touched
+        # again on this path, since a second access would just raise the same error.
+        try:
+            body = request.body
+        except RequestDataTooBig:
+            return JsonResponse({'error': 'Invalid request size.'}, status=413)
+        if not body or len(body) > MAX_BODY:
             return JsonResponse({'error': 'Invalid request size.'}, status=413)
         try:
-            return JsonResponse(handler(json.loads(request.body)))
+            return JsonResponse(handler(json.loads(body)))
         except (ValueError, UnicodeError):
             return JsonResponse({'error': 'Check your email and newsletter permission, then try again.'}, status=400)
     return view

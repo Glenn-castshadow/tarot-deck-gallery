@@ -8,6 +8,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 
 from newsletter.models import Subscriber
+from newsletter.views import MAX_BODY
 
 ORIGIN = 'https://ishtarinsights.com'
 PAYLOAD = {'email': 'Test@example.com', 'consent': True, 'consentVersion': '2026-09-09-v1'}
@@ -35,6 +36,23 @@ class PublicNewsletterTests(TestCase):
         self.assertEqual(self.post('/api/newsletter/subscribe', PAYLOAD, origin='https://evil.example').status_code, 403)
         self.assertEqual(self.post('/api/newsletter/subscribe', 'email=x', content_type='application/x-www-form-urlencoded').status_code, 415)
         self.assertEqual(self.post('/api/newsletter/subscribe', dict(PAYLOAD, email='a' * 1100 + '@example.com')).status_code, 413)
+
+        # Combined violations pin the Origin -> content-type -> size ordering: each
+        # assertion above only ever breaks one rule, so none of them would fail if the
+        # order were scrambled. These send two violations at once and check that the
+        # earlier-in-order rule wins, not size (413), which is what a scrambled order
+        # would produce instead. Each request body is asserted oversize (via the request
+        # actually built, not just the payload passed in) before trusting its response,
+        # since the Django test client only sets CONTENT_LENGTH/CONTENT_TYPE when the
+        # body is truthy.
+        foreign_and_oversize = self.post('/api/newsletter/subscribe', dict(PAYLOAD, email='a' * 1100 + '@example.com'), origin='https://evil.example')
+        self.assertGreater(len(foreign_and_oversize.wsgi_request.body), MAX_BODY)
+        self.assertEqual(foreign_and_oversize.status_code, 403)
+
+        wrong_type_and_oversize = self.post('/api/newsletter/subscribe', 'x=' + 'a' * 1100, content_type='application/x-www-form-urlencoded')
+        self.assertEqual(wrong_type_and_oversize.wsgi_request.content_type, 'application/x-www-form-urlencoded')
+        self.assertGreater(len(wrong_type_and_oversize.wsgi_request.body), MAX_BODY)
+        self.assertEqual(wrong_type_and_oversize.status_code, 415)
 
     def test_unsubscribe_by_token_and_email(self):
         self.post('/api/newsletter/subscribe', PAYLOAD)
