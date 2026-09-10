@@ -16,11 +16,42 @@ So the fix has to run earlier than allauth's own view code: create the user in
 Once the user row exists, allauth's own lookup (filter_users_by_email) finds it
 via the plain User table query, and the rest of the built-in flow -- sending
 the real login code, confirming it, signing in -- proceeds unmodified.
+
+Row creation is gated on two checks, so an anonymous caller cannot use this
+pre-create step to persist unlimited junk rows, or to create a permanent
+account for a third party's real address and cause them to receive an
+unsolicited login-code email:
+
+- ``django.core.validators.validate_email`` -- the same well-formedness check
+  Django's own ``EmailField`` applies -- runs before we touch the database.
+  ``RequestLoginCodeForm``'s ``EmailField`` rejects a malformed address (e.g.
+  ``"foo@"``) with a 400 further down, inside ``super().dispatch()``, no
+  matter what we do here; this just makes sure we don't leave a row behind
+  for an address that is about to be rejected anyway.
+- ``allauth.core.ratelimit.consume(..., dry_run=True)`` -- a read-only peek at
+  allauth's own already-configured ``request_login_code`` bucket
+  (``ACCOUNT_RATE_LIMITS``, default ``"20/m/ip,3/m/key"``). The real
+  consumption still happens downstream, in ``RequestLoginCodeForm.clean_email``
+  (``allauth/account/forms.py``), which is what actually enforces the limit --
+  our dry run only decides whether creating a row here is still worthwhile.
+  Consulting rather than consuming means we never halve the effective limit
+  for legitimate callers.
+
+Neither check changes what ``super().dispatch()`` returns: this view never
+short-circuits or builds its own response, so a request that skips row
+creation (bad format, or the bucket already exhausted) gets exactly the
+response allauth would have produced anyway. That is also what keeps known
+and unknown emails on the same code path -- the anti-enumeration property the
+Task 2 review verified.
 """
 import json
 
+from allauth.core import ratelimit
 from allauth.headless.account.views import RequestLoginCodeView
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 
 class SignupOrRequestLoginCodeView(RequestLoginCodeView):
@@ -30,17 +61,24 @@ class SignupOrRequestLoginCodeView(RequestLoginCodeView):
                 data = json.loads(request.body or b'{}')
             except (ValueError, UnicodeDecodeError):
                 data = None
-            email = data.get('email') if isinstance(data, dict) else None
-            if isinstance(email, str) and '@' in email:
-                user, created = get_user_model().objects.get_or_create(email=email.strip().lower())
-                if created:
-                    # get_or_create() constructs the model directly, bypassing
-                    # UserManager.create_user() -- so the password field is left
-                    # as '' rather than properly marked unusable. An empty
-                    # string is not None and doesn't start with Django's "!"
-                    # unusable-password prefix, so has_usable_password() (which
-                    # the headless API exposes verbatim) would wrongly report
-                    # True for a passwordless account. Mark it explicitly.
-                    user.set_unusable_password()
-                    user.save(update_fields=['password'])
+            raw_email = data.get('email') if isinstance(data, dict) else None
+            email = None
+            if isinstance(raw_email, str):
+                candidate = raw_email.strip().lower()
+                try:
+                    validate_email(candidate)
+                    email = candidate
+                except ValidationError:
+                    pass  # malformed -- super().dispatch() below produces the 400, no row.
+            if email and ratelimit.consume(
+                request, action='request_login_code', key=email, dry_run=True,
+            ):
+                # Single atomic write: make_password(None) is the same "!"-prefixed
+                # unusable-password value UserManager.create_user() writes via
+                # set_unusable_password(), so has_usable_password() is False from
+                # the moment the row exists, instead of a separate save() leaving
+                # a brief window where the row has password=''.
+                get_user_model().objects.get_or_create(
+                    email=email, defaults={'password': make_password(None)},
+                )
         return super().dispatch(request, *args, **kwargs)
