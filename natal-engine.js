@@ -92,17 +92,18 @@ const NatalEngine = (() => {
     }
     return aspects.sort((a,b)=>a.orb-b.orb);
   }
-  function calculate({birthday,time,location,houseSystem='placidus',fold='',orbScale=1}) {
+  function chartAtInstant(date,location,{houseSystem='placidus',orbScale=1}={}) {
     if(!['placidus','whole-sign','equal'].includes(houseSystem)) houseSystem='placidus';
     if(![0.75,1,1.25].includes(Number(orbScale))) orbScale=1;
     orbScale=Number(orbScale);
-    if(!time) return {status:'missing',message:'Add your birth time and select a birthplace to calculate your natal chart.'};
-    if(!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || Math.abs(location.latitude)>=90 || Math.abs(location.longitude)>180 || !location.timeZone) return {status:'missing',message:'Select a city suggestion, or enter coordinates and a time zone, to calculate your natal chart.'};
-    let candidates;
-    try {candidates=localTimeCandidates(birthday,time,location.timeZone);} catch(error) {return {status:'error',message:error.message};}
-    if(!candidates.length) return {status:'error',message:'That local clock time did not occur because the clocks moved forward. Check the birth time.'};
-    if(candidates.length>1 && !['earlier','later'].includes(fold)) return {status:'ambiguous',message:'This clock time occurred twice when daylight saving ended. Choose the earlier or later occurrence.',candidates};
-    const resolved=candidates[fold==='later'?candidates.length-1:0],date=resolved.utc;
+    if(!(date instanceof Date) || !Number.isFinite(+date)) return {status:'error',message:'A valid instant is required.'};
+    // A civil birth date that is validly within 1901-2100 can still resolve (via calculate(),
+    // below) to a UTC instant just across the 1901 boundary for positive-offset zones -- e.g.
+    // 1901-01-01 00:30 Asia/Tokyo is 1900-12-31T15:30:00Z. calculate() already enforces the
+    // true range on the civil date itself, in localTimeCandidates, before it ever reaches here,
+    // so give only the lower edge a day of slack rather than double-rejecting that instant.
+    if(+date<Date.UTC(1901,0,1)-86400000 || date.getUTCFullYear()>2100) return {status:'error',message:'Calculations support dates from 1901 to 2100.'};
+    if(!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || Math.abs(location.latitude)>=90 || Math.abs(location.longitude)>180 || !location.timeZone) return {status:'missing',message:'Select a city suggestion, or enter coordinates and a time zone, to calculate this chart.'};
     const angles=anglesAt(date,location.latitude,location.longitude);
     let cusps=houseCusps(angles,location.latitude,houseSystem),notice='';
     if(!cusps) {houseSystem='whole-sign'; cusps=houseCusps(angles,location.latitude,houseSystem); notice='Placidus is unavailable at this latitude/time. This chart uses Whole Sign houses.';}
@@ -118,8 +119,23 @@ const NatalEngine = (() => {
     const planets=points.filter(point=>point.kind==='planet');
     const balance={elements:Object.fromEntries(elements.map(name=>[name,planets.filter(point=>point.element===name).length])),qualities:Object.fromEntries(qualities.map(name=>[name,planets.filter(point=>point.quality===name).length]))};
     const illumination=astro.Illumination('Moon',date);
-    return {status:'ready',birthday,time,date:date.toISOString(),timeZone:location.timeZone,offsetMinutes:resolved.offsetMinutes,ambiguousTime:candidates.length>1,location,houseSystem,notice,points,axes,cusps,angles,aspects:aspectsFor([...points,...axes.slice(0,2)],orbScale),orbScale,balance,moonIllumination:illumination.phase_fraction,moonPhase:astro.MoonPhase(date)};
+    return {status:'ready',date:date.toISOString(),timeZone:location.timeZone,location,houseSystem,notice,points,axes,cusps,angles,aspects:aspectsFor([...points,...axes.slice(0,2)],orbScale),orbScale,balance,moonIllumination:illumination.phase_fraction,moonPhase:astro.MoonPhase(date)};
   }
-  return {calculate,localTimeCandidates,anglesAt,houseCusps,houseFor,placement,aspectsFor,mod,delta,signNames,signGlyphs,aspectTypes};
+  function calculate({birthday,time,location,houseSystem='placidus',fold='',orbScale=1}) {
+    if(!['placidus','whole-sign','equal'].includes(houseSystem)) houseSystem='placidus';
+    if(![0.75,1,1.25].includes(Number(orbScale))) orbScale=1;
+    orbScale=Number(orbScale);
+    if(!time) return {status:'missing',message:'Add your birth time and select a birthplace to calculate your natal chart.'};
+    if(!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || Math.abs(location.latitude)>=90 || Math.abs(location.longitude)>180 || !location.timeZone) return {status:'missing',message:'Select a city suggestion, or enter coordinates and a time zone, to calculate your natal chart.'};
+    let candidates;
+    try {candidates=localTimeCandidates(birthday,time,location.timeZone);} catch(error) {return {status:'error',message:error.message};}
+    if(!candidates.length) return {status:'error',message:'That local clock time did not occur because the clocks moved forward. Check the birth time.'};
+    if(candidates.length>1 && !['earlier','later'].includes(fold)) return {status:'ambiguous',message:'This clock time occurred twice when daylight saving ended. Choose the earlier or later occurrence.',candidates};
+    const resolved=candidates[fold==='later'?candidates.length-1:0],date=resolved.utc;
+    const chart=chartAtInstant(date,location,{houseSystem,orbScale});
+    if(chart.status!=='ready') return chart;
+    return {...chart,birthday,time,offsetMinutes:resolved.offsetMinutes,ambiguousTime:candidates.length>1};
+  }
+  return {calculate,chartAtInstant,localTimeCandidates,anglesAt,houseCusps,houseFor,placement,aspectsFor,mod,delta,signNames,signGlyphs,aspectTypes};
 })();
 if(typeof module!=='undefined' && module.exports) module.exports=NatalEngine;

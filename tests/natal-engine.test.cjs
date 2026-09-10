@@ -53,3 +53,30 @@ test('aspects use shortest separation across Aries and respect orb settings',()=
   assert.ok(aspects.some(a=>a.type==='Square'));
   assert.ok(engine.aspectsFor(points,0.5).length<aspects.length);
 });
+
+test('chartAtInstant reproduces calculate for the same resolved instant',()=>{
+  const fixture=reference.cases[1];
+  const viaCalculate=engine.calculate(fixture.input);
+  const viaInstant=engine.chartAtInstant(new Date(viaCalculate.date),fixture.input.location,{houseSystem:viaCalculate.houseSystem,orbScale:1});
+  assert.equal(viaInstant.status,'ready');
+  assert.equal(viaInstant.angles.asc,viaCalculate.angles.asc);
+  assert.equal(viaInstant.angles.mc,viaCalculate.angles.mc);
+  assert.deepEqual(viaInstant.cusps,viaCalculate.cusps);
+  assert.deepEqual(viaInstant.points.map(p=>p.longitude),viaCalculate.points.map(p=>p.longitude));
+});
+
+test('chartAtInstant keeps sub-minute precision that a HH:MM round trip would lose',()=>{
+  const location=reference.cases[1].input.location;
+  const base=new Date('2024-01-15T14:30:00Z');
+  const shifted=new Date('2024-01-15T14:30:45Z');
+  const a=engine.chartAtInstant(base,location),b=engine.chartAtInstant(shifted,location);
+  assert.ok(Math.abs(engine.delta(a.angles.asc,b.angles.asc))>0.1,'45 seconds must move the ascendant');
+});
+
+test('chartAtInstant rejects invalid and out-of-range instants without inventing angles',()=>{
+  const location=reference.cases[1].input.location;
+  assert.equal(engine.chartAtInstant(new Date('nope'),location).status,'error');
+  assert.equal(engine.chartAtInstant(new Date('1899-01-01T00:00:00Z'),location).status,'error');
+  assert.equal(engine.chartAtInstant(new Date('2101-01-01T00:00:00Z'),location).status,'error');
+  assert.equal(engine.chartAtInstant(new Date('2000-01-01T00:00:00Z'),null).status,'missing');
+});
