@@ -2,6 +2,7 @@
 import json
 from functools import wraps
 
+from django.core.exceptions import RequestDataTooBig
 from django.http import JsonResponse
 
 
@@ -48,8 +49,17 @@ def json_view(methods=('POST',)):
             if request.method in ('POST', 'PUT', 'PATCH'):
                 if request.content_type != 'application/json':
                     return error('JSON required.', 415)
+                # request.body raises here (before we ever see the bytes) once
+                # Content-Length exceeds DATA_UPLOAD_MAX_MEMORY_SIZE, so the size
+                # guard has to wrap the access itself rather than test its result --
+                # and request.body must not be touched again on this path, since a
+                # second access would just raise the same error again.
                 try:
-                    request.json = json.loads(request.body or b'null')
+                    body = request.body
+                except RequestDataTooBig:
+                    return error('Request body too large.', 413)
+                try:
+                    request.json = json.loads(body or b'null')
                 except (ValueError, UnicodeDecodeError, RecursionError):
                     return error('Invalid JSON.', 400)
                 if not isinstance(request.json, dict):

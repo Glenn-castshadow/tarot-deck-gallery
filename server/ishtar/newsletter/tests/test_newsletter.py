@@ -37,14 +37,20 @@ class PublicNewsletterTests(TestCase):
         self.assertEqual(self.post('/api/newsletter/subscribe', 'email=x', content_type='application/x-www-form-urlencoded').status_code, 415)
         self.assertEqual(self.post('/api/newsletter/subscribe', dict(PAYLOAD, email='a' * 1100 + '@example.com')).status_code, 413)
 
-        # Combined violations pin the Origin -> content-type -> size ordering: each
-        # assertion above only ever breaks one rule, so none of them would fail if the
-        # order were scrambled. These send two violations at once and check that the
-        # earlier-in-order rule wins, not size (413), which is what a scrambled order
-        # would produce instead. Each request body is asserted oversize (via the request
-        # actually built, not just the payload passed in) before trusting its response,
-        # since the Django test client only sets CONTENT_LENGTH/CONTENT_TYPE when the
-        # body is truthy.
+        # Combined violations pin the full Origin -> content-type -> size ordering.
+        # Each single-violation assertion above only ever breaks one rule, so none of
+        # them would fail if any two checks were swapped -- these three send two
+        # violations at once each, so the assertion only passes if the earlier-in-order
+        # rule wins over the later one:
+        #   - foreign origin + oversize body must stay 403, not 413        (Origin < size)
+        #   - wrong content-type + oversize body must stay 415, not 413    (content-type < size)
+        #   - foreign origin + wrong content-type must stay 403, not 415   (Origin < content-type)
+        # A 3-step chain has exactly three pairwise orderings; pinning all three forces
+        # the one order consistent with them all (Origin, then content-type, then size),
+        # which is what makes this the full chain and not just "size loses to everything".
+        # Each request is checked against the request Django actually built (not just the
+        # payload passed in) before trusting its response, since the Django test client
+        # only sets CONTENT_LENGTH/CONTENT_TYPE when the body is truthy.
         foreign_and_oversize = self.post('/api/newsletter/subscribe', dict(PAYLOAD, email='a' * 1100 + '@example.com'), origin='https://evil.example')
         self.assertGreater(len(foreign_and_oversize.wsgi_request.body), MAX_BODY)
         self.assertEqual(foreign_and_oversize.status_code, 403)
@@ -53,6 +59,11 @@ class PublicNewsletterTests(TestCase):
         self.assertEqual(wrong_type_and_oversize.wsgi_request.content_type, 'application/x-www-form-urlencoded')
         self.assertGreater(len(wrong_type_and_oversize.wsgi_request.body), MAX_BODY)
         self.assertEqual(wrong_type_and_oversize.status_code, 415)
+
+        foreign_and_wrong_type = self.post('/api/newsletter/subscribe', 'x=1', origin='https://evil.example', content_type='application/x-www-form-urlencoded')
+        self.assertEqual(foreign_and_wrong_type.wsgi_request.content_type, 'application/x-www-form-urlencoded')
+        self.assertLessEqual(len(foreign_and_wrong_type.wsgi_request.body), MAX_BODY)
+        self.assertEqual(foreign_and_wrong_type.status_code, 403)
 
     def test_unsubscribe_by_token_and_email(self):
         self.post('/api/newsletter/subscribe', PAYLOAD)

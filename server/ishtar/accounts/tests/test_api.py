@@ -1,5 +1,6 @@
 """Tests for ishtar.api decorators: json_view and auth_required."""
 import json
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
@@ -101,6 +102,35 @@ class JsonViewDecoratorTests(TestCase):
 
         self.assertEqual(response.status_code, 415)
         self.assertEqual(get_json_response(response), {'error': 'JSON required.'})
+
+    def test_json_view_returns_413_on_oversized_body(self):
+        """Verify json_view returns a JSON 413 -- not Django's own HTML 400 -- when
+        Content-Length exceeds DATA_UPLOAD_MAX_MEMORY_SIZE. Without this guard,
+        request.body raises RequestDataTooBig the moment it is touched, and
+        Django's default SuspiciousOperation handling turns that into a plain
+        HttpResponseBadRequest (400, text/html), which breaks a JS client expecting
+        JSON on every response from a json_view-backed endpoint."""
+        @json_view(methods=('POST',))
+        def test_view(request):
+            return JsonResponse({'received': request.json})
+
+        oversized = json.dumps({'data': 'x' * (settings.DATA_UPLOAD_MAX_MEMORY_SIZE + 1000)})
+        request = self.factory.post(
+            '/test/',
+            data=oversized,
+            content_type='application/json',
+        )
+        # RequestFactory only sets CONTENT_LENGTH/CONTENT_TYPE when the body is
+        # truthy -- it is here, but confirm the request actually built carries a
+        # Content-Length past the cap before trusting the response, rather than
+        # assuming the client did what was asked.
+        self.assertGreater(int(request.META['CONTENT_LENGTH']), settings.DATA_UPLOAD_MAX_MEMORY_SIZE)
+
+        response = test_view(request)
+
+        self.assertEqual(response.status_code, 413)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertEqual(get_json_response(response), {'error': 'Request body too large.'})
 
     def test_json_view_allows_get_without_parsing_body(self):
         """Verify json_view allows GET requests and sets request.json to None."""
