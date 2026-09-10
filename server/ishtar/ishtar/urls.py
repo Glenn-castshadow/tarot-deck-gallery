@@ -35,3 +35,9 @@ def server_error(request):
 
 handler404 = 'ishtar.urls.not_found'
 handler500 = 'ishtar.urls.server_error'
+
+from django.conf import settings
+from django.views.static import serve
+if settings.DEBUG:
+    from django.urls import re_path
+    urlpatterns += [re_path(r'^(?P<path>.*)$', lambda request, path: serve(request, path or 'index.html', document_root=settings.BASE_DIR.parent.parent))]
