@@ -27,7 +27,9 @@
 .jy-chart-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(240px,1fr); gap: 25px; align-items: start; }
 .jy-chart-art { min-width: 0; }
 .jy-chart-svg { max-width: 420px; margin: 0 auto; }
-.jy-chart-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
+.jy-chart-svg svg { display: block; width: 100%; height: auto; overflow: visible; color: #f4e8d1; }
+.jy-chart-svg text { fill: currentColor; }
+.jy-chart-svg .jy-sign { fill: #e2c98b; }
 .jy-chart-svg text { font-family: "Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",serif; }
 
 .jy-reading { min-width: 0; }

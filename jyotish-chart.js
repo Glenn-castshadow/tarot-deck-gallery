@@ -81,7 +81,7 @@ const JyotishChart = (() => {
       if (!cell) throw new Error(`No South Indian cell for signIndex ${house.signIndex}`);
       const [cx, cy] = cell;
       const isLagna = house.signIndex === lagnaSignIndex;
-      const signText = `<text x="${cx + 86}" y="${cy + 16}" text-anchor="middle" font-size="13" opacity="0.85">${esc(SIGN_ABBR[house.signIndex])}</text>`;
+      const signText = `<text class="jy-sign" x="${cx + 86}" y="${cy + 16}" text-anchor="middle" font-size="13" opacity="0.9">${esc(SIGN_ABBR[house.signIndex])}</text>`;
       const grahaLines = house.grahas.map(name => grahaLabel(name, abbreviations, retroSet));
       const grahaText = southGrahaText(cx, cy, grahaLines);
       const lagnaMark = isLagna ? `<line x1="${cx}" y1="${cy}" x2="${cx + 22}" y2="${cy + 22}" stroke="currentColor"/>` : '';
@@ -109,7 +109,7 @@ const JyotishChart = (() => {
       const [cx, cy] = centre;
       const isLagna = house.index === 1;
       const ascLabel = isLagna ? `<text x="${cx}" y="${cy - 18}" text-anchor="middle" font-size="11" opacity="0.85">Asc</text>` : '';
-      const signText = `<text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="14" opacity="0.9">${house.signIndex + 1}</text>`;
+      const signText = `<text class="jy-sign" x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="14" opacity="0.95">${house.signIndex + 1}</text>`;
       const grahaLines = house.grahas.map(name => grahaLabel(name, abbreviations, retroSet));
       const isRhombus = house.index === 1 || house.index === 4 || house.index === 7 || house.index === 10;
       const grahaText = northGrahaText(cx, cy, grahaLines, isRhombus ? 36 : 22);

@@ -32,7 +32,9 @@
 .ho-question-form .city-search-status { color: #adbec1; }
 .ho-question-form .city-suggestions { background: #142c38; color: #e1d8bf; }
 .ho-question-form .city-suggestions button { text-align: left; width: 100%; }
-.ho-question-form .city-suggestions button[aria-selected="true"] { background: #305154; }
+.ho-question-form .city-suggestions button, .ho-question-form .city-suggestions button strong { color: #f1e8d8; }
+.ho-question-form .city-suggestions button span { color: #a9bfc0; }
+.ho-question-form .city-suggestions button:hover, .ho-question-form .city-suggestions button[aria-selected="true"] { background: #305154; }
 .ho-custom-place { grid-column: 1/-1; font-size: 11px; }
 .ho-custom-place fieldset { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 12px; border: 0; padding: 15px 0; min-width: 0; }
 .ho-custom-place fieldset:disabled { opacity: .45; }
@@ -45,7 +47,10 @@
 .ho-casting { padding: 30px 0; text-align: center; color: #c9b784; font-size: 14px; }
 
 .ho-wheel-wrap { max-width: 440px; margin: 0 auto; }
-.ho-wheel-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ho-wheel-wrap svg { display: block; width: 100%; height: auto; overflow: visible; color: #f4e8d1; }
+.ho-wheel-wrap text { fill: currentColor; }
+.ho-wheel-wrap .h-sign, .ho-wheel-wrap .h-angle-label { fill: #e2c98b; }
+.ho-wheel-wrap .h-degree, .ho-wheel-wrap .h-house-number { fill: #b9cbcb; }
 .ho-wheel-wrap text { font-family: "Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",serif; }
 
 .ho-question-echo { margin-top: 18px; font: italic 17px/1.6 "Playfair Display",serif; color: #e0c58c; overflow-wrap: anywhere; }

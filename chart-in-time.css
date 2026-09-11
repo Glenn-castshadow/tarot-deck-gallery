@@ -21,7 +21,9 @@
 .cit-place-form .city-search-status { color: #adbec1; }
 .cit-place-form .city-suggestions { background: #142c38; color: #e1d8bf; }
 .cit-place-form .city-suggestions button { text-align: left; width: 100%; }
-.cit-place-form .city-suggestions button[aria-selected="true"] { background: #305154; }
+.cit-place-form .city-suggestions button, .cit-place-form .city-suggestions button strong { color: #f1e8d8; }
+.cit-place-form .city-suggestions button span { color: #a9bfc0; }
+.cit-place-form .city-suggestions button:hover, .cit-place-form .city-suggestions button[aria-selected="true"] { background: #305154; }
 .cit-custom-place { grid-column: 1/-1; font-size: 11px; }
 .cit-custom-place fieldset { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 12px; border: 0; padding: 15px 0; min-width: 0; }
 .cit-custom-place fieldset:disabled { opacity: .45; }
