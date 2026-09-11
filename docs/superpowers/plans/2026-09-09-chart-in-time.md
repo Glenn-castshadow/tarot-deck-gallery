@@ -27,7 +27,7 @@
   const astro = typeof Astronomy !== 'undefined' ? Astronomy : require('./vendor/astronomy-engine/astronomy.js');
   const natal = typeof NatalEngine !== 'undefined' ? NatalEngine : require('./natal-engine.js');
   ```
-- Bump the `?v=` cache key on any `index.html` script or stylesheet tag you touch.
+- Bump the `?v=` cache key for any file you modify that `index.html` loads, whether or not you edit the tag.
 
 ## Constants used throughout
 
