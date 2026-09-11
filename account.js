@@ -9,7 +9,7 @@
   const emailForm = $('#account-email-form'), codeForm = $('#account-code-form'), dialogStatus = $('#account-dialog-status');
   const status = $('#account-status'), list = $('#journal-list');
   let opener = null, journalPage = 1, journalPages = 1;
-  const kindLabel = {'tarot-daily': 'Daily card', 'tarot-spread': 'Tarot spread', lenormand: 'Lenormand', oracle: 'Reflection oracle', runes: 'Runes', geomancy: 'Geomancy'};
+  const kindLabel = {'tarot-daily': 'Daily card', 'tarot-spread': 'Tarot spread', lenormand: 'Lenormand', oracle: 'Reflection oracle', runes: 'Runes', geomancy: 'Geomancy', iching: 'I Ching'};
   const esc = value => String(value).replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
 
   function wireRemoteProfile(state) {
