@@ -3,8 +3,10 @@ const JyotishEngine = (() => {
   const natal = typeof NatalEngine !== 'undefined' ? NatalEngine : require('./natal-engine.js');
   // Lahiri as defined by the Swiss Ephemeris SIDM_LAHIRI mode: reference value at JD 2435553.5
   // carried by the IAU 2006 accumulated general precession in longitude (arcseconds, T in
-  // Julian centuries from J2000). Task 2 may calibrate AYANAMSA_T0 against swe.get_ayanamsa_ut.
-  const AYANAMSA_T0 = 23.250182778, JD_T0 = 2435553.5, JD_J2000 = 2451545.0;
+  // Julian centuries from J2000). Calibrated (Task 2) to swe.get_ayanamsa_ut(2435553.5) from
+  // pyswisseph 2.10.03 (Moshier, SIDM_LAHIRI) = 23.245560968496193, which differed from the
+  // prior textbook constant (23.250182778) by 0.0046°, above the 0.0005° calibration tolerance.
+  const AYANAMSA_T0 = 23.245560968496193, JD_T0 = 2435553.5, JD_J2000 = 2451545.0;
   const T0 = (JD_T0 - JD_J2000) / 36525;
   const precession = T => 5028.796195*T + 1.1054348*T*T + 0.00007964*T*T*T - 0.000023857*T*T*T*T;
   const centuries = date => ((+date) / 86400000 + 2440587.5 - JD_J2000) / 36525;

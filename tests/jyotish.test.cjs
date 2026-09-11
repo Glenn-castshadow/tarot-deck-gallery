@@ -55,3 +55,25 @@ test('sidereal placements: lagna, whole-sign bhavas, grahas with nakshatras and 
   assert.equal(J.sidereal(null).status,'missing');
   assert.equal(J.sidereal({status:'missing',message:'x'}).status,'missing');
 });
+
+const reference=require('./fixtures/jyotish-reference.json');
+for(const c of reference.cases) test(`swiss ephemeris reference: ${c.id}`,()=>{
+  const chart=natal.calculate({...c.input, houseSystem:'whole-sign'});
+  assert.equal(chart.status,'ready');
+  const date=new Date(chart.date);
+  assert.ok(Math.abs(J.ayanamsa(date)-c.ayanamsa)<0.005,`ayanamsa ${J.ayanamsa(date)} vs ${c.ayanamsa}`);
+  const m=J.sidereal(chart);
+  for(const g of m.grahas) assert.ok(Math.abs(natal.delta(g.longitude,c.points[g.name]))<0.03,`${g.name} ${g.longitude} vs ${c.points[g.name]}`);
+  assert.ok(Math.abs(natal.delta(m.lagna.longitude,c.asc))<0.03,'lagna');
+  for(const g of m.grahas) {
+    const r=c.rules[g.name];
+    // A graha within 0.03° of a nakshatra, pada or navamsa boundary may legitimately fall either side; skip those.
+    const nearBoundary=(span)=>{const w=natal.mod(g.longitude)%span;return w<0.03||span-w<0.03;};
+    if(!nearBoundary(360/27)) assert.equal(g.nakshatra.index,r.nakshatra,`${g.name} nakshatra`);
+    if(!nearBoundary(360/108)) assert.equal(g.nakshatra.pada,r.pada,`${g.name} pada`);
+    if(!nearBoundary(30/9)) assert.equal(g.navamsaSign,r.navamsa,`${g.name} navamsa`);
+  }
+});
+test('the swiss ayanamsa at t0 matches the engine reference constant',()=>{
+  assert.ok(Math.abs(reference.ayanamsaAtT0-J.AYANAMSA_T0)<0.0005);
+});

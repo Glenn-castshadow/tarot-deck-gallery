@@ -1,0 +1,1555 @@
+{
+  "source": "pyswisseph Moshier, SIDM_LAHIRI; rules recomputed in Python",
+  "version": "2.10.03",
+  "ayanamsaAtT0": 23.245560968496193,
+  "cases": [
+    {
+      "id": "millennium-greenwich",
+      "input": {
+        "birthday": "2000-01-01",
+        "time": "12:00",
+        "location": {
+          "latitude": 51.4779,
+          "longitude": 0,
+          "timeZone": "Europe/London"
+        }
+      },
+      "utc": "2000-01-01T12:00:00Z",
+      "ayanamsa": 23.857092353708822,
+      "points": {
+        "Sun": 256.51569718931427,
+        "Moon": 199.47055295238047,
+        "Mars": 304.11009083249115,
+        "Mercury": 248.0360525214584,
+        "Jupiter": 1.3998078233926976,
+        "Venus": 217.7125758401396,
+        "Saturn": 16.542416469972864,
+        "Rahu": 101.18742357058703,
+        "Ketu": 281.18742357058704
+      },
+      "asc": 0.41296671665079643,
+      "rules": {
+        "Sun": {
+          "nakshatra": 19,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Moon": {
+          "nakshatra": 14,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Mars": {
+          "nakshatra": 22,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Mercury": {
+          "nakshatra": 18,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Jupiter": {
+          "nakshatra": 0,
+          "pada": 1,
+          "navamsa": 0
+        },
+        "Venus": {
+          "nakshatra": 16,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Saturn": {
+          "nakshatra": 1,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Rahu": {
+          "nakshatra": 7,
+          "pada": 3,
+          "navamsa": 6
+        },
+        "Ketu": {
+          "nakshatra": 21,
+          "pada": 1,
+          "navamsa": 0
+        },
+        "Lagna": {
+          "nakshatra": 0,
+          "pada": 1,
+          "navamsa": 0
+        }
+      },
+      "dasha": {
+        "firstLord": "Rahu",
+        "balanceYears": 0.7147535142863881,
+        "mahadashas": [
+          {
+            "lord": "Rahu",
+            "start": "2000-01-01T12:00:00Z",
+            "end": "2000-09-18T13:31:45.502444Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2000-09-18T13:31:45.502444Z",
+            "end": "2016-09-18T13:31:45.502444Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2016-09-18T13:31:45.502444Z",
+            "end": "2035-09-19T07:31:45.502444Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2035-09-19T07:31:45.502444Z",
+            "end": "2052-09-18T13:31:45.502444Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2052-09-18T13:31:45.502444Z",
+            "end": "2059-09-19T07:31:45.502444Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2059-09-19T07:31:45.502444Z",
+            "end": "2079-09-19T07:31:45.502444Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2079-09-19T07:31:45.502444Z",
+            "end": "2085-09-18T19:31:45.502444Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2085-09-18T19:31:45.502444Z",
+            "end": "2095-09-19T07:31:45.502444Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2095-09-19T07:31:45.502444Z",
+            "end": "2102-09-20T01:31:45.502444Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-york-winter",
+      "input": {
+        "birthday": "2024-01-15",
+        "time": "09:30",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "2024-01-15T14:30:00Z",
+      "ayanamsa": 24.192902616914182,
+      "points": {
+        "Sun": 270.73316598587206,
+        "Moon": 327.212103128349,
+        "Mars": 254.02339173710573,
+        "Mercury": 247.46102430055575,
+        "Jupiter": 11.80232556533118,
+        "Venus": 236.26860078337242,
+        "Saturn": 310.45638112716045,
+        "Rahu": 355.9121453130022,
+        "Ketu": 175.91214531300216
+      },
+      "asc": 315.34315877491167,
+      "rules": {
+        "Sun": {
+          "nakshatra": 20,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Moon": {
+          "nakshatra": 24,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Mars": {
+          "nakshatra": 19,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Mercury": {
+          "nakshatra": 18,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Jupiter": {
+          "nakshatra": 0,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Venus": {
+          "nakshatra": 17,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Saturn": {
+          "nakshatra": 23,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Rahu": {
+          "nakshatra": 26,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Ketu": {
+          "nakshatra": 13,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Lagna": {
+          "nakshatra": 23,
+          "pada": 3,
+          "navamsa": 10
+        }
+      },
+      "dasha": {
+        "firstLord": "Jupiter",
+        "balanceYears": 7.345476245981217,
+        "mahadashas": [
+          {
+            "lord": "Jupiter",
+            "start": "2024-01-15T14:30:00Z",
+            "end": "2031-05-21T12:56:41.180177Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2031-05-21T12:56:41.180177Z",
+            "end": "2050-05-21T06:56:41.180177Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2050-05-21T06:56:41.180177Z",
+            "end": "2067-05-21T12:56:41.180177Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2067-05-21T12:56:41.180177Z",
+            "end": "2074-05-21T06:56:41.180177Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2074-05-21T06:56:41.180177Z",
+            "end": "2094-05-21T06:56:41.180177Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2094-05-21T06:56:41.180177Z",
+            "end": "2100-05-21T18:56:41.180177Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2100-05-21T18:56:41.180177Z",
+            "end": "2110-05-22T06:56:41.180177Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2110-05-22T06:56:41.180177Z",
+            "end": "2117-05-22T00:56:41.180177Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2117-05-22T00:56:41.180177Z",
+            "end": "2135-05-22T12:56:41.180177Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "new-york-summer",
+      "input": {
+        "birthday": "2024-07-15",
+        "time": "09:30",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "2024-07-15T13:30:00Z",
+      "ayanamsa": 24.199862303268446,
+      "points": {
+        "Sun": 89.35159121682663,
+        "Moon": 197.19736141232343,
+        "Mars": 32.108027357794704,
+        "Mercury": 115.26618932590813,
+        "Jupiter": 47.06849709433408,
+        "Venus": 100.57203029827505,
+        "Saturn": 325.0235822893455,
+        "Rahu": 346.26981160365386,
+        "Ketu": 166.2698116036538
+      },
+      "asc": 133.9402844088065,
+      "rules": {
+        "Sun": {
+          "nakshatra": 6,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Moon": {
+          "nakshatra": 14,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Mars": {
+          "nakshatra": 2,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Mercury": {
+          "nakshatra": 8,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Jupiter": {
+          "nakshatra": 3,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Venus": {
+          "nakshatra": 7,
+          "pada": 3,
+          "navamsa": 6
+        },
+        "Saturn": {
+          "nakshatra": 24,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Rahu": {
+          "nakshatra": 25,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Ketu": {
+          "nakshatra": 12,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Lagna": {
+          "nakshatra": 10,
+          "pada": 1,
+          "navamsa": 4
+        }
+      },
+      "dasha": {
+        "firstLord": "Rahu",
+        "balanceYears": 3.7835620933633933,
+        "mahadashas": [
+          {
+            "lord": "Rahu",
+            "start": "2024-07-15T13:30:00Z",
+            "end": "2028-04-27T12:12:19.117525Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2028-04-27T12:12:19.117525Z",
+            "end": "2044-04-27T12:12:19.117525Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2044-04-27T12:12:19.117525Z",
+            "end": "2063-04-28T06:12:19.117525Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2063-04-28T06:12:19.117525Z",
+            "end": "2080-04-27T12:12:19.117525Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2080-04-27T12:12:19.117525Z",
+            "end": "2087-04-28T06:12:19.117525Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2087-04-28T06:12:19.117525Z",
+            "end": "2107-04-29T06:12:19.117525Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2107-04-29T06:12:19.117525Z",
+            "end": "2113-04-28T18:12:19.117525Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2113-04-28T18:12:19.117525Z",
+            "end": "2123-04-29T06:12:19.117525Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2123-04-29T06:12:19.117525Z",
+            "end": "2130-04-29T00:12:19.117525Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "seattle-example",
+      "input": {
+        "birthday": "1988-11-05",
+        "time": "14:30",
+        "location": {
+          "latitude": 47.6062,
+          "longitude": -122.3321,
+          "timeZone": "America/Los_Angeles"
+        }
+      },
+      "utc": "1988-11-05T22:30:00Z",
+      "ayanamsa": 23.70130396432222,
+      "points": {
+        "Sun": 200.02973478941524,
+        "Moon": 158.98799297995876,
+        "Mars": 336.66660685829254,
+        "Mercury": 185.22942283447665,
+        "Jupiter": 39.60677199288318,
+        "Venus": 164.72106721043508,
+        "Saturn": 245.67204592665908,
+        "Rahu": 317.0537191847724,
+        "Ketu": 137.05371918477238
+      },
+      "asc": 316.97920002365083,
+      "rules": {
+        "Sun": {
+          "nakshatra": 15,
+          "pada": 1,
+          "navamsa": 0
+        },
+        "Moon": {
+          "nakshatra": 11,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Mars": {
+          "nakshatra": 25,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Mercury": {
+          "nakshatra": 13,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Jupiter": {
+          "nakshatra": 2,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Venus": {
+          "nakshatra": 12,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Saturn": {
+          "nakshatra": 18,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Rahu": {
+          "nakshatra": 23,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Ketu": {
+          "nakshatra": 10,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Lagna": {
+          "nakshatra": 23,
+          "pada": 4,
+          "navamsa": 11
+        }
+      },
+      "dasha": {
+        "firstLord": "Sun",
+        "balanceYears": 0.4554031590185659,
+        "mahadashas": [
+          {
+            "lord": "Sun",
+            "start": "1988-11-05T22:30:00Z",
+            "end": "1989-04-21T06:33:50.731044Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "1989-04-21T06:33:50.731044Z",
+            "end": "1999-04-21T18:33:50.731044Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "1999-04-21T18:33:50.731044Z",
+            "end": "2006-04-21T12:33:50.731044Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2006-04-21T12:33:50.731044Z",
+            "end": "2024-04-21T00:33:50.731044Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2024-04-21T00:33:50.731044Z",
+            "end": "2040-04-21T00:33:50.731044Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2040-04-21T00:33:50.731044Z",
+            "end": "2059-04-21T18:33:50.731044Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2059-04-21T18:33:50.731044Z",
+            "end": "2076-04-21T00:33:50.731044Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2076-04-21T00:33:50.731044Z",
+            "end": "2083-04-21T18:33:50.731044Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2083-04-21T18:33:50.731044Z",
+            "end": "2103-04-22T18:33:50.731044Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "southern-hemisphere",
+      "input": {
+        "birthday": "1940-05-01",
+        "time": "06:00",
+        "location": {
+          "latitude": -34.9285,
+          "longitude": 138.6007,
+          "timeZone": "Australia/Adelaide"
+        }
+      },
+      "utc": "1940-04-30T20:30:00Z",
+      "ayanamsa": 23.023671827505407,
+      "points": {
+        "Sun": 17.2981776328707,
+        "Moon": 304.27752382247996,
+        "Mars": 56.09163145425782,
+        "Mercury": 356.4794245851394,
+        "Jupiter": 3.3611726352258686,
+        "Venus": 62.16434884650892,
+        "Saturn": 12.130600574629947,
+        "Rahu": 176.13018827912708,
+        "Ketu": 356.1301882791271
+      },
+      "asc": 5.877182223382725,
+      "rules": {
+        "Sun": {
+          "nakshatra": 1,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Moon": {
+          "nakshatra": 22,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Mars": {
+          "nakshatra": 4,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Mercury": {
+          "nakshatra": 26,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Jupiter": {
+          "nakshatra": 0,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Venus": {
+          "nakshatra": 4,
+          "pada": 3,
+          "navamsa": 6
+        },
+        "Saturn": {
+          "nakshatra": 0,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Rahu": {
+          "nakshatra": 13,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Ketu": {
+          "nakshatra": 26,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Lagna": {
+          "nakshatra": 0,
+          "pada": 2,
+          "navamsa": 1
+        }
+      },
+      "dasha": {
+        "firstLord": "Mars",
+        "balanceYears": 1.254299993198039,
+        "mahadashas": [
+          {
+            "lord": "Mars",
+            "start": "1940-04-30T20:30:00Z",
+            "end": "1941-08-01T23:41:37.465346Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "1941-08-01T23:41:37.465346Z",
+            "end": "1959-08-02T11:41:37.465346Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "1959-08-02T11:41:37.465346Z",
+            "end": "1975-08-02T11:41:37.465346Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "1975-08-02T11:41:37.465346Z",
+            "end": "1994-08-02T05:41:37.465346Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "1994-08-02T05:41:37.465346Z",
+            "end": "2011-08-02T11:41:37.465346Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2011-08-02T11:41:37.465346Z",
+            "end": "2018-08-02T05:41:37.465346Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2018-08-02T05:41:37.465346Z",
+            "end": "2038-08-02T05:41:37.465346Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2038-08-02T05:41:37.465346Z",
+            "end": "2044-08-01T17:41:37.465346Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2044-08-01T17:41:37.465346Z",
+            "end": "2054-08-02T05:41:37.465346Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "early-range",
+      "input": {
+        "birthday": "1901-01-01",
+        "time": "12:00",
+        "location": {
+          "latitude": 0,
+          "longitude": 0,
+          "timeZone": "UTC"
+        }
+      },
+      "utc": "1901-01-01T12:00:00Z",
+      "ayanamsa": 22.47450291844297,
+      "points": {
+        "Sun": 257.9400066793373,
+        "Moon": 32.889520861721884,
+        "Mars": 139.23489115174985,
+        "Mercury": 245.9629734960355,
+        "Jupiter": 243.59192067273736,
+        "Venus": 228.89400350733837,
+        "Saturn": 255.28277105927643,
+        "Rahu": 217.32731805354447,
+        "Ketu": 37.327318053544445
+      },
+      "asc": 348.8797578030322,
+      "rules": {
+        "Sun": {
+          "nakshatra": 19,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Moon": {
+          "nakshatra": 2,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Mars": {
+          "nakshatra": 10,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Mercury": {
+          "nakshatra": 18,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Jupiter": {
+          "nakshatra": 18,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Venus": {
+          "nakshatra": 17,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Saturn": {
+          "nakshatra": 19,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Rahu": {
+          "nakshatra": 16,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Ketu": {
+          "nakshatra": 2,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Lagna": {
+          "nakshatra": 26,
+          "pada": 1,
+          "navamsa": 8
+        }
+      },
+      "dasha": {
+        "firstLord": "Sun",
+        "balanceYears": 3.1997156122251527,
+        "mahadashas": [
+          {
+            "lord": "Sun",
+            "start": "1901-01-01T12:00:00Z",
+            "end": "1904-03-15T04:42:25.404356Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "1904-03-15T04:42:25.404356Z",
+            "end": "1914-03-15T16:42:25.404356Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "1914-03-15T16:42:25.404356Z",
+            "end": "1921-03-15T10:42:25.404356Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "1921-03-15T10:42:25.404356Z",
+            "end": "1939-03-15T22:42:25.404356Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "1939-03-15T22:42:25.404356Z",
+            "end": "1955-03-15T22:42:25.404356Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "1955-03-15T22:42:25.404356Z",
+            "end": "1974-03-15T16:42:25.404356Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "1974-03-15T16:42:25.404356Z",
+            "end": "1991-03-15T22:42:25.404356Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "1991-03-15T22:42:25.404356Z",
+            "end": "1998-03-15T16:42:25.404356Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "1998-03-15T16:42:25.404356Z",
+            "end": "2018-03-15T16:42:25.404356Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "late-range",
+      "input": {
+        "birthday": "2099-09-22",
+        "time": "12:00",
+        "location": {
+          "latitude": 35.6762,
+          "longitude": 139.6503,
+          "timeZone": "Asia/Tokyo"
+        }
+      },
+      "utc": "2099-09-22T03:00:00Z",
+      "ayanamsa": 25.25040864398966,
+      "points": {
+        "Sun": 154.21118542358306,
+        "Moon": 252.80202680675794,
+        "Mars": 6.749028755266822,
+        "Mercury": 178.6057229349665,
+        "Jupiter": 157.49013066307432,
+        "Venus": 170.85792400552066,
+        "Saturn": 169.81848810557554,
+        "Rahu": 331.0280236736657,
+        "Ketu": 151.0280236736657
+      },
+      "asc": 233.92463170384025,
+      "rules": {
+        "Sun": {
+          "nakshatra": 11,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Moon": {
+          "nakshatra": 18,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Mars": {
+          "nakshatra": 0,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Mercury": {
+          "nakshatra": 13,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Jupiter": {
+          "nakshatra": 11,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Venus": {
+          "nakshatra": 12,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Saturn": {
+          "nakshatra": 12,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Rahu": {
+          "nakshatra": 24,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Ketu": {
+          "nakshatra": 11,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Lagna": {
+          "nakshatra": 17,
+          "pada": 3,
+          "navamsa": 10
+        }
+      },
+      "dasha": {
+        "firstLord": "Ketu",
+        "balanceYears": 0.27893592645208376,
+        "mahadashas": [
+          {
+            "lord": "Ketu",
+            "start": "2099-09-22T03:00:00Z",
+            "end": "2100-01-02T00:09:08.392604Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2100-01-02T00:09:08.392604Z",
+            "end": "2120-01-03T00:09:08.392604Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2120-01-03T00:09:08.392604Z",
+            "end": "2126-01-02T12:09:08.392604Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2126-01-02T12:09:08.392604Z",
+            "end": "2136-01-03T00:09:08.392604Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2136-01-03T00:09:08.392604Z",
+            "end": "2143-01-02T18:09:08.392604Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2143-01-02T18:09:08.392604Z",
+            "end": "2161-01-02T06:09:08.392604Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2161-01-02T06:09:08.392604Z",
+            "end": "2177-01-02T06:09:08.392604Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2177-01-02T06:09:08.392604Z",
+            "end": "2196-01-03T00:09:08.392604Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2196-01-03T00:09:08.392604Z",
+            "end": "2213-01-03T06:09:08.392604Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "polar-north",
+      "input": {
+        "birthday": "2024-02-10",
+        "time": "12:00",
+        "location": {
+          "latitude": 69.6492,
+          "longitude": 18.9553,
+          "timeZone": "Europe/Oslo"
+        }
+      },
+      "utc": "2024-02-10T11:00:00Z",
+      "ayanamsa": 24.193891506615614,
+      "points": {
+        "Sun": 296.9964439263787,
+        "Moon": 304.0926906440907,
+        "Mars": 273.6618838781562,
+        "Mercury": 284.03313864808916,
+        "Jupiter": 14.181928339042802,
+        "Venus": 268.12593881115436,
+        "Saturn": 313.35330652735945,
+        "Rahu": 354.54208163296147,
+        "Ketu": 174.54208163296153
+      },
+      "asc": 99.18489472091854,
+      "rules": {
+        "Sun": {
+          "nakshatra": 22,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Moon": {
+          "nakshatra": 22,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Mars": {
+          "nakshatra": 20,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Mercury": {
+          "nakshatra": 21,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Jupiter": {
+          "nakshatra": 1,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Venus": {
+          "nakshatra": 20,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Saturn": {
+          "nakshatra": 23,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Rahu": {
+          "nakshatra": 26,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Ketu": {
+          "nakshatra": 13,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Lagna": {
+          "nakshatra": 7,
+          "pada": 2,
+          "navamsa": 5
+        }
+      },
+      "dasha": {
+        "firstLord": "Mars",
+        "balanceYears": 1.3513374118524126,
+        "mahadashas": [
+          {
+            "lord": "Mars",
+            "start": "2024-02-10T11:00:00Z",
+            "end": "2025-06-18T00:49:25.508274Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2025-06-18T00:49:25.508274Z",
+            "end": "2043-06-18T12:49:25.508274Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2043-06-18T12:49:25.508274Z",
+            "end": "2059-06-18T12:49:25.508274Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2059-06-18T12:49:25.508274Z",
+            "end": "2078-06-18T06:49:25.508274Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2078-06-18T06:49:25.508274Z",
+            "end": "2095-06-18T12:49:25.508274Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2095-06-18T12:49:25.508274Z",
+            "end": "2102-06-19T06:49:25.508274Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2102-06-19T06:49:25.508274Z",
+            "end": "2122-06-19T06:49:25.508274Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2122-06-19T06:49:25.508274Z",
+            "end": "2128-06-18T18:49:25.508274Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2128-06-18T18:49:25.508274Z",
+            "end": "2138-06-19T06:49:25.508274Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "high-latitude-summer",
+      "input": {
+        "birthday": "2024-06-21",
+        "time": "12:00",
+        "location": {
+          "latitude": 64.1466,
+          "longitude": -21.9426,
+          "timeZone": "Atlantic/Reykjavik"
+        }
+      },
+      "utc": "2024-06-21T12:00:00Z",
+      "ayanamsa": 24.19894194084833,
+      "points": {
+        "Sun": 66.40418910518709,
+        "Moon": 239.54543342085745,
+        "Mars": 14.873141174473474,
+        "Mercury": 74.62477711527427,
+        "Jupiter": 41.92437965792987,
+        "Venus": 71.00586952398426,
+        "Saturn": 325.1726055807657,
+        "Rahu": 347.54493129558074,
+        "Ketu": 167.54493129558068
+      },
+      "asc": 143.30371481493802,
+      "rules": {
+        "Sun": {
+          "nakshatra": 4,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Moon": {
+          "nakshatra": 17,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Mars": {
+          "nakshatra": 1,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Mercury": {
+          "nakshatra": 5,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Jupiter": {
+          "nakshatra": 3,
+          "pada": 1,
+          "navamsa": 0
+        },
+        "Venus": {
+          "nakshatra": 5,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Saturn": {
+          "nakshatra": 24,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Rahu": {
+          "nakshatra": 26,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Ketu": {
+          "nakshatra": 12,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Lagna": {
+          "nakshatra": 10,
+          "pada": 3,
+          "navamsa": 6
+        }
+      },
+      "dasha": {
+        "firstLord": "Mercury",
+        "balanceYears": 0.5795723884067769,
+        "mahadashas": [
+          {
+            "lord": "Mercury",
+            "start": "2024-06-21T12:00:00Z",
+            "end": "2025-01-19T04:31:53.604386Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2025-01-19T04:31:53.604386Z",
+            "end": "2032-01-19T22:31:53.604386Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2032-01-19T22:31:53.604386Z",
+            "end": "2052-01-19T22:31:53.604386Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2052-01-19T22:31:53.604386Z",
+            "end": "2058-01-19T10:31:53.604386Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2058-01-19T10:31:53.604386Z",
+            "end": "2068-01-19T22:31:53.604386Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2068-01-19T22:31:53.604386Z",
+            "end": "2075-01-19T16:31:53.604386Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2075-01-19T16:31:53.604386Z",
+            "end": "2093-01-19T04:31:53.604386Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2093-01-19T04:31:53.604386Z",
+            "end": "2109-01-20T04:31:53.604386Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2109-01-20T04:31:53.604386Z",
+            "end": "2128-01-20T22:31:53.604386Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sample-new-york",
+      "input": {
+        "birthday": "1990-07-15",
+        "time": "14:30",
+        "location": {
+          "latitude": 40.7143,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "1990-07-15T18:30:00Z",
+      "ayanamsa": 23.72489350586187,
+      "points": {
+        "Sun": 89.27575967217648,
+        "Moon": 3.3400302120058174,
+        "Mars": 8.39465946349962,
+        "Mercury": 103.55168451713051,
+        "Jupiter": 88.88112377408659,
+        "Venus": 61.00733065528388,
+        "Saturn": 268.2148005223326,
+        "Rahu": 284.3664736146567,
+        "Ketu": 104.36647361465668
+      },
+      "asc": 193.21827334578236,
+      "rules": {
+        "Sun": {
+          "nakshatra": 6,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Moon": {
+          "nakshatra": 0,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Mars": {
+          "nakshatra": 0,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Mercury": {
+          "nakshatra": 7,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Jupiter": {
+          "nakshatra": 6,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Venus": {
+          "nakshatra": 4,
+          "pada": 3,
+          "navamsa": 6
+        },
+        "Saturn": {
+          "nakshatra": 20,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Rahu": {
+          "nakshatra": 21,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Ketu": {
+          "nakshatra": 7,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Lagna": {
+          "nakshatra": 14,
+          "pada": 2,
+          "navamsa": 9
+        }
+      },
+      "dasha": {
+        "firstLord": "Ketu",
+        "balanceYears": 5.246484138696946,
+        "mahadashas": [
+          {
+            "lord": "Ketu",
+            "start": "1990-07-15T18:30:00Z",
+            "end": "1995-10-14T01:10:47.855343Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "1995-10-14T01:10:47.855343Z",
+            "end": "2015-10-14T01:10:47.855343Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2015-10-14T01:10:47.855343Z",
+            "end": "2021-10-13T13:10:47.855343Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2021-10-13T13:10:47.855343Z",
+            "end": "2031-10-14T01:10:47.855343Z"
+          },
+          {
+            "lord": "Mars",
+            "start": "2031-10-14T01:10:47.855343Z",
+            "end": "2038-10-13T19:10:47.855343Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2038-10-13T19:10:47.855343Z",
+            "end": "2056-10-13T07:10:47.855343Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2056-10-13T07:10:47.855343Z",
+            "end": "2072-10-13T07:10:47.855343Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2072-10-13T07:10:47.855343Z",
+            "end": "2091-10-14T01:10:47.855343Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2091-10-14T01:10:47.855343Z",
+            "end": "2108-10-14T07:10:47.855343Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mumbai-1975",
+      "input": {
+        "birthday": "1975-11-30",
+        "time": "06:15",
+        "location": {
+          "latitude": 19.076,
+          "longitude": 72.8777,
+          "timeZone": "Asia/Kolkata"
+        }
+      },
+      "utc": "1975-11-30T00:45:00Z",
+      "ayanamsa": 23.520615303303032,
+      "points": {
+        "Sun": 223.65335118227014,
+        "Moon": 183.5415563402394,
+        "Mars": 65.21316083556087,
+        "Mercury": 224.2920500626709,
+        "Jupiter": 351.41481546198423,
+        "Venus": 178.5314595062968,
+        "Saturn": 99.23659142232928,
+        "Rahu": 207.4360898462391,
+        "Ketu": 27.4360898462391
+      },
+      "asc": 214.0691897601138,
+      "rules": {
+        "Sun": {
+          "nakshatra": 16,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Moon": {
+          "nakshatra": 13,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Mars": {
+          "nakshatra": 4,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Mercury": {
+          "nakshatra": 16,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Jupiter": {
+          "nakshatra": 26,
+          "pada": 2,
+          "navamsa": 9
+        },
+        "Venus": {
+          "nakshatra": 13,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Saturn": {
+          "nakshatra": 7,
+          "pada": 2,
+          "navamsa": 5
+        },
+        "Rahu": {
+          "nakshatra": 15,
+          "pada": 3,
+          "navamsa": 2
+        },
+        "Ketu": {
+          "nakshatra": 2,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Lagna": {
+          "nakshatra": 16,
+          "pada": 1,
+          "navamsa": 4
+        }
+      },
+      "dasha": {
+        "firstLord": "Mars",
+        "balanceYears": 1.6406829213743226,
+        "mahadashas": [
+          {
+            "lord": "Mars",
+            "start": "1975-11-30T00:45:00Z",
+            "end": "1977-07-21T06:58:35.359562Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "1977-07-21T06:58:35.359562Z",
+            "end": "1995-07-21T18:58:35.359562Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "1995-07-21T18:58:35.359562Z",
+            "end": "2011-07-21T18:58:35.359562Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2011-07-21T18:58:35.359562Z",
+            "end": "2030-07-21T12:58:35.359562Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2030-07-21T12:58:35.359562Z",
+            "end": "2047-07-21T18:58:35.359562Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2047-07-21T18:58:35.359562Z",
+            "end": "2054-07-21T12:58:35.359562Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2054-07-21T12:58:35.359562Z",
+            "end": "2074-07-21T12:58:35.359562Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2074-07-21T12:58:35.359562Z",
+            "end": "2080-07-21T00:58:35.359562Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2080-07-21T00:58:35.359562Z",
+            "end": "2090-07-21T12:58:35.359562Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "delhi-2010",
+      "input": {
+        "birthday": "2010-03-03",
+        "time": "23:50",
+        "location": {
+          "latitude": 28.6139,
+          "longitude": 77.209,
+          "timeZone": "Asia/Kolkata"
+        }
+      },
+      "utc": "2010-03-03T18:20:00Z",
+      "ayanamsa": 23.999146466128764,
+      "points": {
+        "Sun": 319.0574972737257,
+        "Moon": 181.38080578315999,
+        "Mars": 96.59460608893411,
+        "Mercury": 309.82698375079696,
+        "Jupiter": 316.5317746265124,
+        "Venus": 331.3142052720639,
+        "Saturn": 158.6776026409902,
+        "Rahu": 264.3611273786549,
+        "Ketu": 84.36112737865488
+      },
+      "asc": 211.11655280454147,
+      "rules": {
+        "Sun": {
+          "nakshatra": 23,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Moon": {
+          "nakshatra": 13,
+          "pada": 3,
+          "navamsa": 6
+        },
+        "Mars": {
+          "nakshatra": 7,
+          "pada": 1,
+          "navamsa": 4
+        },
+        "Mercury": {
+          "nakshatra": 23,
+          "pada": 1,
+          "navamsa": 8
+        },
+        "Jupiter": {
+          "nakshatra": 23,
+          "pada": 3,
+          "navamsa": 10
+        },
+        "Venus": {
+          "nakshatra": 24,
+          "pada": 4,
+          "navamsa": 3
+        },
+        "Saturn": {
+          "nakshatra": 11,
+          "pada": 4,
+          "navamsa": 11
+        },
+        "Rahu": {
+          "nakshatra": 19,
+          "pada": 4,
+          "navamsa": 7
+        },
+        "Ketu": {
+          "nakshatra": 6,
+          "pada": 2,
+          "navamsa": 1
+        },
+        "Lagna": {
+          "nakshatra": 15,
+          "pada": 4,
+          "navamsa": 3
+        }
+      },
+      "dasha": {
+        "firstLord": "Mars",
+        "balanceYears": 2.7750769638410127,
+        "mahadashas": [
+          {
+            "lord": "Mars",
+            "start": "2010-03-03T18:20:00Z",
+            "end": "2012-12-11T08:39:28.794109Z"
+          },
+          {
+            "lord": "Rahu",
+            "start": "2012-12-11T08:39:28.794109Z",
+            "end": "2030-12-11T20:39:28.794109Z"
+          },
+          {
+            "lord": "Jupiter",
+            "start": "2030-12-11T20:39:28.794109Z",
+            "end": "2046-12-11T20:39:28.794109Z"
+          },
+          {
+            "lord": "Saturn",
+            "start": "2046-12-11T20:39:28.794109Z",
+            "end": "2065-12-11T14:39:28.794109Z"
+          },
+          {
+            "lord": "Mercury",
+            "start": "2065-12-11T14:39:28.794109Z",
+            "end": "2082-12-11T20:39:28.794109Z"
+          },
+          {
+            "lord": "Ketu",
+            "start": "2082-12-11T20:39:28.794109Z",
+            "end": "2089-12-11T14:39:28.794109Z"
+          },
+          {
+            "lord": "Venus",
+            "start": "2089-12-11T14:39:28.794109Z",
+            "end": "2109-12-12T14:39:28.794109Z"
+          },
+          {
+            "lord": "Sun",
+            "start": "2109-12-12T14:39:28.794109Z",
+            "end": "2115-12-13T02:39:28.794109Z"
+          },
+          {
+            "lord": "Moon",
+            "start": "2115-12-13T02:39:28.794109Z",
+            "end": "2125-12-12T14:39:28.794109Z"
+          }
+        ]
+      }
+    }
+  ]
+}
