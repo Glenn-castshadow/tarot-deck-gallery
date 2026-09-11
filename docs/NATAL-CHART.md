@@ -46,3 +46,5 @@ Each fixture checks resolved UTC, house system, all ten planetary longitudes and
 Manual browser QA covers desktop and 390px layouts, keyboard/touch city selection, custom locations, changing house systems, DST occurrence selection, chart zoom/fit, planet/house/aspect inspection, table overflow, and preservation of the tarot reading controls.
 
 The printed report contains all four detail sections. SVG exports include their own styling and can be enlarged without raster pixelation. The display uses user-agent fonts for zodiac/planet symbols.
+
+See [docs/JYOTISH.md](JYOTISH.md) for a sidereal (Vedic) reading of this same calculated chart: the Lahiri-shifted Lagna and grahas, nakshatras, Vimshottari dashas and the navamsa chart.

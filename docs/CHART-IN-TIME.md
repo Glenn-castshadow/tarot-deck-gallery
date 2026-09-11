@@ -76,3 +76,5 @@ which is 134 tests at the time of writing: the rest of the suite plus five `char
 Manual browser QA covers desktop and 390px layouts, keyboard and touch selection in the return-location picker, manual coordinates, tab and date state surviving a birth-details change, the mobile fold opening and closing one section at a time, the shared bi-wheel still rendering in the transits/synastry/BaZi section, print layout, and a console free of warnings and errors.
 
 Printing hides the tabs, the place form and the navigation controls, opens every collapsed disclosure inside the section, and prints the currently selected view — the year, the month or the slow chart — on its own page. Placement tables scroll inside their own container on screen and are not allowed to widen the page at any width.
+
+See [docs/JYOTISH.md](JYOTISH.md) for a sidereal (Vedic) reading of the same birth chart: nakshatras, Vimshottari dashas and the navamsa chart, using its own Rashi/Navamsa renderer rather than the shared bi-wheel.

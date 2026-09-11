@@ -172,3 +172,29 @@ happens, the live server is still running the old code and does not recognize `i
 kind, so a signed-in reader who saves an I Ching reading gets the existing "Unknown reading
 kind." error; this is expected and acceptable for the interval between merge and deploy, and
 resolves itself once the service is redeployed. No other server-side or nginx change is needed.
+
+## Pending: Jyotish (sidereal chart) release
+
+Branch `jyotish`, not yet deployed. Adds a fourth astrology section to the celestial atlas: a
+sidereal (Lahiri) reading of the same calculated birth chart, with rashi/bhava placements,
+nakshatras, Vimshottari dashas and a navamsa (D9) chart in South and North Indian formats.
+Conventions and independent validation are in docs/JYOTISH.md, cross-linked from
+docs/NATAL-CHART.md and docs/CHART-IN-TIME.md.
+
+Five new frontend files, each starting at cache-bust `?v=1` per convention: `jyotish-engine.js`,
+`jyotish-chart.js`, `jyotish-text.js`, `jyotish.js` and `jyotish.css`. Two rekeyed files:
+`app.js?v=jyotish-1` (attaches the new section) and `mobile-sections.js?v=jyotish-1` (adds it to
+the mobile fold). `index.html` gains the new nav link, section markup and script/style tags for
+the five new files. No Django or nginx change; the section reads the existing saved birth
+profile through `setBirthChart` and adds no storage keys.
+
+Development-only files that do not ship: `tools/build_jyotish_fixtures.py`,
+`tests/fixtures/jyotish-reference.json`, `tests/jyotish.test.cjs`, `tests/jyotish-text.test.cjs`
+and `tests/jyotish-chart.test.cjs`.
+
+Validation: `node --test tests/*.test.cjs` is 247 passing (43 + 2 + 5 = 50 of them Jyotish-
+specific). Browser QA (DOM-verified): all four tabs render with the sample chart, both chart
+formats produce all twelve `[data-sign]` house groups in both the rashi and navamsa charts,
+dasha mahadasha selection updates the antardasha table, no console errors originate from the
+section, no horizontal overflow at 390px, and neighbouring sections are unaffected. Signed-in
+state was not exercised, since this section is read-only against the saved profile.
