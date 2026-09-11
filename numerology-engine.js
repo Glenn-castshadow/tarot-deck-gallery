@@ -61,13 +61,68 @@
     if(!letters.length) return {status:'empty',message:'Enter a name to open its number reading.'};
     return {status:'ready',normalized:words.join(' '),letters,ys:letters.filter(x=>x.letter==='Y')};
   }
-  function nameProfile(raw, yVowels=[], birth=null) {
+  // Chaldean letter values as published by Cheiro. No letter carries 9. Spec §3.
+  const chaldeanValues={A:1,B:2,C:3,D:4,E:5,F:8,G:3,H:5,I:1,J:1,K:2,L:3,M:4,N:5,O:7,P:8,Q:1,R:2,S:3,T:4,U:6,V:6,W:6,X:5,Y:1,Z:7};
+  function compoundReading(compound) {
+    if(!Number.isSafeInteger(compound)||compound<1) throw new RangeError('Use a positive whole number.');
+    const root=compound>9?reduce(compound,false).value:compound;
+    if(compound<=52) return {compound,root,readAs:compound};
+    const once=digitSum(compound);
+    return {compound,root,readAs:once>9&&once<=52?once:root};
+  }
+  function nameProfile(raw, yVowels=[], birth=null, system='pythagorean') {
+    if(system!=='pythagorean'&&system!=='chaldean') throw new RangeError('Choose the Pythagorean or Chaldean system.');
     const result=normalizeName(raw);
     if(result.status!=='ready') return result;
+    if(system==='chaldean') {
+      const letters=result.letters.map(item=>({...item,value:chaldeanValues[item.letter]}));
+      const compound=letters.reduce((sum,x)=>sum+x.value,0);
+      const words=[...new Set(letters.map(x=>x.wordIndex))].map(wordIndex=>{
+        const group=letters.filter(x=>x.wordIndex===wordIndex), total=group.reduce((sum,x)=>sum+x.value,0);
+        return {word:group[0].word,wordIndex,compound:total,root:compoundReading(total).root};
+      });
+      return {...result,system:'chaldean',letters,compound,reading:compoundReading(compound),words};
+    }
     const selected=new Set(yVowels), letters=result.letters.map(item=>({...item,vowel:'AEIOU'.includes(item.letter)||(item.letter==='Y'&&selected.has(item.index))}));
     const total=letters.reduce((sum,x)=>sum+x.value,0),vowels=letters.filter(x=>x.vowel).reduce((sum,x)=>sum+x.value,0),consonants=total-vowels;
     const expression=reduce(total),soul=vowels?reduce(vowels):null,personality=consonants?reduce(consonants):null;
     return {...result,letters,totals:{expression:total,soul:vowels,personality:consonants},expression,soul,personality,maturity:birth?reduce(birth.path.value+expression.value):null};
   }
-  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile};
+  // Pinnacles and Challenges. Conventions: docs/superpowers/specs/2026-09-11-numerology-completion-design.md §1.
+  function arcs(birth) {
+    if(!birth||!birth.parts||!birth.path) throw new RangeError('Choose a valid birthday.');
+    const m=reduce(birth.parts.month,false).value, d=reduce(birth.parts.day,false).value, y=reduce(birth.parts.year,false).value;
+    const p1=reduce(m+d), p2=reduce(d+y), p3=reduce(p1.value+p2.value), p4=reduce(m+y);
+    const c1=Math.abs(m-d), c2=Math.abs(d-y), c3=Math.abs(c1-c2), c4=Math.abs(m-y);
+    const firstPeriodEnd=36-birth.path.root;
+    const bounds=[[0,firstPeriodEnd],[firstPeriodEnd+1,firstPeriodEnd+9],[firstPeriodEnd+10,firstPeriodEnd+18],[firstPeriodEnd+19,null]];
+    const span=index=>{const [fromAge,toAge]=bounds[index];return {index,fromAge,toAge,fromYear:birth.parts.year+fromAge,toYear:toAge===null?null:birth.parts.year+toAge};};
+    const pinnacles=[[p1,`month ${m} + day ${d} = ${m+d}`],[p2,`day ${d} + year ${y} = ${d+y}`],[p3,`Pinnacle 1 (${p1.value}) + Pinnacle 2 (${p2.value}) = ${p1.value+p2.value}`],[p4,`month ${m} + year ${y} = ${m+y}`]]
+      .map(([number,calculation],index)=>({...span(index),number,calculation}));
+    const challenges=[[c1,`|month ${m} − day ${d}| = ${c1}`],[c2,`|day ${d} − year ${y}| = ${c2}`],[c3,`|Challenge 1 (${c1}) − Challenge 2 (${c2})| = ${c3}`],[c4,`|month ${m} − year ${y}| = ${c4}`]]
+      .map(([number,calculation],index)=>({...span(index),number,calculation}));
+    return {birth:birth.parts.value,components:{month:m,day:d,year:y},pinnacles,challenges,firstPeriodEnd};
+  }
+  function currentArc(model, todayValue) {
+    const today=parseDate(todayValue), birth=model&&parseDate(model.birth);
+    if(!today||!birth||!Array.isArray(model.pinnacles)) throw new RangeError('Choose a valid date.');
+    if(todayValue<model.birth) return -1;
+    let age=today.year-birth.year;
+    if(today.month<birth.month||(today.month===birth.month&&today.day<birth.day)) age--;
+    return model.pinnacles.findIndex(p=>age>=p.fromAge&&(p.toAge===null||age<=p.toAge));
+  }
+  // Two-person comparison. No score is produced. Spec §2.
+  const concords={1:'mind',5:'mind',7:'mind',2:'practical',4:'practical',8:'practical',3:'expressive',6:'expressive',9:'expressive'};
+  function pair(birthA, birthB, todayValue) {
+    if(!birthA?.path||!birthA?.parts||!birthB?.path||!birthB?.parts) throw new RangeError('Choose two valid birthdays.');
+    const today=parseDate(todayValue);
+    if(!today) throw new RangeError('Choose a valid date.');
+    const person=b=>({path:b.path,birthDay:b.birthDay,attitude:b.attitude,year:cycleYear(b,today.year)});
+    const a=person(birthA), b=person(birthB);
+    const ca=concords[a.path.root], cb=concords[b.path.root];
+    const distance=Math.abs(a.year.value-b.year.value);
+    const yearRelation=distance===0?'same':(distance===1||distance===8)?'adjacent':'apart';
+    return {a,b,concord:{a:ca,b:cb,same:ca===cb},sameRoot:a.path.root===b.path.root,pairNumber:reduce(a.path.value+b.path.value),yearRelation};
+  }
+  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair,compoundReading,chaldeanValues};
 });

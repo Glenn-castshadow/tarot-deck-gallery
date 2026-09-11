@@ -96,3 +96,131 @@ test('name normalization is explicit and unsupported characters do not silently 
   for(const raw of ['王小明','Jane2','Jane🙂','<script>','A'.repeat(121)])assert.equal(N.nameProfile(raw).status,'invalid');
   for(const raw of ['', '   ', "--'."])assert.equal(N.nameProfile(raw).status,'empty');
 });
+
+test('life arcs: pinnacles and challenges are hand-derived from single-digit components',()=>{
+  // 1985-11-29: month 11 -> 2, day 29 -> 11 -> 2, year 1985 -> 23 -> 5. Life Path 11 + 11 + 5 = 27 -> 9.
+  const a=N.arcs(N.birthday('1985-11-29'));
+  assert.equal(a.birth,'1985-11-29');
+  assert.deepEqual(a.components,{month:2,day:2,year:5});
+  assert.deepEqual(a.pinnacles.map(p=>p.number.value),[4,7,11,7]);
+  assert.equal(a.pinnacles[2].number.master,true,'P3 = P1 + P2 keeps a master result');
+  assert.deepEqual(a.challenges.map(c=>c.number),[0,3,3,3]);
+  assert.equal(a.firstPeriodEnd,27,'36 minus Life Path root 9');
+  assert.deepEqual(a.pinnacles.map(p=>[p.fromAge,p.toAge]),[[0,27],[28,36],[37,45],[46,null]]);
+  assert.deepEqual(a.pinnacles.map(p=>[p.fromYear,p.toYear]),[[1985,2012],[2013,2021],[2022,2030],[2031,null]]);
+  assert.deepEqual(a.challenges.map(c=>[c.fromAge,c.toAge]),a.pinnacles.map(p=>[p.fromAge,p.toAge]));
+  assert.match(a.pinnacles[0].calculation,/month 2 \+ day 2 = 4/);
+  assert.match(a.challenges[2].calculation,/Challenge 1 \(0\)/);
+  assert.throws(()=>N.arcs(null),RangeError);
+  assert.throws(()=>N.arcs({}),RangeError);
+});
+
+test('life arcs: the first period ends at 36 minus the Life Path root',()=>{
+  assert.equal(N.arcs(N.birthday('1999-01-08')).firstPeriodEnd,35); // Life Path 1
+  assert.equal(N.arcs(N.birthday('1985-11-29')).firstPeriodEnd,27); // Life Path 9
+  assert.equal(N.arcs(N.birthday('2000-01-08')).firstPeriodEnd,34); // Life Path 11, root 2
+  for(const date of ['1980-10-22','2000-02-29','1993-05-06']) {
+    const b=N.birthday(date);
+    assert.equal(N.arcs(b).firstPeriodEnd,36-b.path.root);
+  }
+});
+
+test('life arcs: the current period follows the most recent birthday',()=>{
+  const a=N.arcs(N.birthday('1985-11-29'));
+  assert.equal(N.currentArc(a,'1985-11-28'),-1,'before birth');
+  assert.equal(N.currentArc(a,'1985-11-29'),0,'day of birth');
+  assert.equal(N.currentArc(a,'2013-11-28'),0,'still 27 the day before the 28th birthday');
+  assert.equal(N.currentArc(a,'2013-11-29'),1,'28 on the birthday itself');
+  assert.equal(N.currentArc(a,'2022-11-29'),2);
+  assert.equal(N.currentArc(a,'2031-11-29'),3);
+  assert.equal(N.currentArc(a,'2100-01-01'),3);
+  // 2000-02-29 has Life Path 6, so the first period ends at age 30 (36 - 6): the boundary
+  // falls in 2030/2031, not 2001, where both dates sit inside period 0 regardless. 2031 is
+  // not a leap year, so the Feb 29 birthday advances to March 1 and age turns over there.
+  const leap=N.arcs(N.birthday('2000-02-29'));
+  assert.equal(N.currentArc(leap,'2031-02-28'),0);
+  assert.equal(N.currentArc(leap,'2031-03-01'),1);
+  assert.throws(()=>N.currentArc(a,'2013-13-01'),RangeError);
+  assert.throws(()=>N.currentArc(a,null),RangeError);
+});
+
+test('two paths: concords, same root, pair number and personal-year relation',()=>{
+  const nine=N.birthday('1985-11-29'), one=N.birthday('1999-01-08'), eleven=N.birthday('2000-01-08'), four=N.birthday('2000-01-01'), two=N.birthday('2000-09-09');
+  assert.equal(nine.path.value,9);assert.equal(one.path.value,1);assert.equal(eleven.path.value,11);assert.equal(four.path.value,4);assert.equal(two.path.value,2);
+  const cross=N.pair(nine,one,'2026-06-15');
+  assert.deepEqual(cross.concord,{a:'expressive',b:'mind',same:false});
+  assert.equal(cross.sameRoot,false);
+  assert.equal(cross.pairNumber.value,1,'9 + 1 = 10 -> 1');
+  assert.equal(cross.a.year.value,5,'11 + 29 + 2026 = 2066 -> 14 -> 5');
+  assert.equal(cross.b.year.value,1,'1 + 8 + 2026 = 2035 -> 10 -> 1');
+  assert.equal(cross.yearRelation,'apart');
+  const masterByRoot=N.pair(eleven,four,'2026-06-15');
+  assert.deepEqual(masterByRoot.concord,{a:'practical',b:'practical',same:true},'11 is placed by its root 2');
+  assert.equal(masterByRoot.sameRoot,false);
+  const same=N.pair(eleven,two,'2026-06-15');
+  assert.equal(same.sameRoot,true,'11 (root 2) and 2 share a root');
+  assert.equal(same.pairNumber.value,4,'11 + 2 = 13 -> 4');
+  const masterPair=N.pair(nine,two,'2026-06-15');
+  assert.equal(masterPair.pairNumber.value,11,'9 + 2 = 11 stays a master');
+  assert.equal(masterPair.pairNumber.master,true);
+  assert.equal(N.pair(nine,N.birthday('1990-11-29'),'2026-06-15').yearRelation,'same');
+  assert.equal(N.pair(nine,N.birthday('1985-11-30'),'2026-06-15').yearRelation,'adjacent');
+  assert.equal(N.pair(one,N.birthday('2000-01-07'),'2026-06-15').yearRelation,'adjacent','Personal Years 1 and 9 wrap');
+  assert.throws(()=>N.pair(nine,null,'2026-06-15'),RangeError);
+  assert.throws(()=>N.pair(nine,one,'2026-02-30'),RangeError);
+});
+
+test('chaldean names: the Cheiro table, per-word compounds and no master numbers',()=>{
+  const alphabet=N.nameProfile('ABCDEFGHIJKLM NOPQRSTUVWXYZ',[],null,'chaldean');
+  assert.equal(alphabet.status,'ready');assert.equal(alphabet.system,'chaldean');
+  assert.equal(alphabet.compound,103,'A1 B2 C3 D4 E5 F8 G3 H5 I1 J1 K2 L3 M4 N5 O7 P8 Q1 R2 S3 T4 U6 V6 W6 X5 Y1 Z7');
+  assert.deepEqual(alphabet.reading,{compound:103,root:4,readAs:4},'103 -> 4 is not a compound in 10–52, so it reads as the single digit');
+  assert.equal(alphabet.letters.find(x=>x.letter==='F').value,8);
+  assert.equal(alphabet.letters.find(x=>x.letter==='Y').value,1);
+  assert.ok(alphabet.letters.every(x=>x.value!==9),'no Chaldean letter is 9');
+  const john=N.nameProfile('John Smith',[],null,'chaldean');
+  assert.deepEqual(john.words.map(w=>[w.word,w.compound,w.root]),[['JOHN',18,9],['SMITH',17,8]]);
+  assert.deepEqual(john.reading,{compound:35,root:8,readAs:35});
+  const eleven=N.nameProfile('AAAAAAAAAAA',[],null,'chaldean');
+  assert.deepEqual(eleven.reading,{compound:11,root:2,readAs:11});
+  assert.equal('master' in eleven.reading,false);
+  assert.deepEqual(N.nameProfile('KI',[],null,'chaldean').reading,{compound:3,root:3,readAs:3});
+  assert.deepEqual(N.nameProfile('ZZZZZZZZZZ',[],null,'chaldean').reading,{compound:70,root:7,readAs:7},'70 -> 7 reads as a single digit');
+  assert.deepEqual(N.nameProfile('ZZZZZZZZZZZZZZ',[],null,'chaldean').reading,{compound:98,root:8,readAs:17},'98 -> 17 reads as compound 17');
+  assert.equal(N.nameProfile('René',[],null,'chaldean').normalized,'RENE');
+  assert.equal(N.nameProfile('王小明',[],null,'chaldean').status,'invalid');
+  assert.equal(N.nameProfile('',[],null,'chaldean').status,'empty');
+  assert.throws(()=>N.nameProfile('Jane',[],null,'kabbalah'),RangeError);
+  for(const n of [0,-3,1.5,NaN]) assert.throws(()=>N.compoundReading(n),RangeError);
+  assert.deepEqual(N.compoundReading(52),{compound:52,root:7,readAs:52});
+  assert.deepEqual(N.compoundReading(53),{compound:53,root:8,readAs:8});
+  // The Pythagorean shape is unchanged.
+  const p=N.nameProfile('John Smith');
+  assert.equal(p.system,undefined);assert.equal(p.totals.expression,44,'J1 O6 H8 N5 + S1 M4 I9 T2 H8 = 44 (the brief\'s worked value of 49 is an arithmetic error)');
+});
+
+test('chaldean compound copy, life-arc, challenge and relating copy are complete and free of banned language',()=>{
+  const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','numerology.js'),'utf8');
+  const banned=/you will|luck|fortune|warning|danger|death|illness|wealth will/i;
+  const slice=name=>{const start=source.indexOf(`const ${name}`);return source.slice(start,source.indexOf('};',start)+2);};
+
+  const compoundBlock=slice('compoundCopy');
+  for(let n=10;n<=52;n++) assert.match(compoundBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`compound ${n} present`);
+  assert.doesNotMatch(compoundBlock,banned);
+  assert.equal((compoundBlock.match(/prompt:'[^']*\?'/g)||[]).length,43,'every compound entry ends its prompt with a question mark');
+
+  // arcLens values are plain strings, not objects: '<n>:\'...'', not '<n>:{title:...'.
+  const arcLensBlock=slice('arcLens');
+  for(const n of [1,2,3,4,5,6,7,8,9,11,22,33]) assert.match(arcLensBlock,new RegExp(`\\n\\s*${n}:'`),`arcLens ${n} present`);
+  assert.doesNotMatch(arcLensBlock,banned);
+
+  const challengeBlock=slice('challengeCopy');
+  for(let n=0;n<=8;n++) assert.match(challengeBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`challengeCopy ${n} present`);
+  assert.equal((challengeBlock.match(/prompt:'[^']*\?'/g)||[]).length,9,'every challenge entry ends its prompt with a question mark');
+  assert.doesNotMatch(challengeBlock,banned);
+
+  const relatingBlock=slice('relating');
+  for(const n of [1,2,3,4,5,6,7,8,9,11,22,33]) assert.match(relatingBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`relating ${n} present`);
+  assert.equal((relatingBlock.match(/prompt:'[^']*\?'/g)||[]).length,12,'every relating entry ends its prompt with a question mark');
+  assert.doesNotMatch(relatingBlock,banned);
+});
