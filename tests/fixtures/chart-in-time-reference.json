@@ -1,0 +1,140 @@
+{
+  "swissVersion": "2.10.03",
+  "cases": [
+    {
+      "id": "solar-nyc",
+      "kind": "solar",
+      "reference": "2024-03-01",
+      "input": {
+        "birthday": "1990-07-15",
+        "time": "14:30",
+        "location": {
+          "latitude": 40.7143,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "moment": "2023-07-15T17:57:26.784899Z",
+      "chartLongitudes": {
+        "Sun": 113.004527329822,
+        "Moon": 90.37483814837536,
+        "Mercury": 128.68070772886338,
+        "Venus": 147.6193379477028,
+        "Mars": 153.2084101490116,
+        "Jupiter": 41.637911925788025,
+        "Saturn": 336.58341776815365,
+        "Uranus": 52.279928378365625,
+        "Neptune": 357.6277035977345,
+        "Pluto": 299.2782157565179
+      }
+    },
+    {
+      "id": "solar-southern",
+      "kind": "solar",
+      "reference": "2020-01-15",
+      "input": {
+        "birthday": "1975-11-02",
+        "time": "06:15",
+        "location": {
+          "latitude": -33.8688,
+          "longitude": 151.2093,
+          "timeZone": "Australia/Sydney"
+        }
+      },
+      "moment": "2019-11-01T11:30:14.612259Z",
+      "chartLongitudes": {
+        "Sun": 218.742199372439,
+        "Moon": 274.83655269586524,
+        "Mercury": 237.58978757597282,
+        "Venus": 239.53884832144567,
+        "Mars": 198.32261632564445,
+        "Jupiter": 263.4447944868363,
+        "Saturn": 285.4647640132492,
+        "Uranus": 34.43894639269553,
+        "Neptune": 346.11464967732576,
+        "Pluto": 290.84354879366776
+      }
+    },
+    {
+      "id": "solar-leap-birth",
+      "kind": "solar",
+      "reference": "2023-06-01",
+      "input": {
+        "birthday": "1992-02-29",
+        "time": "12:00",
+        "location": {
+          "latitude": 51.5085,
+          "longitude": -0.1257,
+          "timeZone": "Europe/London"
+        }
+      },
+      "moment": "2023-03-01T00:42:25.065495Z",
+      "chartLongitudes": {
+        "Sun": 340.1575121654875,
+        "Moon": 89.02010503570538,
+        "Mercury": 326.75855110216,
+        "Venus": 10.674239169052624,
+        "Mars": 79.12150245938136,
+        "Jupiter": 11.875781774838169,
+        "Saturn": 329.22434935698624,
+        "Uranus": 45.53058665712704,
+        "Neptune": 354.5532178457721,
+        "Pluto": 299.4954528149053
+      }
+    },
+    {
+      "id": "lunar-nyc",
+      "kind": "lunar",
+      "reference": "2024-03-01",
+      "input": {
+        "birthday": "1990-07-15",
+        "time": "14:30",
+        "location": {
+          "latitude": 40.7143,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "moment": "2024-02-14T10:04:06.593499Z",
+      "chartLongitudes": {
+        "Sun": 325.19715790675895,
+        "Moon": 27.068797867898514,
+        "Mercury": 314.68178685684995,
+        "Venus": 297.2164427819159,
+        "Mars": 300.89584609188324,
+        "Jupiter": 38.90140691507823,
+        "Saturn": 338.01973412941095,
+        "Uranus": 49.23244924688773,
+        "Neptune": 356.1902791445475,
+        "Pluto": 300.77354752271026
+      }
+    },
+    {
+      "id": "lunar-early-range",
+      "kind": "lunar",
+      "reference": "1950-08-20",
+      "input": {
+        "birthday": "1905-04-10",
+        "time": "09:45",
+        "location": {
+          "latitude": 35.6762,
+          "longitude": 139.6503,
+          "timeZone": "Asia/Tokyo"
+        }
+      },
+      "moment": "1950-08-08T13:48:08.140869Z",
+      "chartLongitudes": {
+        "Sun": 135.4347622755367,
+        "Moon": 75.48084123951428,
+        "Mercury": 159.71514325110698,
+        "Venus": 110.26251453228154,
+        "Mars": 208.72986590588474,
+        "Jupiter": 334.73028448161483,
+        "Saturn": 168.03506122482244,
+        "Uranus": 97.58952612032087,
+        "Neptune": 195.06546241766532,
+        "Pluto": 137.74880685925484
+      }
+    }
+  ]
+}

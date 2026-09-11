@@ -236,7 +236,7 @@ validate as ordinary chart positions at the derived instant; the day-for-year
 ratio is a definition rather than a calculation, so it is tested against
 hand-worked values and documented, not validated against Swiss.
 
-Tolerances: 1 second on return instants, and the existing 0.03 degrees on
+Tolerances: 15 seconds on return instants (Astronomy Engine and Swiss Moshier mode disagree by up to ~7 seconds on the same crossing; a wrong crossing is off by a month or a year), and the existing 0.03 degrees on
 planets and 0.01 on angles and cusps for the derived charts.
 
 Behavioural tests beyond the fixtures:

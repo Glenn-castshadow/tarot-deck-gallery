@@ -200,3 +200,20 @@ test('the solar arc accumulates past 180 degrees without wrapping',()=>{
   const progressedSun=secondary.points.find(p=>p.name==='Sun').longitude;
   assert.ok(Math.abs(directed.arc-natal.mod(progressedSun-natalSun))<1e-9,'arc matches mod(), not delta()');
 });
+
+const swissReference=require('./fixtures/chart-in-time-reference.json');
+
+for(const fixture of swissReference.cases) test(`independent ephemeris: ${fixture.id}`,()=>{
+  const birth=natal.calculate(fixture.input);
+  assert.equal(birth.status,'ready');
+  const result=engine.returnChart({chart:birth,kind:fixture.kind,location:birth.location,reference:new Date(`${fixture.reference}T00:00:00Z`)});
+  assert.equal(result.status,'ready');
+  const drift=Math.abs(+new Date(result.moment)-+new Date(fixture.moment));
+  // 15s reflects inter-ephemeris disagreement between Astronomy Engine and Swiss Moshier
+  // mode, not solver precision; a wrong crossing would be off by a month or a year.
+  assert.ok(drift<15000,`${fixture.id} moment drifted ${drift}ms`);
+  for(const [name,longitude] of Object.entries(fixture.chartLongitudes)) {
+    const point=result.chart.points.find(p=>p.name===name);
+    assert.ok(Math.abs(natal.delta(point.longitude,longitude))<0.03,`${fixture.id} ${name}`);
+  }
+});
