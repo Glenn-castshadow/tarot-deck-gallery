@@ -41,7 +41,7 @@ const JyotishChart = (() => {
 
   // South Indian cell is a 100x100 square; keep the whole stack within cy..cy+100.
   function southGrahaText(cx, cy, names) {
-    if (names.length <= 3) return stackedText(cx + 50, cy + 46, 16, names, ' font-size="14"');
+    if (names.length <= 3) return stackedText(cx + 50, cy + 44, 19, names, ' font-size="17"');
     const rows = packRows(names, 3);
     const lh = Math.min(16, 78 / rows.length);
     const fontSize = Math.min(13, lh - 2);
@@ -54,7 +54,7 @@ const JyotishChart = (() => {
   // `maxOffset` px of that centre (22px for the eight corner triangles, 36px for the
   // four rhombi along the main axes).
   function northGrahaText(cx, cy, names, maxOffset) {
-    if (names.length <= 2) return stackedText(cx, cy + 14, 14, names, ' font-size="13"');
+    if (names.length <= 2) return stackedText(cx, cy + 14, 16, names, ' font-size="16"');
     const rows = packRows(names, 2);
     const lh = rows.length > 1 ? Math.min(14, (maxOffset * 2) / (rows.length - 1)) : 14;
     const fontSize = Math.min(11, lh - 2);
@@ -81,7 +81,7 @@ const JyotishChart = (() => {
       if (!cell) throw new Error(`No South Indian cell for signIndex ${house.signIndex}`);
       const [cx, cy] = cell;
       const isLagna = house.signIndex === lagnaSignIndex;
-      const signText = `<text x="${cx + 86}" y="${cy + 16}" text-anchor="middle" font-size="10" opacity="0.6">${esc(SIGN_ABBR[house.signIndex])}</text>`;
+      const signText = `<text x="${cx + 86}" y="${cy + 16}" text-anchor="middle" font-size="13" opacity="0.85">${esc(SIGN_ABBR[house.signIndex])}</text>`;
       const grahaLines = house.grahas.map(name => grahaLabel(name, abbreviations, retroSet));
       const grahaText = southGrahaText(cx, cy, grahaLines);
       const lagnaMark = isLagna ? `<line x1="${cx}" y1="${cy}" x2="${cx + 22}" y2="${cy + 22}" stroke="currentColor"/>` : '';
@@ -108,8 +108,8 @@ const JyotishChart = (() => {
       if (!centre) throw new Error(`No North Indian house centre for house ${house.index}`);
       const [cx, cy] = centre;
       const isLagna = house.index === 1;
-      const ascLabel = isLagna ? `<text x="${cx}" y="${cy - 18}" text-anchor="middle" font-size="9" opacity="0.7">Asc</text>` : '';
-      const signText = `<text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="11">${house.signIndex + 1}</text>`;
+      const ascLabel = isLagna ? `<text x="${cx}" y="${cy - 18}" text-anchor="middle" font-size="11" opacity="0.85">Asc</text>` : '';
+      const signText = `<text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="14" opacity="0.9">${house.signIndex + 1}</text>`;
       const grahaLines = house.grahas.map(name => grahaLabel(name, abbreviations, retroSet));
       const isRhombus = house.index === 1 || house.index === 4 || house.index === 7 || house.index === 10;
       const grahaText = northGrahaText(cx, cy, grahaLines, isRhombus ? 36 : 22);

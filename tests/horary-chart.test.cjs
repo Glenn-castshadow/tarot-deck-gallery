@@ -110,3 +110,14 @@ test('throws on a non-ready chart', () => {
   assert.throws(() => HoraryChart.render({ chart: { status: 'missing' }, title: 'Test' }));
   assert.throws(() => HoraryChart.render({ chart: null, title: 'Test' }));
 });
+
+test('rings and cusp lines carry a visible stroke (they inherit currentColor)', () => {
+  const chart = NatalEngine.chartAtInstant(new Date('2024-03-15T10:20:00Z'), {latitude:51.5085, longitude:-0.1257, timeZone:'Europe/London'});
+  const svg = HoraryChart.render({chart, title:'Question'});
+  const circles = svg.match(/<circle[^>]*>/g) || [];
+  assert.ok(circles.length >= 3);
+  for (const c of circles) assert.match(c, /stroke="currentColor"/, c);
+  const cuspLines = svg.match(/<line[^>]*class="h-cusp[^"]*"[^>]*>/g) || [];
+  assert.equal(cuspLines.length, 12);
+  for (const l of cuspLines) assert.match(l, /stroke="currentColor"/, l);
+});

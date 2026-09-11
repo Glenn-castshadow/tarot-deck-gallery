@@ -30,7 +30,7 @@ const HoraryChart = (() => {
 
     const signRing = natal.signGlyphs.map((glyph, index) => {
       const [x, y] = at(index * 30 + 15, SIGN_LABEL_RADIUS);
-      return `<text class="h-sign" x="${fmt(x)}" y="${fmt(y + 6)}" text-anchor="middle" font-size="16">${glyph}</text>`;
+      return `<text class="h-sign" x="${fmt(x)}" y="${fmt(y + 6)}" text-anchor="middle" font-size="20">${glyph}</text>`;
     }).join('');
 
     const cusps = chart.cusps.map((cusp, index) => {
@@ -39,11 +39,11 @@ const HoraryChart = (() => {
       const [ix, iy] = at(cusp, CUSP_INNER);
       const [ox, oy] = at(cusp, RING_INNER);
       const angleLabel = isAsc || isMc
-        ? (() => { const [lx, ly] = at(cusp, ANGLE_LABEL_RADIUS); return `<text class="h-angle-label" x="${fmt(lx)}" y="${fmt(ly + 4)}" text-anchor="middle" font-size="12">${isAsc ? 'ASC' : 'MC'}</text>`; })()
+        ? (() => { const [lx, ly] = at(cusp, ANGLE_LABEL_RADIUS); return `<text class="h-angle-label" x="${fmt(lx)}" y="${fmt(ly + 4)}" text-anchor="middle" font-size="13" font-weight="600">${isAsc ? 'ASC' : 'MC'}</text>`; })()
         : '';
       const gap = natal.mod(chart.cusps[(index + 1) % 12] - cusp);
       const [mx, my] = at(natal.mod(cusp + gap / 2), HOUSE_NUMBER_RADIUS);
-      return `<g data-cusp="${houseNumber}"><line x1="${fmt(ix)}" y1="${fmt(iy)}" x2="${fmt(ox)}" y2="${fmt(oy)}" class="h-cusp${isAsc || isMc ? ' h-angle' : ''}" stroke-width="${isAsc || isMc ? 2.5 : 1}"/>${angleLabel}<text class="h-house-number" x="${fmt(mx)}" y="${fmt(my + 4)}" text-anchor="middle" font-size="10">${houseNumber}</text></g>`;
+      return `<g data-cusp="${houseNumber}"><line x1="${fmt(ix)}" y1="${fmt(iy)}" x2="${fmt(ox)}" y2="${fmt(oy)}" class="h-cusp${isAsc || isMc ? ' h-angle' : ''}" stroke="currentColor" stroke-opacity="${isAsc || isMc ? 0.9 : 0.5}" stroke-width="${isAsc || isMc ? 2.5 : 1}"/>${angleLabel}<text class="h-house-number" x="${fmt(mx)}" y="${fmt(my + 4)}" text-anchor="middle" font-size="12" opacity="0.85">${houseNumber}</text></g>`;
     }).join('');
 
     const chartPoints = chart.points.filter(p =>
@@ -82,14 +82,14 @@ const HoraryChart = (() => {
       const [gx, gy] = at(point.longitude, glyphRadius);
       const [dx, dy] = at(point.longitude, glyphRadius - DEGREE_LABEL_OFFSET);
       const degree = Math.floor(natal.mod(point.longitude) % 30);
-      return `<g data-planet="${esc(point.name)}"><text class="h-planet" x="${fmt(gx)}" y="${fmt(gy + 5)}" text-anchor="middle" font-size="18">${point.symbol}</text><text class="h-degree" x="${fmt(dx)}" y="${fmt(dy + 4)}" text-anchor="middle" font-size="9">${degree}°</text></g>`;
+      return `<g data-planet="${esc(point.name)}"><text class="h-planet" x="${fmt(gx)}" y="${fmt(gy + 5)}" text-anchor="middle" font-size="22">${point.symbol}</text><text class="h-degree" x="${fmt(dx)}" y="${fmt(dy + 4)}" text-anchor="middle" font-size="11" opacity="0.85">${degree}°</text></g>`;
     }).join('');
 
     const ascPlacement = natal.placement(asc);
     const ascDegree = Math.floor(natal.mod(asc) % 30);
     const ariaLabel = `${esc(title)}: Ascendant ${ascPlacement.sign} ${ascDegree}°`;
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="h-wheel" viewBox="0 0 440 440" role="img" aria-label="${ariaLabel}"><circle cx="${CENTER}" cy="${CENTER}" r="${RING_OUTER}" fill="none" class="h-ring"/><circle cx="${CENTER}" cy="${CENTER}" r="${RING_INNER}" fill="none" class="h-ring"/><circle cx="${CENTER}" cy="${CENTER}" r="${CUSP_INNER}" fill="none" class="h-ring"/>${signRing}${cusps}${planets}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="h-wheel" viewBox="0 0 440 440" role="img" aria-label="${ariaLabel}"><circle cx="${CENTER}" cy="${CENTER}" r="${RING_OUTER}" fill="none" stroke="currentColor" stroke-opacity="0.8" stroke-width="1.2" class="h-ring"/><circle cx="${CENTER}" cy="${CENTER}" r="${RING_INNER}" fill="none" stroke="currentColor" stroke-opacity="0.8" stroke-width="1.2" class="h-ring"/><circle cx="${CENTER}" cy="${CENTER}" r="${CUSP_INNER}" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1" class="h-ring"/>${signRing}${cusps}${planets}</svg>`;
   }
 
   return { render };
