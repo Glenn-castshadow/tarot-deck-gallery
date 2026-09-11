@@ -169,6 +169,6 @@ const ClassicalEngine = (() => {
     return {voidOfCourse:!nextAspect,nextAspect:nextAspect?{planet:nextAspect.planet,aspect:nextAspect.aspect,date:nextAspect.date}:null,signExit:signExit?signExit.toISOString():null,viaCombusta:moon.longitude>=195&&moon.longitude<=225,increasing:natal.mod(moon.longitude-sun.longitude)<180};
   }
 
-  return { planets, rulers, exaltations, triplicities, terms, faceRuler, orbs, chaldean, houseMatters, housePoints, dignities, accidental, sect, reception, planetaryHours, moonCondition };
+  return { planets, rulers, exaltations, triplicities, terms, faceRuler, orbs, chaldean, houseMatters, housePoints, ordinal, dignities, accidental, sect, reception, planetaryHours, moonCondition };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = ClassicalEngine;

@@ -136,7 +136,6 @@ test('ordinal house labels read 1st, 2nd, 3rd, 4th ... 11th, 12th', () => {
 });
 
 for(const r of ref.riseSet) test(`planetary hours from sunrise: ${r.place} ${r.date}`,()=>{
-  const noon=new Date(`${r.date}T12:00:00Z`);
   const h=C.planetaryHours(new Date(+new Date(r.sunrise)+3600000),{latitude:r.latitude,longitude:r.longitude,timeZone:'UTC'});
   assert.equal(h.status,'ready');
   assert.ok(Math.abs(new Date(h.sunrise)-new Date(r.sunrise))<120000,'sunrise within 2 minutes of Swiss');

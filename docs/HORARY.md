@@ -10,8 +10,10 @@ that seventeenth-century method as history, not as a reading of the visitor's ac
 The section header carries `HoraryText.banner`, which opens: "Horary astrology, as William
 Lilly set it out in Christian Astrology (1647), read a chart cast for the exact moment a
 question was put, treating the sky at that instant as a figure to be reasoned through by rule,"
-and goes on to say what follows "reconstructs that seventeenth-century method step by step."
-That header sits above the tabs, so it is visible whichever tab is active, and the
+goes on to say what follows "reconstructs that seventeenth-century method step by step," and
+closes with the visible disclaimer sentence itself: "This section shows how such a chart was
+read; it does not read your future." That header sits above the tabs, so it is visible
+whichever tab is active, and the
 significators tab closes with the same reminder: what is shown is "a record of how Lilly's
 method read a particular figure," left for the querent to weigh against the question that is
 actually theirs. No output states a yes/no answer, and the copy is checked
@@ -144,35 +146,67 @@ accidental-dignity display shows the plain-language words (`"in its own sign"`, 
 etc.) beside the signed point total, and `horary-text.js`'s copy carries the reading — the
 number is there because Lilly kept one, not as a computed verdict.
 
-**Perfection takes the earliest crossing across both aspect directions, within 30 days.**
-`HoraryEngine.perfects` searches for the instant an applying aspect becomes exact. Because
-Astronomy Engine's `Search` only finds ascending zero-crossings, a non-conjunction/opposition
-aspect is searched in both chiralities (the target angle and its negation), which also covers
-retrograde pairs where the "wrong-way" crossing can otherwise arrive first. **This is a
-correction, not the original plan**: commit `9b1d911` ("perfection takes the earliest crossing
-across both aspect directions") replaced an earlier version that returned as soon as either
-chirality found a hit — wrong whenever the *other* chirality's crossing lands first, which
-happens routinely for fast movers like the Moon. `tests/horary.test.cjs` pins a regression
-case (Moon square Mercury cast 2024-01-01T20:00Z, London): the true nearest exact square is
-2024-01-02T08:53Z, but returning on the first chirality found instead finds a crossing two
-weeks later, on 2024-01-16, and gets `beforeSignChange` wrong too. The same test also checks
-every applying, perfecting significator pair from the 2024-03-15 cast against an independent,
-much finer-grained (2-hour-step) brute-force scan, to within 20 minutes.
+**Perfection takes the earliest crossing across both aspect directions, before either
+significator changes sign.** `HoraryEngine.perfects` searches for the instant an applying
+aspect becomes exact. Because Astronomy Engine's `Search` only finds ascending zero-crossings, a
+non-conjunction/opposition aspect is searched in both chiralities (the target angle and its
+negation), which also covers retrograde pairs where the "wrong-way" crossing can otherwise
+arrive first. **This is a correction, not the original plan**: commit `9b1d911` ("perfection
+takes the earliest crossing across both aspect directions") replaced an earlier version that
+returned as soon as either chirality found a hit — wrong whenever the *other* chirality's
+crossing lands first, which happens routinely for fast movers like the Moon. `tests/horary.test.cjs`
+pins a regression case (Moon square Mercury cast 2024-01-01T20:00Z, London): the true nearest
+exact square is 2024-01-02T08:53Z, but returning on the first chirality found instead finds a
+crossing two weeks later, on 2024-01-16, and gets `beforeSignChange` wrong too. The same test
+also checks every applying, perfecting significator pair from the 2024-03-15 cast against an
+independent, much finer-grained (2-hour-step) brute-force scan, to within 20 minutes.
+
+**The search bound is each significator's own sign exit, not a flat 30 days.** A flat 30-day cap
+could either cut a genuine perfection short (a slow pair like Jupiter–Saturn can still be
+closing well past 30 days, with a sign residency measured in years) or search needlessly far
+past a significator's own sign change, which ends the matter's testimony regardless. `perfects`
+now searches to the earlier of the two significators' own sign-exit instants (found with
+`astro.Search`, bracketing day by day, on both the forward crossing into the next sign and the
+backward crossing a retrograde planet would make back into the previous one — whichever comes
+first), capped at 1100 days if neither exit is found. A `null` result now means specifically
+"does not perfect before a sign change," and the aspect row always carries `searchedDays`, the
+window actually searched, so a null can be told apart from "checked and found nothing" versus
+"the sign changed in a week, so there was barely time to look." `tests/horary.test.cjs` checks
+this against the same finer-grained brute-force scan run out to that same window (not a
+hardcoded 30 days), and separately confirms an applying Jupiter–Saturn pair with a `searchedDays`
+past the old flat cap.
+
+**Aspects within one arcminute are partile.** `applyingAspect` marks an aspect `partile: true`
+and always reports it `applying` when its orb is under 1′ — right at exact, the ordinary
+"is the projected separation an hour from now still closing" test is numerically unreliable
+(an aspect that is, for all practical purposes, exact can read as separating by a fraction of an
+arcminute). The aspects table shows "(partile)" next to any such aspect.
 
 **Translation, collection and reception, as implemented.** Translation of light
 (`HoraryEngine.translation`) is a third classical planet, faster than both significators, that
 is separating from one significator within orb and applying to the other within orb, carrying
-the first's light across to the second. Collection of light (`HoraryEngine.collection`) is
-both significators applying, each within orb, to a slower third planet, which collects their
-light. Reception (`ClassicalEngine.reception`) has planet A receive planet B when B stands in a
-sign A rules or in A's sign of exaltation; the relationship is mutual reception when it holds
-both ways at once.
+the first's light across to the second. Collection of light (`HoraryEngine.collection`) is both
+significators applying, each within orb, to a slower third planet that also receives both of
+them (is their dispositor by rulership or exaltation) — Lilly's condition that the collecting
+planet actually receive what it collects, not merely stand in aspect to it. Reception
+(`ClassicalEngine.reception`) has planet A receive planet B when B stands in a sign A rules or in
+A's sign of exaltation; the relationship is mutual reception when it holds both ways at once.
 
 **Significators.** Querent = ruler of the Ascendant sign; co-significator the Moon always.
-Quesited = ruler of the chosen house's cusp sign. When querent and quesited would share one
-ruler, the section says so and substitutes the exaltation ruler of the quesited cusp's sign as
-Lilly allowed — and when that sign has no exaltation ruler either, it falls back to the shared
-ruler with `shared: true` recorded, rather than leaving the quesited significator undefined.
+Quesited = ruler of the chosen house's cusp sign. For house 1 itself, the querent's own house is
+the matter, so querent and quesited are necessarily the same significator: `shared: true` is
+recorded directly, with a `why` noting that the first house is the querent. For any other house,
+when querent and quesited would share one ruler, the section says so and substitutes the
+exaltation ruler of the quesited cusp's sign, a remedy consistent with Lilly's use of the
+exaltation lord as a secondary significator — and when that sign has no exaltation ruler either,
+it falls back to the shared ruler with `shared: true` recorded, rather than leaving the quesited
+significator undefined. In every shared-significator case, the `['moon','quesited']` and
+`['querent','moon']` role-pairs are the same physical planet pair; `cast()` de-duplicates the
+aspects list by unordered planet pair (merging every role that touched a row) rather than
+showing the same aspect twice, and `perfection.byAspect` is computed from the actual querent and
+quesited planet names rather than from role-tag membership, so a merged row inheriting both
+tags is never mistaken for a querent-quesited aspect that cannot exist (a planet cannot aspect
+itself).
 
 **Considerations before judgment** (Lilly Book I ch. 26) are reported present/absent with his
 stated meaning, plus the note that he himself judged charts despite them: Ascendant in the
@@ -232,8 +266,8 @@ Run the whole suite with:
 node --test tests/*.test.cjs
 ```
 
-which is **301 tests passing** at the time of writing (0 failing). The Horary-specific and
-Horary-touched files break down as: `tests/classical.test.cjs` 26, `tests/horary.test.cjs` 3,
+which is **302 tests passing** at the time of writing (0 failing). The Horary-specific and
+Horary-touched files break down as: `tests/classical.test.cjs` 26, `tests/horary.test.cjs` 4,
 `tests/horary-text.test.cjs` 2, `tests/horary-chart.test.cjs` 8, and `tests/natal-engine.test.cjs`
 31 (12 of those are new: one hand-derived Regiomontanus check plus the 11 Swiss-fixture cases
 above). As with the rest of this project's Node suite, `node --test tests/` alone fails with

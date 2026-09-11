@@ -111,7 +111,7 @@ Section `#horary` after `#jyotish`; nav link "Horary"; mobile fold "Horary · hi
 practice". Header banner: "Horary astrology as William Lilly practised it in 1647. This section
 shows how such a chart was read; it does not read your future." Tabs:
 
-1. **The question** — controls: optional question text (page-only, 240 chars), date and time
+1. **The question** — controls: optional question text (page-only, 400 chars), date and time
    (default now, local to the chosen place), place (city search pre-filled with the saved
    birthplace when available, coordinates fallback, like chart-in-time), house matter select
    (12 entries), "Cast the chart". Output: a single-ring wheel (`horary-chart.js`: sign ring,

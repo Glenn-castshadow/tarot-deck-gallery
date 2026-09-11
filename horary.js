@@ -77,16 +77,17 @@ const Horary = (() => {
     }).join('')}</ul>`;
   }
 
-  function aspectsTable(aspects, chart) {
-    if (!aspects.length) return `<p class="ho-empty">The querent and the quesited share a single significator here, so they form no aspect with each other.</p>`;
+  function aspectsTable(aspects, chart, shared) {
+    const sharedNote = shared ? `<p class="ho-empty">The querent and the quesited share a single significator here, so they form no aspect with each other.</p>` : '';
+    if (!aspects.length) return sharedNote || `<p class="ho-empty">The querent and the quesited share a single significator here, so they form no aspect with each other.</p>`;
     const fmt = iso => new Intl.DateTimeFormat(undefined, {dateStyle:'medium', timeStyle:'short', timeZone: chart.timeZone}).format(new Date(iso));
     const rows = aspects.map(a => {
-      const name = a.aspect === null ? '--' : `${ASPECT_SYMBOLS[a.aspect]} ${ASPECT_NAMES[a.aspect]}`;
+      const name = a.aspect === null ? '--' : `${ASPECT_SYMBOLS[a.aspect]} ${ASPECT_NAMES[a.aspect]}${a.partile ? ' (partile)' : ''}`;
       const state = a.aspect === null ? 'out of orb' : a.applying ? 'applying' : 'separating';
       const perfects = a.perfects ? `${fmt(a.perfects)}${a.beforeSignChange === false ? ' (after a sign change)' : ''}` : '--';
       return `<tr><th scope="row">${esc(a.a)} · ${esc(a.b)}</th><td>${esc(a.roles.join(' / '))}</td><td>${name}</td><td>${state}</td><td>${a.orb.toFixed(2)}° / ${a.moiety.toFixed(2)}°</td><td>${perfects}</td></tr>`;
     }).join('');
-    return `<div class="cx-table-wrap"><table><thead><tr><th scope="col">Pair</th><th scope="col">Roles</th><th scope="col">Nearest aspect</th><th scope="col">Motion</th><th scope="col">Orb / moiety</th><th scope="col">Perfects</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    return `${sharedNote}<div class="cx-table-wrap"><table><thead><tr><th scope="col">Pair</th><th scope="col">Roles</th><th scope="col">Nearest aspect</th><th scope="col">Motion</th><th scope="col">Orb / moiety</th><th scope="col">Perfects</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }
 
   function perfectionBlock(perfection) {
@@ -181,7 +182,7 @@ const Horary = (() => {
         if (!latText || !lonText || !Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) >= 90 || Math.abs(longitude) > 180 || !timeZone) {
           return {error:'Enter a latitude, a longitude and an IANA time zone.'};
         }
-        return {location:{latitude, longitude, timeZone, label: $('#ho-place').value.trim() || 'Custom place', source:'manual'}};
+        return {location:{latitude, longitude, timeZone, label: `Custom coordinates (${latitude}, ${longitude})`, source:'manual'}};
       }
       return {location: place()};
     }
@@ -195,7 +196,7 @@ const Horary = (() => {
       if (!result) { output.innerHTML = ''; return; }
       const houseInfo = HoraryText.houseMatters[result.houseMatter];
       const hourLine = result.hour.status === 'ready'
-        ? `${result.sect === 'day' ? 'Day' : 'Night'} chart · hour ${result.hour.current + 1} of 24, ruled by ${esc(result.hour.hours[result.hour.current].ruler)} · ${esc(result.hour.weekday)}, the day of ${esc(result.hour.dayRuler)}`
+        ? `${result.sect === 'day' ? 'Day' : 'Night'} chart · hour ${result.hour.current + 1} of 24, ruled by ${esc(result.hour.hours[result.hour.current]?.ruler || 'an hour outside the table')} · ${esc(result.hour.weekday)}, the day of ${esc(result.hour.dayRuler)}`
         : esc(result.hour.message);
       const questionText = $('#ho-question-text').value.trim();
       output.innerHTML = `<div class="ho-wheel-wrap">${HoraryChart.render({chart: result.chart, title:'The horary chart'})}</div>
@@ -203,10 +204,11 @@ const Horary = (() => {
         <p class="ho-hour-line">${hourLine}</p>
         <p class="acg-small-label">House ${result.houseMatter} · ${esc(houseInfo.title)}</p>
         <p class="ho-house-lilly">${esc(houseInfo.lilly)}</p>
-        <p class="acg-small-label">Considerations before judgment</p>
+        <h4 class="acg-small-label">Considerations before judgment</h4>
         <div class="ho-considerations">${result.considerations.map(c => {
           const text = HoraryText.considerations[c.key];
-          return `<div class="ho-consideration${c.present ? ' is-present' : ''}"><h5>${esc(text.title)}</h5><p>${esc(c.present ? text.present : text.absent)}</p><small>${esc(c.detail)}</small></div>`;
+          const body = c.present === null ? `Undetermined here: ${esc(c.detail)}.` : esc(c.present ? text.present : text.absent);
+          return `<div class="ho-consideration${c.present ? ' is-present' : ''}"><h5>${esc(text.title)}</h5><p>${body}</p>${c.present === null ? '' : `<small>${esc(c.detail)}</small>`}</div>`;
         }).join('')}</div>
         ${conventions()}`;
     }
@@ -224,7 +226,7 @@ const Horary = (() => {
         <p class="acg-small-label">Receptions</p>
         ${receptionsBlock(result.receptions)}
         <p class="acg-small-label">Aspects between the significators</p>
-        ${aspectsTable(result.aspects, result.chart)}
+        ${aspectsTable(result.aspects, result.chart, sig.quesited.planet === sig.querent.planet)}
         <p class="acg-small-label">Perfection</p>
         ${perfectionBlock(result.perfection)}
         <p class="acg-small-label">The Moon’s condition</p>
@@ -250,7 +252,7 @@ const Horary = (() => {
       if (!electResult) { output.innerHTML = ''; return; }
       const chartR = electResult.chart, sect = electResult.sect, hour = electResult.hour, moon = electResult.moon;
       const hourLine = hour.status === 'ready'
-        ? `${sect === 'day' ? 'Day' : 'Night'} chart · hour of ${esc(hour.hours[hour.current].ruler)} · ${esc(hour.weekday)}`
+        ? `${sect === 'day' ? 'Day' : 'Night'} chart · hour of ${esc(hour.hours[hour.current]?.ruler || 'an hour outside the table')} · ${esc(hour.weekday)}`
         : esc(hour.message);
       const rows = CLASSICAL_PLANETS.map(name => {
         const point = chartR.points.find(p => p.name === name);
@@ -299,7 +301,7 @@ const Horary = (() => {
         try {
           const cast = HoraryEngine.cast({date: instant, location, houseMatter: houseMatterValue});
           if (cast.status !== 'ready') { result = null; $('#ho-cast-status').textContent = cast.message; }
-          else { result = cast; $('#ho-cast-status').textContent = `Chart cast for ${esc(location.label || 'the selected place')}.${dstNote}`; }
+          else { result = cast; $('#ho-cast-status').textContent = `Chart cast for ${location.label || 'the selected place'}.${dstNote}`; }
         } catch (error) {
           result = null; $('#ho-cast-status').textContent = error.message || 'Could not cast this chart.';
         }
@@ -326,7 +328,7 @@ const Horary = (() => {
         try {
           const cast = HoraryEngine.cast({date: instant, location: loc, houseMatter: 1});
           if (cast.status !== 'ready') { electResult = null; $('#ho-elect-status').textContent = cast.message; }
-          else { electResult = cast; $('#ho-elect-status').textContent = `Elected for ${esc(loc.label || 'the selected place')}.${dstNote}`; }
+          else { electResult = cast; $('#ho-elect-status').textContent = `Elected for ${loc.label || 'the selected place'}.${dstNote}`; }
         } catch (error) {
           electResult = null; $('#ho-elect-status').textContent = error.message || 'Could not read this moment.';
         }

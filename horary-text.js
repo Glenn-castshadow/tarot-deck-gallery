@@ -5,7 +5,7 @@
    considerations are paraphrased from Lilly, Book I and Book II, never
    quoted at length. */
 const HoraryText = (() => {
-  const banner = 'Horary astrology, as William Lilly set it out in Christian Astrology (1647), read a chart cast for the exact moment a question was put, treating the sky at that instant as a figure to be reasoned through by rule. What follows reconstructs that seventeenth-century method step by step: how a chart was tested for fitness, how its significators were judged, and how a matter was said, in Lilly’s terms, to perfect or fail.';
+  const banner = 'Horary astrology, as William Lilly set it out in Christian Astrology (1647), read a chart cast for the exact moment a question was put, treating the sky at that instant as a figure to be reasoned through by rule. What follows reconstructs that seventeenth-century method step by step: how a chart was tested for fitness, how its significators were judged, and how a matter was said, in Lilly’s terms, to perfect or fail. This section shows how such a chart was read; it does not read your future.';
 
   const houseMatters = {
     1: {title:'The querent', lilly:'Lilly assigned the first house to the querent, the person who asked the question, and to their own body, life and general condition.'},
@@ -30,7 +30,7 @@ const HoraryText = (() => {
     face: {title:'The face, or decan', text:'Weakest of the five essential dignities, the face offered only slight assistance, Lilly’s thirty-six decans following the Chaldean order from Mars at the first degree of Aries.'},
     detriment: {title:'Detriment', text:'A planet fell into detriment opposite the sign of its rulership, and Lilly read the placement as a debility that hindered the matter and weakened the planet’s testimony.'},
     fall: {title:'Fall', text:'Fall placed a planet opposite its exaltation, and Lilly took the condition for an abasement, its natural vigour spent and its promises given little credit.'},
-    peregrine: {title:'Peregrine', text:'Wanting rulership, exaltation, triplicity, term and face alike, a planet was called peregrine, a wanderer Lilly trusted less than one settled somewhere of its own.'},
+    peregrine: {title:'Peregrine', text:'Wanting the five essential dignities, and not already in detriment or fall, a planet was peregrine -- this section follows Lilly’s point table, keeping detriment and fall apart from peregrine, not doubled.'},
     angular: {title:'Angular houses', text:'Posited in the first, fourth, seventh or tenth, a planet stood angular, a seat Lilly read as vigorous, quick to act and apt to carry its matter forward swiftly.'},
     succedent: {title:'Succedent houses', text:'The second, fifth, eighth and eleventh were succedent, a middling seat Lilly judged steadier than angular but slower, its strength arriving only after some delay.'},
     cadent: {title:'Cadent houses', text:'Third, sixth, ninth and twelfth were cadent, the weakest houses for action, and Lilly read a planet so placed as feeble, its business scattered or set aside.'},

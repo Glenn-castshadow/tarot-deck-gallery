@@ -48,7 +48,7 @@
 .ho-wheel-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
 .ho-wheel-wrap text { font-family: "Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",serif; }
 
-.ho-question-echo { margin-top: 18px; font: italic 17px/1.6 "Playfair Display",serif; color: #e0c58c; }
+.ho-question-echo { margin-top: 18px; font: italic 17px/1.6 "Playfair Display",serif; color: #e0c58c; overflow-wrap: anywhere; }
 .ho-hour-line { margin-top: 12px; color: #adbec1; font-size: 13px; }
 .ho-house-lilly { color: #bed0cc; font-size: 13px; line-height: 1.8; margin-top: 6px; }
 
@@ -124,5 +124,4 @@
   .horary blockquote { border-left-color: #8a7645; }
   .horary details > :not(summary) { display: block !important; }
   .horary .cx-table-wrap th, .horary .cx-table-wrap td { border-bottom-color: #c6bda9; }
-  .horary .cx-comparison, .horary .cx-placements { break-inside: avoid; }
 }
