@@ -61,9 +61,29 @@
     if(!letters.length) return {status:'empty',message:'Enter a name to open its number reading.'};
     return {status:'ready',normalized:words.join(' '),letters,ys:letters.filter(x=>x.letter==='Y')};
   }
-  function nameProfile(raw, yVowels=[], birth=null) {
+  // Chaldean letter values as published by Cheiro. No letter carries 9. Spec §3.
+  const chaldeanValues={A:1,B:2,C:3,D:4,E:5,F:8,G:3,H:5,I:1,J:1,K:2,L:3,M:4,N:5,O:7,P:8,Q:1,R:2,S:3,T:4,U:6,V:6,W:6,X:5,Y:1,Z:7};
+  function compoundReading(compound) {
+    if(!Number.isSafeInteger(compound)||compound<1) throw new RangeError('Use a positive whole number.');
+    const root=compound>9?reduce(compound,false).value:compound;
+    if(compound<=9) return {compound,root,readAs:compound};
+    if(compound<=52) return {compound,root,readAs:compound};
+    const once=digitSum(compound);
+    return {compound,root,readAs:once>9&&once<=52?once:root};
+  }
+  function nameProfile(raw, yVowels=[], birth=null, system='pythagorean') {
+    if(system!=='pythagorean'&&system!=='chaldean') throw new RangeError('Choose the Pythagorean or Chaldean system.');
     const result=normalizeName(raw);
     if(result.status!=='ready') return result;
+    if(system==='chaldean') {
+      const letters=result.letters.map(item=>({...item,value:chaldeanValues[item.letter]}));
+      const compound=letters.reduce((sum,x)=>sum+x.value,0);
+      const words=[...new Set(letters.map(x=>x.wordIndex))].map(wordIndex=>{
+        const group=letters.filter(x=>x.wordIndex===wordIndex), total=group.reduce((sum,x)=>sum+x.value,0);
+        return {word:group[0].word,wordIndex,compound:total,root:compoundReading(total).root};
+      });
+      return {...result,system:'chaldean',letters,compound,reading:compoundReading(compound),words};
+    }
     const selected=new Set(yVowels), letters=result.letters.map(item=>({...item,vowel:'AEIOU'.includes(item.letter)||(item.letter==='Y'&&selected.has(item.index))}));
     const total=letters.reduce((sum,x)=>sum+x.value,0),vowels=letters.filter(x=>x.vowel).reduce((sum,x)=>sum+x.value,0),consonants=total-vowels;
     const expression=reduce(total),soul=vowels?reduce(vowels):null,personality=consonants?reduce(consonants):null;
@@ -105,5 +125,5 @@
     const yearRelation=distance===0?'same':(distance===1||distance===8)?'adjacent':'apart';
     return {a,b,concord:{a:ca,b:cb,same:ca===cb},sameRoot:a.path.root===b.path.root,pairNumber:reduce(a.path.value+b.path.value),yearRelation};
   }
-  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair};
+  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair,compoundReading,chaldeanValues};
 });

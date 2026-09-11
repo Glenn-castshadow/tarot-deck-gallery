@@ -166,3 +166,29 @@ test('two paths: concords, same root, pair number and personal-year relation',()
   assert.throws(()=>N.pair(nine,null,'2026-06-15'),RangeError);
   assert.throws(()=>N.pair(nine,one,'2026-02-30'),RangeError);
 });
+
+test('chaldean names: the Cheiro table, per-word compounds and no master numbers',()=>{
+  const alphabet=N.nameProfile('ABCDEFGHIJKLM NOPQRSTUVWXYZ',[],null,'chaldean');
+  assert.equal(alphabet.status,'ready');assert.equal(alphabet.system,'chaldean');
+  assert.equal(alphabet.compound,103,'A1 B2 C3 D4 E5 F8 G3 H5 I1 J1 K2 L3 M4 N5 O7 P8 Q1 R2 S3 T4 U6 V6 W6 X5 Y1 Z7');
+  assert.deepEqual(alphabet.reading,{compound:103,root:4,readAs:4},'103 -> 4 is not a compound in 10–52, so it reads as the single digit');
+  assert.equal(alphabet.letters.find(x=>x.letter==='F').value,8);
+  assert.equal(alphabet.letters.find(x=>x.letter==='Y').value,1);
+  assert.ok(alphabet.letters.every(x=>x.value!==9),'no Chaldean letter is 9');
+  const john=N.nameProfile('John Smith',[],null,'chaldean');
+  assert.deepEqual(john.words.map(w=>[w.word,w.compound,w.root]),[['JOHN',18,9],['SMITH',17,8]]);
+  assert.deepEqual(john.reading,{compound:35,root:8,readAs:35});
+  const eleven=N.nameProfile('AAAAAAAAAAA',[],null,'chaldean');
+  assert.deepEqual(eleven.reading,{compound:11,root:2,readAs:11});
+  assert.equal('master' in eleven.reading,false);
+  assert.deepEqual(N.nameProfile('KI',[],null,'chaldean').reading,{compound:3,root:3,readAs:3});
+  assert.deepEqual(N.nameProfile('ZZZZZZZZZZ',[],null,'chaldean').reading,{compound:70,root:7,readAs:7},'70 -> 7 reads as a single digit');
+  assert.deepEqual(N.nameProfile('ZZZZZZZZZZZZZZ',[],null,'chaldean').reading,{compound:98,root:8,readAs:17},'98 -> 17 reads as compound 17');
+  assert.equal(N.nameProfile('René',[],null,'chaldean').normalized,'RENE');
+  assert.equal(N.nameProfile('王小明',[],null,'chaldean').status,'invalid');
+  assert.equal(N.nameProfile('',[],null,'chaldean').status,'empty');
+  assert.throws(()=>N.nameProfile('Jane',[],null,'kabbalah'),RangeError);
+  // The Pythagorean shape is unchanged.
+  const p=N.nameProfile('John Smith');
+  assert.equal(p.system,undefined);assert.equal(p.totals.expression,44,'J1 O6 H8 N5 + S1 M4 I9 T2 H8 = 44 (the brief\'s worked value of 49 is an arithmetic error)');
+});
