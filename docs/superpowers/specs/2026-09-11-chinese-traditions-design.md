@@ -121,8 +121,8 @@ independent fixture source):
   with `hiddenTotal:int`, and `yangYear:boolean`.
 - `tenGod(dayStemIdx, stemIdx)` → god key (`'friend'|'robWealth'|'eatingGod'|'hurtingOfficer'|
   'indirectWealth'|'directWealth'|'sevenKillings'|'directOfficer'|'indirectResource'|
-  'directResource'`) or `null` when `stemIdx === dayStemIdx`... no: same stem is Friend; the
-  Day Master position itself is excluded by the caller. `tenGod` is pure and exported.
+  'directResource'`). The same stem as the Day Master is `friend`; the Day Master's own pillar
+  position is excluded by the caller (`gods.stems[2]` is `null`). `tenGod` is pure and exported.
 - `luckPillars(chart, sex)` with `sex` `'male'|'female'` →
   `{status, direction:'forward'|'backward', startAge:{years,months}, startDays:number, boundary:{longitude, date}, pillars:[{index, stemIndex, branchIndex, characters, stem, branch, fromAge, fromYear, god}]}`
   or `{status:'missing', message}` when the chart is not ready.
