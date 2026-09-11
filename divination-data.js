@@ -1,6 +1,6 @@
 /* Traditional symbol names; original Ishtar Insights interpretations and prompts. */
 (function(root, factory) { const data = factory(); if (typeof module === 'object' && module.exports) module.exports = data; else root.DivinationData = data; })(typeof globalThis !== 'undefined' ? globalThis : this, () => {
-  const parse = text => text.trim().split('\n').map((line, id) => { const [name, symbol, keyword, meaning, prompt] = line.split('|'); return {id, name, symbol, keyword, meaning, prompt}; });
+  const parse = text => text.trim().split(/\r?\n/).map((line, id) => { const [name, symbol, keyword, meaning, prompt] = line.split('|'); return {id, name, symbol, keyword, meaning, prompt}; });
   const lenormand = parse(`
 Rider|rider|News|Something is arriving: a message, visitor or fresh piece of information. Make room to receive it before deciding what it means.|What news needs a thoughtful response rather than an immediate reaction?
 Clover|clover|Opportunity|A small opening may be easy to overlook. This card invites a modest experiment rather than a gamble on a guaranteed outcome.|What low-stakes opportunity could I try while it is available?
@@ -109,7 +109,7 @@ Puella|1211|Harmony|The Girl emphasizes attraction, ease and relationship. Seek 
 Caput Draconis|2111|Entry|The Dragon's Head marks an opening and a movement inward. Consider what conditions would make a beginning welcome and sustainable.|What am I ready to let into my life?
 Cauda Draconis|1112|Departure|The Dragon's Tail marks completion and a movement outward. Finish what needs finishing before carrying it into a new setting.|What ending would allow a cleaner beginning?
 `);
-  const parseHexagrams = text => text.trim().split('\n').map((line, id) => { const [number, character, name, symbol, gloss, keyword, meaning, prompt] = line.split('|'); return {id, number:Number(number), character, name, symbol, gloss, keyword, meaning, prompt}; });
+  const parseHexagrams = text => text.trim().split(/\r?\n/).map((line, id) => { const [number, character, name, symbol, gloss, keyword, meaning, prompt] = line.split('|'); return {id, number:Number(number), character, name, symbol, gloss, keyword, meaning, prompt}; });
   const hexagrams = parseHexagrams(`
 1|乾|Qián|111111|Six unbroken lines rising|Initiative|Heaven repeated beneath Heaven describes motion that renews itself without an outside push. Sustained effort, not a single burst, is what this image asks you to notice.|What sustained effort could I begin today without waiting for permission?
 2|坤|Kūn|000000|Earth resting beneath earth|Receptivity|Earth doubled describes a capacity to hold and carry, not to initiate on its own. Strength here looks like patience, support, and the willingness to let another force lead first.|Where could steady support matter more than being first?

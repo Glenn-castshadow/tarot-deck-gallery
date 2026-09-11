@@ -24,7 +24,6 @@ BIRTHS = [(1902, 2, 3, 12, 0), (1950, 6, 20, 18, 30), (1990, 7, 15, 14, 30), (20
           (2024, 2, 10, 22, 59), (2024, 2, 10, 23, 0), (2024, 2, 11, 0, 0), (2099, 12, 21, 23, 45),
           (2024, 3, 5, 10, 0), (2024, 3, 5, 10, 45), (1988, 8, 8, 8, 8), (1975, 11, 30, 6, 15)]
 
-STEM_ORDER = '甲乙丙丁戊己庚辛壬癸'
 # lunar_python uses simplified characters for some gods; the site uses traditional. Map both to the site's keys.
 GOD_KEYS = {'比肩': 'friend', '劫财': 'robWealth', '劫財': 'robWealth', '食神': 'eatingGod', '伤官': 'hurtingOfficer', '傷官': 'hurtingOfficer',
             '偏财': 'indirectWealth', '偏財': 'indirectWealth', '正财': 'directWealth', '正財': 'directWealth', '七杀': 'sevenKillings', '七殺': 'sevenKillings',
@@ -35,7 +34,10 @@ def yun_for(chart, gender):
     yun = chart.getYun(gender, 1)
     da_yun = yun.getDaYun()
     return {'forward': bool(yun.isForward()), 'startYears': yun.getStartYear(), 'startMonths': yun.getStartMonth(), 'startDays': yun.getStartDay(),
-            'pillars': [d.getGanZhi() for d in da_yun[1:6]], 'startAges': [d.getStartAge() for d in da_yun[1:6]]}
+            'pillars': [d.getGanZhi() for d in da_yun[1:6]],
+            # getStartAge() is 虚岁 (nominal/counted age: 1 at birth, incremented at each Lunar New Year), not the
+            # site's 0-based fromAge. Recorded here for reference only; nothing in tests/bazi.test.cjs compares it.
+            'startAges': [d.getStartAge() for d in da_yun[1:6]]}
 
 
 cases = []

@@ -113,7 +113,6 @@
   .dv-library-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .dv-mothers { gap: 6px; }.dv-mothers fieldset { padding: 5px; }.dv-mothers legend { font-size: 9px; }
   .dv-shield-hint::after { content: ' Swipe the shield sideways to see every column.'; }
-  .dv-lines { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .dv-card.is-revealed svg { animation: none; }.dv-card:hover { transform: none; } }
 @media print { .dv-tabs,.dv-controls,.dv-reveal-controls,.dv-method,.dv-library { display: none; }.dv-shield { overflow: visible; }.dv-shield-row { min-width: 0; } }
@@ -129,6 +128,7 @@
 .dv-card { overflow: hidden; }
 .dv-card:not(.is-revealed), .dv-back-fan i { background-image: var(--dv-back); background-size: cover; background-position: center; }
 .dv-back-fan i { color: transparent; }
+[data-practice=iching] .dv-back-fan i { color: var(--dv-accent); background-image: none; }
 .dv-card:not(.is-revealed) .dv-card-back { visibility: hidden; }
 .dv-turn { z-index: 2; background: #181120dd; color: #fff0d8; border: 1px solid #d9b98388; padding: 6px 10px; border-radius: 20px; }
 .dv-card.is-revealed { background: #22182b; padding: 0; }
@@ -172,8 +172,10 @@
 
 [data-practice=iching] .dv-artwork-figure { display: block; width: 100%; aspect-ratio: 1; }
 .dv-hexagram { width: 100%; height: 100%; }
+.dv-library-grid .dv-hexagram { width: 100%; height: 100%; margin: 0; }
 .dv-lines { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 12px; }
 .dv-lines button { padding: 10px 8px; font: 11px 'DM Mono',monospace; text-align: left; }
+@media (max-width: 700px) { .dv-lines { grid-template-columns: 1fr 1fr; } }
 .dv-hexagram-pair { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; margin: 12px auto 28px; }
 .dv-hexagram-figure { margin: 0; width: 200px; max-width: 100%; text-align: center; }
 .dv-hexagram-art { padding: 18px; background: #f5ebda; color: #4f344c; box-shadow: inset 0 0 0 6px #f5ebda,inset 0 0 0 7px #a6805644,3px 5px 0 #b29a7388,0 14px 26px #0004; }

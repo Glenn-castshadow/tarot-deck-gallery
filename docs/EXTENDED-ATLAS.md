@@ -200,9 +200,12 @@ directions, and a birth within an hour of a Jie boundary). `tests/bazi.test.cjs`
 exhaustively for all 10×10 stem pairs, the hidden-stem phase totals, and, from
 the fixture, the hidden stems and Ten Gods of every case and the luck-pillar
 direction and first five pillars for both sexes. The start age is checked to
-within one month of lunar_python's: the two ephemerides place a Jie instant
-minutes apart, which can round the 3-days-per-year conversion to a different
-month, so the test documents the tolerance rather than papering over it.
+within one month of lunar_python's: lunar_python quantises the birth-to-Jie
+interval to whole days plus double-hour buckets (`dayDiff*4 + floor(hourDiff*10/30)`
+months), while this engine uses exact fractional days (`floor(days × 4)`), so
+five of the 32 birth/sex comparisons round to a different month even a full
+month away from a Jie boundary. The test documents this tolerance, with the
+five differing cases listed, rather than papering over it.
 
 Manual browser checks cover a 1400px desktop and 390px phone, shared birth inputs,
 all four chart views, destinations and keyboard city search, globe/world controls,

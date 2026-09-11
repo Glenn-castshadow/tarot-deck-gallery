@@ -68,6 +68,7 @@ test('jie boundaries bracket a birth instant at 30-degree solar-longitude steps'
   assert.ok(prev.date<new Date(chart.date)&&new Date(chart.date)<next.date);
   assert.ok(Math.abs(next.date-new Date('2024-03-05T02:22:00Z'))<15*60*1000,'Jingzhe 2024 is 10:22 CST, within 15 minutes');
   assert.throws(()=>extras.jieBoundary(new Date('nope'),'forward'));
+  assert.throws(()=>extras.jieBoundary(new Date(),'sideways'),RangeError);
 });
 
 for (const c of reference.cases) for (const sex of ['male','female']) test(`lunar_python reference: luck pillars for ${c.birthday} ${c.time} (${sex})`,()=>{
@@ -75,8 +76,12 @@ for (const c of reference.cases) for (const sex of ['male','female']) test(`luna
   assert.equal(model.status,'ready');
   assert.equal(model.direction,ref.forward?'forward':'backward');
   assert.deepEqual(model.pillars.slice(0,5).map(p=>p.characters),ref.pillars);
-  // Start age: lunar_python floors years, months and days from the same 3-days-per-year rule. The two ephemerides
-  // place the Jie instant minutes apart, so allow one month of difference in the total.
+  // Start age: lunar_python floors years, months and days from the same 3-days-per-year rule, but it quantises
+  // the birth-to-Jie interval to whole days plus double-hour buckets (dayDiff*4 + floor(hourDiff*10/30) months),
+  // while this engine uses exact fractional days (floor(days * 4)). That rounding difference, not an ephemeris
+  // discrepancy, is why five of the 32 birth/sex comparisons differ by exactly one month, even a full month away
+  // from a Jie: 2024-02-10 22:59 (male), 2024-02-10 23:00 (male), 2099-12-21 23:45 (female), 2024-03-05 10:00
+  // (female, backward) and 2024-03-05 10:45 (male, forward). Allow one month of difference in the total.
   const ours=model.startAge.years*12+model.startAge.months, theirs=ref.startYears*12+ref.startMonths;
   assert.ok(Math.abs(ours-theirs)<=1,`start ${ours} vs ${theirs} months`);
   assert.equal(model.pillars[0].fromAge,model.startAge.years);

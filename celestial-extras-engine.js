@@ -91,6 +91,7 @@ const CelestialExtrasEngine = (() => {
   // SearchSunLongitude finds the instant the apparent solar longitude reaches the target after a start date.
   function jieBoundary(date, direction) {
     if(!(date instanceof Date)||!Number.isFinite(+date)) throw new RangeError('Choose a valid instant.');
+    if(direction!=='forward'&&direction!=='backward') throw new RangeError('Choose forward or backward.');
     const lon=astro.Ecliptic(astro.GeoVector('Sun',date,true)).elon;
     const past=natal.mod(lon-315,30);
     const target=direction==='forward'?natal.mod(lon-past+30):natal.mod(lon-past);

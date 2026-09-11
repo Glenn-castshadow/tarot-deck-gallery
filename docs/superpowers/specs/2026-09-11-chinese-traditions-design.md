@@ -98,9 +98,8 @@ independent fixture source):
   multiple of 30° from 315° in apparent solar longitude, found with Astronomy Engine's
   `SearchSunLongitude` over the same longitude expression the month pillar uses). Backward: the
   interval from the previous Jie boundary to the birth instant. Three days count as one year,
-  one day as four months, one double-hour (two hours) as ten days; the result is reported in
-  whole years and months (total months = floor(days × 4), matching lunar_python, so the start is expressed as
-  "age Y years M months").
+  one day as four months; the result is reported in whole years and months (total months =
+  floor(days × 4), matching lunar_python, so the start is expressed as "age Y years M months").
 - **Sequence.** Ten pillars of ten years each, stepping the month pillar forward or backward
   through the sexagenary cycle (stem and branch advance together). Each pillar shows its
   characters, pinyin, phases, its start age and the calendar year it begins (birth year +
@@ -201,7 +200,7 @@ Symbols chart, which fixes both the order and the line patterns).
 
 `DivinationArt.hexagram(values, {changing:true})` returns an inline SVG of six lines drawn
 bottom-up (yang solid, yin broken), with changing lines marked by the traditional small circle
-(old yang) or cross (old yin) beside the line and a stronger stroke; `DivinationArt.hexagramFromSymbol(symbol)` draws a plain figure for the library and the relating hexagram. No raster art; the I Ching mode does not use `assets/divination-v2` at all and the back-of-card fan uses the seal glyph instead of an image.
+(old yang) or cross (old yin) beside the line; `DivinationArt.hexagramFromSymbol(symbol)` draws a plain figure for the library and the relating hexagram. No raster art; the I Ching mode does not use `assets/divination-v2` at all and the back-of-card fan uses the seal glyph instead of an image.
 
 ### B4. UI (`divination.js`, `divination.css`)
 
