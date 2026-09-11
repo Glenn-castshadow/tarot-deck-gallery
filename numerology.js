@@ -37,6 +37,33 @@ const Numerology = (() => {
     personality:{label:'Personality',lens:'The consonants of the entered name contribute here. This is a symbolic lens on outward expression, not a way to know what another person actually thinks of you.'},
     maturity:{label:'Maturity',lens:'Life Path and Expression are added together for a longer-view reflection on how experience and contribution might develop together. This does not assign an age or predict a future event.'}
   };
+  // One sentence per number: how the theme reads as a chapter of life rather than a trait. Original copy.
+  const arcLens = {
+    1:'As a chapter, this number asks you to find your own footing and make decisions you can stand behind.',
+    2:'As a chapter, this number turns attention to partnership, patience and the quality of your agreements.',
+    3:'As a chapter, this number makes room for expression, friendship and work that wants to be seen.',
+    4:'As a chapter, this number favors building: routines, skills and commitments that hold weight.',
+    5:'As a chapter, this number brings movement, change and the question of what freedom is for.',
+    6:'As a chapter, this number gathers responsibility, home and the people who depend on one another.',
+    7:'As a chapter, this number slows the pace toward study, privacy and understanding.',
+    8:'As a chapter, this number tests how you handle resources, authority and visible results.',
+    9:'As a chapter, this number asks what you are ready to complete and what you will pass on.',
+    11:'As a chapter, this master number heightens perception and asks that insight find a practical voice.',
+    22:'As a chapter, this master number pairs a large vision with the patience to build it in stages.',
+    33:'As a chapter, this master number centers on care that teaches, and on keeping that care sustainable.'
+  };
+  // Challenges 0–8. Original copy. A challenge is a recurring question, not a flaw.
+  const challengeCopy = {
+    0:{title:'The open question',words:'Choice · self-direction · everything possible',story:'A zero challenge has no single theme. Traditionally it is read as the freedom, and the difficulty, of choosing your own emphasis when nothing in particular is pushing back. The question in this period is which challenge you decide to take on deliberately.',prompt:'Which of the other challenges would I choose to work on, if nothing chose for me?'},
+    1:{title:'Standing on your own',words:'Independence · confidence · will',story:'This challenge circles the question of self-reliance: learning to trust your own judgment without needing to win every argument, and to lead without pushing people away.',prompt:'Where am I waiting for permission that I could give myself?'},
+    2:{title:'Sensitivity with a spine',words:'Feeling · cooperation · boundaries',story:'This challenge concerns the balance between sensitivity and self-erasure. It asks you to stay open to others without taking every mood personally, and to cooperate without disappearing from the agreement.',prompt:'When I keep the peace, whose peace is it?'},
+    3:{title:'Saying it plainly',words:'Expression · focus · follow-through',story:'This challenge gathers around expression: scattered energy, unfinished projects, or words held back for fear of how they will land. The invitation is to choose what you want to say and give it a finished form.',prompt:'What have I been talking around instead of saying?'},
+    4:{title:'Structure that serves',words:'Work · order · flexibility',story:'This challenge asks how you relate to routine and effort. Too little structure leaves intentions unbuilt; too much turns a method into a cage. The work is to find the amount of order that actually helps.',prompt:'Which rule am I keeping past its usefulness?'},
+    5:{title:'Freedom with a keel',words:'Change · restraint · curiosity',story:'This challenge concerns freedom: restlessness, excess, or the opposite fear of any change at all. It invites a curiosity that can stay long enough to learn something.',prompt:'What am I moving away from, and would staying teach me more?'},
+    6:{title:'Care without control',words:'Responsibility · idealism · acceptance',story:'This challenge gathers around responsibility and expectation: caring so much about how things should be that people, including you, are not allowed to be as they are.',prompt:'Whose responsibility have I quietly taken over?'},
+    7:{title:'Trusting what you find',words:'Faith · inquiry · openness',story:'This challenge concerns doubt and distance: analyzing rather than experiencing, or keeping so much private that no one can meet you there. It asks for inquiry that leads back into life.',prompt:'What would I have to feel if I stopped explaining it?'},
+    8:{title:'Enough, and what it is for',words:'Resources · ambition · fairness',story:'This challenge concerns money, power and the measure of success. It can show as over-focus on results or as an avoidance of them. The question is what you would do with enough.',prompt:'What result am I chasing, and what would I do the day after I had it?'}
+  };
   const localToday = () => {const d=new Date();return E.dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());};
   const numberLabel = result => result ? result.master?`${result.value}/${result.root}`:String(result.value) : '—';
   const trail = result => result.steps.join(' → ');
@@ -50,14 +77,17 @@ const Numerology = (() => {
   function attach(root, parts, previous={}) {
     const birth=E.birthday(E.dateKey(parts.year,parts.month,parts.day));
     const initialToday=localToday(), lastDate='2100-12-31';
-    const tabs=['birth','cycles','name','loshu'];
-    const state={tab:tabs.includes(previous?.tab)?previous.tab:'birth',core:['path','birthDay','attitude'].includes(previous?.core)?previous.core:'path',cycleDate:previous?.cycleDate || initialToday,period:['year','month','day'].includes(previous?.period)?previous.period:'year',name:previous?.name || '',yVowels:previous?.yVowels || [],nameRead:Boolean(previous?.nameRead),nameKind:['expression','soul','personality','maturity'].includes(previous?.nameKind)?previous.nameKind:'expression'};
+    const tabs=['birth','arcs','cycles','name','pair','loshu'];
+    const state={tab:tabs.includes(previous?.tab)?previous.tab:'birth',core:['path','birthDay','attitude'].includes(previous?.core)?previous.core:'path',cycleDate:previous?.cycleDate || initialToday,period:['year','month','day'].includes(previous?.period)?previous.period:'year',name:previous?.name || '',yVowels:previous?.yVowels || [],nameRead:Boolean(previous?.nameRead),nameKind:['expression','soul','personality','maturity'].includes(previous?.nameKind)?previous.nameKind:'expression',
+arc:[0,1,2,3].includes(previous?.arc)?previous.arc:-1,arcView:['pinnacle','challenge'].includes(previous?.arcView)?previous.arcView:'pinnacle',
+};
     if(!E.parseDate(state.cycleDate)||state.cycleDate<birth.parts.value) state.cycleDate=birth.parts.value;
     const controller=new AbortController(), $=selector=>root.querySelector(selector);
     root.classList.add('numerology-room');
     root.innerHTML=`<header class="num-intro"><div><p class="num-kicker">The numerology studio</p><h4>Numbers with a story.</h4><p>Explore the patterns of a birth date, the rhythm of a year, and the letters of a name. Follow the numbers into a richer conversation with yourself.</p><span class="num-birth-caption">Your birth date · ${dateLabel(birth.parts.value)}</span></div><div class="num-intro-orbit" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><i>✧</i></div></header>
-      <nav class="num-tabs" aria-label="Numerology perspectives">${[['birth','Birth numbers','Your foundation'],['cycles','Personal cycles','Year · month · day'],['name','Name reading','Letters & expression'],['loshu','Lo Shu','The nine-cell square']].map(([id,label,sub])=>`<button type="button" data-num-tab="${id}" aria-pressed="${state.tab===id}" aria-controls="num-${id}">${label}<small>${sub}</small></button>`).join('')}</nav>
+      <nav class="num-tabs" aria-label="Numerology perspectives">${[['birth','Birth numbers','Your foundation'],['arcs','Life arcs','Pinnacles & challenges'],['cycles','Personal cycles','Year · month · day'],['name','Name reading','Letters & expression'],['pair','Two paths','Two birth dates'],['loshu','Lo Shu','The nine-cell square']].map(([id,label,sub])=>`<button type="button" data-num-tab="${id}" aria-pressed="${state.tab===id}" aria-controls="num-${id}">${label}<small>${sub}</small></button>`).join('')}</nav>
       <section id="num-birth" class="num-view"></section>
+      <section id="num-arcs" class="num-view"><div class="num-section-heading"><p class="num-kicker">Four chapters</p><h5>The shape of a life, in four arcs.</h5><p>Pinnacles describe the theme traditionally associated with each chapter; challenges describe the recurring question of the same years. Explore any period, past or future.</p></div><div id="num-arcs-content"></div></section>
       <section id="num-cycles" class="num-view"><div class="num-section-heading"><p class="num-kicker">A changing rhythm</p><h5>Put a moment in perspective.</h5><p>Explore a date, then move through the year and the nine-year cycle around it.</p></div><div class="num-date-controls"><button type="button" data-num-day="-1" aria-label="Previous day">←</button><label for="num-cycle-date" class="sr-only">Date to explore</label><input id="num-cycle-date" type="date" value="${esc(state.cycleDate)}" min="${birth.parts.value}" max="${lastDate}"><button type="button" data-num-day="1" aria-label="Next day">→</button><button type="button" data-num-today>Today</button></div><div id="num-cycle-content"></div></section>
       <section id="num-name" class="num-view"><div class="num-section-heading"><p class="num-kicker">An optional name reading</p><h5>The letters you carry.</h5><p>Explore Expression, Soul Urge, Personality, and a longer-view Maturity number. The traditional starting point is your full name at birth; you can also explore another spelling as a variation.</p></div><form id="num-name-form"><label for="num-full-name">Name to explore</label><div class="num-name-entry"><input id="num-full-name" type="text" maxlength="120" value="${esc(state.name)}" placeholder="First, middle and last names…" autocomplete="off" spellcheck="false" aria-describedby="num-name-help"><button type="submit">Read this name <span aria-hidden="true">↗</span></button></div><p id="num-name-help">Include middle names; leave out titles and suffixes. Calculated in this page, with no upload or saved name.</p><fieldset id="num-y-options" hidden><legend>How does each Y sound?</legend><p>Check a Y when it acts as a vowel, as in Lynn. Leave it unchecked when it acts as a consonant, as at the start of Yara. Your choices affect Soul Urge and Personality.</p><div id="num-y-choices"></div></fieldset><p id="num-name-status" role="status"></p></form><div id="num-name-results"></div></section>
       <section id="num-loshu" class="num-view">${BirthdayInsights.renderNumbers(parts)}</section>
@@ -73,6 +103,25 @@ const Numerology = (() => {
     }
     function renderBirth() {
       $('#num-birth').innerHTML=`<div class="num-core-cards" role="group" aria-label="Explore your birth numbers">${['path','birthDay','attitude'].map(kind=>`<button type="button" data-num-core="${kind}" aria-pressed="${state.core===kind}"><span>${roles[kind].label}</span><strong>${kind==='birthDay'?birth.parts.day:numberLabel(birth[kind])}</strong><small>${kind==='birthDay'&&birth.parts.day!==birth.birthDay.value?`Read through ${numberLabel(birth.birthDay)}`:themes[birth[kind].value].words.split(' · ').slice(-2).join(' · ')}</small></button>`).join('')}</div><div id="num-core-reading">${readNumber(birth[state.core],state.core,coreCalculation(state.core))}</div><section class="num-weave"><p class="num-kicker">Read the numbers together</p><h5>${themes[birth.path.value].title} meets ${themes[birth.attitude.value].words.split(' · ')[0].toLowerCase()}.</h5><p>Your Life Path ${numberLabel(birth.path)} offers the wider theme of <strong>${themes[birth.path.value].words.toLowerCase()}</strong>. Your Attitude ${birth.attitude.value} brings <strong>${themes[birth.attitude.value].words.toLowerCase()}</strong> into the way you approach a moment. Notice where these perspectives support one another and where they invite a different response.</p><p>${birth.path.root===birth.birthDay.root?`Life Path and Birth Day share the root ${birth.path.root}. That repeated theme can be a useful thread to revisit in both a larger question and an ordinary daily choice.`:`Your Birth Day ${birth.parts.day}, read through ${numberLabel(birth.birthDay)}, adds the perspective of ${themes[birth.birthDay.value].words.toLowerCase()}. Let it broaden the reading rather than requiring every number to describe the same part of you.`}</p><blockquote>Which theme feels familiar, which one stretches your view, and what small action could bring them into conversation?</blockquote></section>`;
+    }
+    const arcModel=E.arcs(birth);
+    function ageRange(p) { return p.toAge===null?`age ${p.fromAge} onward`:p.fromAge===0?`birth to age ${p.toAge}`:`ages ${p.fromAge}–${p.toAge}`; }
+    function yearRange(p) { return p.toYear===null?`${p.fromYear} →`:`${p.fromYear}–${p.toYear}`; }
+    function renderArcs() {
+      const now=E.currentArc(arcModel,localToday());
+      if(state.arc<0) state.arc=now<0?0:now;
+      const p=arcModel.pinnacles[state.arc], c=arcModel.challenges[state.arc];
+      const timeline=`<div class="num-arc-timeline" role="group" aria-label="Choose a life period">${arcModel.pinnacles.map((pin,i)=>{const ch=arcModel.challenges[i];return `<button type="button" data-num-arc="${i}" aria-pressed="${state.arc===i}" aria-label="Period ${i+1}, ${ageRange(pin)}, pinnacle ${numberLabel(pin.number)}, challenge ${ch.number}${now===i?', current period':''}"><span>Period ${i+1}${now===i?' · now':''}</span><strong>${numberLabel(pin.number)}</strong><small>Pinnacle</small><em>${ch.number}</em><small>Challenge</small><b>${ageRange(pin)}</b><i>${yearRange(pin)}</i></button>`;}).join('')}</div>`;
+      const toggle=`<div class="num-arc-toggle" role="group" aria-label="Read the pinnacle or the challenge">${[['pinnacle','Pinnacle'],['challenge','Challenge']].map(([id,label])=>`<button type="button" data-num-arc-view="${id}" aria-pressed="${state.arcView===id}">${label}</button>`).join('')}</div>`;
+      let reading;
+      if(state.arcView==='pinnacle') {
+        const t=themes[p.number.value];
+        reading=`<article class="num-reading"><header><div class="num-seal" aria-hidden="true"><span>${p.number.value}</span>${p.number.master?`<small>root ${p.number.root}</small>`:''}</div><div><p class="num-kicker">Pinnacle ${state.arc+1} · ${ageRange(p)} · ${yearRange(p)}</p><h5>${t.title}</h5><p class="num-keywords">${t.words}</p></div></header><p class="num-role-lens">${arcLens[p.number.value]}</p><p>${t.story}</p><div class="num-reading-pair"><section><h6>A useful expression</h6><p>${t.capacity}</p></section><section><h6>Room to grow</h6><p>${t.edge}</p></section></div><blockquote>${t.prompt}</blockquote><details class="num-method"><summary>See the calculation</summary><p>${p.calculation} → <strong>${trail(p.number)}</strong>. Components use the single-digit month, day and year (${arcModel.components.month}, ${arcModel.components.day}, ${arcModel.components.year}); results keep 11, 22 and 33.</p><p>The first period ends at age 36 − ${birth.path.root} (your Life Path root) = ${arcModel.firstPeriodEnd}; the next two last nine years each.</p></details></article>`;
+      } else {
+        const t=challengeCopy[c.number];
+        reading=`<article class="num-reading"><header><div class="num-seal" aria-hidden="true"><span>${c.number}</span></div><div><p class="num-kicker">Challenge ${state.arc+1} · ${ageRange(c)} · ${yearRange(c)}</p><h5>${t.title}</h5><p class="num-keywords">${t.words}</p></div></header><p class="num-role-lens">A challenge names a recurring question of the period, not a flaw or a prediction. The same question can be met many ways.</p><p>${t.story}</p><blockquote>${t.prompt}</blockquote><details class="num-method"><summary>See the calculation</summary><p>${c.calculation}. Challenges take the difference of single-digit components, so results run 0–8; 0 has its own reading.</p></details></article>`;
+      }
+      $('#num-arcs-content').innerHTML=timeline+toggle+reading;
     }
     function renderCycles() {
       $('#num-cycle-date').value=state.cycleDate;
@@ -106,6 +155,8 @@ const Numerology = (() => {
     root.addEventListener('click', event=>{
       const button=event.target.closest('button');if(!button)return;const d=button.dataset;
       if(d.numTab){state.tab=d.numTab;showTab();return;}
+      if(d.numArc){state.arc=Number(d.numArc);renderArcs();$(`[data-num-arc="${state.arc}"]`).focus({preventScroll:true});return;}
+      if(d.numArcView){state.arcView=d.numArcView;renderArcs();$(`[data-num-arc-view="${state.arcView}"]`).focus({preventScroll:true});return;}
       if(d.numCore){state.core=d.numCore;renderBirth();$(`[data-num-core="${state.core}"]`).focus({preventScroll:true});return;}
       if(d.numNameKind){state.nameKind=d.numNameKind;renderName();$(`[data-num-name-kind="${state.nameKind}"]`).focus({preventScroll:true});return;}
       if(d.numPeriod){state.period=d.numPeriod;renderCycles();$(`[data-num-period="${state.period}"]`).focus({preventScroll:true});return;}
@@ -122,7 +173,7 @@ const Numerology = (() => {
     },{signal:controller.signal});
     $('#num-full-name').addEventListener('input',event=>{state.name=event.target.value;state.nameRead=false;state.yVowels=[];renderYChoices();$('#num-name-status').textContent=state.name?'Choose Read this name when you are ready.':'';renderName();},{signal:controller.signal});
     $('#num-name-form').addEventListener('submit',event=>{event.preventDefault();state.name=$('#num-full-name').value;state.nameRead=true;renderName();},{signal:controller.signal});
-    renderBirth();renderCycles();renderYChoices();renderName();showTab();
+    renderBirth();renderArcs();renderCycles();renderYChoices();renderName();showTab();
     return {getState:()=>({...state,yVowels:[...state.yVowels]}),destroy:()=>controller.abort()};
   }
   return {attach};

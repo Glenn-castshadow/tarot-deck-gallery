@@ -19,7 +19,7 @@
 .num-intro-orbit span:nth-child(8) { --orbit-angle: 280deg; }
 .num-intro-orbit span:nth-child(9) { --orbit-angle: 320deg; }
 .num-intro-orbit i { position: absolute; inset: 0; display: grid; place-items: center; font-size: 48px; font-style: normal; color: var(--num-teal); }
-.num-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; padding: 0 0 24px; margin-bottom: 26px; border-bottom: 1px solid var(--num-line); }
+.num-tabs { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 9px; padding: 0 0 24px; margin-bottom: 26px; border-bottom: 1px solid var(--num-line); }
 .num-tabs button { min-height: 70px; padding: 13px 10px; border: 1px solid var(--num-line); border-radius: 3px; background: #ffffff04; color: #e2e8e9; font-size: 13px; text-align: left; }
 .num-tabs button small { display: block; color: var(--num-muted); margin-top: 6px; font-size: 10px; }
 .num-tabs button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }
@@ -145,3 +145,19 @@
   .num-letter { width: 29px; }
   .numerology-room blockquote { font-size: 19px; padding-left: 16px; }
 }
+.num-arc-timeline { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin: 0 0 22px; }
+.num-arc-timeline button { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'label label' 'pin ch' 'pinl chl' 'age age' 'year year'; gap: 2px 8px; align-items: end; min-width: 0; padding: 16px 12px 14px; border: 1px solid var(--num-line); border-radius: 5px; background: #ffffff03; color: var(--num-text); text-align: left; }
+.num-arc-timeline button > span { grid-area: label; font: 10px/1.5 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--num-muted); margin-bottom: 8px; }
+.num-arc-timeline button strong { grid-area: pin; color: var(--num-teal); font: 500 clamp(30px,3.4vw,46px)/1.1 'Playfair Display', serif; }
+.num-arc-timeline button em { grid-area: ch; font: 500 clamp(30px,3.4vw,46px)/1.1 'Playfair Display', serif; font-style: normal; color: var(--num-gold); }
+.num-arc-timeline button small { font-size: 9px; color: var(--num-muted); text-transform: uppercase; letter-spacing: .08em; }
+.num-arc-timeline button small:nth-of-type(1) { grid-area: pinl; }
+.num-arc-timeline button small:nth-of-type(2) { grid-area: chl; }
+.num-arc-timeline button b { grid-area: age; font-weight: 400; font-size: 12px; margin-top: 10px; }
+.num-arc-timeline button i { grid-area: year; font: 10px 'DM Mono', monospace; color: var(--num-muted); }
+.num-arc-timeline button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }
+.num-arc-toggle { display: flex; gap: 8px; margin: 0 0 18px; }
+.num-arc-toggle button { min-height: 40px; padding: 8px 18px; border: 1px solid var(--num-line); border-radius: 3px; background: #ffffff04; color: var(--num-text); font-size: 12px; }
+.num-arc-toggle button[aria-pressed='true'] { background: #d9bf8830; border-color: var(--num-gold); color: var(--num-gold); }
+@media (max-width: 1000px) { .num-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); } .num-arc-timeline { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 700px) { .num-arc-timeline { grid-template-columns: 1fr; } }
