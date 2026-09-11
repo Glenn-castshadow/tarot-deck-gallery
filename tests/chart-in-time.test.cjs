@@ -166,12 +166,14 @@ test('the progressed lunation phase reads from the progressed Sun and Moon',()=>
   const moon=result.points.find(p=>p.name==='Moon').longitude;
   assert.equal(result.lunation.angle,natal.mod(moon-sun));
   assert.equal(result.lunation.index,Math.floor(natal.mod(moon-sun)/45));
-  assert.ok(['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'].includes(result.lunation.name));
+  assert.equal(result.lunation.name,['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'][result.lunation.index],'name matches index');
 });
 
 test('progression contacts use tight orbs',()=>{
   const secondary=engine.progressedChart({chart,targetDate:'2020-07-15',method:'secondary'});
   const arcChart=engine.progressedChart({chart,targetDate:'2020-07-15',method:'solar-arc'});
+  assert.ok(secondary.contacts.length>0,'secondary produced contacts to check');
+  assert.ok(arcChart.contacts.length>0,'solar arc produced contacts to check');
   assert.ok(secondary.contacts.every(c=>c.orb<=2));
   assert.ok(arcChart.contacts.every(c=>c.orb<=1));
 });
@@ -180,5 +182,21 @@ test('progressions reject bad input without inventing a chart',()=>{
   assert.equal(engine.progressedChart({chart,targetDate:'2020-07-15',method:'quinary'}).status,'error');
   assert.equal(engine.progressedChart({chart,targetDate:'not-a-date',method:'secondary'}).status,'error');
   assert.equal(engine.progressedChart({chart,targetDate:'2101-01-01',method:'secondary'}).status,'error');
+  assert.equal(engine.progressedChart({chart,targetDate:'2020-02-30',method:'secondary'}).status,'error');
   assert.equal(engine.progressedChart({chart:natal.calculate({...BIRTH,time:''}),targetDate:'2020-07-15'}).status,'missing');
+});
+
+test('the solar arc accumulates past 180 degrees without wrapping',()=>{
+  // mod(), not delta(): near the top of the supported range the accumulated arc exceeds
+  // 180 degrees and delta() would wrap it negative (195.2197 vs -164.7803). Every other
+  // progression test sits near 30 degrees, where the two agree and this cannot be caught.
+  const old=natal.calculate({birthday:'1901-06-01',time:'12:00',location:BIRTH.location});
+  assert.equal(old.status,'ready');
+  const directed=engine.progressedChart({chart:old,targetDate:'2100-12-31',method:'solar-arc'});
+  assert.equal(directed.status,'ready');
+  assert.ok(directed.arc>180,`arc ${directed.arc} must exceed 180`);
+  const secondary=engine.progressedChart({chart:old,targetDate:'2100-12-31',method:'secondary'});
+  const natalSun=old.points.find(p=>p.name==='Sun').longitude;
+  const progressedSun=secondary.points.find(p=>p.name==='Sun').longitude;
+  assert.ok(Math.abs(directed.arc-natal.mod(progressedSun-natalSun))<1e-9,'arc matches mod(), not delta()');
 });
