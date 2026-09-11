@@ -110,6 +110,27 @@ for(const c of reference.cases) test(`swiss-derived dasha reference: ${c.id}`,()
   const moon=J.sidereal(chart).grahas.find(g=>g.name==='Moon');
   const w=moon.longitude%(360/27); if(w<0.03||360/27-w<0.03) return; // boundary case: lord may differ legitimately
   assert.equal(d.mahadashas[0].lord,c.dasha.firstLord);
-  assert.ok(Math.abs(d.balanceYears-c.dasha.balanceYears)*365.25<1,'balance within a day');
-  d.mahadashas.forEach((m,i)=>{assert.equal(m.lord,c.dasha.mahadashas[i].lord);assert.ok(Math.abs(new Date(m.end)-new Date(c.dasha.mahadashas[i].end))<86400000,`mahadasha ${i} end within a day`);});
+  // The tropical engine (Astronomy Engine) already tolerates up to 0.03° of Moon-longitude
+  // disagreement with Swiss Ephemeris elsewhere in this file. Vimshottari amplifies any such
+  // difference e (degrees) by firstLordYears / nakshatraSpan, since a nakshatra spans 360/27°
+  // and the whole dasha timeline is shifted by that fraction of the first lord's years. That
+  // shift is a constant offset carried through every later mahadasha (their durations are fixed
+  // dashaYears, not Moon-sensitive), so the same bound applies to the balance and to every
+  // mahadasha end date. Worst case (a 20-year lord at the full 0.03°) is about 16 days; +1 day
+  // covers rounding/date-boundary effects.
+  const lordYears=J.dashaYears[c.dasha.firstLord];
+  const allowedDays=0.03/(360/27)*lordYears*365.25+1;
+  assert.ok(Math.abs(d.balanceYears-c.dasha.balanceYears)*365.25<=allowedDays,`balance within ${allowedDays.toFixed(1)} days`);
+  d.mahadashas.forEach((m,i)=>{assert.equal(m.lord,c.dasha.mahadashas[i].lord);assert.ok(Math.abs(new Date(m.end)-new Date(c.dasha.mahadashas[i].end))<=allowedDays*86400000,`mahadasha ${i} end within ${allowedDays.toFixed(1)} days`);});
+});
+for(const c of reference.cases) test(`vimshottari arithmetic matches the fixture exactly when fed its own Moon longitude: ${c.id}`,()=>{
+  // Isolates the dasha *rule* from Moon-ephemeris disagreement: build a synthetic chart whose
+  // sidereal Moon longitude is the fixture's own points.Moon (not this engine's tropical-minus-
+  // ayanamsa computation), the same way the synthetic test above builds charts. With the Moon
+  // position pinned to the fixture's value, the first mahadasha's end should match Swiss to well
+  // under a second.
+  const chart=syntheticChart(c.points.Moon,c.utc);
+  const d=J.vimshottari(chart,c.utc.slice(0,10));
+  assert.equal(d.mahadashas[0].lord,c.dasha.firstLord);
+  assert.ok(Math.abs(new Date(d.mahadashas[0].end)-new Date(c.dasha.mahadashas[0].end))<60000,'first mahadasha end within 60 seconds');
 });
