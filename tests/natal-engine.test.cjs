@@ -107,7 +107,14 @@ test('regiomontanus cusps: angles recovered, opposites hold, span is 360, polar 
   const raOf=l=>engine.mod(Math.atan2(Math.sin(l*Math.PI/180)*Math.cos(eq.obliquity*Math.PI/180),Math.cos(l*Math.PI/180))*180/Math.PI);
   assert.ok(Math.abs(engine.delta(raOf(eqCusps[10]),eq.ramc+30))<1e-6,'equatorial 11th cusp');
   assert.equal(engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),70,20),70,'regiomontanus')!==null,true,'defined at 70°N');
-  assert.equal(engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),88,20),88,'regiomontanus'),null,'undefined inside the polar circle');
+  // Regiomontanus stays defined inside the polar circle, unlike Placidus: 88°N still yields a full,
+  // correctly ordered 360° cycle of cusps.
+  const polarCusps=engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),88,20),88,'regiomontanus');
+  assert.notEqual(polarCusps,null,'defined at 88°N, inside the polar circle');
+  const polarSpan=polarCusps.reduce((s,v,i)=>s+engine.mod(polarCusps[(i+1)%12]-v),0);
+  assert.ok(Math.abs(polarSpan-360)<1e-6,'88°N cusps still span 360°');
+  for(let i=0;i<12;i++) assert.ok(engine.mod(polarCusps[(i+1)%12]-polarCusps[i])<180,`88°N cusp ${i+1} precedes ${i+2}`);
+  assert.equal(engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),90,20),90,'regiomontanus'),null,'undefined only at the pole itself');
   const chart=engine.chartAtInstant(new Date('2024-03-15T10:20:00Z'),{latitude:51.5085,longitude:-0.1257,timeZone:'Europe/London'},{houseSystem:'regiomontanus'});
   assert.equal(chart.houseSystem,'regiomontanus');
   assert.equal(engine.calculate({birthday:'1990-07-15',time:'14:30',location:{latitude:40.7143,longitude:-74.006,timeZone:'America/New_York'},houseSystem:'regiomontanus'}).houseSystem,'regiomontanus');

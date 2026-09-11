@@ -48,11 +48,10 @@ const NatalEngine = (() => {
     if(system==='regiomontanus') {
       // Regiomontanus: the equator is divided into 30° arcs from the RAMC and projected onto the
       // ecliptic through the house circles; the pole of each house is tan φH = tan φ · sin D.
-      // Unlike Placidus, this formula never hits a hard domain error before the true pole, but the
-      // houses become impractically compressed well before that. Treat it as unusable once even the
-      // innermost 30° division's auxiliary pole would itself sit beyond the ecliptic's polar circle
-      // (a softened version of Placidus's own 90°-obliquity bound, scaled by that division's sin 30°).
-      if(Math.abs(latitude)>=90-obliquity*Math.sin(30*D)) return null;
+      // Unlike Placidus, this stays defined inside the polar circles (Swiss Ephemeris computes it
+      // there too) — only the true pole itself is a hard singularity (tan φ diverges), so the
+      // whole-sign fallback in chartAtInstant only triggers there, not at high latitudes generally.
+      if(Math.abs(latitude)>=90) return null;
       const eps=obliquity*D, phi=latitude*D;
       const cusp=arc=>{const poleH=Math.atan(Math.tan(phi)*Math.sin(arc*D)), r=(ramc+arc)*D; return mod(Math.atan2(Math.sin(r),Math.cos(r)*Math.cos(eps)-Math.tan(poleH)*Math.sin(eps))/D);};
       const c11=cusp(30),c12=cusp(60),c2=cusp(120),c3=cusp(150);
