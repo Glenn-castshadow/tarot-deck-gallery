@@ -1,0 +1,1310 @@
+{
+  "source": "pyswisseph Moshier; Regiomontanus b'R'; rise_trans; Lilly tables re-derived in Python",
+  "version": "2.10.03",
+  "cases": [
+    {
+      "id": "millennium-greenwich",
+      "input": {
+        "birthday": "2000-01-01",
+        "time": "12:00",
+        "location": {
+          "latitude": 51.4779,
+          "longitude": 0,
+          "timeZone": "Europe/London"
+        }
+      },
+      "utc": "2000-01-01T12:00:00Z",
+      "cusps": [
+        24.26618920267986,
+        67.75421920898113,
+        86.53324148591912,
+        99.61108780028457,
+        114.42261263130348,
+        142.24368539406368,
+        204.26618920267987,
+        247.7542192089811,
+        266.5332414859191,
+        279.61108780028457,
+        294.4226126313035,
+        322.2436853940637
+      ],
+      "asc": 24.26618920267986,
+      "mc": 279.61108780028457,
+      "points": {
+        "Sun": 280.36891967534336,
+        "Moon": 223.32377543840957,
+        "Mercury": 271.8892750074874,
+        "Venus": 241.5657983261687,
+        "Mars": 327.9633133185202,
+        "Jupiter": 25.25303030942177,
+        "Saturn": 40.39563895600193
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": true,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        }
+      }
+    },
+    {
+      "id": "new-york-winter",
+      "input": {
+        "birthday": "2024-01-15",
+        "time": "09:30",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "2024-01-15T14:30:00Z",
+      "cusps": [
+        339.5347848384995,
+        28.266077340551245,
+        59.255825864348466,
+        79.00174877471522,
+        96.7765191051268,
+        119.98737977885258,
+        159.5347848384995,
+        208.26607734055125,
+        239.25582586434848,
+        259.0017487747152,
+        276.7765191051268,
+        299.9873797788526
+      ],
+      "asc": 339.5347848384995,
+      "mc": 259.0017487747152,
+      "points": {
+        "Sun": 294.9247920494599,
+        "Moon": 351.40372919193675,
+        "Mercury": 271.6526503641436,
+        "Venus": 260.4602268469602,
+        "Mars": 278.2150178006935,
+        "Jupiter": 35.99395162891898,
+        "Saturn": 334.6480071907482
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": true,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "new-york-summer",
+      "input": {
+        "birthday": "2024-07-15",
+        "time": "09:30",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "2024-07-15T13:30:00Z",
+      "cusps": [
+        158.13946609832342,
+        181.96656151469494,
+        209.5214799704542,
+        244.36318879036583,
+        281.83464215803093,
+        313.0149378698907,
+        338.1394660983234,
+        1.966561514694945,
+        29.52147997045421,
+        64.36318879036581,
+        101.83464215803093,
+        133.01493786989067
+      ],
+      "asc": 158.13946609832342,
+      "mc": 64.36318879036581,
+      "points": {
+        "Sun": 113.55077290634357,
+        "Moon": 221.3965431018404,
+        "Mercury": 139.46537101542503,
+        "Venus": 124.77121198779197,
+        "Mars": 56.30720904731164,
+        "Jupiter": 71.267678783851,
+        "Saturn": 349.2227639788624
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": true,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        }
+      }
+    },
+    {
+      "id": "seattle-example",
+      "input": {
+        "birthday": "1988-11-05",
+        "time": "14:30",
+        "location": {
+          "latitude": 47.6062,
+          "longitude": -122.3321,
+          "timeZone": "America/Los_Angeles"
+        }
+      },
+      "utc": "1988-11-05T22:30:00Z",
+      "cusps": [
+        340.6816317032918,
+        36.05673771478779,
+        64.67891954987947,
+        81.30236497554296,
+        96.33153329284431,
+        117.49887260798323,
+        160.68163170329183,
+        216.0567377147878,
+        244.67891954987948,
+        261.30236497554296,
+        276.3315332928443,
+        297.49887260798323
+      ],
+      "asc": 340.6816317032918,
+      "mc": 261.30236497554296,
+      "points": {
+        "Sun": 223.73216646905624,
+        "Moon": 182.69042465959976,
+        "Mercury": 208.93185451411767,
+        "Venus": 188.42349889007605,
+        "Mars": 0.36903853793355695,
+        "Jupiter": 63.30920367252416,
+        "Saturn": 269.3744776063001
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "southern-hemisphere",
+      "input": {
+        "birthday": "1940-05-01",
+        "time": "06:00",
+        "location": {
+          "latitude": -34.9285,
+          "longitude": 138.6007,
+          "timeZone": "Australia/Adelaide"
+        }
+      },
+      "utc": "1940-04-30T20:30:00Z",
+      "cusps": [
+        28.902187824028136,
+        55.037698537413945,
+        86.36503115210614,
+        122.45308849367257,
+        156.212890521831,
+        184.0816705282158,
+        208.90218782402815,
+        235.03769853741395,
+        266.36503115210616,
+        302.45308849367257,
+        336.21289052183107,
+        4.08167052821581
+      ],
+      "asc": 28.902187824028136,
+      "mc": 302.45308849367257,
+      "points": {
+        "Sun": 40.323183233515195,
+        "Moon": 327.30252942312444,
+        "Mercury": 19.50443018578387,
+        "Venus": 85.18935444715342,
+        "Mars": 79.11663705490231,
+        "Jupiter": 26.386178235870364,
+        "Saturn": 35.15560617527445
+      },
+      "sect": "night",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": true,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        }
+      }
+    },
+    {
+      "id": "early-range",
+      "input": {
+        "birthday": "1901-01-01",
+        "time": "12:00",
+        "location": {
+          "latitude": 0,
+          "longitude": 0,
+          "timeZone": "UTC"
+        }
+      },
+      "utc": "1901-01-01T12:00:00Z",
+      "cusps": [
+        11.358521640881188,
+        42.89411113922905,
+        71.94831854059983,
+        99.59613506619479,
+        128.02283188007152,
+        158.831289429123,
+        191.35852164088118,
+        222.89411113922904,
+        251.94831854059981,
+        279.5961350661948,
+        308.0228318800715,
+        338.83128942912293
+      ],
+      "asc": 11.358521640881188,
+      "mc": 279.5961350661948,
+      "points": {
+        "Sun": 280.4187705171406,
+        "Moon": 55.368284699525226,
+        "Mercury": 268.44173733383883,
+        "Venus": 251.37276734514168,
+        "Mars": 161.71365498955322,
+        "Jupiter": 266.07068451054073,
+        "Saturn": 277.76153489707974
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": true,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Jupiter": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "late-range",
+      "input": {
+        "birthday": "2099-09-22",
+        "time": "12:00",
+        "location": {
+          "latitude": 35.6762,
+          "longitude": 139.6503,
+          "timeZone": "Asia/Tokyo"
+        }
+      },
+      "utc": "2099-09-22T03:00:00Z",
+      "cusps": [
+        259.1753526085389,
+        289.812185191898,
+        329.6330444134325,
+        6.492310763533169,
+        33.55362868701593,
+        55.785703833406615,
+        79.1753526085389,
+        109.81218519189798,
+        149.63304441343251,
+        186.49231076353317,
+        213.5536286870159,
+        235.78570383340661
+      ],
+      "asc": 259.1753526085389,
+      "mc": 186.49231076353317,
+      "points": {
+        "Sun": 179.46190632828174,
+        "Moon": 278.0527477114566,
+        "Mercury": 203.85644383966516,
+        "Venus": 196.10864491021934,
+        "Mars": 31.999749659965477,
+        "Jupiter": 182.740851567773,
+        "Saturn": 195.0692090102742
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Venus": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": true,
+          "fall": false,
+          "triplicity": true,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "polar-north",
+      "input": {
+        "birthday": "2024-02-10",
+        "time": "12:00",
+        "location": {
+          "latitude": 69.6492,
+          "longitude": 18.9553,
+          "timeZone": "Europe/Oslo"
+        }
+      },
+      "utc": "2024-02-10T11:00:00Z",
+      "cusps": [
+        123.37774231482213,
+        129.9349847708309,
+        134.85807348874644,
+        141.60913310319268,
+        164.43590462881684,
+        282.54347314348786,
+        303.3777423148221,
+        309.9349847708309,
+        314.8580734887464,
+        321.6091331031927,
+        344.4359046288168,
+        102.54347314348783
+      ],
+      "asc": 123.37774231482213,
+      "mc": 321.6091331031927,
+      "points": {
+        "Sun": 321.1892915202823,
+        "Moon": 328.2855382379943,
+        "Mercury": 308.2259862419927,
+        "Venus": 292.31878640505795,
+        "Mars": 297.85473147205977,
+        "Jupiter": 38.374775932946406,
+        "Saturn": 337.54615412126304
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": true,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": true,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "high-latitude-summer",
+      "input": {
+        "birthday": "2024-06-21",
+        "time": "12:00",
+        "location": {
+          "latitude": 64.1466,
+          "longitude": -21.9426,
+          "timeZone": "Atlantic/Reykjavik"
+        }
+      },
+      "utc": "2024-06-21T12:00:00Z",
+      "cusps": [
+        167.50168940049332,
+        185.0550445277314,
+        208.68434171565158,
+        249.87965304130864,
+        298.6989365500697,
+        328.4375684960167,
+        347.5016894004933,
+        5.055044527731411,
+        28.684341715651613,
+        69.87965304130864,
+        118.69893655006967,
+        148.4375684960167
+      ],
+      "asc": 167.50168940049332,
+      "mc": 69.87965304130864,
+      "points": {
+        "Sun": 90.60216369074239,
+        "Moon": 263.7434080064127,
+        "Mercury": 98.82275170082956,
+        "Venus": 95.20384410953955,
+        "Mars": 39.07111576002876,
+        "Jupiter": 66.12235424348515,
+        "Saturn": 349.37058016632096
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        }
+      }
+    },
+    {
+      "id": "sample-new-york",
+      "input": {
+        "birthday": "1990-07-15",
+        "time": "14:30",
+        "location": {
+          "latitude": 40.7143,
+          "longitude": -74.006,
+          "timeZone": "America/New_York"
+        }
+      },
+      "utc": "1990-07-15T18:30:00Z",
+      "cusps": [
+        216.94704100330262,
+        242.57267636219606,
+        275.6475127748689,
+        314.3757003433393,
+        347.9301808525694,
+        13.856487772070523,
+        36.947041003302616,
+        62.572676362196034,
+        95.64751277486891,
+        134.37570034333933,
+        167.9301808525694,
+        193.85648777207052
+      ],
+      "asc": 216.94704100330262,
+      "mc": 134.37570034333933,
+      "points": {
+        "Sun": 113.00452732969673,
+        "Moon": 27.06879786952606,
+        "Mercury": 127.28045217465075,
+        "Venus": 84.73609831280413,
+        "Mars": 32.123427121019866,
+        "Jupiter": 112.60989143160684,
+        "Saturn": 291.94356817985283
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": true,
+          "face": false,
+          "peregrine": false
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": true,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": true,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        }
+      }
+    },
+    {
+      "id": "polar-85",
+      "input": {
+        "birthday": "2024-06-21",
+        "time": "12:00",
+        "location": {
+          "latitude": 85,
+          "longitude": 20,
+          "timeZone": "UTC"
+        }
+      },
+      "utc": "2024-06-21T12:00:00Z",
+      "cusps": [
+        183.64942671657536,
+        189.6329840245328,
+        202.07386287038793,
+        288.6306014422008,
+        347.8626046266413,
+        357.9815669619104,
+        3.6494267165753627,
+        9.632984024532789,
+        22.073862870387927,
+        108.6306014422008,
+        167.86260462664134,
+        177.98156696191043
+      ],
+      "asc": 183.64942671657536,
+      "mc": 108.6306014422008,
+      "points": {
+        "Sun": 90.60216369074239,
+        "Moon": 263.7434080064127,
+        "Mercury": 98.82275170082956,
+        "Venus": 95.20384410953955,
+        "Mars": 39.07111576002876,
+        "Jupiter": 66.12235424348515,
+        "Saturn": 349.37058016632096
+      },
+      "sect": "day",
+      "dignities": {
+        "Sun": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Moon": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Mercury": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        },
+        "Venus": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Mars": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": false
+        },
+        "Jupiter": {
+          "ruler": false,
+          "detriment": true,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": true,
+          "peregrine": false
+        },
+        "Saturn": {
+          "ruler": false,
+          "detriment": false,
+          "exaltation": false,
+          "fall": false,
+          "triplicity": false,
+          "term": false,
+          "face": false,
+          "peregrine": true
+        }
+      }
+    }
+  ],
+  "riseSet": [
+    {
+      "place": "London",
+      "latitude": 51.5085,
+      "longitude": -0.1257,
+      "date": "2000-01-01",
+      "sunrise": "2000-01-01T08:05:52Z",
+      "sunset": "2000-01-01T16:01:53Z",
+      "nextSunrise": "2000-01-02T08:05:47Z"
+    },
+    {
+      "place": "London",
+      "latitude": 51.5085,
+      "longitude": -0.1257,
+      "date": "2024-06-21",
+      "sunrise": "2024-06-21T03:42:50Z",
+      "sunset": "2024-06-21T20:21:59Z",
+      "nextSunrise": "2024-06-22T03:43:05Z"
+    },
+    {
+      "place": "London",
+      "latitude": 51.5085,
+      "longitude": -0.1257,
+      "date": "2024-12-21",
+      "sunrise": "2024-12-21T08:03:35Z",
+      "sunset": "2024-12-21T15:54:01Z",
+      "nextSunrise": "2024-12-22T08:04:03Z"
+    },
+    {
+      "place": "New York",
+      "latitude": 40.7143,
+      "longitude": -74.006,
+      "date": "2000-01-01",
+      "sunrise": "2000-01-01T12:19:45Z",
+      "sunset": "2000-01-01T21:39:12Z",
+      "nextSunrise": "2000-01-02T12:19:52Z"
+    },
+    {
+      "place": "New York",
+      "latitude": 40.7143,
+      "longitude": -74.006,
+      "date": "2024-06-21",
+      "sunrise": "2024-06-21T09:24:52Z",
+      "sunset": "2024-06-22T00:31:06Z",
+      "nextSunrise": "2024-06-22T09:25:07Z"
+    },
+    {
+      "place": "New York",
+      "latitude": 40.7143,
+      "longitude": -74.006,
+      "date": "2024-12-21",
+      "sunrise": "2024-12-21T12:16:31Z",
+      "sunset": "2024-12-21T21:32:20Z",
+      "nextSunrise": "2024-12-22T12:16:59Z"
+    },
+    {
+      "place": "Adelaide",
+      "latitude": -34.9285,
+      "longitude": 138.6007,
+      "date": "2000-01-01",
+      "sunrise": "2000-01-01T19:35:08Z",
+      "sunset": "2000-01-02T10:03:03Z",
+      "nextSunrise": "2000-01-02T19:35:54Z"
+    },
+    {
+      "place": "Adelaide",
+      "latitude": -34.9285,
+      "longitude": 138.6007,
+      "date": "2024-06-21",
+      "sunrise": "2024-06-21T21:53:14Z",
+      "sunset": "2024-06-22T07:42:05Z",
+      "nextSunrise": "2024-06-22T21:53:25Z"
+    },
+    {
+      "place": "Adelaide",
+      "latitude": -34.9285,
+      "longitude": 138.6007,
+      "date": "2024-12-21",
+      "sunrise": "2024-12-21T19:28:37Z",
+      "sunset": "2024-12-22T09:59:45Z",
+      "nextSunrise": "2024-12-22T19:29:09Z"
+    }
+  ]
+}

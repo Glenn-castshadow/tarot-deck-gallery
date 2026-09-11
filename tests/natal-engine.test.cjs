@@ -119,3 +119,13 @@ test('regiomontanus cusps: angles recovered, opposites hold, span is 360, polar 
   assert.equal(chart.houseSystem,'regiomontanus');
   assert.equal(engine.calculate({birthday:'1990-07-15',time:'14:30',location:{latitude:40.7143,longitude:-74.006,timeZone:'America/New_York'},houseSystem:'regiomontanus'}).houseSystem,'regiomontanus');
 });
+
+const horaryRef=require('./fixtures/horary-reference.json');
+for(const c of horaryRef.cases) test(`swiss regiomontanus cusps: ${c.id}`,()=>{
+  const chart=engine.calculate({...c.input,houseSystem:'regiomontanus'});
+  assert.equal(chart.status,'ready');
+  // The engine defines Regiomontanus everywhere short of the true pole (0ab8781), so every case
+  // including the 85°N polar fixture must come back as 'regiomontanus', never the whole-sign fallback.
+  assert.equal(chart.houseSystem,'regiomontanus',`${c.id} should not fall back`);
+  chart.cusps.forEach((v,i)=>assert.ok(Math.abs(engine.delta(v,c.cusps[i]))<0.01,`cusp ${i+1}: ${v} vs ${c.cusps[i]}`));
+});
