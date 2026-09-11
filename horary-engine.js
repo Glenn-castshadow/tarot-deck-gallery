@@ -36,20 +36,27 @@ const HoraryEngine = (() => {
     // changes sign. Astronomy Engine's Search only finds ascending zero-crossings, so both
     // chiralities of a non-conjunction/opposition aspect (leading vs. trailing) are searched
     // by negating the target; this also covers retrograde pairs, where the crossing direction
-    // can otherwise go the "wrong" way.
+    // can otherwise go the "wrong" way. Both chiralities are walked to completion (each
+    // stopping at its own first bracket hit) and the chronologically earliest of the two
+    // candidate crossings wins -- returning on the first chirality to find a hit (as the
+    // brief's pseudocode did) is wrong whenever the *other* chirality's crossing comes first,
+    // which happens routinely for fast-moving pairs like the Moon.
     const t0 = astro.MakeTime(new Date(chart.date)), lon = (n, t) => astro.Ecliptic(astro.GeoVector(n, t, true)).elon;
     const sign = x => Math.floor(natal.mod(x) / 30);
+    const hits = [];
     for (const s of (aspect === 0 || aspect === 180 ? [1] : [1, -1])) {
       const g = t => natal.delta(lon(a.name, t) - lon(b.name, t), s * aspect);
       for (let x = t0; x.ut < t0.ut + 30; x = x.AddDays(0.5)) {
         const y = x.AddDays(0.5), ga = g(x), gb = g(y);
         if ((ga < 0 && gb >= 0 || ga > 0 && gb <= 0) && Math.abs(gb - ga) < 45) {
           const hit = astro.Search(ga < 0 ? g : t => -g(t), x, y, { dt_tolerance_seconds: 1 });
-          if (hit) return { date: hit.date.toISOString(), beforeSignChange: sign(lon(a.name, hit)) === sign(a.longitude) && sign(lon(b.name, hit)) === sign(b.longitude) };
+          if (hit) { hits.push(hit); break; }
         }
       }
     }
-    return null;
+    if (!hits.length) return null;
+    const earliest = hits.reduce((best, h) => (!best || h.ut < best.ut) ? h : best, null);
+    return { date: earliest.date.toISOString(), beforeSignChange: sign(lon(a.name, earliest)) === sign(a.longitude) && sign(lon(b.name, earliest)) === sign(b.longitude) };
   }
 
   function significatorFor(chart, house) {
@@ -112,7 +119,7 @@ const HoraryEngine = (() => {
     const aspectsOut = pairs.filter(([x, y]) => significators[x].planet !== significators[y].planet).map(([x, y]) => {
       const a = significators[x].point, b = significators[y].point, r = applyingAspect(a, b);
       const p = r.aspect !== null && r.applying ? perfects(a, b, r.aspect, chart) : null;
-      return { a: a.name, b: b.name, roles: [x, y], ...r, perfects: p?.date || null, beforeSignChange: p?.beforeSignChange ?? null };
+      return { a: a.name, b: b.name, roles: [x, y], ...r, perfects: p?.date || null, beforeSignChange: p?.beforeSignChange ?? false };
     });
     const receptions = [['querent', 'quesited'], ['quesited', 'querent']].filter(([x, y]) => significators[x].planet !== significators[y].planet).map(([x, y]) => ({ from: significators[x].planet, to: significators[y].planet, ...C.reception(significators[x].planet, significators[y].planet, chart) }));
     const main = aspectsOut.find(x => x.roles.includes('querent') && x.roles.includes('quesited'));

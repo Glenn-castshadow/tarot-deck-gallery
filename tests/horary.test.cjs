@@ -3,6 +3,31 @@ const assert = require('node:assert/strict');
 const H = require('../horary-engine.js');
 const C = require('../classical-engine.js');
 const natal = require('../natal-engine.js');
+const astro = require('../vendor/astronomy-engine/astronomy.js');
+
+// Independent brute-force check for perfects(): steps 2 hours at a time (far finer than
+// perfects()'s own 12-hour bracket walk) across 30 days for each aspect chirality, linearly
+// interpolating the zero-crossing within whichever 2-hour bracket first flips sign, and
+// returns the earliest crossing across both chiralities (or null if neither has one).
+function bruteForcePerfects(aName, bName, aspect, chart) {
+  const lon = (n, t) => astro.Ecliptic(astro.GeoVector(n, t, true)).elon;
+  const t0 = +new Date(chart.date);
+  let best = null;
+  for (const s of (aspect === 0 || aspect === 180 ? [1] : [1, -1])) {
+    let prev = null, prevT = null;
+    for (let t = t0; t <= t0 + 30 * 86400000; t += 2 * 3600000) {
+      const d = new Date(t);
+      const g = natal.delta(lon(aName, d) - lon(bName, d), s * aspect);
+      if (prev !== null && ((prev < 0 && g >= 0) || (prev > 0 && g <= 0)) && Math.abs(g - prev) < 45) {
+        const cross = prevT + (prev / (prev - g)) * (t - prevT);
+        if (best === null || cross < best) best = cross;
+        break;
+      }
+      prev = g; prevT = t;
+    }
+  }
+  return best;
+}
 
 test('cast: regiomontanus chart, sect, hour, considerations and significators', () => {
   const r = H.cast({ date: new Date('2024-03-15T10:20:00Z'), location: { latitude: 51.5085, longitude: -0.1257, timeZone: 'Europe/London' }, houseMatter: 7 });
@@ -69,4 +94,34 @@ test('applying aspect within lilly’s moieties, perfection before sign change, 
   // faster than Saturn.
   const chart2 = { points: [pt('Mars', 125, 0.5), pt('Venus', 152, 1.1), pt('Saturn', 215.5, 0.1), pt('Moon', 10, 13), pt('Sun', 300, 1), pt('Mercury', 280, 1.2), pt('Jupiter', 20, 0.2)] };
   const col = H.collection(chart2, 'Mars', 'Venus'); assert.equal(col?.planet, 'Saturn');
+});
+
+test('perfects: earliest crossing across both aspect chiralities, not just the first chirality to find one', () => {
+  const loc = { latitude: 51.5085, longitude: -0.1257, timeZone: 'Europe/London' };
+
+  // Regression: Moon square Mercury cast at 2024-01-01T20:00Z, London. The true nearest
+  // exact square is 2024-01-02T08:53Z (found on the s=-1 chirality). Returning on the first
+  // chirality to find a hit (s=+1 here) instead finds the far crossing on 2024-01-16 --
+  // wrong by two weeks, and wrong about beforeSignChange too.
+  const chart = natal.chartAtInstant(new Date('2024-01-01T20:00:00Z'), loc, { houseSystem: 'regiomontanus' });
+  const moon = chart.points.find(p => p.name === 'Moon'), mercury = chart.points.find(p => p.name === 'Mercury');
+  const r = H.perfects(moon, mercury, 90, chart);
+  assert.ok(r, 'expected a perfection within 30 days');
+  assert.ok(Math.abs(new Date(r.date) - new Date('2024-01-02T08:53:00Z')) < 10 * 60000, `expected ~2024-01-02T08:53Z, got ${r.date}`);
+  assert.ok(new Date(r.date) < new Date('2024-01-03T00:00:00Z'), 'the near (s=-1) crossing, not the far (s=+1) one two weeks later');
+
+  // General check: for every applying significator pair in the 2024-03-15 cast, the
+  // returned perfects date should equal the minimum crossing across both chiralities as
+  // found by an independent, much finer-grained brute-force scan.
+  const cast = H.cast({ date: new Date('2024-03-15T10:20:00Z'), location: loc, houseMatter: 7 });
+  const checked = new Set();
+  for (const asp of cast.aspects) {
+    const key = `${asp.a}-${asp.b}-${asp.aspect}`;
+    if (asp.perfects === null || checked.has(key)) continue;
+    checked.add(key);
+    const cross = bruteForcePerfects(asp.a, asp.b, asp.aspect, cast.chart);
+    assert.ok(cross !== null, `${key}: brute-force scan should also find a crossing within 30 days`);
+    assert.ok(Math.abs(new Date(asp.perfects) - cross) < 20 * 60000, `${key}: perfects ${asp.perfects} should match the brute-force minimum ${new Date(cross).toISOString()} across both chiralities`);
+  }
+  assert.ok(checked.size > 0, 'the 2024-03-15 cast should exercise at least one applying, perfecting pair');
 });
