@@ -34,5 +34,13 @@
   function cast(random = randomInt) {
     return shield(Array.from({length:4}, () => Array.from({length:4}, () => random(2) + 1)));
   }
-  return {randomInt, draw, combine, shield, cast};
+  // Payload-to-state transform for replaying a saved lenormand/oracle/runes draw: validates
+  // the id list (in range, no duplicates, within the layouts the UI offers) and, if valid,
+  // returns a sanitised copy plus the "every slot revealed" set a replayed reading starts
+  // from. Returns null on anything invalid so the caller knows to reject the load outright.
+  function loadIds(ids, size) {
+    if (!Array.isArray(ids) || !ids.length || ids.length > 5 || new Set(ids).size !== ids.length || !ids.every(id => Number.isInteger(id) && id >= 0 && id < size)) return null;
+    return {ids: [...ids], revealed: new Set(ids.map((_, i) => i))};
+  }
+  return {randomInt, draw, combine, shield, cast, loadIds};
 });

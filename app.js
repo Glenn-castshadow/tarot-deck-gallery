@@ -405,14 +405,14 @@ let ishtarVisibleIndices = [];
 let deckReviewIndex = null;
 let cardDetailState = null;
 
-function selectReadingDeck(id) {
+function selectReadingDeck(id, { render = true } = {}) {
   if (!Object.hasOwn(readingDecks, id)) return;
   activeReadingDeck = id;
   try { IshtarStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
   const url = new URL(location.href);
   url.searchParams.set("deck", id);
   try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
-  renderReading();
+  if (render) renderReading();
   if (dialog.open && cardDetailState) {
     const { index, orientation, browsing } = cardDetailState;
     openCardDetails(index, orientation, browsing);
@@ -448,7 +448,7 @@ function renderIshtarDeck() {
   });
 }
 
-function setReadingMode(mode) {
+function setReadingMode(mode, { render = true } = {}) {
   loadedDaily = null;
   readingMode = mode;
   document.querySelectorAll("[data-reading-mode]").forEach(button => {
@@ -456,7 +456,7 @@ function setReadingMode(mode) {
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
-  renderReading();
+  if (render) renderReading();
 }
 
 function localDateKey() {
@@ -781,18 +781,24 @@ window.TarotRoom = {
   },
   loadDraw(reading) {
     const payload = reading?.payload;
-    if (Object.hasOwn(readingDecks, reading?.deck)) selectReadingDeck(reading.deck);
+    // Validate first, in both branches. Nothing below this point may run (deck switch,
+    // mode switch, currentSpread/loadedDaily assignment, or any render) until we already
+    // know the load will succeed, so a malformed payload leaves the deck, URL, storage, and
+    // the reading currently on screen completely untouched.
     if (reading?.kind === "tarot-daily") {
       if (!payload || !Number.isInteger(payload.index) || !tarotCards[payload.index] || !["upright", "reversed"].includes(payload.orientation)) return false;
-      setReadingMode("daily");
+      if (Object.hasOwn(readingDecks, reading.deck)) selectReadingDeck(reading.deck, { render: false });
+      setReadingMode("daily", { render: false });
       loadedDaily = { index: payload.index, orientation: payload.orientation, date: /^\d{4}-\d{2}-\d{2}$/.test(payload.date || "") ? payload.date : "earlier" };
       renderReading();
     } else if (reading?.kind === "tarot-spread") {
-      if (!TarotReadings.validDraw(payload, tarotCards.length)) return false;
-      setReadingMode("spread");
-      currentSpread = { id: payload.id, question: payload.question, focus: payload.focus, cards: payload.cards.map(c => ({ index: c.index, orientation: c.orientation })) };
+      const loaded = TarotReadings.loadSpread(payload, tarotCards.length);
+      if (!loaded) return false;
+      if (Object.hasOwn(readingDecks, reading.deck)) selectReadingDeck(reading.deck, { render: false });
+      setReadingMode("spread", { render: false });
+      currentSpread = loaded.spread;
       revealedSpread.clear();
-      currentSpread.cards.forEach((_, slot) => revealedSpread.add(slot));
+      loaded.revealed.forEach(slot => revealedSpread.add(slot));
       tarotSpreadSelect.value = currentSpread.id; tarotFocusSelect.value = currentSpread.focus; tarotQuestionInput.value = currentSpread.question;
       renderReading(false);
     } else return false;

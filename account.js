@@ -129,7 +129,7 @@
     const result = await account.saveReading(draw);
     trigger.disabled = false;
     note.textContent = result.ok ? 'Saved to your journal.' : result.message;
-    if (result.ok && !room.hidden) renderJournal(1);
+    if (result.ok) renderJournal(1);
   });
 
   account.onChange(async state => {

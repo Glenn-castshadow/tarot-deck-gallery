@@ -97,11 +97,11 @@
         s.reading = {chart, selected: Number.isInteger(p.selected) && p.selected >= 0 && p.selected < 16 ? p.selected : 14, question: typeof reading.question === 'string' ? reading.question.slice(0, 240) : ''};
         s.mothers = chart.mothers.map(f => [...f]); s.manual = true;
       } else {
-        const size = D[kind].length;
-        if (!Array.isArray(p.ids) || !p.ids.length || p.ids.length > 5 || new Set(p.ids).size !== p.ids.length || !p.ids.every(id => Number.isInteger(id) && id >= 0 && id < size)) return false;
-        s.reading = {ids: [...p.ids], question: typeof reading.question === 'string' ? reading.question.slice(0, 240) : ''};
-        s.count = modes[kind].options.some(([n]) => n === p.ids.length) ? p.ids.length : s.count;
-        s.revealed = new Set(p.ids.map((_, i) => i));
+        const loaded = E.loadIds(p.ids, D[kind].length);
+        if (!loaded) return false;
+        s.reading = {ids: loaded.ids, question: typeof reading.question === 'string' ? reading.question.slice(0, 240) : ''};
+        s.count = modes[kind].options.some(([n]) => n === loaded.ids.length) ? loaded.ids.length : s.count;
+        s.revealed = loaded.revealed;
       }
       s.question = s.reading.question;
       mode = kind; render();
