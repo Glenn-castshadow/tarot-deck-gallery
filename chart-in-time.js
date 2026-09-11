@@ -5,7 +5,10 @@ const ChartInTime = (() => {
   const today = () => {const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
   const readable = iso => new Date(iso).toLocaleString('en-GB',{dateStyle:'long',timeStyle:'short',timeZone:'UTC'}) + ' UTC';
 
-  function attach(root) {
+  // onLocationChange fires after the return location is deliberately changed -- a
+  // successful "Update return charts" or "Use my birthplace" -- so the host page can
+  // persist it. Nothing here touches storage itself.
+  function attach(root, {onLocationChange} = {}) {
     root.innerHTML = `<header class="cit-heading"><p class="acg-eyebrow">Your chart in time</p><h3>The same sky, read across a life.</h3><p>A year framed by the Sun's return, a month framed by the Moon's, and the slow chart that moves a degree at a time.</p></header>
       <div class="cit-tabs" role="group" aria-label="Chart in time views">
         <button type="button" data-cit-tab="solar" aria-controls="cit-solar" aria-pressed="true"><span>☉</span>Your year ahead<small>Solar return</small></button>
@@ -48,6 +51,31 @@ const ChartInTime = (() => {
     // input text no longer matches the chosen city.
     function place() { return manualLocation || placePicker.getSelection() || chart?.location || null; }
     function chosenPlace() { return manualLocation || placePicker.getSelection(); }
+
+    // A target before the birth date would be a converse direction, which the engine
+    // refuses. Move the picker's own floor with the chart so the refusal is not the
+    // first thing that tells you.
+    function targetFloor() {
+      const birthday = chart?.birthday;
+      $('#cit-target').min = /^\d{4}-\d{2}-\d{2}$/.test(birthday || '') && birthday > '1901-01-01' ? birthday : '1901-01-01';
+    }
+
+    // "Use my birthplace": drop any chosen city or coordinates so place() falls back to
+    // the birth chart's own location. Shared with setReturnLocation(null), which is how a
+    // profile saved without a returnLocation restores.
+    function resetToBirthplace() {
+      manualLocation = null;
+      // Leaving the checkbox on would make place() read the manual fields again
+      // on the next submit, so the escape hatch is closed with the selection.
+      $('#cit-manual').checked = false;
+      $('#cit-manual-fields').disabled = true;
+      $('#cit-place').value = chart?.location?.label || '';
+      placePicker.restore(null);
+      // restore() only rewrites the status line when it accepts a selection, so
+      // the previous "Selected X." would otherwise contradict the reset input.
+      $('#cit-place-status').textContent = 'Choose a city, or keep your birthplace.';
+      renderActive();
+    }
 
     function profileStatus() {
       $('.cit-profile-status').textContent = usingSample
@@ -92,12 +120,16 @@ const ChartInTime = (() => {
       const sunText = ChartInTimeText.progressedSunSign[sun.sign];
       const phase = ChartInTimeText.lunation[model.lunation.name];
       const contacts = model.contacts.slice(0, 12);
+      // Both columns of the placements table must be indexed over the same filtered list;
+      // pairing a planet-filtered array against chart.points would offset once the natal
+      // chart carries a non-planet point before the last planet.
+      const natalPlanets = chart.points.filter(point => point.kind === 'planet');
       output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}${esc(text.label)} for ${esc($('#cit-target').value)} · ephemeris instant <strong>${esc(readable(model.progressedInstant))}</strong>${model.arc===null?'':` · arc ${model.arc.toFixed(2)}°`}</p>
         <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:chart.points.filter(p=>p.kind==='planet'), outer:model.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Progressed'], centerSymbol:'⟳', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Progressed</span></p></div>
         <div class="cit-reading"><p class="acg-small-label">Progressed Sun · ${esc(sun.sign)} ${esc(sun.degrees)}</p><h5>${esc(sunText.title)}</h5><p>${esc(sunText.body)}</p><blockquote>${esc(sunText.prompt)}</blockquote>
         <p class="acg-small-label">Progressed lunation · ${esc(model.lunation.name)} · ${model.lunation.angle.toFixed(1)}°</p><h5>${esc(phase.title)}</h5><p>${esc(phase.body)}</p><blockquote>${esc(phase.prompt)}</blockquote></div></div>
         <div class="cit-contacts"><h5>Progressed contacts to the birth chart</h5>${contacts.length?`<ul>${contacts.map(item=>{const t=ChartInTimeText.contact[item.type];return `<li><strong>Progressed ${esc(item.a)} ${esc(item.symbol)} birth ${esc(item.b)}</strong> <span>${item.orb.toFixed(2)}° orb</span><p>This brings together symbolism around ${esc(ChartInTimeText.planetTheme[item.a])} and ${esc(ChartInTimeText.planetTheme[item.b])}. ${esc(t.body)}</p><blockquote>${esc(t.prompt)}</blockquote></li>`;}).join('')}</ul>`:'<p>No contacts within orb on this date. Try another date or method.</p>'}</div>
-        <details class="cx-placements"><summary>Progressed placements</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Progressed</th><th>Birth</th></tr></thead><tbody>${model.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${esc(point.symbol)} ${esc(point.name)}</th><td>${esc(point.sign)} ${esc(point.degrees)}</td><td>${esc(chart.points[index].sign)} ${esc(chart.points[index].degrees)}</td></tr>`).join('')}</tbody></table></div></details>
+        <details class="cx-placements"><summary>Progressed placements</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Progressed</th><th>Birth</th></tr></thead><tbody>${model.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${esc(point.symbol)} ${esc(point.name)}</th><td>${esc(point.sign)} ${esc(point.degrees)}</td><td>${esc(natalPlanets[index].sign)} ${esc(natalPlanets[index].degrees)}</td></tr>`).join('')}</tbody></table></div></details>
         <details class="cx-method"><summary>About ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
     }
 
@@ -120,24 +152,12 @@ const ChartInTime = (() => {
         usingSample = !usingSample;
         chart = usingSample ? NatalEngine.calculate(sample) : savedChart;
         offsets.solar = 0; offsets.lunar = 0;
-        profileStatus(); renderActive();
+        targetFloor(); profileStatus(); renderActive();
       }
       if ('citStep' in data) { offsets[tab] += Number(data.citStep); renderActive(); }
       if ('citNow' in data) { offsets[tab] = 0; renderActive(); }
       if ('citToday' in data) { $('#cit-target').value = today(); renderProgressed(); }
-      if ('citPlaceReset' in data) {
-        manualLocation = null;
-        // Leaving the checkbox on would make place() read the manual fields again
-        // on the next submit, so the escape hatch is closed with the selection.
-        $('#cit-manual').checked = false;
-        $('#cit-manual-fields').disabled = true;
-        $('#cit-place').value = chart?.location?.label || '';
-        placePicker.restore(null);
-        // restore() only rewrites the status line when it accepts a selection, so
-        // the previous "Selected X." would otherwise contradict the reset input.
-        $('#cit-place-status').textContent = 'Choose a city, or keep your birthplace.';
-        renderActive();
-      }
+      if ('citPlaceReset' in data) { resetToBirthplace(); onLocationChange?.(); }
     });
 
     root.addEventListener('change', event => {
@@ -164,19 +184,26 @@ const ChartInTime = (() => {
         manualLocation = null;
       }
       renderActive();
+      onLocationChange?.();
     });
 
-    profileStatus(); renderActive();
+    targetFloor(); profileStatus(); renderActive();
     return {
       setBirthChart(value) {
         savedChart = value?.status === 'ready' ? value : null;
         if (!usingSample) chart = savedChart;
         if (!chosenPlace() && chart?.location?.label) $('#cit-place').value = chart.location.label;
-        profileStatus(); renderActive();
+        targetFloor(); profileStatus(); renderActive();
       },
       getReturnLocation() { return chosenPlace(); },
       setReturnLocation(value) {
-        if (!value || !Number.isFinite(value.latitude) || !Number.isFinite(value.longitude) || !value.timeZone) return;
+        // A null, malformed or out-of-bounds value means "no saved return location", so
+        // reset to the birthplace fallback rather than early-returning and leaving the
+        // previous profile's city on screen -- restoreBirthdayProfile() runs again
+        // mid-session when an account syncs. Bounds match the manual-coordinate submit.
+        const usable = value && Number.isFinite(value.latitude) && Number.isFinite(value.longitude)
+          && Math.abs(value.latitude) < 90 && Math.abs(value.longitude) <= 180 && value.timeZone;
+        if (!usable) { resetToBirthplace(); return; }
         $('#cit-place').value = value.label || '';
         if (value.source === 'manual') {
           manualLocation = value;

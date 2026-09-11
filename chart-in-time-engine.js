@@ -99,6 +99,17 @@ const ChartInTimeEngine = (() => {
 
     const birthMs = +new Date(chart.date);
     const elapsedDays = (+target - birthMs) / DAY_MS;
+    // Converse directions -- the progression run backwards from birth -- are a separate
+    // technique and out of scope. Refused here, before anything is cast: unguarded, a
+    // 1950 target against a 1990 birth returned 'ready' with elapsedDays -14805.3, and
+    // solar arc reported arc 321.31, a -38.7 degree arc that mod() had wrapped into a
+    // figure indistinguishable from a real one.
+    // The comparison is on the CALENDAR date rather than on elapsedDays, because
+    // targetDate resolves to noon UTC: an afternoon birth makes its own birth date
+    // elapsedDays-negative by a few hours, and that chart -- the natal chart itself, to
+    // within about 64 seconds of ephemeris offset -- has to stay reachable.
+    const birthDate = /^\d{4}-\d{2}-\d{2}$/.test(chart.birthday || '') ? chart.birthday : new Date(birthMs).toISOString().slice(0,10);
+    if (targetDate < birthDate) return {status:'error',message:'Choose a date on or after the birth date.'};
     // Solar arc needs the secondary progressed Sun, so only tertiary changes the ratio.
     const ratio = method === 'tertiary' ? SIDEREAL_MONTH : TROPICAL_YEAR;
     const progressedInstant = new Date(birthMs + (elapsedDays / ratio) * DAY_MS);
@@ -117,6 +128,9 @@ const ChartInTimeEngine = (() => {
     // applying/separating is not reported for this method.
     const shift = point => {const longitude = natal.mod(point.longitude + arc); return {...point, longitude, speed:0, retrograde:false, stationary:false, house:natal.houseFor(longitude, chart.cusps), ...natal.placement(longitude)};};
     const points = chart.points.map(shift), axes = chart.axes.map(shift);
+    // Deliberately mixed: `angles` are directed (natal + arc) but `cusps` stay natal, because
+    // a directed point is read in the natal house its new longitude falls into. So for this
+    // method alone cusps[0] does NOT equal angles.asc -- asserted in tests/chart-in-time.test.cjs.
     return {...base, arc, points, axes, cusps:chart.cusps,
       angles:{asc:natal.mod(chart.angles.asc + arc), mc:natal.mod(chart.angles.mc + arc), dc:natal.mod(chart.angles.dc + arc), ic:natal.mod(chart.angles.ic + arc)},
       lunation:lunationPhase(points),

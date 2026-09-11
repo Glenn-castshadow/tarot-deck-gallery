@@ -123,7 +123,7 @@ const birthplacePicker = BirthplaceSearch.attach({input:birthPlaceInput,list:doc
 const skyExplorer = SkyChart.attach({dialog:document.querySelector("#sky-dialog"),signs:zodiacSigns,themes:BirthdayInsights.westernThemes});
 const worldAtlas = Astrocartography.attach(document.querySelector("#astrocartography-room"));
 const celestialExtras = CelestialExtras.attach(document.querySelector("#celestial-extras"));
-const chartInTime = ChartInTime.attach(document.querySelector("#chart-in-time"));
+const chartInTime = ChartInTime.attach(document.querySelector("#chart-in-time"), {onLocationChange: persistReturnLocation});
 
 function cardTemplate(deck, index) {
   const era = deck.category === "historical" ? "Historical" : "Modern";
@@ -354,6 +354,19 @@ birthdayForm.addEventListener("submit", event => {
   renderBirthdayProfile(saved);
 });
 
+// The return location used to persist only as a side effect of re-submitting the birth
+// form, so choosing a city and reloading lost it. Update the stored profile in place
+// instead. No stored profile means storage was declined or no birth date is saved yet --
+// writing one here would create a record the reader never asked for.
+function persistReturnLocation() {
+  try {
+    const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
+    if (!savedBirthday?.birthday) return;
+    savedBirthday.returnLocation = chartInTime.getReturnLocation();
+    IshtarStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(savedBirthday));
+  } catch (error) { /* no-op */ }
+}
+
 function restoreBirthdayProfile() {
   try {
     const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
@@ -363,7 +376,9 @@ function restoreBirthdayProfile() {
       birthTimeInput.value = savedBirthday.time || "";
       birthPlaceInput.value = savedBirthday.place || "";
       birthplacePicker.restore(savedBirthday.placeLocation);
-      if (savedBirthday.returnLocation) chartInTime.setReturnLocation(savedBirthday.returnLocation);
+      // Unconditional: this restore runs again mid-session when an account syncs, so a
+      // profile without a return location must clear whatever the last one chose.
+      chartInTime.setReturnLocation(savedBirthday.returnLocation || null);
       houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
       orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
       foldInput.value = savedBirthday.fold || "";

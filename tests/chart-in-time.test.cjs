@@ -186,6 +186,42 @@ test('progressions reject bad input without inventing a chart',()=>{
   assert.equal(engine.progressedChart({chart:natal.calculate({...BIRTH,time:''}),targetDate:'2020-07-15'}).status,'missing');
 });
 
+test('a target before the birth date is refused on every method',()=>{
+  // Converse directions are out of scope. Unguarded, secondary returned 'ready' with
+  // elapsedDays -14805.3, and solar arc reported arc 321.31 -- a -38.7 degree arc that
+  // mod() had wrapped into a figure indistinguishable from a real one.
+  for(const method of ['secondary','tertiary','solar-arc']) {
+    const result=engine.progressedChart({chart,targetDate:'1950-01-01',method});
+    assert.equal(result.status,'error',method);
+    assert.equal(result.message,'Choose a date on or after the birth date.',method);
+    assert.equal(result.arc,undefined,`${method} reports no arc`);
+  }
+  // The boundary is the birth CALENDAR date, not the birth instant: this 14:30 New York
+  // birth is 18:30 UTC, so its own birth date resolves to a noon-UTC target six hours
+  // earlier. That chart must stay reachable -- it is the natal chart.
+  assert.equal(engine.progressedChart({chart,targetDate:'1990-07-14',method:'secondary'}).status,'error');
+  assert.equal(engine.progressedChart({chart,targetDate:'1990-07-15',method:'secondary'}).status,'ready');
+  assert.ok(engine.progressedChart({chart,targetDate:'1990-07-15',method:'secondary'}).elapsedDays<0,'the birth date is reachable despite a negative elapsed');
+});
+
+test('progressed cusps and angles agree, except for solar arc where they deliberately do not',()=>{
+  // Secondary and tertiary cast a whole chart at the progressed instant, so its first
+  // cusp IS its Ascendant. Solar arc directs the angles but keeps the natal cusps, so a
+  // directed point is reported in the natal house its new longitude falls into. That
+  // mismatch is the documented convention, not a defect -- pin it so it stays deliberate.
+  for(const method of ['secondary','tertiary']) {
+    const result=engine.progressedChart({chart,targetDate:'2020-07-15',method});
+    assert.equal(result.status,'ready',method);
+    assert.ok(Math.abs(natal.delta(result.cusps[0],result.angles.asc))<1e-9,`${method} cusps[0] is its own ascendant`);
+    assert.ok(Math.abs(natal.delta(result.cusps[0],chart.cusps[0]))>1e-6,`${method} cusps moved off the natal cusps`);
+  }
+  const directed=engine.progressedChart({chart,targetDate:'2020-07-15',method:'solar-arc'});
+  assert.equal(directed.status,'ready');
+  assert.deepEqual(directed.cusps,chart.cusps,'solar arc keeps the natal cusps');
+  assert.ok(Math.abs(natal.delta(directed.angles.asc,natal.mod(chart.angles.asc+directed.arc)))<1e-9,'solar arc directs the ascendant');
+  assert.ok(Math.abs(natal.delta(directed.angles.asc,directed.cusps[0])-directed.arc)<1e-9,'angles.asc leads cusps[0] by exactly the arc');
+});
+
 test('the solar arc accumulates past 180 degrees without wrapping',()=>{
   // mod(), not delta(): near the top of the supported range the accumulated arc exceeds
   // 180 degrees and delta() would wrap it negative (195.2197 vs -164.7803). Every other
