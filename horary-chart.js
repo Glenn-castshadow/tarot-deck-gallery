@@ -10,7 +10,8 @@ const HoraryChart = (() => {
   const NODES = ['North Node', 'South Node'];
   const RING_OUTER = 200, RING_INNER = 175, SIGN_LABEL_RADIUS = (RING_OUTER + RING_INNER) / 2;
   const CUSP_INNER = 60, ANGLE_LABEL_RADIUS = 210, HOUSE_NUMBER_RADIUS = 75;
-  const PLANET_RADIUS = 150, PLANET_RADIUS_PUSHED = PLANET_RADIUS - 18, DEGREE_LABEL_RADIUS = 130;
+  const PLANET_RADII = [150, 132, 114];
+  const DEGREE_LABEL_OFFSET = 20;
   const COLLISION_ORB = 6;
 
   // Screen angle: the Ascendant sits at 9 o'clock and the zodiac runs anticlockwise
@@ -49,20 +50,37 @@ const HoraryChart = (() => {
       (p.kind === 'planet' && CLASSICAL_PLANETS.includes(p.name)) ||
       (p.kind === 'node' && NODES.includes(p.name))
     );
-    // Collision rule: sorted by longitude, a point within COLLISION_ORB degrees of
-    // its predecessor is pushed inward; the push alternates on/off so a run of close
-    // points fans out instead of stacking arbitrarily deep.
+    // Collision rule: sort by longitude, then rotate the circle so it starts just
+    // after the largest circular gap -- that turns a wrap pair (e.g. 359deg/1deg)
+    // into ordinary neighbours instead of the invisible seam at the array ends.
+    // Walking the rotated list, a run of points each within COLLISION_ORB degrees
+    // of the previous one forms a cluster; positions within a cluster cycle through
+    // PLANET_RADII so three or more crowded planets each land on a distinct ring.
     const sorted = [...chartPoints].sort((a, b) => a.longitude - b.longitude);
-    let pushed = false;
-    const radii = sorted.map((point, index) => {
-      if (index === 0) { pushed = false; return PLANET_RADIUS; }
-      const gap = Math.abs(natal.delta(point.longitude, sorted[index - 1].longitude));
-      pushed = gap < COLLISION_ORB ? !pushed : false;
-      return pushed ? PLANET_RADIUS_PUSHED : PLANET_RADIUS;
+    const n = sorted.length;
+    let rotated = sorted;
+    if (n > 1) {
+      let widestGapIndex = 0, widestGap = -Infinity;
+      for (let i = 0; i < n; i++) {
+        const gap = natal.mod(sorted[(i + 1) % n].longitude - sorted[i].longitude);
+        if (gap > widestGap) { widestGap = gap; widestGapIndex = i; }
+      }
+      const rotateStart = (widestGapIndex + 1) % n;
+      rotated = [...sorted.slice(rotateStart), ...sorted.slice(0, rotateStart)];
+    }
+    let clusterPosition = 0;
+    const radii = rotated.map((point, index) => {
+      if (index === 0) { clusterPosition = 0; }
+      else {
+        const gap = Math.abs(natal.delta(point.longitude, rotated[index - 1].longitude));
+        clusterPosition = gap < COLLISION_ORB ? clusterPosition + 1 : 0;
+      }
+      return PLANET_RADII[clusterPosition % PLANET_RADII.length];
     });
-    const planets = sorted.map((point, index) => {
-      const [gx, gy] = at(point.longitude, radii[index]);
-      const [dx, dy] = at(point.longitude, DEGREE_LABEL_RADIUS);
+    const planets = rotated.map((point, index) => {
+      const glyphRadius = radii[index];
+      const [gx, gy] = at(point.longitude, glyphRadius);
+      const [dx, dy] = at(point.longitude, glyphRadius - DEGREE_LABEL_OFFSET);
       const degree = Math.floor(natal.mod(point.longitude) % 30);
       return `<g data-planet="${esc(point.name)}"><text class="h-planet" x="${fmt(gx)}" y="${fmt(gy + 5)}" text-anchor="middle" font-size="18">${point.symbol}</text><text class="h-degree" x="${fmt(dx)}" y="${fmt(dy + 4)}" text-anchor="middle" font-size="9">${degree}°</text></g>`;
     }).join('');
