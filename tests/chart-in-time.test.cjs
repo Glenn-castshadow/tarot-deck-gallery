@@ -96,3 +96,18 @@ test('a return before the birth date is refused rather than extrapolated',()=>{
   const result=engine.returnChart({chart,kind:'solar',location:chart.location,reference:new Date('1991-01-01T00:00:00Z'),index:-5});
   assert.equal(result.status,'error');
 });
+
+test('the convergence gate does not reject a valid lunar return',()=>{
+  // Search converges on time (0.01s), which at the Moon's speed is ~1.5e-6 deg -- larger
+  // than a 1e-6 deg residual gate allows. This reference previously returned 'error' for
+  // a return that genuinely exists at 2061-10-28T05:43:10.848Z.
+  const result=engine.returnChart({chart,kind:'lunar',location:chart.location,reference:new Date('2061-11-23T00:21:04.426Z')});
+  assert.equal(result.status,'ready');
+  const natalMoon=chart.points.find(p=>p.name==='Moon').longitude;
+  assert.ok(Math.abs(natal.delta(lonOf('Moon',new Date(result.moment)),natalMoon))<1e-5,'Moon returned to its natal longitude');
+});
+
+test('an absurd return index errors rather than throwing',()=>{
+  assert.equal(engine.returnChart({chart,kind:'lunar',location:chart.location,index:1e9}).status,'error');
+  assert.equal(engine.returnChart({chart,kind:'solar',location:chart.location,index:-1e9}).status,'error');
+});

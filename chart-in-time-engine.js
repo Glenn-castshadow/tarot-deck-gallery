@@ -7,20 +7,28 @@ const ChartInTimeEngine = (() => {
 
   const TROPICAL_YEAR = 365.2422, SIDEREAL_MONTH = 27.321582, DAY_MS = 86400000;
   const MIN_MS = Date.UTC(1901,0,1), MAX_MS = Date.UTC(2100,11,31,23,59,59,999);
+  const TOLERANCE_SECONDS = 0.01;
+  // Search converges on TIME, not longitude. At the Moon's maximum ~15.4 deg/day that
+  // 0.01s is ~1.8e-6 deg, so a 1e-6 deg gate rejects perfectly good convergence (measured
+  // at ~0.8% of lunar returns). This gate exists to catch a search that settled on the
+  // WRONG crossing, which is wrong by whole degrees -- so 1e-5 deg admits every legitimate
+  // solution with margin while staying five orders of magnitude tighter than any real failure.
+  const MAX_RESIDUAL_DEGREES = 1e-5;
   const longitudeOf = (body,time) => astro.Ecliptic(astro.GeoVector(body,time,true)).elon;
 
   // The equation of centre can put the true Sun ~2 degrees (~2 days) away from a
   // mean-motion estimate, so a Newton step precedes the bracket. Both bodies are
   // prograde, so the crossing is ascending, which is what Search requires.
   function solveReturn(body, natalLongitude, seedMs) {
-    if (!Number.isFinite(seedMs)) return null;
+    // 8.64e15 ms is the maximum value a JS Date can represent.
+    if (!Number.isFinite(seedMs) || Math.abs(seedMs) > 8.64e15) return null;
     const meanSpeed = 360 / (body === 'Sun' ? TROPICAL_YEAR : SIDEREAL_MONTH);
     const f = time => natal.delta(longitudeOf(body,time), natalLongitude);
     const seed = astro.MakeTime(new Date(seedMs));
     const corrected = seed.AddDays(-f(seed) / meanSpeed);
-    const found = astro.Search(f, corrected.AddDays(-2), corrected.AddDays(2), {dt_tolerance_seconds:0.01});
+    const found = astro.Search(f, corrected.AddDays(-2), corrected.AddDays(2), {dt_tolerance_seconds:TOLERANCE_SECONDS});
     if (!found) return null;
-    if (Math.abs(natal.delta(longitudeOf(body,found), natalLongitude)) > 1e-6) return null;
+    if (Math.abs(natal.delta(longitudeOf(body,found), natalLongitude)) > MAX_RESIDUAL_DEGREES) return null;
     return found.date;
   }
 
