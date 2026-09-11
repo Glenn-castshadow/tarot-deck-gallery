@@ -161,3 +161,15 @@
 .num-arc-toggle button[aria-pressed='true'] { background: #d9bf8830; border-color: var(--num-gold); color: var(--num-gold); }
 @media (max-width: 1000px) { .num-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); } .num-arc-timeline { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 700px) { .num-tabs { grid-template-columns: 1fr 1fr; } .num-arc-timeline { grid-template-columns: 1fr; } }
+.num-pair-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin: 0 0 26px; }
+.num-pair-cards button { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 22px 9px 18px; border: 1px solid var(--num-line); border-radius: 5px; color: var(--num-text); background: radial-gradient(ellipse at top, #9ccfca0d, transparent 75%), #0b1c2733; }
+.num-pair-cards button > span { font: 10px/1.5 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.num-pair-cards button strong { color: var(--num-teal); font: 500 clamp(40px,5vw,67px)/1.2 'Playfair Display', serif; margin: 13px 0; }
+.num-pair-cards button small { color: var(--num-muted); font-size: 11px; line-height: 1.5; text-align: center; }
+.num-pair-cards button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }
+.num-pair-cards button[aria-pressed='true'] strong { color: var(--num-gold); }
+#num-pair-form { margin-bottom: 26px; }
+#num-pair-form > label { display: block; color: var(--num-gold); font-size: 12px; margin-bottom: 9px; }
+#num-pair-form input[type='date'] { color-scheme: dark; }
+#num-pair-status { color: var(--num-teal); font-size: 11px; line-height: 1.8; margin-top: 12px; }
+@media (max-width: 700px) { .num-pair-cards { gap: 6px; } .num-pair-cards button { padding: 15px 3px; } .num-pair-cards button strong { font-size: 32px; margin: 10px 0; } .num-pair-cards button small { font-size: 9px; } }
