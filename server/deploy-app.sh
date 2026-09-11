@@ -137,5 +137,7 @@ PY
 
 nginx -t
 systemctl reload nginx
-curl --retry 5 --retry-connrefused --retry-delay 1 -fsS http://127.0.0.1:8138/api/health/
+# Django rejects the bare loopback Host header (DisallowedHost -> 400), so
+# present the first ALLOWED_HOSTS entry the way nginx will.
+curl --retry 5 --retry-connrefused --retry-delay 1 -fsS -H "Host: ${DJANGO_ALLOWED_HOSTS%%,*}" http://127.0.0.1:8138/api/health/
 echo
