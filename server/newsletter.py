@@ -1,3 +1,4 @@
+# Retired 2026-09: replaced by server/ishtar (newsletter app). Kept for the import fixture only.
 """Small, private newsletter capture service. Does not send email."""
 import csv
 import json
