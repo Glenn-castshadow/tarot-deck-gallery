@@ -64,6 +64,11 @@ h1 em { color: var(--plum); font-style: normal; }
 .draw-button { border: 1px solid var(--gold-light); padding: 10px 14px; background: transparent; color: var(--gold-light); font-size: 12px; white-space: nowrap; transition: .2s ease; }
 .draw-button:hover { background: var(--gold-light); color: var(--plum-dark); }
 .draw-button span { margin-right: 5px; }
+.save-reading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; }
+.save-reading button { border: 1px solid var(--gold-light); padding: 9px 13px; background: transparent; color: var(--gold-light); font-size: 12px; white-space: nowrap; transition: .2s ease; }
+.save-reading button:hover { background: var(--gold-light); color: var(--plum-dark); }
+.save-reading button:disabled { opacity: .55; cursor: default; }
+.save-reading [role="status"] { font-size: 12px; color: rgba(255,250,244,.7); }
 .reading-output { position: relative; z-index: 1; grid-column: 1 / -1; min-height: 300px; padding-top: 7px; }
 .daily-reading { display: grid; grid-template-columns: minmax(190px, 250px) minmax(0, 1fr); gap: clamp(28px, 5vw, 54px); align-items: center; min-height: 286px; }
 .daily-reading .drawn-card { width: min(100%, 232px); margin: 0 auto; transform: rotate(-4deg) scale(1.02); }
