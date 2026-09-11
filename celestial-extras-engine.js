@@ -87,6 +87,37 @@ const CelestialExtrasEngine = (() => {
     const boundaryDistance = Math.min(natal.mod(sunLongitude-315,30),30-natal.mod(sunLongitude-315,30));
     return {status:'ready',pillars,phases,dayMaster:stems[dayIndex%10],solarYear,sunLongitude,nearSolarTerm:boundaryDistance<.02,lateZi:hour===23,dayStemIndex,hidden,gods:godsFound,phasesHidden,hiddenTotal:4+hidden.flat().length,yangYear:(yearIndex%10)%2===0};
   }
-  return {positions,between,transits,synastry,bazi,stems,branches,hiddenStems,tenGod,gods};
+  // Jie boundaries: the twelve solar-term instants every 30° from 315° (Li Chun). Astronomy Engine's
+  // SearchSunLongitude finds the instant the apparent solar longitude reaches the target after a start date.
+  function jieBoundary(date, direction) {
+    if(!(date instanceof Date)||!Number.isFinite(+date)) throw new RangeError('Choose a valid instant.');
+    const lon=astro.Ecliptic(astro.GeoVector('Sun',date,true)).elon;
+    const past=natal.mod(lon-315,30);
+    const target=direction==='forward'?natal.mod(lon-past+30):natal.mod(lon-past);
+    const start=direction==='forward'?date:new Date(date.getTime()-40*86400000);
+    const found=astro.SearchSunLongitude(target,start,45);
+    if(!found) throw new Error('Solar-term search failed.');
+    return {longitude:Math.round(target),date:found.date};
+  }
+  function luckPillars(chart, sex) {
+    const model=bazi(chart);
+    if(model.status!=='ready') return {status:'missing',message:'Add a birth date, recorded time and confirmed birthplace to count luck pillars.'};
+    if(sex!=='male'&&sex!=='female') throw new RangeError('Choose male or female counting.');
+    const forward=model.yangYear===(sex==='male');
+    const birth=new Date(chart.date);
+    const boundary=jieBoundary(birth,forward?'forward':'backward');
+    const startDays=Math.abs(boundary.date-birth)/86400000;
+    const totalMonths=Math.floor(startDays*4);   // 3 days = 1 year, so 1 day = 4 months (lunar_python floors the same way)
+    const startAge={years:Math.floor(totalMonths/12),months:totalMonths%12};
+    const month=model.pillars[1];
+    const cycle=Array.from({length:60},(_,n)=>n).find(n=>n%10===month.stemIndex&&n%12===month.branchIndex);
+    const birthYear=Number(chart.birthday.slice(0,4));
+    const pillars=Array.from({length:10},(_,i)=>{
+      const n=natal.mod(cycle+(forward?i+1:-(i+1)),60), p=pillar(`Luck ${i+1}`,n%10,n%12);
+      return {...p,index:i+1,fromAge:startAge.years+10*i,fromYear:birthYear+startAge.years+10*i,god:tenGod(model.dayStemIndex,n%10)};
+    });
+    return {status:'ready',direction:forward?'forward':'backward',startAge,startDays,boundary,pillars};
+  }
+  return {positions,between,transits,synastry,bazi,jieBoundary,luckPillars,stems,branches,hiddenStems,tenGod,gods};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = CelestialExtrasEngine;

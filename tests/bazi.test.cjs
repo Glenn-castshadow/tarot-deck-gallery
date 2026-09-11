@@ -59,3 +59,36 @@ for (const c of reference.cases) test(`lunar_python reference: hidden stems and 
   assert.deepEqual(model.gods.stems,c.godsStems);
   assert.deepEqual(model.gods.hidden,c.godsHidden);
 });
+
+test('jie boundaries bracket a birth instant at 30-degree solar-longitude steps',()=>{
+  const chart=chartFor('2024-03-05','08:00');
+  const next=extras.jieBoundary(new Date(chart.date),'forward'), prev=extras.jieBoundary(new Date(chart.date),'backward');
+  assert.equal(next.longitude,345,'Jingzhe: Sun at 345°');
+  assert.equal(prev.longitude,315,'Li Chun');
+  assert.ok(prev.date<new Date(chart.date)&&new Date(chart.date)<next.date);
+  assert.ok(Math.abs(next.date-new Date('2024-03-05T02:22:00Z'))<15*60*1000,'Jingzhe 2024 is 10:22 CST, within 15 minutes');
+  assert.throws(()=>extras.jieBoundary(new Date('nope'),'forward'));
+});
+
+for (const c of reference.cases) for (const sex of ['male','female']) test(`lunar_python reference: luck pillars for ${c.birthday} ${c.time} (${sex})`,()=>{
+  const model=extras.luckPillars(chartFor(c.birthday,c.time),sex), ref=c.yun[sex];
+  assert.equal(model.status,'ready');
+  assert.equal(model.direction,ref.forward?'forward':'backward');
+  assert.deepEqual(model.pillars.slice(0,5).map(p=>p.characters),ref.pillars);
+  // Start age: lunar_python floors years, months and days from the same 3-days-per-year rule. The two ephemerides
+  // place the Jie instant minutes apart, so allow one month of difference in the total.
+  const ours=model.startAge.years*12+model.startAge.months, theirs=ref.startYears*12+ref.startMonths;
+  assert.ok(Math.abs(ours-theirs)<=1,`start ${ours} vs ${theirs} months`);
+  assert.equal(model.pillars[0].fromAge,model.startAge.years);
+  assert.equal(model.pillars[4].fromAge,model.startAge.years+40);
+  assert.equal(model.pillars[0].fromYear,Number(c.birthday.slice(0,4))+model.startAge.years);
+  assert.equal(model.pillars.length,10);
+});
+
+test('luck pillars need a ready chart and a counting choice',()=>{
+  assert.equal(extras.luckPillars(null,'male').status,'missing');
+  assert.throws(()=>extras.luckPillars(chartFor('1990-07-15','14:30'),'other'),RangeError);
+  const m=extras.luckPillars(chartFor('1990-07-15','14:30'),'male'), f=extras.luckPillars(chartFor('1990-07-15','14:30'),'female');
+  assert.notEqual(m.direction,f.direction,'the two sexes count in opposite directions for the same chart');
+  assert.ok(m.pillars.every(p=>typeof p.god==='string'));
+});
