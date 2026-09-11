@@ -92,5 +92,18 @@
     if(today.month<birth.month||(today.month===birth.month&&today.day<birth.day)) age--;
     return model.pinnacles.findIndex(p=>age>=p.fromAge&&(p.toAge===null||age<=p.toAge));
   }
-  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc};
+  // Two-person comparison. No score is produced. Spec §2.
+  const concords={1:'mind',5:'mind',7:'mind',2:'practical',4:'practical',8:'practical',3:'expressive',6:'expressive',9:'expressive'};
+  function pair(birthA, birthB, todayValue) {
+    if(!birthA?.path||!birthA?.parts||!birthB?.path||!birthB?.parts) throw new RangeError('Choose two valid birthdays.');
+    const today=parseDate(todayValue);
+    if(!today) throw new RangeError('Choose a valid date.');
+    const person=b=>({path:b.path,birthDay:b.birthDay,attitude:b.attitude,year:cycleYear(b,today.year)});
+    const a=person(birthA), b=person(birthB);
+    const ca=concords[a.path.root], cb=concords[b.path.root];
+    const distance=Math.abs(a.year.value-b.year.value);
+    const yearRelation=distance===0?'same':(distance===1||distance===8)?'adjacent':'apart';
+    return {a,b,concord:{a:ca,b:cb,same:ca===cb},sameRoot:a.path.root===b.path.root,pairNumber:reduce(a.path.value+b.path.value),yearRelation};
+  }
+  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair};
 });

@@ -140,3 +140,29 @@ test('life arcs: the current period follows the most recent birthday',()=>{
   assert.throws(()=>N.currentArc(a,'2013-13-01'),RangeError);
   assert.throws(()=>N.currentArc(a,null),RangeError);
 });
+
+test('two paths: concords, same root, pair number and personal-year relation',()=>{
+  const nine=N.birthday('1985-11-29'), one=N.birthday('1999-01-08'), eleven=N.birthday('2000-01-08'), four=N.birthday('2000-01-01'), two=N.birthday('2000-09-09');
+  assert.equal(nine.path.value,9);assert.equal(one.path.value,1);assert.equal(eleven.path.value,11);assert.equal(four.path.value,4);assert.equal(two.path.value,2);
+  const cross=N.pair(nine,one,'2026-06-15');
+  assert.deepEqual(cross.concord,{a:'expressive',b:'mind',same:false});
+  assert.equal(cross.sameRoot,false);
+  assert.equal(cross.pairNumber.value,1,'9 + 1 = 10 -> 1');
+  assert.equal(cross.a.year.value,5,'11 + 29 + 2026 = 2066 -> 14 -> 5');
+  assert.equal(cross.b.year.value,1,'1 + 8 + 2026 = 2035 -> 10 -> 1');
+  assert.equal(cross.yearRelation,'apart');
+  const masterByRoot=N.pair(eleven,four,'2026-06-15');
+  assert.deepEqual(masterByRoot.concord,{a:'practical',b:'practical',same:true},'11 is placed by its root 2');
+  assert.equal(masterByRoot.sameRoot,false);
+  const same=N.pair(eleven,two,'2026-06-15');
+  assert.equal(same.sameRoot,true,'11 (root 2) and 2 share a root');
+  assert.equal(same.pairNumber.value,4,'11 + 2 = 13 -> 4');
+  const masterPair=N.pair(nine,two,'2026-06-15');
+  assert.equal(masterPair.pairNumber.value,11,'9 + 2 = 11 stays a master');
+  assert.equal(masterPair.pairNumber.master,true);
+  assert.equal(N.pair(nine,N.birthday('1990-11-29'),'2026-06-15').yearRelation,'same');
+  assert.equal(N.pair(nine,N.birthday('1985-11-30'),'2026-06-15').yearRelation,'adjacent');
+  assert.equal(N.pair(one,N.birthday('2000-01-07'),'2026-06-15').yearRelation,'adjacent','Personal Years 1 and 9 wrap');
+  assert.throws(()=>N.pair(nine,null,'2026-06-15'),RangeError);
+  assert.throws(()=>N.pair(nine,one,'2026-02-30'),RangeError);
+});
