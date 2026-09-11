@@ -33,9 +33,10 @@ const ChartInTime = (() => {
       </form>
       <section id="cit-solar" class="cit-view"><div class="cit-view-heading"><div><p class="acg-small-label">Solar return</p><h4>The year the Sun begins again.</h4></div><div class="cit-nav" role="group" aria-label="Choose a return"><button type="button" data-cit-step="-1" aria-label="Previous year">←</button><output id="cit-solar-label" aria-live="polite"></output><button type="button" data-cit-step="1" aria-label="Next year">→</button><button type="button" data-cit-now>This year</button></div></div><div id="cit-solar-output" aria-live="polite"></div></section>
       <section id="cit-lunar" class="cit-view" hidden><div class="cit-view-heading"><div><p class="acg-small-label">Lunar return</p><h4>The month the Moon begins again.</h4></div><div class="cit-nav" role="group" aria-label="Choose a return"><button type="button" data-cit-step="-1" aria-label="Previous return">←</button><output id="cit-lunar-label" aria-live="polite"></output><button type="button" data-cit-step="1" aria-label="Next return">→</button><button type="button" data-cit-now>Now</button></div></div><div id="cit-lunar-output" aria-live="polite"></div></section>
-      <section id="cit-progressed" class="cit-view" hidden><div id="cit-progressed-output" aria-live="polite"></div></section>`;
+      <section id="cit-progressed" class="cit-view" hidden><div class="cit-view-heading"><div><p class="acg-small-label">Progressions &amp; directions</p><h4>A degree at a time.</h4></div><div class="cit-controls"><label for="cit-method">Method<select id="cit-method"><option value="secondary">Secondary · a day for a year</option><option value="tertiary">Tertiary · a day for a lunar month</option><option value="solar-arc">Solar arc directions</option></select></label><label for="cit-target">Date<input id="cit-target" type="date" min="1901-01-01" max="2100-12-31"></label><button type="button" data-cit-today>Today</button></div></div><div id="cit-progressed-output" aria-live="polite"></div></section>`;
 
     const $ = selector => root.querySelector(selector);
+    $('#cit-target').value = today();
     const placePicker = BirthplaceSearch.attach({input:$('#cit-place'), list:$('#cit-place-list'), status:$('#cit-place-status')});
     let savedChart=null, chart=null, usingSample=false, tab='solar', manualLocation=null;
     const offsets = {solar:0, lunar:0};
@@ -80,8 +81,29 @@ const ChartInTime = (() => {
         <details class="cx-method"><summary>About this ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
     }
 
+    function renderProgressed() {
+      const output = $('#cit-progressed-output');
+      const method = $('#cit-method').value;
+      const model = ChartInTimeEngine.progressedChart({chart, targetDate:$('#cit-target').value, method});
+      if (model.status === 'missing') { output.innerHTML = missing(model.message); return; }
+      if (model.status === 'error') { output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
+      const text = ChartInTimeText.method[method];
+      const sun = model.points.find(point => point.name === 'Sun');
+      const sunText = ChartInTimeText.progressedSunSign[sun.sign];
+      const phase = ChartInTimeText.lunation[model.lunation.name];
+      const contacts = model.contacts.slice(0, 12);
+      output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}${esc(text.label)} for ${esc($('#cit-target').value)} · ephemeris instant <strong>${esc(readable(model.progressedInstant))}</strong>${model.arc===null?'':` · arc ${model.arc.toFixed(2)}°`}</p>
+        <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:chart.points.filter(p=>p.kind==='planet'), outer:model.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Progressed'], centerSymbol:'⟳', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Progressed</span></p></div>
+        <div class="cit-reading"><p class="acg-small-label">Progressed Sun · ${esc(sun.sign)} ${sun.degrees}</p><h5>${esc(sunText.title)}</h5><p>${esc(sunText.body)}</p><blockquote>${esc(sunText.prompt)}</blockquote>
+        <p class="acg-small-label">Progressed lunation · ${esc(model.lunation.name)} · ${model.lunation.angle.toFixed(1)}°</p><h5>${esc(phase.title)}</h5><p>${esc(phase.body)}</p><blockquote>${esc(phase.prompt)}</blockquote></div></div>
+        <div class="cit-contacts"><h5>Progressed contacts to the birth chart</h5>${contacts.length?`<ul>${contacts.map(item=>{const t=ChartInTimeText.contact[item.type];return `<li><strong>Progressed ${esc(item.a)} ${item.symbol} birth ${esc(item.b)}</strong> <span>${item.orb.toFixed(2)}° orb</span><p>This brings together symbolism around ${esc(ChartInTimeText.planetTheme[item.a])} and ${esc(ChartInTimeText.planetTheme[item.b])}. ${esc(t.body)}</p><blockquote>${esc(t.prompt)}</blockquote></li>`;}).join('')}</ul>`:'<p>No contacts within orb on this date. Try another date or method.</p>'}</div>
+        <details class="cx-placements"><summary>Progressed placements</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Progressed</th><th>Birth</th></tr></thead><tbody>${model.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${point.symbol} ${esc(point.name)}</th><td>${esc(point.sign)} ${point.degrees}</td><td>${esc(chart.points[index].sign)} ${chart.points[index].degrees}</td></tr>`).join('')}</tbody></table></div></details>
+        <details class="cx-method"><summary>About ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
+    }
+
     function renderActive() {
-      if (tab === 'solar' || tab === 'lunar') renderReturn(tab);
+      if (tab === 'progressed') renderProgressed();
+      else renderReturn(tab);
     }
 
     root.addEventListener('click', event => {
@@ -102,6 +124,7 @@ const ChartInTime = (() => {
       }
       if ('citStep' in data) { offsets[tab] += Number(data.citStep); renderActive(); }
       if ('citNow' in data) { offsets[tab] = 0; renderActive(); }
+      if ('citToday' in data) { $('#cit-target').value = today(); renderProgressed(); }
       if ('citPlaceReset' in data) {
         manualLocation = null;
         // Leaving the checkbox on would make place() read the manual fields again
@@ -122,6 +145,7 @@ const ChartInTime = (() => {
         $('#cit-manual-fields').disabled = !event.target.checked;
         if (!event.target.checked) { manualLocation = null; renderActive(); }
       }
+      if (event.target.id === 'cit-method' || event.target.id === 'cit-target') renderProgressed();
     });
 
     $('#cit-place-form').addEventListener('submit', event => {
