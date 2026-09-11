@@ -96,3 +96,47 @@ test('name normalization is explicit and unsupported characters do not silently 
   for(const raw of ['王小明','Jane2','Jane🙂','<script>','A'.repeat(121)])assert.equal(N.nameProfile(raw).status,'invalid');
   for(const raw of ['', '   ', "--'."])assert.equal(N.nameProfile(raw).status,'empty');
 });
+
+test('life arcs: pinnacles and challenges are hand-derived from single-digit components',()=>{
+  // 1985-11-29: month 11 -> 2, day 29 -> 11 -> 2, year 1985 -> 23 -> 5. Life Path 11 + 11 + 5 = 27 -> 9.
+  const a=N.arcs(N.birthday('1985-11-29'));
+  assert.equal(a.birth,'1985-11-29');
+  assert.deepEqual(a.components,{month:2,day:2,year:5});
+  assert.deepEqual(a.pinnacles.map(p=>p.number.value),[4,7,11,7]);
+  assert.equal(a.pinnacles[2].number.master,true,'P3 = P1 + P2 keeps a master result');
+  assert.deepEqual(a.challenges.map(c=>c.number),[0,3,3,3]);
+  assert.equal(a.firstPeriodEnd,27,'36 minus Life Path root 9');
+  assert.deepEqual(a.pinnacles.map(p=>[p.fromAge,p.toAge]),[[0,27],[28,36],[37,45],[46,null]]);
+  assert.deepEqual(a.pinnacles.map(p=>[p.fromYear,p.toYear]),[[1985,2012],[2013,2021],[2022,2030],[2031,null]]);
+  assert.deepEqual(a.challenges.map(c=>[c.fromAge,c.toAge]),a.pinnacles.map(p=>[p.fromAge,p.toAge]));
+  assert.match(a.pinnacles[0].calculation,/month 2 \+ day 2 = 4/);
+  assert.match(a.challenges[2].calculation,/Challenge 1 \(0\)/);
+  assert.throws(()=>N.arcs(null),RangeError);
+  assert.throws(()=>N.arcs({}),RangeError);
+});
+
+test('life arcs: the first period ends at 36 minus the Life Path root',()=>{
+  assert.equal(N.arcs(N.birthday('1999-01-08')).firstPeriodEnd,35); // Life Path 1
+  assert.equal(N.arcs(N.birthday('1985-11-29')).firstPeriodEnd,27); // Life Path 9
+  assert.equal(N.arcs(N.birthday('2000-01-08')).firstPeriodEnd,34); // Life Path 11, root 2
+  for(const date of ['1980-10-22','2000-02-29','1993-05-06']) {
+    const b=N.birthday(date);
+    assert.equal(N.arcs(b).firstPeriodEnd,36-b.path.root);
+  }
+});
+
+test('life arcs: the current period follows the most recent birthday',()=>{
+  const a=N.arcs(N.birthday('1985-11-29'));
+  assert.equal(N.currentArc(a,'1985-11-28'),-1,'before birth');
+  assert.equal(N.currentArc(a,'1985-11-29'),0,'day of birth');
+  assert.equal(N.currentArc(a,'2013-11-28'),0,'still 27 the day before the 28th birthday');
+  assert.equal(N.currentArc(a,'2013-11-29'),1,'28 on the birthday itself');
+  assert.equal(N.currentArc(a,'2022-11-29'),2);
+  assert.equal(N.currentArc(a,'2031-11-29'),3);
+  assert.equal(N.currentArc(a,'2100-01-01'),3);
+  const leap=N.arcs(N.birthday('2000-02-29'));
+  assert.equal(N.currentArc(leap,'2001-02-28'),0);
+  assert.equal(N.currentArc(leap,'2001-03-01'),0);
+  assert.throws(()=>N.currentArc(a,'2013-13-01'),RangeError);
+  assert.throws(()=>N.currentArc(a,null),RangeError);
+});

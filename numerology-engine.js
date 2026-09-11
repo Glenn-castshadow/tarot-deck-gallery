@@ -69,5 +69,28 @@
     const expression=reduce(total),soul=vowels?reduce(vowels):null,personality=consonants?reduce(consonants):null;
     return {...result,letters,totals:{expression:total,soul:vowels,personality:consonants},expression,soul,personality,maturity:birth?reduce(birth.path.value+expression.value):null};
   }
-  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile};
+  // Pinnacles and Challenges. Conventions: docs/superpowers/specs/2026-09-11-numerology-completion-design.md §1.
+  function arcs(birth) {
+    if(!birth||!birth.parts||!birth.path) throw new RangeError('Choose a valid birthday.');
+    const m=reduce(birth.parts.month,false).value, d=reduce(birth.parts.day,false).value, y=reduce(birth.parts.year,false).value;
+    const p1=reduce(m+d), p2=reduce(d+y), p3=reduce(p1.value+p2.value), p4=reduce(m+y);
+    const c1=Math.abs(m-d), c2=Math.abs(d-y), c3=Math.abs(c1-c2), c4=Math.abs(m-y);
+    const firstPeriodEnd=36-birth.path.root;
+    const bounds=[[0,firstPeriodEnd],[firstPeriodEnd+1,firstPeriodEnd+9],[firstPeriodEnd+10,firstPeriodEnd+18],[firstPeriodEnd+19,null]];
+    const span=index=>{const [fromAge,toAge]=bounds[index];return {index,fromAge,toAge,fromYear:birth.parts.year+fromAge,toYear:toAge===null?null:birth.parts.year+toAge};};
+    const pinnacles=[[p1,`month ${m} + day ${d} = ${m+d}`],[p2,`day ${d} + year ${y} = ${d+y}`],[p3,`Pinnacle 1 (${p1.value}) + Pinnacle 2 (${p2.value}) = ${p1.value+p2.value}`],[p4,`month ${m} + year ${y} = ${m+y}`]]
+      .map(([number,calculation],index)=>({...span(index),number,calculation}));
+    const challenges=[[c1,`|month ${m} − day ${d}| = ${c1}`],[c2,`|day ${d} − year ${y}| = ${c2}`],[c3,`|Challenge 1 (${c1}) − Challenge 2 (${c2})| = ${c3}`],[c4,`|month ${m} − year ${y}| = ${c4}`]]
+      .map(([number,calculation],index)=>({...span(index),number,calculation}));
+    return {birth:birth.parts.value,components:{month:m,day:d,year:y},pinnacles,challenges,firstPeriodEnd};
+  }
+  function currentArc(model, todayValue) {
+    const today=parseDate(todayValue), birth=model&&parseDate(model.birth);
+    if(!today||!birth||!Array.isArray(model.pinnacles)) throw new RangeError('Choose a valid date.');
+    if(todayValue<model.birth) return -1;
+    let age=today.year-birth.year;
+    if(today.month<birth.month||(today.month===birth.month&&today.day<birth.day)) age--;
+    return model.pinnacles.findIndex(p=>age>=p.fromAge&&(p.toAge===null||age<=p.toAge));
+  }
+  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc};
 });
