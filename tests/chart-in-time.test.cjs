@@ -111,3 +111,74 @@ test('an absurd return index errors rather than throwing',()=>{
   assert.equal(engine.returnChart({chart,kind:'lunar',location:chart.location,index:1e9}).status,'error');
   assert.equal(engine.returnChart({chart,kind:'solar',location:chart.location,index:-1e9}).status,'error');
 });
+
+test('a secondary progressed chart at the birth date reproduces the natal chart',()=>{
+  // targetDate resolves to noon UTC, ~6.5h from this 18:30 UTC birth instant.
+  // Divided by the tropical year that is ~64 seconds of ephemeris offset, so the
+  // chart should be the natal chart to within a minute of the Moon's motion.
+  const result=engine.progressedChart({chart,targetDate:chart.birthday,method:'secondary'});
+  assert.equal(result.status,'ready');
+  const offsetSeconds=Math.abs(+new Date(result.progressedInstant)-+new Date(chart.date))/1000;
+  assert.ok(offsetSeconds<120,`offset ${offsetSeconds}s`);
+  chart.points.forEach((point,index)=>{
+    assert.ok(Math.abs(natal.delta(result.points[index].longitude,point.longitude))<0.02,point.name);
+  });
+  assert.ok(Math.abs(natal.delta(result.angles.asc,chart.angles.asc))<0.6,'ascendant');
+});
+
+test('secondary progressions advance one day of ephemeris per tropical year',()=>{
+  const result=engine.progressedChart({chart,targetDate:'2020-07-15',method:'secondary'});
+  const elapsedDays=(+new Date('2020-07-15T12:00:00Z')-+new Date(chart.date))/86400000;
+  const expected=+new Date(chart.date)+(elapsedDays/engine.TROPICAL_YEAR)*86400000;
+  assert.ok(Math.abs(+new Date(result.progressedInstant)-expected)<1000);
+});
+
+test('tertiary progressions use the sidereal lunar month, not the synodic one',()=>{
+  const result=engine.progressedChart({chart,targetDate:'2020-07-15',method:'tertiary'});
+  const elapsedDays=(+new Date('2020-07-15T12:00:00Z')-+new Date(chart.date))/86400000;
+  const sidereal=+new Date(chart.date)+(elapsedDays/27.321582)*86400000;
+  const synodic=+new Date(chart.date)+(elapsedDays/29.530589)*86400000;
+  assert.ok(Math.abs(+new Date(result.progressedInstant)-sidereal)<1000);
+  assert.ok(Math.abs(+new Date(result.progressedInstant)-synodic)>86400000);
+});
+
+test('the solar arc equals the secondary progressed Sun minus the natal Sun',()=>{
+  const secondary=engine.progressedChart({chart,targetDate:'2020-07-15',method:'secondary'});
+  const arcChart=engine.progressedChart({chart,targetDate:'2020-07-15',method:'solar-arc'});
+  const natalSun=chart.points.find(p=>p.name==='Sun').longitude;
+  const progressedSun=secondary.points.find(p=>p.name==='Sun').longitude;
+  assert.ok(Math.abs(arcChart.arc-natal.mod(progressedSun-natalSun))<1e-9);
+  // ~30 years of life is ~30 degrees of arc; mod() not delta(), so it never wraps at 180.
+  assert.ok(arcChart.arc>28 && arcChart.arc<32,`arc ${arcChart.arc}`);
+});
+
+test('solar arc advances every natal point and angle by the same arc',()=>{
+  const result=engine.progressedChart({chart,targetDate:'2020-07-15',method:'solar-arc'});
+  chart.points.forEach((point,index)=>{
+    assert.ok(Math.abs(natal.delta(result.points[index].longitude,point.longitude+result.arc))<1e-9,point.name);
+  });
+  assert.ok(Math.abs(natal.delta(result.angles.asc,chart.angles.asc+result.arc))<1e-9);
+});
+
+test('the progressed lunation phase reads from the progressed Sun and Moon',()=>{
+  const result=engine.progressedChart({chart,targetDate:'2020-07-15',method:'secondary'});
+  const sun=result.points.find(p=>p.name==='Sun').longitude;
+  const moon=result.points.find(p=>p.name==='Moon').longitude;
+  assert.equal(result.lunation.angle,natal.mod(moon-sun));
+  assert.equal(result.lunation.index,Math.floor(natal.mod(moon-sun)/45));
+  assert.ok(['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'].includes(result.lunation.name));
+});
+
+test('progression contacts use tight orbs',()=>{
+  const secondary=engine.progressedChart({chart,targetDate:'2020-07-15',method:'secondary'});
+  const arcChart=engine.progressedChart({chart,targetDate:'2020-07-15',method:'solar-arc'});
+  assert.ok(secondary.contacts.every(c=>c.orb<=2));
+  assert.ok(arcChart.contacts.every(c=>c.orb<=1));
+});
+
+test('progressions reject bad input without inventing a chart',()=>{
+  assert.equal(engine.progressedChart({chart,targetDate:'2020-07-15',method:'quinary'}).status,'error');
+  assert.equal(engine.progressedChart({chart,targetDate:'not-a-date',method:'secondary'}).status,'error');
+  assert.equal(engine.progressedChart({chart,targetDate:'2101-01-01',method:'secondary'}).status,'error');
+  assert.equal(engine.progressedChart({chart:natal.calculate({...BIRTH,time:''}),targetDate:'2020-07-15'}).status,'missing');
+});

@@ -81,6 +81,48 @@ const ChartInTimeEngine = (() => {
     return contacts.sort((x,y) => x.orb - y.orb || x.id.localeCompare(y.id));
   }
 
-  return {solveReturn, returnChart, contactsTo, TROPICAL_YEAR, SIDEREAL_MONTH};
+  const PHASES = ['New','Crescent','First Quarter','Gibbous','Full','Disseminating','Last Quarter','Balsamic'];
+  function lunationPhase(points) {
+    const sun = points.find(point => point.name === 'Sun').longitude;
+    const moon = points.find(point => point.name === 'Moon').longitude;
+    const angle = natal.mod(moon - sun), index = Math.floor(angle / 45);
+    return {angle, index, name:PHASES[index]};
+  }
+
+  function progressedChart({chart, targetDate, method = 'secondary'}) {
+    if (chart?.status !== 'ready') return {status:'missing',message:'Add your birth time and a confirmed birthplace above to calculate progressed charts.'};
+    if (!['secondary','tertiary','solar-arc'].includes(method)) return {status:'error',message:'Unknown progression method.'};
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate || '')) return {status:'error',message:'Choose a valid calendar date.'};
+    const target = new Date(`${targetDate}T12:00:00Z`);
+    if (!Number.isFinite(+target) || target.toISOString().slice(0,10) !== targetDate) return {status:'error',message:'Choose a valid calendar date.'};
+    if (+target < MIN_MS || +target > MAX_MS) return {status:'error',message:'Progressed charts support dates from 1901 to 2100.'};
+
+    const birthMs = +new Date(chart.date);
+    const elapsedDays = (+target - birthMs) / DAY_MS;
+    // Solar arc needs the secondary progressed Sun, so only tertiary changes the ratio.
+    const ratio = method === 'tertiary' ? SIDEREAL_MONTH : TROPICAL_YEAR;
+    const progressedInstant = new Date(birthMs + (elapsedDays / ratio) * DAY_MS);
+    const cast = natal.chartAtInstant(progressedInstant, chart.location, {houseSystem:chart.houseSystem, orbScale:chart.orbScale});
+    if (cast.status !== 'ready') return cast;
+
+    const base = {status:'ready', method, targetDate, elapsedDays, progressedInstant:progressedInstant.toISOString()};
+    if (method !== 'solar-arc') return {...base, arc:null, points:cast.points, axes:cast.axes,
+      cusps:cast.cusps, angles:cast.angles, lunation:lunationPhase(cast.points),
+      contacts:contactsTo(cast.points.filter(point => point.kind === 'planet'), chart.points.filter(point => point.kind === 'planet'), 2)};
+
+    // mod(), not delta(): the accumulated arc exceeds 180 degrees past age ~180
+    // and delta() would wrap it to a negative value.
+    const arc = natal.mod(cast.points.find(point => point.name === 'Sun').longitude - chart.points.find(point => point.name === 'Sun').longitude);
+    // Directed points carry no meaningful daily motion, so speed is zeroed and
+    // applying/separating is not reported for this method.
+    const shift = point => {const longitude = natal.mod(point.longitude + arc); return {...point, longitude, speed:0, retrograde:false, stationary:false, house:natal.houseFor(longitude, chart.cusps), ...natal.placement(longitude)};};
+    const points = chart.points.map(shift), axes = chart.axes.map(shift);
+    return {...base, arc, points, axes, cusps:chart.cusps,
+      angles:{asc:natal.mod(chart.angles.asc + arc), mc:natal.mod(chart.angles.mc + arc), dc:natal.mod(chart.angles.dc + arc), ic:natal.mod(chart.angles.ic + arc)},
+      lunation:lunationPhase(points),
+      contacts:contactsTo(points.filter(point => point.kind === 'planet'), chart.points.filter(point => point.kind === 'planet'), 1)};
+  }
+
+  return {solveReturn, returnChart, progressedChart, lunationPhase, contactsTo, TROPICAL_YEAR, SIDEREAL_MONTH};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = ChartInTimeEngine;
