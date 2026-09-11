@@ -127,3 +127,17 @@ Rollback: `systemctl stop ishtar-app`, restore the nginx site from
 ishtarinsights.com.before-accounts (or .before-cutover to undo only the newsletter switch),
 `nginx -t && systemctl reload nginx`, `systemctl start ishtar-newsletter`, and point
 /opt/tarot-game/current at /opt/tarot-game/releases/20260909-divination-art-v2.
+
+## 2026-09-11 Chart in time release
+
+Current web root: /opt/tarot-game/releases/20260911-chart-in-time, a hardlink copy (`cp -al`) of
+20260910-accounts with the committed runtime files from main 6701c14 extracted over it
+(`git archive` of index.html, the root html pages, root js/css, vendor, assets, tarot-decks).
+Previous release 20260910-accounts is retained for rollback (point the `current` symlink back at it).
+New files: bi-wheel.js, chart-in-time-engine.js, chart-in-time-text.js, chart-in-time.js,
+chart-in-time.css. Rekeyed: natal-engine.js?v=chart-in-time-1, app.js?v=chart-in-time-1,
+celestial-extras.js?v=2, mobile-sections.js?v=divination-2. No server-side or account-service
+change; the Django service and nginx are untouched. Validation: every new asset and the rekeyed
+scripts return 200 over HTTPS, /api/health/ still answers, the section renders with the sample
+chart, and the node suite is 134 passing. Conventions and independent validation are in
+docs/CHART-IN-TIME.md.
