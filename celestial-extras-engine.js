@@ -48,6 +48,22 @@ const CelestialExtrasEngine = (() => {
   function pillar(label, stemIndex, branchIndex) {
     return {label,stemIndex,branchIndex,stem:stems[stemIndex],branch:branches[branchIndex],characters:stems[stemIndex][0]+branches[branchIndex][0]};
   }
+  // Hidden stems per branch (principal, middle, residual). Traditional table; see docs/EXTENDED-ATLAS.md.
+  const hiddenStems=[[9],[5,9,7],[0,2,4],[1],[4,1,9],[2,6,4],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]];
+  const phaseOrder=['Wood','Fire','Earth','Metal','Water'];
+  const gods={
+    friend:{hanzi:'比肩',pinyin:'Bǐ Jiān',english:'Friend'},robWealth:{hanzi:'劫財',pinyin:'Jié Cái',english:'Rob Wealth'},
+    eatingGod:{hanzi:'食神',pinyin:'Shí Shén',english:'Eating God'},hurtingOfficer:{hanzi:'傷官',pinyin:'Shāng Guān',english:'Hurting Officer'},
+    indirectWealth:{hanzi:'偏財',pinyin:'Piān Cái',english:'Indirect Wealth'},directWealth:{hanzi:'正財',pinyin:'Zhèng Cái',english:'Direct Wealth'},
+    sevenKillings:{hanzi:'七殺',pinyin:'Qī Shā',english:'Seven Killings'},directOfficer:{hanzi:'正官',pinyin:'Zhèng Guān',english:'Direct Officer'},
+    indirectResource:{hanzi:'偏印',pinyin:'Piān Yìn',english:'Indirect Resource'},directResource:{hanzi:'正印',pinyin:'Zhèng Yìn',english:'Direct Resource'}
+  };
+  const godTable=[['friend','robWealth'],['eatingGod','hurtingOfficer'],['indirectWealth','directWealth'],['sevenKillings','directOfficer'],['indirectResource','directResource']];
+  function tenGod(dayStem, stem) {
+    if(![dayStem,stem].every(i=>Number.isInteger(i)&&i>=0&&i<10)) throw new RangeError('Stem indices run 0–9.');
+    const relation=natal.mod(phaseOrder.indexOf(stems[stem][2])-phaseOrder.indexOf(stems[dayStem][2]),5);
+    return godTable[relation][dayStem%2===stem%2?0:1];
+  }
   function bazi(chart) {
     if (chart?.status !== 'ready') return {status:'missing',message:'Add a birth date, recorded time and confirmed birthplace to calculate all four pillars.'};
     const [year,month,day] = chart.birthday.split('-').map(Number), hour = Number(chart.time.split(':')[0]);
@@ -62,9 +78,15 @@ const CelestialExtrasEngine = (() => {
     const pillars = [pillar('Year',yearIndex%10,yearIndex%12),pillar('Month',((yearIndex%10)%5*2+2+monthIndex)%10,(monthIndex+2)%12),pillar('Day',dayIndex%10,dayIndex%12),pillar('Hour',((dayIndex%10)%5*2+hourBranch)%10,hourBranch)];
     const phases = {Wood:0,Fire:0,Earth:0,Metal:0,Water:0};
     pillars.forEach(p=>{phases[p.stem[2]]++;phases[p.branch[3]]++;});
+    const dayStemIndex=dayIndex%10;
+    const hidden=pillars.map(p=>hiddenStems[p.branchIndex]);
+    const godsFound={stems:pillars.map((p,i)=>i===2?null:tenGod(dayStemIndex,p.stemIndex)),hidden:hidden.map(list=>list.map(s=>tenGod(dayStemIndex,s)))};
+    const phasesHidden={Wood:0,Fire:0,Earth:0,Metal:0,Water:0};
+    pillars.forEach(p=>{phasesHidden[p.stem[2]]++;});
+    hidden.flat().forEach(s=>{phasesHidden[stems[s][2]]++;});
     const boundaryDistance = Math.min(natal.mod(sunLongitude-315,30),30-natal.mod(sunLongitude-315,30));
-    return {status:'ready',pillars,phases,dayMaster:stems[dayIndex%10],solarYear,sunLongitude,nearSolarTerm:boundaryDistance<.02,lateZi:hour===23};
+    return {status:'ready',pillars,phases,dayMaster:stems[dayIndex%10],solarYear,sunLongitude,nearSolarTerm:boundaryDistance<.02,lateZi:hour===23,dayStemIndex,hidden,gods:godsFound,phasesHidden,hiddenTotal:4+hidden.flat().length,yangYear:(yearIndex%10)%2===0};
   }
-  return {positions,between,transits,synastry,bazi,stems,branches};
+  return {positions,between,transits,synastry,bazi,stems,branches,hiddenStems,tenGod,gods};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = CelestialExtrasEngine;
