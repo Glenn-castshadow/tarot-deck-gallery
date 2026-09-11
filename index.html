@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=divination-art2" />
+    <link rel="stylesheet" href="styles.css?v=accounts-2" />
     <link rel="stylesheet" href="tarot-readings.css?v=1" />
     <link rel="stylesheet" href="astrocartography.css?v=1" />
     <link rel="stylesheet" href="celestial-extras.css?v=1" />
@@ -17,12 +17,14 @@
     <link rel="stylesheet" href="numerology.css?v=1" />
     <link rel="stylesheet" href="mobile-sections.css?v=1" />
     <link rel="stylesheet" href="divination.css?v=art2" />
+    <link rel="stylesheet" href="account.css?v=1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
     <main class="shell">
       <header class="masthead">
         <div class="brand-lockup"><img src="assets/ishtar-insights-logo.png" alt="Ishtar Insights lotus logo" width="768" height="512"></div>
+        <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="eyebrow"><span class="eyebrow-dot"></span> Visual research library <span class="eyebrow-line"></span> <span id="archive-total">32 decks</span></div>
         <div class="masthead-row">
           <div>
@@ -176,6 +178,17 @@
         <button id="clear-search" class="text-button">Clear search</button>
       </div>
 
+      <section id="account-room" class="account-room" aria-labelledby="account-title" hidden>
+        <header class="account-head"><div><p class="section-kicker">Your account</p><h2 id="account-title">Your journal &amp; details</h2><p id="account-email" class="account-email"></p></div><button type="button" id="account-signout">Sign out</button></header>
+        <p id="account-status" role="status" aria-live="polite"></p>
+        <div class="account-grid">
+          <article class="account-card"><h3>Birth details</h3><p id="account-sync">Your birth details sync to this account when you read your sky.</p><button type="button" id="account-clear-profile" class="text-button">Remove synced birth details</button></article>
+          <article class="account-card"><h3>Newsletter</h3><label class="account-toggle"><input type="checkbox" id="account-newsletter"> <span>Email me the Ishtar Insights newsletter and occasional updates.</span></label><p><a href="newsletter-privacy.html">Newsletter privacy</a></p></article>
+        </div>
+        <section class="account-journal" aria-labelledby="journal-title"><h3 id="journal-title">Saved readings</h3><p id="journal-empty">No saved readings yet. After a reading, choose “Save this reading”.</p><ol id="journal-list" class="journal-list"></ol><nav class="journal-pager" aria-label="Journal pages"><button type="button" id="journal-prev">← Newer</button><span id="journal-page"></span><button type="button" id="journal-next">Older →</button></nav></section>
+        <details class="account-danger"><summary>Delete my account</summary><p>This removes your synced birth details and saved readings. Newsletter signup is separate; use the toggle above first if you want to leave it too.</p><button type="button" id="account-delete">Delete my account permanently</button></details>
+      </section>
+
       <footer class="footer">
         <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
         <p><a href="cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
@@ -200,6 +213,12 @@
       </div>
       <p class="sky-explorer-note">Explore your natal placements or browse the symbolic zodiac guide.</p>
     </dialog>
+    <dialog id="account-dialog" class="account-dialog" aria-labelledby="account-dialog-title">
+      <button type="button" class="close-dialog" data-close-account aria-label="Close sign in">×</button>
+      <form id="account-email-form" class="account-step"><p class="section-kicker">Sign in or create an account</p><h2 id="account-dialog-title">A code, not a password</h2><p>Enter your email and we will send a one-time code. No password to remember. New emails create an account.</p><label for="account-email-input">Email address</label><input id="account-email-input" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com"><button type="submit">Send my code</button><p class="account-fine">Signing in sets a session cookie that is needed for your account to work. See <a href="cookie-policy.html">cookies &amp; browser storage</a>.</p></form>
+      <form id="account-code-form" class="account-step" hidden><p class="section-kicker">Check your email</p><h2>Enter the code</h2><p id="account-code-hint"></p><label for="account-code-input">Code</label><input id="account-code-input" type="text" inputmode="text" autocomplete="one-time-code" required maxlength="12" autocapitalize="characters" spellcheck="false"><button type="submit">Sign in</button><button type="button" class="text-button" id="account-resend">Send a new code</button><button type="button" class="text-button" id="account-restart">Use a different email</button></form>
+      <p id="account-dialog-status" role="status" aria-live="polite"></p>
+    </dialog>
     <form id="newsletter-form"></form>
     <section id="storage-notice" class="storage-notice" aria-labelledby="storage-title" hidden>
       <h2 id="storage-title">A little space for your next visit</h2>
@@ -209,11 +228,13 @@
       <div class="storage-actions"><button type="button" data-storage-choice="decline">No optional saving</button><button type="button" data-storage-choice="allow">Allow saving</button></div>
     </section>
     <script src="newsletter.js?v=1"></script>
-    <script src="storage-preferences.js?v=1"></script>
+    <script src="storage-preferences.js?v=accounts-1"></script>
+    <script src="account-core.js?v=1"></script>
+    <script src="account.js?v=accounts-3"></script>
     <script src="birthday-insights.js?v=celestial-atlas-1"></script>
     <script src="birthplace-search.js?v=atlas-2"></script>
     <script src="vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
-    <script src="natal-engine.js?v=celestial-atlas-1"></script>
+    <script src="natal-engine.js?v=chart-in-time-1"></script>
     <script src="natal-chart.js?v=celestial-atlas-1"></script>
     <script src="sky-chart.js?v=celestial-atlas-1"></script>
     <script src="archive-decks.js?v=archive-32"></script>
@@ -224,15 +245,15 @@
     <script src="celestial-extras.js?v=2"></script>
     <script src="chart-in-time-engine.js?v=1"></script>
     <script src="chart-in-time-text.js?v=1"></script>
-    <script src="chart-in-time.js?v=6"></script>
-    <script src="tarot-readings.js?v=1"></script>
+    <script src="chart-in-time.js?v=1"></script>
+    <script src="tarot-readings.js?v=accounts-3"></script>
     <script src="numerology-engine.js?v=1"></script>
     <script src="numerology.js?v=1"></script>
-    <script src="app.js?v=perspectives-4"></script>
+    <script src="app.js?v=chart-in-time-1"></script>
     <script src="divination-data.js?v=1"></script>
-    <script src="divination-engine.js?v=1"></script>
+    <script src="divination-engine.js?v=accounts-3"></script>
     <script src="divination-art.js?v=art2"></script>
-    <script src="divination.js?v=art2"></script>
+    <script src="divination.js?v=accounts-3"></script>
     <script src="mobile-sections.js?v=divination-2"></script>
   </body>
 </html>

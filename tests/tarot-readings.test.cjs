@@ -84,3 +84,26 @@ test('each minor card has a distinct upright/reversed interpretation and a speci
   assert.match(cards.find(c=>c.name==='Eight of Cups').upright,/change/);
   assert.match(cards.find(c=>c.name==='Ten of Wands').upright,/heavy/);
 });
+
+test('validDraw accepts a dealt spread and rejects malformed payloads', () => {
+  const draw = Tarot.deal('celtic', cards, seeded(3), 'Q', 'work');
+  assert.equal(Tarot.validDraw(draw, cards.length), true);
+  assert.equal(Tarot.validDraw({...draw, id: 'nope'}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.slice(1)}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.map(c => ({...c, index: 99}))}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: draw.cards.map(c => ({...c, orientation: 'sideways'}))}, cards.length), false);
+  assert.equal(Tarot.validDraw({...draw, cards: [draw.cards[0], ...draw.cards.slice(0, 9)]}, cards.length), false, 'duplicate cards rejected');
+});
+
+test('loadSpread turns a saved payload into a sanitised spread with every position revealed, or rejects a malformed one', () => {
+  const draw = Tarot.deal('celtic', cards, seeded(5), 'A question', 'work');
+  const loaded = Tarot.loadSpread(draw, cards.length);
+  assert.notEqual(loaded, null);
+  assert.deepEqual(loaded.spread, draw);
+  assert.equal(loaded.revealed.size, draw.cards.length);
+  for (let slot = 0; slot < draw.cards.length; slot++) assert.ok(loaded.revealed.has(slot), `slot ${slot} must be revealed`);
+  // A payload validDraw rejects must be rejected here too, not partially applied.
+  assert.equal(Tarot.loadSpread({...draw, id: 'nope'}, cards.length), null);
+  assert.equal(Tarot.loadSpread({...draw, cards: draw.cards.map(c => ({...c, index: 99}))}, cards.length), null);
+  assert.equal(Tarot.loadSpread(null, cards.length), null);
+});

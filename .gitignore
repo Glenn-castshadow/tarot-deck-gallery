@@ -15,6 +15,9 @@ Desktop.ini
 *.swp
 *.swo
 
+# Local agent tooling (machine-specific launch configs, e.g. absolute paths)
+.claude/
+
 # Logs
 *.log
 
@@ -49,3 +52,13 @@ evals/tarot-images/runs/**/references/
 output/imagegen/divination-v2/*.webp
 output/imagegen/divination-v2/review/
 tmp/imagegen/
+
+# Superpowers SDD scratch workspace (ledger, briefs, review packages)
+.superpowers/
+
+# Django app local state
+server/ishtar/.venv/
+server/ishtar/staticfiles/
+server/ishtar/*.sqlite3
+server/ishtar/*.sqlite3-*
+server/ishtar/.dev-secret-key

@@ -1,0 +1,23 @@
+[Unit]
+Description=Ishtar Insights account service
+After=network.target
+[Service]
+User=ishtar-app
+Group=ishtar-app
+WorkingDirectory=/opt/ishtar-app/app
+EnvironmentFile=/etc/ishtar-app.env
+Environment=DJANGO_SETTINGS_MODULE=ishtar.settings
+Environment=DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3
+ExecStart=/opt/ishtar-app/venv/bin/gunicorn -c /opt/ishtar-app/app/gunicorn.conf.py ishtar.wsgi:application
+Restart=on-failure
+StateDirectory=ishtar-app
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ishtar-app
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+[Install]
+WantedBy=multi-user.target

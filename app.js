@@ -354,41 +354,47 @@ birthdayForm.addEventListener("submit", event => {
   renderBirthdayProfile(saved);
 });
 
-try {
-  const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
-  if (savedBirthday?.birthday) {
-    birthdayInput.value = savedBirthday.birthday;
-    birthTimeInput.value = savedBirthday.time || "";
-    birthPlaceInput.value = savedBirthday.place || "";
-    birthplacePicker.restore(savedBirthday.placeLocation);
-    if (savedBirthday.returnLocation) chartInTime.setReturnLocation(savedBirthday.returnLocation);
-    houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
-    orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
-    foldInput.value = savedBirthday.fold || "";
-    if(savedBirthday.placeLocation?.source === "manual") {
-      manualLocationInput.checked=true;manualFields.disabled=false;manualFields.hidden=false;
-      document.querySelector("#birth-latitude").value=savedBirthday.placeLocation.latitude;
-      document.querySelector("#birth-longitude").value=savedBirthday.placeLocation.longitude;
-      document.querySelector("#birth-timezone").value=savedBirthday.placeLocation.timeZone;
-    }
-    renderBirthdayProfile(savedBirthday);
-    if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
-      if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
-      savedBirthday.placeLocation=location;savedBirthday.place=location.label;
-      try {IshtarStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+function restoreBirthdayProfile() {
+  try {
+    const savedBirthday = JSON.parse(IshtarStorage.getItem("arcana-birthday-profile-v1"));
+    if (savedBirthday?.birthday) {
+      manualLocationInput.checked = false; manualFields.disabled = true; manualFields.hidden = true;
+      birthdayInput.value = savedBirthday.birthday;
+      birthTimeInput.value = savedBirthday.time || "";
+      birthPlaceInput.value = savedBirthday.place || "";
+      birthplacePicker.restore(savedBirthday.placeLocation);
+      if (savedBirthday.returnLocation) chartInTime.setReturnLocation(savedBirthday.returnLocation);
+      houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
+      orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
+      foldInput.value = savedBirthday.fold || "";
+      if(savedBirthday.placeLocation?.source === "manual") {
+        manualLocationInput.checked=true;manualFields.disabled=false;manualFields.hidden=false;
+        document.querySelector("#birth-latitude").value=savedBirthday.placeLocation.latitude;
+        document.querySelector("#birth-longitude").value=savedBirthday.placeLocation.longitude;
+        document.querySelector("#birth-timezone").value=savedBirthday.placeLocation.timeZone;
+      }
       renderBirthdayProfile(savedBirthday);
-    });
-  } else {
+      if(!savedBirthday.placeLocation && savedBirthday.time && savedBirthday.place) birthplacePicker.resolveSaved().then(location=>{
+        if(!location || birthdayInput.value!==savedBirthday.birthday || birthTimeInput.value!==savedBirthday.time) return;
+        savedBirthday.placeLocation=location;savedBirthday.place=location.label;
+        try {IshtarStorage.setItem("arcana-birthday-profile-v1",JSON.stringify(savedBirthday));} catch { /* no-op */ }
+        renderBirthdayProfile(savedBirthday);
+      });
+    } else {
+      renderBirthdayProfile();
+    }
+  } catch (error) {
     renderBirthdayProfile();
   }
-} catch (error) {
-  renderBirthdayProfile();
 }
+restoreBirthdayProfile();
+window.BirthRoom = { restore: restoreBirthdayProfile };
 
 const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");
 let readingMode = "daily";
 let currentSpread = null;
+let loadedDaily = null;
 let revealedDailyDate = null;
 const revealedSpread = new Set();
 const tarotSettings = document.querySelector("#tarot-settings");
@@ -403,14 +409,14 @@ let ishtarVisibleIndices = [];
 let deckReviewIndex = null;
 let cardDetailState = null;
 
-function selectReadingDeck(id) {
+function selectReadingDeck(id, { render = true } = {}) {
   if (!Object.hasOwn(readingDecks, id)) return;
   activeReadingDeck = id;
   try { IshtarStorage.setItem("arcana-reading-deck-v1", id); } catch { /* no-op */ }
   const url = new URL(location.href);
   url.searchParams.set("deck", id);
   try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
-  renderReading();
+  if (render) renderReading();
   if (dialog.open && cardDetailState) {
     const { index, orientation, browsing } = cardDetailState;
     openCardDetails(index, orientation, browsing);
@@ -446,14 +452,15 @@ function renderIshtarDeck() {
   });
 }
 
-function setReadingMode(mode) {
+function setReadingMode(mode, { render = true } = {}) {
+  loadedDaily = null;
   readingMode = mode;
   document.querySelectorAll("[data-reading-mode]").forEach(button => {
     const active = button.dataset.readingMode === mode;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
-  renderReading();
+  if (render) renderReading();
 }
 
 function localDateKey() {
@@ -501,6 +508,8 @@ function getDailyReading() {
   return reading;
 }
 
+function dailyRevealed() { return loadedDaily ? true : revealedDailyDate === localDateKey(); }
+
 function dealSpread() {
   currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value);
   revealedSpread.clear();
@@ -509,7 +518,7 @@ function dealSpread() {
 
 function cardVisual(card, orientation, slot = "daily") {
   const cardIndex = tarotCards.indexOf(card);
-  const revealed = slot === "daily" ? revealedDailyDate === localDateKey() : revealedSpread.has(slot);
+  const revealed = slot === "daily" ? dailyRevealed() : revealedSpread.has(slot);
   const positionLabel = slot === "daily" ? "your daily card" : `${slot + 1}: ${TarotReadings.spreads[currentSpread.id].positions[slot].name}`;
   return `<button type="button" class="drawn-card drawn-card-button flip-card${revealed ? " is-revealed" : ""}" data-card-view="${cardIndex}" data-card-orientation="${orientation}" data-reveal-slot="${slot}" aria-label="${revealed ? `View ${card.name}, ${orientation}, large` : `Reveal ${positionLabel}`}">
     <span class="flip-card-rotor">
@@ -613,6 +622,11 @@ function stepDeckReview(step) {
   nextButton?.focus({ preventScroll: true });
 }
 
+function appendSaveControl() {
+  if (!window.IshtarAccount?.state().signedIn) return;
+  readingOutput.insertAdjacentHTML("beforeend", `<p class="save-reading"><button type="button" data-save-reading="tarot">Save this reading to my journal</button><span role="status" aria-live="polite"></span></p>`);
+}
+
 function renderReading(animateDeal = false) {
   document.querySelector(".reading-room").dataset.deck = activeReadingDeck;
   document.querySelector(".reading-badge").textContent = `${readingDecks[activeReadingDeck].name} · 78 cards`;
@@ -629,14 +643,15 @@ function renderReading(animateDeal = false) {
     return;
   }
   if (readingMode === "daily") {
-    const reading = getDailyReading();
+    const reading = loadedDaily || getDailyReading();
+    const dateLabel = loadedDaily ? `Saved · ${loadedDaily.date}` : `Today · ${localDateKey()}`;
     const card = tarotCards[reading.index];
     readingOutput.innerHTML = `<div class="daily-reading">
       ${cardVisual(card, reading.orientation)}
       <div class="reading-copy">
-        <div class="reveal-invitation" ${revealedDailyDate === localDateKey() ? "hidden" : ""}><p class="reading-label">Today · ${localDateKey()}</p><h3>A moment for you</h3><p>Take a breath, then tap the deck to turn over your daily card.</p></div>
-        <div class="revealed-copy" ${revealedDailyDate === localDateKey() ? "" : "hidden"}>
-        <p class="reading-label">Today · ${localDateKey()}</p>
+        <div class="reveal-invitation" ${dailyRevealed() ? "hidden" : ""}><p class="reading-label">${dateLabel}</p><h3>A moment for you</h3><p>Take a breath, then tap the deck to turn over your daily card.</p></div>
+        <div class="revealed-copy" ${dailyRevealed() ? "" : "hidden"}>
+        <p class="reading-label">${dateLabel}</p>
         <h3>${card.name}</h3>
         <span class="orientation">${reading.orientation}</span>
         <p>${readingCopy(card, reading.orientation)}</p>
@@ -646,6 +661,7 @@ function renderReading(animateDeal = false) {
     </div>`;
     drawReadingButton.innerHTML = "<span>✦</span> Show today's card";
     drawReadingButton.setAttribute("aria-label", "Show today's card");
+    appendSaveControl();
     return;
   }
 
@@ -655,6 +671,7 @@ function renderReading(animateDeal = false) {
   }
   readingOutput.innerHTML = TarotReadings.tableHTML(currentSpread, tarotCards, revealedSpread, cardVisual, animateDeal);
   updateSpreadReport();
+  appendSaveControl();
   drawReadingButton.innerHTML = "<span>✦</span> Shuffle &amp; deal";
   drawReadingButton.setAttribute("aria-label", "Shuffle and deal a new reading with your selected focus and question");
 }
@@ -754,6 +771,47 @@ readingOutput.addEventListener("click", event => {
   if (!button.classList.contains("is-revealed")) revealCard(button);
   else openCardDetails(Number(button.dataset.cardView), button.dataset.cardOrientation);
 });
+
+window.TarotRoom = {
+  currentDraw() {
+    if (readingMode === "daily") {
+      const reading = loadedDaily || getDailyReading();
+      return { kind: "tarot-daily", deck: activeReadingDeck, layout: "", question: "", focus: "", payload: { index: reading.index, orientation: reading.orientation, date: loadedDaily?.date || localDateKey() } };
+    }
+    if (readingMode === "spread" && currentSpread) {
+      return { kind: "tarot-spread", deck: activeReadingDeck, layout: currentSpread.id, question: currentSpread.question, focus: currentSpread.focus, payload: currentSpread };
+    }
+    return null;
+  },
+  loadDraw(reading) {
+    const payload = reading?.payload;
+    // Validate first, in both branches. Nothing below this point may run (deck switch,
+    // mode switch, currentSpread/loadedDaily assignment, or any render) until we already
+    // know the load will succeed, so a malformed payload leaves the deck, URL, storage, and
+    // the reading currently on screen completely untouched.
+    if (reading?.kind === "tarot-daily") {
+      if (!payload || !Number.isInteger(payload.index) || !tarotCards[payload.index] || !["upright", "reversed"].includes(payload.orientation)) return false;
+      if (Object.hasOwn(readingDecks, reading.deck)) selectReadingDeck(reading.deck, { render: false });
+      setReadingMode("daily", { render: false });
+      loadedDaily = { index: payload.index, orientation: payload.orientation, date: /^\d{4}-\d{2}-\d{2}$/.test(payload.date || "") ? payload.date : "earlier" };
+      renderReading();
+    } else if (reading?.kind === "tarot-spread") {
+      const loaded = TarotReadings.loadSpread(payload, tarotCards.length);
+      if (!loaded) return false;
+      if (Object.hasOwn(readingDecks, reading.deck)) selectReadingDeck(reading.deck, { render: false });
+      setReadingMode("spread", { render: false });
+      currentSpread = loaded.spread;
+      revealedSpread.clear();
+      loaded.revealed.forEach(slot => revealedSpread.add(slot));
+      tarotSpreadSelect.value = currentSpread.id; tarotFocusSelect.value = currentSpread.focus; tarotQuestionInput.value = currentSpread.question;
+      renderReading(false);
+    } else return false;
+    const target = document.querySelector("#tarot-readings");
+    (window.MobileSections?.reveal(target) || target).scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  }
+};
+document.addEventListener("ishtar-account-change", () => { if (readingMode !== "deck") renderReading(false); });
 
 function setArchiveFilter(filter) {
   const selected = ["all", "new", "historical", "modern"].includes(filter) ? filter : "all";

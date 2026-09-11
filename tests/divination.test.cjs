@@ -40,3 +40,18 @@ test('reject malformed mothers and preserve inputs', () => {
   assert.throws(()=>E.shield([]));
   const a=[1,2,1,2]; assert.deepEqual(E.combine(a,a),[2,2,2,2]); assert.deepEqual(a,[1,2,1,2]);
 });
+test('loadIds sanitises a saved id list with every slot revealed, or rejects a malformed one', () => {
+  const ids = [2, 5, 9];
+  const loaded = E.loadIds(ids, 36);
+  assert.notEqual(loaded, null);
+  assert.deepEqual(loaded.ids, ids);
+  assert.notEqual(loaded.ids, ids, 'must be a copy, not the same array reference');
+  assert.equal(loaded.revealed.size, ids.length);
+  assert.deepEqual([...loaded.revealed].sort((a,b)=>a-b), [0,1,2], 'every slot must be in the revealed set');
+  assert.equal(E.loadIds(null, 36), null, 'non-array rejected');
+  assert.equal(E.loadIds([], 36), null, 'empty list rejected');
+  assert.equal(E.loadIds([1,2,3,4,5,6], 36), null, 'more than 5 ids rejected');
+  assert.equal(E.loadIds([2,2,9], 36), null, 'duplicate ids rejected');
+  assert.equal(E.loadIds([2,5,40], 36), null, 'out-of-range id rejected');
+  assert.equal(E.loadIds([-1,2,5], 36), null, 'negative id rejected');
+});

@@ -1,3 +1,4 @@
+"""Tests for the retired stdlib newsletter service (server/newsletter.py). Retired 2026-09; the live contract tests are in server/ishtar/newsletter/tests."""
 import importlib.util
 import tempfile
 import unittest
