@@ -173,9 +173,10 @@ kind, so a signed-in reader who saves an I Ching reading gets the existing "Unkn
 kind." error; this is expected and acceptable for the interval between merge and deploy, and
 resolves itself once the service is redeployed. No other server-side or nginx change is needed.
 
-## Pending: Jyotish (sidereal chart) release
+## 2026-09-12 Jyotish (sidereal chart) release
 
-Branch `jyotish`, not yet deployed. Adds a fourth astrology section to the celestial atlas: a
+Merged to main at f2b9c38 and deployed 2026-09-12 in the combined release described under
+"2026-09-12 Jyotish + Horary deployment" below. Adds a fourth astrology section to the celestial atlas: a
 sidereal (Lahiri) reading of the same calculated birth chart, with rashi/bhava placements,
 nakshatras, Vimshottari dashas and a navamsa (D9) chart in South and North Indian formats.
 Conventions and independent validation are in docs/JYOTISH.md, cross-linked from
@@ -199,9 +200,9 @@ dasha mahadasha selection updates the antardasha table, no console errors origin
 section, no horizontal overflow at 390px, and neighbouring sections are unaffected. Signed-in
 state was not exercised, since this section is read-only against the saved profile.
 
-## Pending: Horary release
+## 2026-09-12 Horary release
 
-Branch `horary`, not yet deployed. Adds a fifth astrology section to the celestial atlas: a
+Merged to main at 1664713 and deployed 2026-09-12 in the combined release described below. Adds a fifth astrology section to the celestial atlas: a
 chart cast for the moment a question is asked, judged by William Lilly's seventeenth-century
 method (*Christian Astrology*, 1647) -- considerations before judgment, significators and their
 dignities, perfection by aspect/reception/translation/collection, a planetary-hours table, and
@@ -233,3 +234,21 @@ elect tab shows a 7-row dignity table; no console errors originate from any hora
 the expected `/api/account/` 404s, absent a running accounts backend); no horizontal overflow
 at 390px; and neighbouring sections are unaffected. Signed-in state was not exercised, since
 this section only reads the saved birth profile for its default place.
+
+## 2026-09-12 Jyotish + Horary deployment
+
+Deployed 2026-09-12 from main 1664713 as /opt/tarot-game/releases/20260912-jyotish-horary, a
+hardlink copy (`cp -al`) of 20260911-chinese-traditions with the committed root html/js/css
+extracted over it from `git archive HEAD` (53 files; assets, vendor and tarot-decks unchanged and
+shared). Glenn ran `sh /tmp/deploy-20260912b.sh`, which created the release, stripped CRs from
+the extracted text files, switched the `current` symlink and curl-checked the new URLs. Previous
+release 20260911-chinese-traditions is retained for rollback
+(`ln -sfn /opt/tarot-game/releases/20260911-chinese-traditions /opt/tarot-game/current`).
+
+New files, all at `?v=1`: jyotish-engine.js, jyotish-text.js, jyotish-chart.js, jyotish.js,
+jyotish.css, classical-engine.js, horary-engine.js, horary-text.js, horary-chart.js, horary.js,
+horary.css. Rekeyed: natal-engine.js?v=horary-1 (Regiomontanus houses), app.js?v=horary-1,
+mobile-sections.js?v=horary-1. No Django, nginx or storage change; /api/health/ unaffected.
+Validation after the switch: every new and rekeyed URL above returned 200 over HTTPS, the current
+symlink resolves to 20260912-jyotish-horary, and the node suite on the deployed commit is 302
+passing. Conventions and independent validation: docs/JYOTISH.md and docs/HORARY.md.
