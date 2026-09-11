@@ -91,9 +91,10 @@ graha get a nakshatra and pada.
 Lord sequence and years: Ketu 7, Venus 20, Sun 6, Moon 10, Mars 7, Rahu 18, Jupiter 16,
 Saturn 19, Mercury 17 (summing to 120). The first mahadasha is the Moon's nakshatra lord;
 its balance is `(1 − elapsed fraction of the nakshatra) × lord years`. A year is 365.25
-days — the common software default; some traditions use a 360-day year instead, and this
-is called out in the UI's conventions disclosure rather than left implicit. Nine
-mahadashas are listed from birth; antardashas inside a mahadasha follow the lord sequence
+days — the common software default; some traditions use a 360-day year instead. These docs
+note that alternative for context, but the UI's conventions disclosure states only the
+365.25-day convention actually used, not the alternative. Nine mahadashas are listed from
+birth; antardashas inside a mahadasha follow the lord sequence
 starting from the mahadasha's own lord, each lasting `maha years × sub-lord years / 120`.
 Pratyantardashas are out of scope.
 
@@ -120,9 +121,10 @@ attributes (and `data-lagna="true"` on the Lagna house) for DOM-level verificati
 ### Copy and voice
 
 Original reflective text only: Lagna readings (12), graha themes (9), nakshatra readings
-(27: keyword, two-sentence reflection, prompt), dasha-lord readings (9, framed as "a
-period traditionally associated with …" plus a prompt) and bhava one-liners (12).
-Traditional names, deities and symbols are cited data, not original copy. Voice matches
+(27: keyword, two-sentence reflection, prompt), dasha-lord readings (9: an original
+two-sentence reading that frames the lord's themes as traditional associations, plus a
+prompt) and bhava one-liners (12). Traditional names, deities and symbols are cited data,
+not original copy. Voice matches
 the rest of the atlas: no "you will", no luck/fortune/misfortune language, no verdicts on
 marriage, wealth, health or death — `tests/jyotish-text.test.cjs` enforces both the banned
 vocabulary and copy variety (no over-shared opening skeleton, bounded repetition of stock
@@ -151,9 +153,13 @@ node --test tests/jyotish-chart.test.cjs  # 5 tests
 
 **`tools/build_jyotish_fixtures.py`** (development only, never shipped) uses pyswisseph in
 Moshier mode with `SIDM_LAHIRI` to write `tests/fixtures/jyotish-reference.json`: twelve
-cases (ten natal reference births spanning both hemispheres, polar/high-latitude sites and
-1901–2099, plus a case placed near a nakshatra boundary and one at the 1901 edge of the
-supported range). For each case it records Swiss Ephemeris's ayanamsa and sidereal
+cases in total — nine of the ten natal reference births used elsewhere in the atlas
+(`polar-south` is the one omitted; the remaining nine still cover both hemispheres,
+polar/high-latitude sites and the 1901–2099 range), plus three Jyotish-specific additions:
+`sample-new-york` (the same birth the section's own "Try a sample chart" uses),
+`mumbai-1975` and `delhi-2010`. There is no case deliberately placed at a nakshatra
+boundary; boundary proximity is instead detected and skipped per-comparison in the test
+itself (see below). For each case it records Swiss Ephemeris's ayanamsa and sidereal
 longitudes (`FLG_SIDEREAL`) for the nine grahas and the Ascendant, and then — as a second,
 independent implementation of the rules above, written in Python rather than imported from
 `jyotish-engine.js` — computes nakshatra index, pada, navamsa sign, the Moon's dasha
