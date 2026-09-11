@@ -47,3 +47,15 @@ test('bazi reports hidden stems, gods and a hidden-stem phase count',()=>{
   assert.deepEqual(model.pillars.map(p=>p.characters),['辛丑','辛丑','丁巳','丙午']);
   assert.equal(Object.values(model.phases).reduce((a,b)=>a+b),8);
 });
+
+const reference = require('./fixtures/bazi-reference.json');
+const stemIndex = hanzi => '甲乙丙丁戊己庚辛壬癸'.indexOf(hanzi);
+
+for (const c of reference.cases) test(`lunar_python reference: hidden stems and ten gods for ${c.birthday} ${c.time}`,()=>{
+  const model=extras.bazi(chartFor(c.birthday,c.time));
+  assert.equal(model.status,'ready');
+  assert.deepEqual(model.pillars.map(p=>p.characters),c.pillars);
+  assert.deepEqual(model.hidden,c.hidden.map(list=>list.map(stemIndex)));
+  assert.deepEqual(model.gods.stems,c.godsStems);
+  assert.deepEqual(model.gods.hidden,c.godsHidden);
+});
