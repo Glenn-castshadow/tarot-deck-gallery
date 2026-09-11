@@ -59,4 +59,4 @@ The reading engine uses a standard 78-card core with suit and rank meanings. Its
 
 ## Personal celestial cabinet
 
-The Reading Room includes a calculated natal chart when a birth date, time and location are supplied, plus a symbolic birthday guide, Chinese zodiac and Lo Shu study. See [natal methods](../docs/NATAL-CHART.md) and [birthday insights](../docs/BIRTHDAY-INSIGHTS.md). Birth details stay in the browser.
+The Reading Room includes a calculated natal chart when a birth date, time and location are supplied, plus a symbolic birthday guide, Chinese zodiac and Lo Shu study. See [natal methods](../docs/NATAL-CHART.md), [chart in time](../docs/CHART-IN-TIME.md) and [birthday insights](../docs/BIRTHDAY-INSIGHTS.md). Birth details stay in the browser.

@@ -65,7 +65,8 @@ natal resolver, with a required earlier/later choice for ambiguous times.
 
 Both views offer two-ring SVGs, selectable and filterable aspects, interpretation
 prompts, and exact placement tables. Leaders connect spaced planet labels to
-their actual angular positions.
+their actual angular positions. The same bi-wheel renderer draws the solar
+return, lunar return and progressed charts; see [chart in time](CHART-IN-TIME.md).
 
 ## BaZi conventions
 
