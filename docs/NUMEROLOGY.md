@@ -76,7 +76,9 @@ methods, not the app's reflective prose.
   reduced once by digit sum and then read as that value if it lands in 10–52,
   or as its single digit otherwise. Each word of the name also gets its own
   compound and root, listed in a table. Vowel/consonant splits and the Y
-  choices are Pythagorean-only and are hidden under Chaldean. Reference (table
+  choices are Pythagorean-only and are hidden under Chaldean. Chaldean
+  practice traditionally reads the name a person actually uses day to day,
+  and the UI says so, while still accepting any spelling. Reference (table
   only): Cheiro, *Cheiro's Book of Numbers*, as reproduced widely; no prose is
   taken from it.
 - **Two paths** takes a second person's birth date, held only in page memory,
