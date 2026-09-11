@@ -134,9 +134,12 @@ test('life arcs: the current period follows the most recent birthday',()=>{
   assert.equal(N.currentArc(a,'2022-11-29'),2);
   assert.equal(N.currentArc(a,'2031-11-29'),3);
   assert.equal(N.currentArc(a,'2100-01-01'),3);
+  // 2000-02-29 has Life Path 6, so the first period ends at age 30 (36 - 6): the boundary
+  // falls in 2030/2031, not 2001, where both dates sit inside period 0 regardless. 2031 is
+  // not a leap year, so the Feb 29 birthday advances to March 1 and age turns over there.
   const leap=N.arcs(N.birthday('2000-02-29'));
-  assert.equal(N.currentArc(leap,'2001-02-28'),0);
-  assert.equal(N.currentArc(leap,'2001-03-01'),0);
+  assert.equal(N.currentArc(leap,'2031-02-28'),0);
+  assert.equal(N.currentArc(leap,'2031-03-01'),1);
   assert.throws(()=>N.currentArc(a,'2013-13-01'),RangeError);
   assert.throws(()=>N.currentArc(a,null),RangeError);
 });
@@ -188,15 +191,36 @@ test('chaldean names: the Cheiro table, per-word compounds and no master numbers
   assert.equal(N.nameProfile('王小明',[],null,'chaldean').status,'invalid');
   assert.equal(N.nameProfile('',[],null,'chaldean').status,'empty');
   assert.throws(()=>N.nameProfile('Jane',[],null,'kabbalah'),RangeError);
+  for(const n of [0,-3,1.5,NaN]) assert.throws(()=>N.compoundReading(n),RangeError);
+  assert.deepEqual(N.compoundReading(52),{compound:52,root:7,readAs:52});
+  assert.deepEqual(N.compoundReading(53),{compound:53,root:8,readAs:8});
   // The Pythagorean shape is unchanged.
   const p=N.nameProfile('John Smith');
   assert.equal(p.system,undefined);assert.equal(p.totals.expression,44,'J1 O6 H8 N5 + S1 M4 I9 T2 H8 = 44 (the brief\'s worked value of 49 is an arithmetic error)');
 });
 
-test('chaldean compound copy covers 10–52 with original reflective prose',()=>{
+test('chaldean compound copy, life-arc, challenge and relating copy are complete and free of banned language',()=>{
   const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','numerology.js'),'utf8');
-  const block=source.slice(source.indexOf('const compoundCopy'),source.indexOf('};',source.indexOf('const compoundCopy'))+2);
-  for(let n=10;n<=52;n++) assert.match(block,new RegExp(`\\n\\s*${n}:\\{title:`),`compound ${n} present`);
-  assert.doesNotMatch(block,/you will|luck|fortune|warning|danger|death|illness|wealth will/i);
-  assert.equal((block.match(/prompt:'[^']*\?'/g)||[]).length,43,'every entry ends its prompt with a question mark');
+  const banned=/you will|luck|fortune|warning|danger|death|illness|wealth will/i;
+  const slice=name=>{const start=source.indexOf(`const ${name}`);return source.slice(start,source.indexOf('};',start)+2);};
+
+  const compoundBlock=slice('compoundCopy');
+  for(let n=10;n<=52;n++) assert.match(compoundBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`compound ${n} present`);
+  assert.doesNotMatch(compoundBlock,banned);
+  assert.equal((compoundBlock.match(/prompt:'[^']*\?'/g)||[]).length,43,'every compound entry ends its prompt with a question mark');
+
+  // arcLens values are plain strings, not objects: '<n>:\'...'', not '<n>:{title:...'.
+  const arcLensBlock=slice('arcLens');
+  for(const n of [1,2,3,4,5,6,7,8,9,11,22,33]) assert.match(arcLensBlock,new RegExp(`\\n\\s*${n}:'`),`arcLens ${n} present`);
+  assert.doesNotMatch(arcLensBlock,banned);
+
+  const challengeBlock=slice('challengeCopy');
+  for(let n=0;n<=8;n++) assert.match(challengeBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`challengeCopy ${n} present`);
+  assert.equal((challengeBlock.match(/prompt:'[^']*\?'/g)||[]).length,9,'every challenge entry ends its prompt with a question mark');
+  assert.doesNotMatch(challengeBlock,banned);
+
+  const relatingBlock=slice('relating');
+  for(const n of [1,2,3,4,5,6,7,8,9,11,22,33]) assert.match(relatingBlock,new RegExp(`\\n\\s*${n}:\\{title:`),`relating ${n} present`);
+  assert.equal((relatingBlock.match(/prompt:'[^']*\?'/g)||[]).length,12,'every relating entry ends its prompt with a question mark');
+  assert.doesNotMatch(relatingBlock,banned);
 });

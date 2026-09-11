@@ -173,7 +173,7 @@
 #num-pair-form input[type='date'] { color-scheme: dark; }
 #num-pair-status { color: var(--num-teal); font-size: 11px; line-height: 1.8; margin-top: 12px; }
 @media (max-width: 700px) { .num-pair-cards { gap: 6px; } .num-pair-cards button { padding: 15px 3px; } .num-pair-cards button strong { font-size: 32px; margin: 10px 0; } .num-pair-cards button small { font-size: 9px; } }
-.num-system-toggle { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 0 0 22px; }
+.num-system-toggle { display: flex; gap: 9px; margin: 0 0 22px; }
 .num-system-toggle button { min-height: 56px; padding: 11px 14px; border: 1px solid var(--num-line); border-radius: 3px; background: #ffffff04; color: #e2e8e9; font-size: 13px; text-align: left; }
 .num-system-toggle button small { display: block; color: var(--num-muted); margin-top: 5px; font-size: 10px; }
 .num-system-toggle button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }

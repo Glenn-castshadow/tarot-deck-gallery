@@ -66,7 +66,6 @@
   function compoundReading(compound) {
     if(!Number.isSafeInteger(compound)||compound<1) throw new RangeError('Use a positive whole number.');
     const root=compound>9?reduce(compound,false).value:compound;
-    if(compound<=9) return {compound,root,readAs:compound};
     if(compound<=52) return {compound,root,readAs:compound};
     const once=digitSum(compound);
     return {compound,root,readAs:once>9&&once<=52?once:root};

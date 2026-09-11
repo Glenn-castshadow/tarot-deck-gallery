@@ -62,7 +62,8 @@ rules above and says so.
 ### Engine API
 
 `arcs(birth)` returns
-`{components:{month,day,year}, pinnacles:[{index, number:reduceResult, fromAge, toAge|null, fromYear, toYear|null, calculation:string}], challenges:[{index, number:int 0..8, fromAge, toAge|null, fromYear, toYear|null, calculation:string}], firstPeriodEnd:int}`.
+`{birth:string, components:{month,day,year}, pinnacles:[{index, number:reduceResult, fromAge, toAge|null, fromYear, toYear|null, calculation:string}], challenges:[{index, number:int 0..8, fromAge, toAge|null, fromYear, toYear|null, calculation:string}], firstPeriodEnd:int}`.
+`birth` is the ISO birth date, since `currentArc` reads it back off the returned model.
 `currentArc(arcs, todayISO)` returns the index 0–3 of the period containing the reader's
 current age, or -1 before the birth date. Both are pure and throw `RangeError` on bad input.
 
@@ -108,9 +109,10 @@ Pure; throws `RangeError` on bad input.
 ### UI
 
 A small form (date input plus "Compare paths" button) and a three-way pressed-state
-selector: *Your path · Their path · Together*. The two single views show the relating
-style for that person; *Together* shows concord, same-number, pair number and cycle
-alignment notes. The tab header states that the other person's date stays on this page.
+selector: *Your path · Together · Their path* (the shared card sits between the two
+people; changed from the first draft during review). The two single views show the
+relating style for that person; *Together* shows concord, same-number, pair number and
+cycle alignment notes. The tab header states that the other person's date stays on this page.
 Resubmitting the reader's own birthday keeps the second date (state is preserved as elsewhere).
 
 ## 3. Chaldean name reading

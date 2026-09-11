@@ -274,7 +274,8 @@ test('chaldean names: the Cheiro table, per-word compounds and no master numbers
   assert.throws(()=>N.nameProfile('Jane',[],null,'kabbalah'),RangeError);
   // The Pythagorean shape is unchanged.
   const p=N.nameProfile('John Smith');
-  assert.equal(p.system,undefined);assert.equal(p.totals.expression,49);
+  assert.equal(p.system,undefined);assert.equal(p.totals.expression,44);
+  // J1 O6 H8 N5 + S1 M4 I9 T2 H8
 });
 ```
 
