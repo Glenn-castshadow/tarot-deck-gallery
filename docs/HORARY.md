@@ -7,20 +7,23 @@ Horary reads a chart cast for the exact moment a question was put, the way Willi
 fitness to be judged at all, weighed its significators' essential and accidental dignity, and
 looked for one of a fixed set of ways the matter was said to "perfect." This section presents
 that seventeenth-century method as history, not as a reading of the visitor's actual question.
-Every tab carries the banner "Horary astrology as William Lilly practised it in 1647. This
-section shows how such a chart was read; it does not read your future," and the significators
-tab closes with the same reminder: what is shown is "a record of how Lilly's method read a
-particular figure," left for the querent to weigh against the question that is actually
-theirs. No output states a yes/no answer, and the copy is checked (`tests/horary-text.test.cjs`)
-to contain none of "you will," "will happen," "is going to," "the answer is," a bare "yes" or
-"no," "luck," or "fortune."
+The section header carries `HoraryText.banner`, which opens: "Horary astrology, as William
+Lilly set it out in Christian Astrology (1647), read a chart cast for the exact moment a
+question was put, treating the sky at that instant as a figure to be reasoned through by rule,"
+and goes on to say what follows "reconstructs that seventeenth-century method step by step."
+That header sits above the tabs, so it is visible whichever tab is active, and the
+significators tab closes with the same reminder: what is shown is "a record of how Lilly's
+method read a particular figure," left for the querent to weigh against the question that is
+actually theirs. No output states a yes/no answer, and the copy is checked
+(`tests/horary-text.test.cjs`) to contain none of "you will," "will happen," "is going to,"
+"the answer is," a bare "yes" or "no," "luck," or "fortune."
 
 The question text itself lives in page memory only (`horary.js`'s closure state); nothing new
 is stored or sent anywhere.
 
 ## Included
 
-- **The question** (tab 1) — an optional question (240-character textarea, page-only), a house
+- **The question** (tab 1) — an optional question (400-character textarea, page-only), a house
   of the matter (12-entry select), date/time (default now) and place (city search pre-filled
   with the saved birthplace, or a manual-coordinates fallback), and "Cast the chart." Output: a
   single-ring wheel (`horary-chart.js`), Lilly's considerations before judgment, and the
@@ -155,6 +158,15 @@ case (Moon square Mercury cast 2024-01-01T20:00Z, London): the true nearest exac
 weeks later, on 2024-01-16, and gets `beforeSignChange` wrong too. The same test also checks
 every applying, perfecting significator pair from the 2024-03-15 cast against an independent,
 much finer-grained (2-hour-step) brute-force scan, to within 20 minutes.
+
+**Translation, collection and reception, as implemented.** Translation of light
+(`HoraryEngine.translation`) is a third classical planet, faster than both significators, that
+is separating from one significator within orb and applying to the other within orb, carrying
+the first's light across to the second. Collection of light (`HoraryEngine.collection`) is
+both significators applying, each within orb, to a slower third planet, which collects their
+light. Reception (`ClassicalEngine.reception`) has planet A receive planet B when B stands in a
+sign A rules or in A's sign of exaltation; the relationship is mutual reception when it holds
+both ways at once.
 
 **Significators.** Querent = ruler of the Ascendant sign; co-significator the Moon always.
 Quesited = ruler of the chosen house's cusp sign. When querent and quesited would share one
