@@ -55,3 +55,34 @@ test('loadIds sanitises a saved id list with every slot revealed, or rejects a m
   assert.equal(E.loadIds([2,5,40], 36), null, 'out-of-range id rejected');
   assert.equal(E.loadIds([-1,2,5], 36), null, 'negative id rejected');
 });
+test('sixty-four hexagrams in King Wen order with the standard line patterns',()=>{
+  assert.equal(D.hexagrams.length,64);
+  assert.equal(new Set(D.hexagrams.map(h=>h.symbol)).size,64);
+  assert.equal(new Set(D.hexagrams.map(h=>h.character)).size,64);
+  D.hexagrams.forEach((h,i)=>{assert.equal(h.id,i);assert.equal(h.number,i+1);assert.match(h.symbol,/^[01]{6}$/);});
+  const by=n=>D.hexagrams[n-1].symbol;
+  assert.equal(by(1),'111111');assert.equal(by(2),'000000');assert.equal(by(11),'111000');assert.equal(by(12),'000111');
+  assert.equal(by(63),'101010');assert.equal(by(64),'010101');assert.equal(by(3),'100010');assert.equal(by(29),'010010');
+  // King Wen pairing: an even hexagram is the odd one before it turned upside down, or, when that is the same figure, its line-by-line opposite.
+  for(let n=1;n<64;n+=2) {
+    const a=by(n), reversed=[...a].reverse().join(''), complement=[...a].map(c=>c==='1'?'0':'1').join('');
+    assert.equal(by(n+1),reversed===a?complement:reversed,`pair ${n}/${n+1}`);
+  }
+  const trigram=s=>D.trigrams.find(t=>t.symbol===s);
+  assert.equal(D.trigrams.length,8);
+  for(const h of D.hexagrams) {assert.ok(trigram(h.symbol.slice(0,3)),`lower trigram of ${h.number}`);assert.ok(trigram(h.symbol.slice(3)),`upper trigram of ${h.number}`);}
+  assert.deepEqual(D.trigrams.map(t=>t.symbol),['111','110','101','100','011','010','001','000']);
+  assert.deepEqual(D.trigrams.map(t=>t.image),['Heaven','Lake','Fire','Thunder','Wind','Water','Mountain','Earth']);
+});
+test('hexagram, trigram and line-position prose is original, reflective and complete',()=>{
+  for(const h of D.hexagrams) {
+    assert.ok(h.meaning.length>75,`meaning ${h.number}`);assert.ok(h.prompt.endsWith('?'),`prompt ${h.number}`);
+    const words=h.gloss.trim().split(/\s+/).length;assert.ok(words>=3&&words<=5,`gloss ${h.number}: ${h.gloss}`);
+    assert.ok(h.keyword.length>2&&h.name.length>1&&h.character.length>=1);
+  }
+  assert.equal(new Set(D.hexagrams.map(h=>h.gloss)).size,64,'glosses are distinct');
+  assert.equal(D.linePositions.length,6);
+  for(const p of D.linePositions) assert.ok(p.text.length>90&&p.title.length>3);
+  const all=[...D.hexagrams.map(h=>h.meaning+h.prompt+h.gloss),...D.linePositions.map(p=>p.text)].join('\n');
+  assert.doesNotMatch(all,/you will|luck|fortune|misfortune|danger|death|disaster|wealth will/i);
+});
