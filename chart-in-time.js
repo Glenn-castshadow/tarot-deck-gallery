@@ -50,9 +50,12 @@ const ChartInTime = (() => {
 
     function renderReturn(kind) {
       const output = $(`#cit-${kind}-output`);
+      // Task 8 adds #cit-lunar-label; the lookup is optional so this keeps working either way.
+      const label = $(`#cit-${kind}-label`);
       const model = ChartInTimeEngine.returnChart({chart, kind, location:place(), index:offsets[kind], reference:new Date()});
-      if (model.status === 'missing') { output.innerHTML = missing(model.message); return; }
-      if (model.status === 'error') { output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
+      // A previously chosen year must not linger beside an empty or failed state.
+      if (model.status === 'missing') { if (label) label.textContent = ''; output.innerHTML = missing(model.message); return; }
+      if (model.status === 'error') { if (label) label.textContent = ''; output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
       const text = ChartInTimeText.method[kind];
       // The lunar return reads the Moon's house, and must use the Moon's own
       // text table — the solar wording is about a year and about identity.
@@ -64,7 +67,7 @@ const ChartInTime = (() => {
         <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:model.natalPoints, outer:model.chart.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Return chart'], centerSymbol:kind==='solar'?'☉':'☾', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Return chart</span></p></div>
         <div class="cit-reading"><p class="acg-small-label">Return ${esc(sun.name)} in house ${sun.house}</p><h5>${esc(house.title)}</h5><p>${esc(house.body)}</p><blockquote>${esc(house.prompt)}</blockquote>
         <p class="acg-small-label">Return Ascendant · ${esc(model.chart.axes[0].sign)}</p><h5>${esc(rising.title)}</h5><p>${esc(rising.body)}</p><blockquote>${esc(rising.prompt)}</blockquote></div></div>
-        <details class="cx-placements"><summary>Return placements, houses &amp; angles</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Return sign</th><th>House</th><th>Birth sign</th></tr></thead><tbody>${model.chart.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${point.symbol} ${esc(point.name)}</th><td>${esc(point.sign)} ${point.degrees}</td><td>${point.house}</td><td>${esc(model.natalPoints[index].sign)} ${model.natalPoints[index].degrees}</td></tr>`).join('')}</tbody><tbody>${model.chart.axes.map(axis=>`<tr><th>${esc(axis.symbol)} ${esc(axis.name)}</th><td>${esc(axis.sign)} ${axis.degrees}</td><td colspan="2">—</td></tr>`).join('')}</tbody></table></div></details>
+        <details class="cx-placements"><summary>Return placements, houses &amp; angles</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Return sign</th><th>House</th><th>Birth sign</th></tr></thead><tbody>${model.chart.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${esc(point.symbol)} ${esc(point.name)}</th><td>${esc(point.sign)} ${point.degrees}</td><td>${point.house}</td><td>${esc(model.natalPoints[index].sign)} ${model.natalPoints[index].degrees}</td></tr>`).join('')}</tbody><tbody>${model.chart.axes.map(axis=>`<tr><th>${esc(axis.symbol)} ${esc(axis.name)}</th><td>${esc(axis.sign)} ${axis.degrees}</td><td colspan="2">—</td></tr>`).join('')}</tbody></table></div></details>
         <details class="cx-method"><summary>About this ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
     }
 
@@ -94,6 +97,9 @@ const ChartInTime = (() => {
         manualLocation = null;
         $('#cit-place').value = chart?.location?.label || '';
         placePicker.restore(null);
+        // restore() only rewrites the status line when it accepts a selection, so
+        // the previous "Selected X." would otherwise contradict the reset input.
+        $('#cit-place-status').textContent = 'Choose a city, or keep your birthplace.';
         renderActive();
       }
     });
