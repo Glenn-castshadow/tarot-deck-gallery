@@ -50,6 +50,35 @@ const JyotishEngine = (() => {
     const wheel = (lagnaSign, key) => Array.from({length:12}, (_, i) => { const signIndex = (lagnaSign + i) % 12; return {index:i + 1, signIndex, sign:rashis[signIndex][0], western:rashis[signIndex][1], grahas:grahas.filter(g => g[key] === signIndex).map(g => g.name)}; });
     return {status:'ready', ayanamsa:ayan, lagna, grahas, navamsaLagna, houses:wheel(lagna.signIndex, 'signIndex'), navamsaHouses:wheel(navamsaLagna.signIndex, 'navamsaSign')};
   }
-  return {AYANAMSA_T0, ayanamsa, nakshatraOf, navamsaSign, sidereal, nakshatras, rashis, lordCycle, dashaYears, grahaOrder};
+  const YEAR_MS = 365.25 * 86400000;
+  function vimshottari(chart, todayValue) {
+    const model = sidereal(chart);
+    if (model.status !== 'ready') return model;
+    const moon = model.grahas.find(g => g.name === 'Moon'), nk = moon.nakshatra;
+    const birth = +new Date(chart.date), startIndex = lordCycle.indexOf(nk.lord);
+    const balanceYears = (1 - nk.fraction) * dashaYears[nk.lord];
+    let cursor = birth - nk.fraction * dashaYears[nk.lord] * YEAR_MS;
+    const iso = ms => new Date(ms).toISOString();
+    const mahadashas = [];
+    for (let i = 0; i < 9; i++) {
+      const lord = lordCycle[(startIndex + i) % 9], years = dashaYears[lord], start = cursor, end = cursor + years * YEAR_MS;
+      const antardashas = []; let sub = start;
+      for (let j = 0; j < 9; j++) {
+        const subLord = lordCycle[(startIndex + i + j) % 9], subYears = years * dashaYears[subLord] / 120, subEnd = sub + subYears * YEAR_MS;
+        antardashas.push({lord:subLord, years:subYears, start:iso(Math.max(sub, birth)), end:iso(subEnd), beforeBirth:subEnd <= birth});
+        sub = subEnd;
+      }
+      mahadashas.push({lord, years, start:iso(Math.max(start, birth)), end:iso(end), notionalStart:iso(start), antardashas});
+      cursor = end;
+    }
+    let current = null;
+    const today = typeof todayValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(todayValue) ? +new Date(`${todayValue}T12:00:00Z`) : NaN;
+    if (Number.isFinite(today) && today >= birth) {
+      const mi = mahadashas.findIndex(m => today >= +new Date(m.notionalStart) && today < +new Date(m.end));
+      if (mi >= 0) { const ai = mahadashas[mi].antardashas.findIndex(a => today < +new Date(a.end)); current = {maha:mi, antar:Math.max(ai, 0)}; }
+    }
+    return {status:'ready', moonNakshatra:nk, balanceYears, mahadashas, current};
+  }
+  return {AYANAMSA_T0, ayanamsa, nakshatraOf, navamsaSign, sidereal, vimshottari, nakshatras, rashis, lordCycle, dashaYears, grahaOrder};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = JyotishEngine;

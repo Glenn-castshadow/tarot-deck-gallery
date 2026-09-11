@@ -77,3 +77,39 @@ for(const c of reference.cases) test(`swiss ephemeris reference: ${c.id}`,()=>{
 test('the swiss ayanamsa at t0 matches the engine reference constant',()=>{
   assert.ok(Math.abs(reference.ayanamsaAtT0-J.AYANAMSA_T0)<0.0005);
 });
+
+function syntheticChart(moonSidereal, dateIso='2000-01-01T12:00:00Z') {
+  const ayan=J.ayanamsa(new Date(dateIso));
+  const pt=(name,lon,kind='planet')=>({name,kind,longitude:natal.mod(lon+ayan),retrograde:false});
+  return {status:'ready',date:dateIso,points:[pt('Sun',100),pt('Moon',moonSidereal),pt('Mars',200),pt('Mercury',110),pt('Jupiter',20),pt('Venus',80),pt('Saturn',300),pt('North Node',250,'node'),pt('South Node',70,'node')],axes:[{name:'Ascendant',longitude:natal.mod(15+ayan)},{name:'Midheaven',longitude:natal.mod(285+ayan)}]};
+}
+test('vimshottari: balance, sequence, antardasha sums and the current period',()=>{
+  const d=J.vimshottari(syntheticChart(10),'2005-06-01'); // Moon 10° Ashwini, 75% elapsed → Ketu balance 1.75 years
+  assert.equal(d.status,'ready');assert.equal(d.moonNakshatra.name,'Ashwini');
+  assert.ok(Math.abs(d.balanceYears-1.75)<1e-9);
+  assert.deepEqual(d.mahadashas.map(m=>m.lord),['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury']);
+  assert.equal(d.mahadashas[0].start,'2000-01-01T12:00:00.000Z','first mahadasha starts at birth');
+  const day=86400000;
+  assert.ok(Math.abs(new Date(d.mahadashas[0].end)-new Date('2000-01-01T12:00:00Z')-1.75*365.25*day)<1000);
+  assert.ok(Math.abs(new Date(d.mahadashas[1].end)-new Date(d.mahadashas[1].start)-20*365.25*day)<1000);
+  for(const m of d.mahadashas) {
+    assert.equal(m.antardashas.length,9);assert.equal(m.antardashas[0].lord,m.lord);
+    assert.ok(Math.abs(m.antardashas.reduce((s,a)=>s+a.years,0)-m.years)<1e-9);
+    assert.ok(Math.abs(m.antardashas[0].years-m.years*J.dashaYears[m.lord]/120)<1e-9);
+  }
+  assert.ok(d.mahadashas[0].antardashas.some(a=>a.beforeBirth),'the first mahadasha has antardashas that ended before birth');
+  assert.equal(d.current.maha,1,'2005 falls in the Venus mahadasha');
+  assert.ok(d.current.antar>=0&&d.current.antar<9);
+  assert.equal(J.vimshottari(syntheticChart(10),'1999-12-31').current,null);
+  assert.equal(J.vimshottari(syntheticChart(10),'2200-01-01').current,null);
+  assert.equal(J.vimshottari(null,'2005-06-01').status,'missing');
+});
+for(const c of reference.cases) test(`swiss-derived dasha reference: ${c.id}`,()=>{
+  const chart=natal.calculate({...c.input, houseSystem:'whole-sign'});
+  const d=J.vimshottari(chart,'2026-09-12');
+  const moon=J.sidereal(chart).grahas.find(g=>g.name==='Moon');
+  const w=moon.longitude%(360/27); if(w<0.03||360/27-w<0.03) return; // boundary case: lord may differ legitimately
+  assert.equal(d.mahadashas[0].lord,c.dasha.firstLord);
+  assert.ok(Math.abs(d.balanceYears-c.dasha.balanceYears)*365.25<1,'balance within a day');
+  d.mahadashas.forEach((m,i)=>{assert.equal(m.lord,c.dasha.mahadashas[i].lord);assert.ok(Math.abs(new Date(m.end)-new Date(c.dasha.mahadashas[i].end))<86400000,`mahadasha ${i} end within a day`);});
+});
