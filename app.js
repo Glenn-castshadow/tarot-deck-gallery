@@ -124,6 +124,7 @@ const skyExplorer = SkyChart.attach({dialog:document.querySelector("#sky-dialog"
 const worldAtlas = Astrocartography.attach(document.querySelector("#astrocartography-room"));
 const celestialExtras = CelestialExtras.attach(document.querySelector("#celestial-extras"));
 const chartInTime = ChartInTime.attach(document.querySelector("#chart-in-time"), {onLocationChange: persistReturnLocation});
+const jyotish = Jyotish.attach(document.querySelector("#jyotish"));
 
 function cardTemplate(deck, index) {
   const era = deck.category === "historical" ? "Historical" : "Modern";
@@ -280,6 +281,7 @@ function renderBirthdayProfile(saved = null) {
     worldAtlas.setBirthChart(null);
     celestialExtras.setBirthChart(null);
     chartInTime.setBirthChart(null);
+    jyotish.setBirthChart(null);
     birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait, Chinese zodiac and numerology studio. Numerology needs only your birth date. Your birthday details stay in this browser.</div>`;
     return;
   }
@@ -288,6 +290,7 @@ function renderBirthdayProfile(saved = null) {
   worldAtlas.setBirthChart(natal);
   celestialExtras.setBirthChart(natal);
   chartInTime.setBirthChart(natal);
+  jyotish.setBirthChart(natal);
   document.querySelector("#birth-fold-field").hidden = natal.status !== "ambiguous" && !natal.ambiguousTime;
   const sign = natalModel ? zodiacSigns[natalModel.points[0].index] : zodiacFor(parts);
   const moon = natalModel ? {name:moonNames[Math.round(natalModel.moonPhase / 45) % 8],illumination:Math.round(natalModel.moonIllumination * 100)} : moonPhaseFor(parts.date);

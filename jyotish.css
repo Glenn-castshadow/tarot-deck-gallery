@@ -1,0 +1,93 @@
+.jyotish { grid-column: 1/-1; min-width: 0; margin-top: 28px; padding: clamp(18px,3vw,36px); border: 1px solid #61787577; background: #10252e; color: #f4e8d1; }
+.jyotish [hidden] { display: none !important; }
+.jyotish button { cursor: pointer; color: #e9dfc9; background: #112d38; border: 1px solid #65858177; padding: 10px 12px; font: 13px "DM Sans",sans-serif; }
+.jyotish button:hover { background: #24404a; border-color: #bdd1b9; }
+.jyotish :is(button,input,select,summary):focus-visible { outline: 2px solid #efca7f; outline-offset: 3px; }
+.jyotish input, .jyotish select { display: block; background: #0c222e; color: #f1e8d8; border: 1px solid #6b8e8877; padding: 10px; font: 14px "DM Sans",sans-serif; min-width: 0; max-width: 100%; color-scheme: dark; }
+.jyotish summary { cursor: pointer; color: #d8d9be; }
+.jyotish blockquote { margin: 17px 0 0; padding-left: 15px; border-left: 1px solid #c6af79; font: italic 19px/1.5 "Playfair Display",serif; color: #e0c58c; }
+
+.jy-heading h3 { font: 500 clamp(29px,3.5vw,44px)/1.15 "Playfair Display",serif; margin: 10px 0; }
+.jy-heading > p:last-child { font-size: 14px; color: #b5c7c8; line-height: 1.7; max-width: 690px; }
+
+.jy-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin: 25px 0 18px; }
+.jy-tabs button { position: relative; text-align: left; padding: 18px 15px 18px 54px; font-size: 15px; }
+.jy-tabs button > span { position: absolute; left: 16px; top: 19px; font: 24px serif; color: #d8c085; }
+.jy-tabs small { display: block; font-size: 11px; color: #a9c0c0; margin-top: 6px; }
+.jy-tabs button[aria-pressed="true"] { border-color: #d8bd86; background: #cfb77e14; box-shadow: inset 0 -3px #d8bd86; }
+
+.jy-profile-status { color: #c4cbbe; font-size: 12px; line-height: 1.6; }
+
+.jy-view[hidden] { display: none; }
+
+.jy-format-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+.jy-format-toggle button { font-size: 12px; padding: 8px 12px; }
+.jy-format-toggle button[aria-pressed="true"] { border-color: #d8c48c; box-shadow: inset 0 -2px #d8c48c; }
+
+.jy-chart-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(240px,1fr); gap: 25px; align-items: start; }
+.jy-chart-art { min-width: 0; }
+.jy-chart-svg { max-width: 420px; margin: 0 auto; }
+.jy-chart-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
+.jy-chart-svg text { font-family: "Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",serif; }
+
+.jy-reading { min-width: 0; }
+.jy-reading h5 { margin: 8px 0; font: 500 25px/1.3 "Playfair Display",serif; }
+.jy-reading > p:not(.acg-small-label) { color: #bed0cc; font-size: 13px; line-height: 1.8; }
+
+.jy-bhava-strip { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin-top: 10px; }
+.jy-bhava-card { padding: 12px; background: #0b232d; border: 1px solid #6b8e8833; font-size: 12px; color: #dfcfab; }
+.jy-bhava-card .jy-bhava-head { display: block; color: #e5d5a3; }
+.jy-bhava-card small { display: block; margin-top: 6px; font-size: 11px; line-height: 1.6; color: #a5bdbc; }
+
+.jy-nakshatra-card { margin-top: 14px; padding: 18px 20px; background: #0b232d; border: 1px solid #6b8e8833; }
+.jy-nakshatra-card h4 { margin: 6px 0; font: 500 23px/1.3 "Playfair Display",serif; color: #e5d5a3; }
+.jy-nakshatra-meta { font-size: 11px; color: #a8c0bd; }
+.jy-nakshatra-keyword { margin-top: 10px; font: 11px "DM Mono",monospace; letter-spacing: .1em; text-transform: uppercase; color: #d8c085; }
+.jy-nakshatra-card > p:not(.acg-small-label):not(.jy-nakshatra-meta):not(.jy-nakshatra-keyword) { margin-top: 10px; color: #bed0cc; font-size: 13px; line-height: 1.8; }
+.jy-nakshatra-list { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; margin-top: 10px; }
+.jy-nakshatra-list button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 12px; }
+.jy-nakshatra-list button[aria-pressed="true"] { border-color: #d8c48c; box-shadow: inset 0 -2px #d8c48c; }
+.jy-nakshatra-list small { color: #a9c0c0; font-size: 10px; }
+
+.jy-dasha-now { padding: 20px; background: #0b232d; border: 1px solid #6b8e8833; }
+.jy-dasha-now h4 { margin: 6px 0; font: 500 23px/1.3 "Playfair Display",serif; }
+.jy-dasha-dates { font-size: 12px; color: #adbec1; }
+.jy-dasha-readings { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+.jy-dasha-readings h5 { margin: 6px 0; font: 500 20px/1.3 "Playfair Display",serif; }
+.jy-dasha-readings > div > p:not(.acg-small-label) { color: #bed0cc; font-size: 13px; line-height: 1.8; }
+
+.jy-dasha-scroll { overflow-x: auto; padding-bottom: 6px; margin-top: 10px; }
+.jy-dasha-timeline { display: flex; gap: 4px; min-width: 900px; }
+.jy-dasha-block { flex-grow: 0; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 6px; text-align: center; background: linear-gradient(#1d3540,#0c242e); }
+.jy-dasha-block.is-now { border-color: #d8c48c; box-shadow: inset 0 -3px #d8c48c; }
+.jy-dasha-block[aria-pressed="true"] { background: #cfb77e14; }
+.jy-dasha-block small { font: 10px "DM Mono",monospace; color: #a8c0bd; }
+.jy-dasha-note { font-size: 11px; line-height: 1.7; color: #a8c0bd; margin-top: 14px; }
+
+.jy-method-note { margin-top: 14px; color: #acc1c1; font-size: 12px; line-height: 1.8; }
+
+.jy-conventions { border-top: 1px solid #6b8e8844; padding-top: 17px; margin-top: 20px; color: #acc1c1; font-size: 12px; line-height: 1.8; }
+
+@media (max-width: 1000px) {
+  .jy-chart-row { grid-template-columns: 1fr; }
+  .jy-chart-svg { margin: 0 auto; }
+  .jy-dasha-readings { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .jy-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 600px) {
+  .jyotish { padding: 20px 14px; }
+  .jy-tabs button { padding-left: 42px; font-size: 13px; }
+  .jy-tabs button > span { left: 12px; font-size: 20px; }
+  .jy-bhava-strip { grid-template-columns: 1fr 1fr; }
+  .jy-nakshatra-list { grid-template-columns: 1fr 1fr; }
+}
+@media print {
+  .jyotish { break-before: page; border: 0; padding: 0; background: #fff !important; color: #151c23 !important; }
+  .jy-tabs, .jy-format-toggle, .jyotish [data-jy-sample], .jyotish [data-jy-birth] { display: none !important; }
+  .jyotish :is(p,h3,h4,h5,th,td,small,strong,summary,blockquote,li) { color: #151c23 !important; }
+  .jyotish blockquote { border-left-color: #8a7645; }
+  .jyotish details > :not(summary) { display: block !important; }
+  .jyotish .cx-table-wrap th, .jyotish .cx-table-wrap td { border-bottom-color: #c6bda9; }
+}
