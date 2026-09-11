@@ -63,11 +63,12 @@ line statements. When no line changes, a sentence says the figure stands as it
 is; when lines do change, the relating hexagram is drawn beside the primary
 one under "Where this may be moving", with its own gloss, meaning and prompt.
 
-**Figures.** `DivinationArt.hexagram(values, {changing:true})` draws an inline
-SVG of six lines bottom-up (yang solid, yin broken), marking changing lines
-with the traditional small circle (old yang) or cross (old yin) beside the
-line and a stronger stroke. `DivinationArt.hexagramFromSymbol(symbol)` draws a
-plain figure for the library and the relating hexagram.
+**Figures.** `DivinationArt.hexagram(values)` draws an inline SVG of six lines
+bottom-up (yang solid, yin broken); every line is drawn the same way, and a
+changing line is marked only by the traditional small circle (old yang) or
+cross (old yin) placed beside it. `DivinationArt.hexagramFromSymbol(symbol)`
+draws a plain figure, with no changing-line marks, for the library and the
+relating hexagram.
 
 **Journal payload.** `currentDraw()` returns `{kind:'iching', deck:'',
 layout:method, question, focus:'', payload:{lines:[…6 values]}}`. `loadDraw`
@@ -83,8 +84,9 @@ distributions with an injected sequence (coins: 2+2+2 → 6, 3+3+3 → 9; yarrow
 each bucket boundary); `readLines` for no change, one change, all lines
 changing (1 → 2), and rejection of bad input; `loadLines` sanitising; and
 prose constraints (meaning length, prompt ends `?`, gloss word count 3–5) for
-hexagrams and the six position texts. A Django test posts an `iching` reading
-and reads it back (see "Server", `server/ishtar/readings`).
+hexagrams and the six position texts. A Django test asserts that posting an
+`iching` reading returns 201 (`server/ishtar/readings/tests/test_readings.py`;
+see `server/ishtar/readings` and docs/ACCOUNTS.md "Service").
 
 **Browser checks performed.** Casting with both the coin and yarrow methods,
 manual line entry, changing-line sections and the relating figure, the library
@@ -108,10 +110,13 @@ reflection. Oracle emblems are decorative original motifs, not a traditional alp
 
 ## Validation
 
-`node --test tests/*.test.cjs` — 72 passing tests, including five new tests for
-catalog completeness, without-replacement draws, a hand-calculated shield fixture,
-invalid input and exhaustive judge parity/named-figure checks for all65,536 mother casts.
-Browser checks cover all four practices, reveal-next/all, state preservation when switching,
+`node --test tests/*.test.cjs` — 197 passing tests across the whole suite.
+`tests/divination.test.cjs` has 10, including the original five for catalog
+completeness, without-replacement draws, a hand-calculated shield fixture,
+invalid input and exhaustive judge parity/named-figure checks for all 65,536
+mother casts, plus the I Ching tests added later (see "I Ching" above).
+Browser checks cover all five practices (I Ching's own checks are recorded in
+"I Ching" above), reveal-next/all, state preservation when switching,
 manual all-even shield => Populus, symbol library selection and 320/390px layouts.
 The shield intentionally scrolls horizontally within its own container on narrow screens;
 its screen-reader descriptions are positioned relative to each cell to avoid page overflow.
