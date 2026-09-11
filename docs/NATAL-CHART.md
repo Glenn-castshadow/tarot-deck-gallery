@@ -7,6 +7,7 @@ The celestial atlas calculates a tropical natal chart from a Gregorian date, rec
 - Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto, with sign, degrees/minutes, house and apparent direction of motion.
 - Mean north/south lunar nodes; Ascendant, Descendant, Midheaven and Imum Coeli.
 - Placidus (default), Whole Sign and Equal houses. If Placidus is undefined at a polar latitude/time, the calculated result explicitly switches to Whole Sign and displays a notice.
+- A fourth house system, Regiomontanus, is also available to `calculate`/`chartAtInstant` for the Horary section (see [docs/HORARY.md](HORARY.md)); the natal chart's own house-system default remains Placidus, and the birth form's house select is unchanged.
 - Five major ecliptic aspects: conjunction, sextile, square, trine and opposition. Standard maximum orbs are 8°, 4°, 6°, 6° and 8° respectively. Tighter/wider settings multiply these by 0.75/1.25. Contacts to ASC/MC are included; redundant axis-to-axis and north-to-south-node contacts are excluded.
 - Zoomable vector chart (100–300%), selectable planets and houses, an accessible detail selector, aspect filtering/highlighting, placement and cusp tables, element/quality counts, SVG download and print styling for the report.
 - Original reflection text for planet/sign/house combinations, houses and aspects. Interpretations describe astrological symbolism; they are not predictions or diagnostic personality claims.

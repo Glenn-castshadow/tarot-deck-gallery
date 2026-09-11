@@ -198,3 +198,38 @@ formats produce all twelve `[data-sign]` house groups in both the rashi and nava
 dasha mahadasha selection updates the antardasha table, no console errors originate from the
 section, no horizontal overflow at 390px, and neighbouring sections are unaffected. Signed-in
 state was not exercised, since this section is read-only against the saved profile.
+
+## Pending: Horary release
+
+Branch `horary`, not yet deployed. Adds a fifth astrology section to the celestial atlas: a
+chart cast for the moment a question is asked, judged by William Lilly's seventeenth-century
+method (*Christian Astrology*, 1647) -- considerations before judgment, significators and their
+dignities, perfection by aspect/reception/translation/collection, a planetary-hours table, and
+a lightweight "Elect a moment" view. Presented throughout as historical practice, never as a
+reading of the visitor's actual question. Conventions and independent validation are in
+docs/HORARY.md, cross-linked from docs/NATAL-CHART.md (the new Regiomontanus house system,
+which the natal chart itself does not default to).
+
+Six new frontend files, each starting at cache-bust `?v=1`: `classical-engine.js`,
+`horary-engine.js`, `horary-text.js`, `horary-chart.js`, `horary.js` and `horary.css`. Three
+rekeyed files: `natal-engine.js?v=horary-1` (gains the Regiomontanus house system),
+`app.js?v=horary-1` (attaches the new section) and `mobile-sections.js?v=horary-1` (adds it to
+the mobile fold). `index.html` gains the new nav link, section markup and script/style tags for
+the six new files. No Django or nginx change; the section reads the existing saved birth
+profile only for its default place and writes nothing back -- the question text stays in page
+memory and is never stored or sent.
+
+Development-only files that do not ship: `tools/build_horary_fixtures.py`,
+`tests/fixtures/horary-reference.json`, `tests/horary.test.cjs`, `tests/horary-text.test.cjs`
+and `tests/horary-chart.test.cjs`.
+
+Validation: `node --test tests/*.test.cjs` is 301 passing (26 classical + 3 horary + 2
+horary-text + 8 horary-chart + 12 of `tests/natal-engine.test.cjs`'s 31 are Horary/Regiomontanus-
+specific). Browser QA (DOM-verified): casting the default chart renders the wheel (12 cusp
+groups, 9 planet groups), the considerations list and the hour line; all four tabs
+(question/significators/hours/elect) switch correctly; the significators tab shows exactly 3
+cards; the planetary-hours tab shows a 24-row table with exactly one current-hour row; the
+elect tab shows a 7-row dignity table; no console errors originate from any horary asset (only
+the expected `/api/account/` 404s, absent a running accounts backend); no horizontal overflow
+at 390px; and neighbouring sections are unaffected. Signed-in state was not exercised, since
+this section only reads the saved birth profile for its default place.
