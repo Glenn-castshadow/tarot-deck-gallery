@@ -132,6 +132,7 @@ window.MobileSections = (() => {
     wrap([document.querySelector('#birthday-room')], 'Birth sky & numerology', {key: 'birthday', group: 'main', level: 2, subtitle: 'Your sky · Chinese zodiac · number readings'});
     wrap([document.querySelector('#astrocartography-room')], 'Astrocartography', {key: 'world', group: 'main', level: 2, subtitle: 'Explore your sky across the world'});
     wrap([document.querySelector('#celestial-extras')], 'More astrology charts', {key: 'charts', group: 'main', level: 2, subtitle: 'Sky today · two skies · Four Pillars'});
+    wrap([document.querySelector('#chart-in-time')], 'Chart in time', {key: 'chart-in-time', group: 'main', level: 2, subtitle: 'Solar & lunar returns · progressions'});
     wrap([document.querySelector('#divination-room')], 'Cards & divination', {key: 'divination', group: 'main', level: 2, subtitle: 'Lenormand · oracle cards · runes · geomancy'});
     wrap(Array.from(document.querySelectorAll('#archive,.gallery-head,#gallery,#empty-state')), 'The deck archive', {key: 'archive', group: 'main', level: 2, subtitle: `Browse ${document.querySelector('#archive-total').textContent} across five centuries`});
     wrap([document.querySelector('#birthday-form')], 'Birth details', {key: 'birth-form', level: 4,
