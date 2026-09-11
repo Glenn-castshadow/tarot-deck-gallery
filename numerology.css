@@ -173,3 +173,17 @@
 #num-pair-form input[type='date'] { color-scheme: dark; }
 #num-pair-status { color: var(--num-teal); font-size: 11px; line-height: 1.8; margin-top: 12px; }
 @media (max-width: 700px) { .num-pair-cards { gap: 6px; } .num-pair-cards button { padding: 15px 3px; } .num-pair-cards button strong { font-size: 32px; margin: 10px 0; } .num-pair-cards button small { font-size: 9px; } }
+.num-system-toggle { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin: 0 0 22px; }
+.num-system-toggle button { min-height: 56px; padding: 11px 14px; border: 1px solid var(--num-line); border-radius: 3px; background: #ffffff04; color: #e2e8e9; font-size: 13px; text-align: left; }
+.num-system-toggle button small { display: block; color: var(--num-muted); margin-top: 5px; font-size: 10px; }
+.num-system-toggle button[aria-pressed='true'] { background: #ecd29c12; border-color: #efd19a99; box-shadow: inset 0 -3px 0 var(--num-gold); }
+.num-system-toggle button[aria-pressed='true'] small { color: var(--num-gold); }
+.num-name-cards-chaldean { grid-template-columns: minmax(0,320px); }
+.num-compound-card { display: flex; flex-direction: column; align-items: center; padding: 22px 9px 18px; border: 1px solid #efd19a99; border-radius: 5px; background: radial-gradient(ellipse at top, #9ccfca0d, transparent 75%), #0b1c2733; box-shadow: inset 0 -3px 0 var(--num-gold); }
+.num-compound-card > span { font: 10px/1.5 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.num-compound-card strong { color: var(--num-gold); font: 500 clamp(40px,5vw,67px)/1.2 'Playfair Display', serif; margin: 13px 0; }
+.num-compound-card small { color: var(--num-muted); font-size: 11px; }
+.num-word-table { width: 100%; max-width: 420px; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+.num-word-table caption { text-align: left; color: var(--num-muted); font: 10px/1.8 'DM Mono', monospace; padding-bottom: 6px; }
+.num-word-table th, .num-word-table td { padding: 8px 10px; border-bottom: 1px solid var(--num-line); text-align: left; }
+.num-word-table td { color: var(--num-teal); font-family: 'DM Mono', monospace; }

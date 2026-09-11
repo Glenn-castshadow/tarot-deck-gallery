@@ -192,3 +192,11 @@ test('chaldean names: the Cheiro table, per-word compounds and no master numbers
   const p=N.nameProfile('John Smith');
   assert.equal(p.system,undefined);assert.equal(p.totals.expression,44,'J1 O6 H8 N5 + S1 M4 I9 T2 H8 = 44 (the brief\'s worked value of 49 is an arithmetic error)');
 });
+
+test('chaldean compound copy covers 10–52 with original reflective prose',()=>{
+  const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','numerology.js'),'utf8');
+  const block=source.slice(source.indexOf('const compoundCopy'),source.indexOf('};',source.indexOf('const compoundCopy'))+2);
+  for(let n=10;n<=52;n++) assert.match(block,new RegExp(`\\n\\s*${n}:\\{title:`),`compound ${n} present`);
+  assert.doesNotMatch(block,/you will|luck|fortune|warning|danger|death|illness|wealth will/i);
+  assert.equal((block.match(/prompt:'[^']*\?'/g)||[]).length,43,'every entry ends its prompt with a question mark');
+});
