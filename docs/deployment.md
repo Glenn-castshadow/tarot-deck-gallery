@@ -141,3 +141,29 @@ change; the Django service and nginx are untouched. Validation: every new asset 
 scripts return 200 over HTTPS, /api/health/ still answers, the section renders with the sample
 chart, and the node suite is 134 passing. Conventions and independent validation are in
 docs/CHART-IN-TIME.md.
+
+## Pending: 2026-09-11 Chinese traditions release
+
+Not yet deployed; this is Glenn's morning step. Work is on branch `chinese-traditions`
+(HEAD at this writing: 4b7b513), not yet merged to main. Deepens the Four Pillars tab
+(hidden stems, Ten Gods, luck pillars) and adds I Ching as a fifth divination practice.
+Conventions and validation are in docs/EXTENDED-ATLAS.md ("BaZi conventions") and
+docs/DIVINATION.md ("I Ching").
+
+Ten rekeyed frontend files, cache-bust `?v=` bumped on each: `celestial-extras.css?v=2`,
+`divination.css?v=iching-1`, `account.js?v=iching-1`, `celestial-extras-engine.js?v=2`,
+`celestial-extras.js?v=3`, `divination-data.js?v=2`, `divination-engine.js?v=iching-1`,
+`divination-art.js?v=iching-1`, `divination.js?v=iching-1`, `mobile-sections.js?v=iching-1`.
+No other root JS/CSS files changed. New development-only files that do not ship:
+`tools/build_bazi_fixtures.py`, `tests/fixtures/bazi-reference.json`, `tests/bazi.test.cjs`,
+and the new cases in `tests/divination.test.cjs`.
+
+Django change: `readings` app migration `0002_reading_kind_iching` adds `('iching', 'I Ching')`
+to `Reading.KINDS`, which the view derives its allowed kinds from. Deploying this release
+therefore needs, in addition to the usual frontend release copy, a `manage.py migrate` on the
+VPS and a restart of the `ishtar-app` service to run the updated code (the existing
+`server/deploy-app.sh` flow used for the accounts service handles both). Until that redeploy
+happens, the live server is still running the old code and does not recognize `iching` as a
+kind, so a signed-in reader who saves an I Ching reading gets the existing "Unknown reading
+kind." error; this is expected and acceptable for the interval between merge and deploy, and
+resolves itself once the service is redeployed. No other server-side or nginx change is needed.

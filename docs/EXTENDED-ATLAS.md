@@ -78,9 +78,94 @@ The day cycle uses Gregorian Julian day number +49 modulo 60. This release uses
 the school in which the day rolls at 23:00. Double-hours use recorded local civil
 time, with Zi spanning 23:00–00:59. It does not adjust to true solar time. Day
 Master is the heavenly stem of the day. The phase display counts the four stems
-and principal phases of the four branches (eight visible characters). It does
-not include hidden stems, seasonal weighting, Ten Gods or luck cycles and does
-not claim to measure elemental strength.
+and principal phases of the four branches (eight visible characters), and a
+second view counts hidden stems too (below). Hidden stems, Ten Gods and luck
+pillars are now included; seasonal weighting, elemental strength and annual
+(流年) pillars are not, and no cycle claims to measure fortune or luck.
+
+### Hidden stems (藏干)
+
+Each earthly branch carries one to three hidden heavenly stems, in the
+traditional order principal, middle, residual. This is a fixed table, not a
+calculation:
+
+| Branch | Hidden stems |
+|---|---|
+| 子 Zi | 癸 |
+| 丑 Chou | 己 癸 辛 |
+| 寅 Yin | 甲 丙 戊 |
+| 卯 Mao | 乙 |
+| 辰 Chen | 戊 乙 癸 |
+| 巳 Si | 丙 庚 戊 |
+| 午 Wu | 丁 己 |
+| 未 Wei | 己 丁 乙 |
+| 申 Shen | 庚 壬 戊 |
+| 酉 You | 辛 |
+| 戌 Xu | 戊 辛 丁 |
+| 亥 Hai | 壬 甲 |
+
+Stems are indexed 甲0 乙1 丙2 丁3 戊4 己5 庚6 辛7 壬8 癸9; even index is yang, odd
+is yin; phases run Wood (0,1), Fire (2,3), Earth (4,5), Metal (6,7), Water
+(8,9). `celestial-extras-engine.js` holds this table as `hiddenStems`, indexed
+by branch, alongside the existing `stems` and `branches` tables.
+
+### Ten Gods (十神)
+
+Every stem other than the Day Master itself is named by its relation to the
+Day Master, using the generating cycle Wood→Fire→Earth→Metal→Water→Wood and
+the controlling cycle Wood→Earth→Water→Fire→Metal→Wood:
+
+| Relation to Day Master | Same polarity | Opposite polarity |
+|---|---|---|
+| Same phase | 比肩 Bǐ Jiān · Friend | 劫財 Jié Cái · Rob Wealth |
+| Day Master produces it | 食神 Shí Shén · Eating God | 傷官 Shāng Guān · Hurting Officer |
+| Day Master controls it | 偏財 Piān Cái · Indirect Wealth | 正財 Zhèng Cái · Direct Wealth |
+| It controls the Day Master | 七殺 Qī Shā · Seven Killings | 正官 Zhèng Guān · Direct Officer |
+| It produces the Day Master | 偏印 Piān Yìn · Indirect Resource | 正印 Zhèng Yìn · Direct Resource |
+
+`tenGod(dayStemIdx, stemIdx)` returns the god key for any stem pair and is
+exported and pure. The engine reports the god of the three visible non-day
+stems and of every hidden stem of all four branches, including the day branch.
+The Day Master's own pillar position carries no god (it is labelled "Day
+Master", not a relation to itself). Each god's UI copy is an original
+two-sentence reflection plus a prompt, framed as what the relationship is
+traditionally associated with, never as a verdict on wealth, career or health.
+
+### Phase counts, two views
+
+The default phase chart ("visible eight") counts the four stems and the
+principal phase of each of the four branches, unchanged from before. A
+pressed-state toggle adds a second view, "with hidden stems", which counts the
+four visible stems plus every hidden stem of the four branches (4 + 4 to 12
+characters; the denominator is shown and varies by chart). Both views remain
+counts, not a strength or balance score.
+
+### Luck pillars (大運)
+
+Ten-year 大運 chapters, stepping the month pillar through the sexagenary cycle:
+
+- **Direction.** Forward when the year stem is yang and the reader counts as
+  male, or the year stem is yin and the reader counts as female; backward
+  otherwise. The site stores no sex at birth, so the Four Pillars tab adds a
+  page-only "Count luck pillars as" select (*Show both directions* default,
+  *Male, traditional counting*, *Female, traditional counting*); the choice
+  lives in the component's page state only, never persisted.
+- **Start.** The interval from the birth instant to the next Jie boundary when
+  forward, or from the previous Jie boundary to the birth instant when
+  backward. Jie boundaries are the twelve solar-term instants at 30° steps
+  from 315° (Li Chun); `jieBoundary(date, direction)` finds the nearest one
+  with Astronomy Engine's `SearchSunLongitude` over the same longitude
+  expression the month pillar already uses. Three days count as one year, one
+  day as four months; the total is floored to whole months (matching
+  lunar_python) and reported as "age Y years M months".
+- **Sequence.** Ten pillars of ten years each, stepping the month pillar
+  forward or backward through the sexagenary cycle (stem and branch advance
+  together). Each pillar shows its characters, pinyin, phases, its start age,
+  the calendar year it begins (birth year + start age, months ignored for the
+  year label), and the Ten God of its stem. The pillar containing the reader's
+  current age (from the page's local-today calculation) is marked "now".
+- Sample charts get luck pillars too, and the block scrolls horizontally
+  inside its own container on narrow screens rather than widening the page.
 
 Sources: Hong Kong Observatory's stems/branches and solar-term explanations:
 https://www.hko.gov.hk/en/gts/time/stemsandbranches.htm
@@ -106,6 +191,18 @@ Run `node --test tests/*.test.cjs` and syntax-check the application modules.
 `tools/build_atlas_fixtures.py` regenerates the independent fixtures using
 pyswisseph and lunar_python, which are development-only dependencies. Versions
 are recorded in the JSON fixture. Neither package is included in browser code.
+
+`tools/build_bazi_fixtures.py` regenerates `tests/fixtures/bazi-reference.json`
+from lunar_python in the same kind of throwaway venv, never shipped, covering
+the twelve existing BaZi births plus four chosen for luck-pillar coverage (both
+directions, and a birth within an hour of a Jie boundary). `tests/bazi.test.cjs`
+(53 tests) checks the hidden-stem table against every branch, `tenGod`
+exhaustively for all 10×10 stem pairs, the hidden-stem phase totals, and, from
+the fixture, the hidden stems and Ten Gods of every case and the luck-pillar
+direction and first five pillars for both sexes. The start age is checked to
+within one month of lunar_python's: the two ephemerides place a Jie instant
+minutes apart, which can round the 3-days-per-year conversion to a different
+month, so the test documents the tolerance rather than papering over it.
 
 Manual browser checks cover a 1400px desktop and 390px phone, shared birth inputs,
 all four chart views, destinations and keyboard city search, globe/world controls,
