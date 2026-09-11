@@ -47,6 +47,7 @@ class ReadingApiTests(TestCase):
         self.assertEqual(self.create(dict(SPREAD, question='q' * 241)).status_code, 400)
         self.assertEqual(self.create(dict(SPREAD, payload={'blob': 'x' * 9000})).status_code, 400)
         self.assertEqual(self.create({'kind': 'runes', 'payload': {'ids': [1, 2, 3]}}).status_code, 201)
+        self.assertEqual(self.create({'kind': 'iching', 'layout': 'coins', 'payload': {'lines': [7, 8, 9, 6, 7, 8]}}).status_code, 201)
         self.assertEqual(self.create(dict(SPREAD, extra=1)).status_code, 400)
         long_note = self.client.patch(f"/api/readings/{self.create().json()['id']}/", {'note': 'n' * 4001}, content_type='application/json')
         self.assertEqual(long_note.status_code, 400)

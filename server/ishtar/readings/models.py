@@ -3,7 +3,8 @@ from django.db import models
 
 class Reading(models.Model):
     KINDS = [('tarot-daily', 'Tarot daily card'), ('tarot-spread', 'Tarot spread'), ('lenormand', 'Lenormand'),
-             ('oracle', 'Ishtar Reflection Oracle'), ('runes', 'Runes'), ('geomancy', 'Geomancy')]
+             ('oracle', 'Ishtar Reflection Oracle'), ('runes', 'Runes'), ('geomancy', 'Geomancy'),
+             ('iching', 'I Ching')]
     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='readings')
     kind = models.CharField(max_length=20, choices=KINDS)
     deck = models.CharField(max_length=40, blank=True)
