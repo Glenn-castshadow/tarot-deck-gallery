@@ -1,6 +1,7 @@
 /* Lilly's classical tables and conditions (Christian Astrology, 1647), presented as historical practice. */
 const ClassicalEngine = (() => {
   const natal = typeof NatalEngine !== 'undefined' ? NatalEngine : require('./natal-engine.js');
+  const astro = typeof Astronomy !== 'undefined' ? Astronomy : require('./vendor/astronomy-engine/astronomy.js');
 
   const planets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'];
   const rulers = ['Mars', 'Venus', 'Mercury', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Saturn', 'Jupiter'];
@@ -132,6 +133,42 @@ const ClassicalEngine = (() => {
     return { byRulership, byExaltation, any: byRulership || byExaltation };
   }
 
-  return { planets, rulers, exaltations, triplicities, terms, faceRuler, orbs, chaldean, houseMatters, housePoints, dignities, accidental, sect, reception };
+  const lonOf=(body,time)=>astro.Ecliptic(astro.GeoVector(body,time,true)).elon;
+  function planetaryHours(date, location) {
+    if(!(date instanceof Date)||!Number.isFinite(+date)) throw new RangeError('Choose a valid instant.');
+    const observer=new astro.Observer(location.latitude,location.longitude,0);
+    const rise=from=>astro.SearchRiseSet('Sun',observer,+1,from,3), set=from=>astro.SearchRiseSet('Sun',observer,-1,from,3);
+    const unavailable={status:'unavailable',message:'The Sun does not rise and set here on this date, so the planetary hours are undefined.'};
+    let sunrise=rise(new Date(+date-2*86400000)); if(!sunrise) return unavailable;
+    for(;;){ const next=rise(new Date(+sunrise.date+60000)); if(!next||+next.date>+date) break; sunrise=next; }
+    if(+sunrise.date>+date) return unavailable;
+    const sunset=set(new Date(+sunrise.date+60000)), nextSunrise=rise(new Date(+sunrise.date+60000));
+    if(!sunset||!nextSunrise||+sunset.date<=+sunrise.date||+nextSunrise.date<=+sunset.date||+nextSunrise.date-+sunrise.date>36*3600000) return unavailable;
+    const weekdayName=new Intl.DateTimeFormat('en-US',{weekday:'long',timeZone:location.timeZone||'UTC'}).format(sunrise.date);
+    const weekday=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].indexOf(weekdayName);
+    const dayRuler=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'][weekday];
+    const dayLength=(+sunset.date-+sunrise.date)/12, nightLength=(+nextSunrise.date-+sunset.date)/12, start=chaldean.indexOf(dayRuler);
+    const hours=Array.from({length:24},(_,i)=>{const isDay=i<12, s=isDay?+sunrise.date+i*dayLength:+sunset.date+(i-12)*nightLength, e=s+(isDay?dayLength:nightLength);return {index:i+1,start:new Date(s).toISOString(),end:new Date(e).toISOString(),ruler:chaldean[(start+i)%7],isDay};});
+    const current=hours.findIndex(h=>+date>=+new Date(h.start)&&+date<+new Date(h.end));
+    return {status:'ready',sunrise:sunrise.date.toISOString(),sunset:sunset.date.toISOString(),nextSunrise:nextSunrise.date.toISOString(),weekday:weekdayName,dayRuler,hours,current};
+  }
+  function moonCondition(chart) {
+    const date=new Date(chart.date), t0=astro.MakeTime(date);
+    const moon=chart.points.find(p=>p.name==='Moon'), sun=chart.points.find(p=>p.name==='Sun');
+    const signEnd=Math.floor(moon.longitude/30)*30+30;
+    const exit=astro.Search(t=>natal.delta(lonOf('Moon',t),signEnd),t0,t0.AddDays(3.5),{dt_tolerance_seconds:1});
+    const signExit=exit?exit.date:null; const tEnd=exit||t0.AddDays(3.5);
+    let nextAspect=null;
+    for(const planet of ['Sun','Mercury','Venus','Mars','Jupiter','Saturn']) for(const aspect of [0,60,90,120,180]) for(const sign of (aspect===0||aspect===180?[1]:[1,-1])) {
+      const g=t=>natal.delta(lonOf('Moon',t)-lonOf(planet,t),sign*aspect);
+      for(let a=t0;a.ut<tEnd.ut;a=a.AddDays(0.25)) {
+        const b=a.AddDays(0.25).ut<tEnd.ut?a.AddDays(0.25):tEnd, ga=g(a), gb=g(b);
+        if(ga<0&&gb>=0&&gb-ga<45) { const hit=astro.Search(g,a,b,{dt_tolerance_seconds:1}); if(hit&&(!nextAspect||hit.ut<nextAspect.time.ut)) nextAspect={planet,aspect,time:hit,date:hit.date.toISOString()}; break; }
+      }
+    }
+    return {voidOfCourse:!nextAspect,nextAspect:nextAspect?{planet:nextAspect.planet,aspect:nextAspect.aspect,date:nextAspect.date}:null,signExit:signExit?signExit.toISOString():null,viaCombusta:moon.longitude>=195&&moon.longitude<=225,increasing:natal.mod(moon.longitude-sun.longitude)<180};
+  }
+
+  return { planets, rulers, exaltations, triplicities, terms, faceRuler, orbs, chaldean, houseMatters, housePoints, dignities, accidental, sect, reception, planetaryHours, moonCondition };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = ClassicalEngine;

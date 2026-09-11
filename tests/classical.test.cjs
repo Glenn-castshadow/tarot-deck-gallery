@@ -134,3 +134,55 @@ test('ordinal house labels read 1st, 2nd, 3rd, 4th ... 11th, 12th', () => {
   assert.match(labelFor(11), /\b11th\b/);
   assert.match(labelFor(12), /\b12th\b/);
 });
+
+for(const r of ref.riseSet) test(`planetary hours from sunrise: ${r.place} ${r.date}`,()=>{
+  const noon=new Date(`${r.date}T12:00:00Z`);
+  const h=C.planetaryHours(new Date(+new Date(r.sunrise)+3600000),{latitude:r.latitude,longitude:r.longitude,timeZone:'UTC'});
+  assert.equal(h.status,'ready');
+  assert.ok(Math.abs(new Date(h.sunrise)-new Date(r.sunrise))<120000,'sunrise within 2 minutes of Swiss');
+  assert.ok(Math.abs(new Date(h.sunset)-new Date(r.sunset))<120000,'sunset');
+  assert.ok(Math.abs(new Date(h.nextSunrise)-new Date(r.nextSunrise))<120000,'next sunrise');
+  assert.equal(h.hours.length,24);assert.equal(h.hours[0].start,h.sunrise);assert.equal(h.hours[11].end,h.sunset);assert.equal(h.hours[12].start,h.sunset);assert.equal(h.hours[23].end,h.nextSunrise);
+  assert.equal(h.hours[0].ruler,h.dayRuler);
+  // "One hour after sunrise is the first hour" only holds when the planetary day-hour
+  // is at least a clock hour, i.e. daylight exceeds 12 hours. For winter/short-day rows
+  // (day length < 12h) the true first hour is shorter than 60 minutes, so sunrise+1h
+  // lands in a later hour. Check against the hour actually implied by this day's length,
+  // rather than assuming the equinox case universally -- this still fails on any real
+  // off-by-one or boundary bug in `current`, it just does not assume a false season.
+  const dayHourLength=(new Date(h.sunset)-new Date(h.sunrise))/12;
+  assert.equal(h.current,Math.floor(3600000/dayHourLength),'one hour after sunrise lands in the hour that day length implies');
+  const chaldean=['Saturn','Jupiter','Mars','Sun','Venus','Mercury','Moon'];
+  for(let i=1;i<24;i++) assert.equal(h.hours[i].ruler,chaldean[(chaldean.indexOf(h.hours[0].ruler)+i)%7]);
+});
+test('planetary day begins at sunrise: before dawn belongs to the previous weekday ruler; polar night is unavailable',()=>{
+  const london={latitude:51.5085,longitude:-0.1257,timeZone:'Europe/London'};
+  const midday=C.planetaryHours(new Date('2024-03-13T12:00:00Z'),london); // Wednesday → Mercury
+  assert.equal(midday.dayRuler,'Mercury');
+  const preDawn=C.planetaryHours(new Date('2024-03-14T04:00:00Z'),london); // Thursday 04:00 is still Wednesday's planetary day
+  assert.equal(preDawn.dayRuler,'Mercury');assert.ok(preDawn.current>=12);
+  const afterDawn=C.planetaryHours(new Date('2024-03-14T09:00:00Z'),london);
+  assert.equal(afterDawn.dayRuler,'Jupiter');
+  assert.equal(C.planetaryHours(new Date('2024-12-21T12:00:00Z'),{latitude:78,longitude:15,timeZone:'Arctic/Longyearbyen'}).status,'unavailable');
+});
+test('void of course by lilly: search result matches a brute-force scan; next aspect is before the sign exit',()=>{
+  for(const iso of ['2024-03-15T10:20:00Z','2024-06-02T00:00:00Z','1999-12-31T23:00:00Z']) {
+    const chart=natal.chartAtInstant(new Date(iso),{latitude:51.5085,longitude:-0.1257,timeZone:'Europe/London'},{houseSystem:'regiomontanus'});
+    const m=C.moonCondition(chart);
+    const astro=require('../vendor/astronomy-engine/astronomy.js');
+    const lon=(b,t)=>astro.Ecliptic(astro.GeoVector(b,t,true)).elon;
+    const moon0=lon('Moon',new Date(iso)), signEnd=Math.floor(moon0/30)*30+30;
+    // brute force: step 10 minutes until the Moon leaves its sign, watching for any exact Ptolemaic aspect.
+    let found=null; const targets=[0,60,90,120,180];
+    let prev=null;
+    for(let t=+new Date(iso);t<+new Date(iso)+4*86400000&&!found;t+=600000){
+      const d=new Date(t), ml=lon('Moon',d); if(natal.mod(ml-signEnd)<180&&natal.mod(ml-signEnd)<15){break;}
+      const seps=Object.fromEntries(['Sun','Mercury','Venus','Mars','Jupiter','Saturn'].map(p=>[p,natal.delta(ml,lon(p,d))]));
+      if(prev) for(const p in seps) for(const a of targets) for(const sgn of (a===0||a===180?[1]:[1,-1])) { const x0=natal.delta(prev[p],sgn*a), x1=natal.delta(seps[p],sgn*a); if(x0<0&&x1>=0&&Math.abs(x1-x0)<45) found={p,a,t}; }
+      prev=seps;
+    }
+    assert.equal(m.voidOfCourse,!found,`${iso} void state`);
+    if(found) { assert.equal(m.nextAspect.planet,found.p); assert.equal(m.nextAspect.aspect,found.a); assert.ok(Math.abs(new Date(m.nextAspect.date)-found.t)<=600000); assert.ok(new Date(m.nextAspect.date)<new Date(m.signExit)); }
+    assert.equal(typeof m.viaCombusta,'boolean');assert.equal(typeof m.increasing,'boolean');
+  }
+});
