@@ -42,5 +42,22 @@
     if (!Array.isArray(ids) || !ids.length || ids.length > 5 || new Set(ids).size !== ids.length || !ids.every(id => Number.isInteger(id) && id >= 0 && id < size)) return null;
     return {ids: [...ids], revealed: new Set(ids.map((_, i) => i))};
   }
-  return {randomInt, draw, combine, shield, cast, loadIds};
+  // I Ching. Lines: 6 old yin (changing), 7 young yang, 8 young yin, 9 old yang (changing). Bottom line first.
+  function castLine(method, random = randomInt) {
+    if (method === 'coins') return 6 + random(2) + random(2) + random(2);           // each coin: tails 2, heads 3
+    if (method === 'yarrow') { const n = random(16); return n === 0 ? 6 : n < 6 ? 7 : n < 13 ? 8 : 9; } // 1/16, 5/16, 7/16, 3/16
+    throw Error('Unknown casting method');
+  }
+  function castHexagram(method, random = randomInt) { return Array.from({length:6}, () => castLine(method, random)); }
+  function validLines(values) { return Array.isArray(values) && values.length === 6 && values.every(v => Number.isInteger(v) && v >= 6 && v <= 9); }
+  function hexagramIndex(symbol, hexagrams) { const i = hexagrams.findIndex(h => h.symbol === symbol); if (i < 0) throw Error('Unknown hexagram'); return i; }
+  function readLines(values, hexagrams) {
+    if (!validLines(values)) throw Error('Six lines of 6, 7, 8 or 9 required');
+    const primarySymbol = values.map(v => v % 2 ? '1' : '0').join('');
+    const changing = values.flatMap((v, i) => v === 6 || v === 9 ? [i] : []);
+    const relatingSymbol = changing.length ? values.map(v => v === 6 ? '1' : v === 9 ? '0' : v % 2 ? '1' : '0').join('') : null;
+    return {primary: hexagramIndex(primarySymbol, hexagrams), primarySymbol, changing, relating: relatingSymbol ? hexagramIndex(relatingSymbol, hexagrams) : null, relatingSymbol};
+  }
+  function loadLines(values) { return validLines(values) ? [...values] : null; }
+  return {randomInt, draw, combine, shield, cast, loadIds, castLine, castHexagram, readLines, loadLines, hexagramIndex};
 });

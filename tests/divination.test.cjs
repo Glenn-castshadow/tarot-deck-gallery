@@ -86,3 +86,26 @@ test('hexagram, trigram and line-position prose is original, reflective and comp
   const all=[...D.hexagrams.map(h=>h.meaning+h.prompt+h.gloss),...D.linePositions.map(p=>p.text)].join('\n');
   assert.doesNotMatch(all,/you will|luck|fortune|misfortune|danger|death|disaster|wealth will/i);
 });
+test('i ching casting: coins and yarrow probabilities from an injected random source',()=>{
+  const seq=values=>{let i=0;return ()=>values[i++];};
+  assert.equal(E.castLine('coins',seq([0,0,0])),6,'three tails');
+  assert.equal(E.castLine('coins',seq([1,1,1])),9,'three heads');
+  assert.equal(E.castLine('coins',seq([1,0,0])),7);
+  assert.equal(E.castLine('coins',seq([1,1,0])),8);
+  assert.deepEqual([0,1,5,6,12,13,15].map(n=>E.castLine('yarrow',seq([n]))),[6,7,7,8,8,9,9]);
+  assert.throws(()=>E.castLine('dice'));
+  const lines=E.castHexagram('coins',seq([1,1,1, 0,0,0, 1,0,0, 0,1,0, 1,1,0, 0,0,1]));
+  assert.deepEqual(lines,[9,6,7,7,8,7]);
+});
+test('i ching reading: primary, changing lines and the relating hexagram',()=>{
+  const all9=E.readLines([9,9,9,9,9,9],D.hexagrams);
+  assert.equal(all9.primary,0,'hexagram 1');assert.deepEqual(all9.changing,[0,1,2,3,4,5]);assert.equal(all9.relating,1,'becomes hexagram 2');
+  const still=E.readLines([7,8,7,8,7,8],D.hexagrams);
+  assert.equal(still.primarySymbol,'101010');assert.equal(still.primary,62,'hexagram 63');assert.deepEqual(still.changing,[]);assert.equal(still.relating,null);
+  const one=E.readLines([7,7,7,7,7,6],D.hexagrams);
+  assert.equal(one.primarySymbol,'111110');assert.equal(one.primary,42,'hexagram 43');assert.deepEqual(one.changing,[5]);assert.equal(one.relatingSymbol,'111111');assert.equal(one.relating,0);
+  for(const bad of [[7,7,7,7,7],[7,7,7,7,7,5],[7,7,7,7,7,'9'],null,'777777']) assert.throws(()=>E.readLines(bad,D.hexagrams),`rejects ${JSON.stringify(bad)}`);
+  assert.deepEqual(E.loadLines([6,7,8,9,7,8]),[6,7,8,9,7,8]);
+  assert.equal(E.loadLines([6,7,8,9,7]),null);assert.equal(E.loadLines([6,7,8,9,7,10]),null);assert.equal(E.loadLines('678978'),null);
+  assert.equal(E.hexagramIndex('010010',D.hexagrams),28);
+});

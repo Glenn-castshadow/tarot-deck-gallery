@@ -40,12 +40,21 @@ window.DivinationArt = (() => {
   };
   const runePaths=['M35 85V15M35 40l35-25M35 65l35-25','M28 85V15l44 22v48','M35 85V15m0 15 35 20-35 20','M35 85V15l32 24M35 45l32 24','M30 85V15h24l17 22-41 17 42 31','M69 17 31 50l38 33','M24 17l52 66M76 17 24 83','M32 85V15l40 23-40 22','M27 15v70m46-70v70M27 30l46 40','M50 15v70M22 30l56 40','M50 15v70','M47 15 24 35l23 17m6-4 23 17-23 20','M42 85V15l22 22M42 85 20 63','M75 15 51 37 27 15v70l24-22 24 22','M50 85V15M24 22l26 30 26-30','M69 15 30 43h40L31 85','M50 85V15M22 43l28-28 28 28','M30 85V15l39 17-39 18 39 17Z','M25 85V15l25 29 25-29v70','M25 85V15l50 39M75 85V15L25 54','M36 85V15l36 28','M50 19 25 50l25 31 25-31Z','M25 15v70l50-70v70Z','M24 84 50 60l26 24M50 60 26 37l24-23 24 23Z'];
   function svg(body, cls='') { return `<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`; }
+  function hexagramSvg(bits, marks=[]) {
+    // bits: six '1'/'0' bottom-up; marks: indices of changing lines with their kind ('o' old yang circle, 'x' old yin cross).
+    const rows=bits.map((b,i)=>{const y=88-i*14;return b==='1'?`<rect x="18" y="${y-4}" width="64" height="8" rx="1" fill="currentColor" stroke="none"/>`:`<rect x="18" y="${y-4}" width="26" height="8" rx="1" fill="currentColor" stroke="none"/><rect x="56" y="${y-4}" width="26" height="8" rx="1" fill="currentColor" stroke="none"/>`;}).join('');
+    const marked=marks.map(({index,kind})=>{const y=88-index*14;return kind==='o'?`<circle cx="91" cy="${y}" r="4"/>`:`<path d="M87 ${y-4}l8 8m0-8l-8 8"/>`;}).join('');
+    return svg(rows+marked,'dv-hexagram');
+  }
+  function hexagram(values) { return hexagramSvg(values.map(v=>v%2?'1':'0'), values.flatMap((v,i)=>v===9?[{index:i,kind:'o'}]:v===6?[{index:i,kind:'x'}]:[])); }
+  function hexagramFromSymbol(symbol) { return hexagramSvg(symbol.split('')); }
   function emblem(kind, item) {
     if(kind==='lenormand') return svg(`<path d="${paths[item.symbol]}"/>`);
     if(kind==='runes') return svg(`<path d="${runePaths[item.id]}" stroke-width="4"/>`);
     if(kind==='geomancy') return svg(item.symbol.split('').map((n,i)=> n==='1'?`<circle cx="50" cy="${20+i*20}" r="4" fill="currentColor"/>`:`<circle cx="35" cy="${20+i*20}" r="4" fill="currentColor"/><circle cx="65" cy="${20+i*20}" r="4" fill="currentColor"/>`).join(''));
+    if(kind==='iching') return hexagramFromSymbol(item.symbol);
     const count=3+item.id%6;
     return svg(`<circle cx="50" cy="50" r="34" opacity=".5"/>${Array.from({length:count},(_,i)=>`<ellipse cx="50" cy="34" rx="12" ry="23" transform="rotate(${i*360/count} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="6" fill="currentColor"/>`);
   }
-  return {emblem};
+  return {emblem, hexagram, hexagramFromSymbol};
 })();
