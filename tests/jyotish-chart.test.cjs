@@ -73,3 +73,40 @@ test('signs render as western abbreviations in south, and as sign numbers in nor
   assert.match(south, />Ari</);
   assert.match(north, />5</); // house index 1 has signIndex 4 -> displayed as 5
 });
+
+test('graha labels fit a crowded house in both formats, and a three-graha house still renders three labels', () => {
+  const nineNames = ['Su', 'Mo', 'Ma', 'Me', 'Ju', 'Ve', 'Sa', 'Ra', 'Ke'];
+  const threeNames = ['Su', 'Mo', 'Ma'];
+  const housesWithBhava9 = (names) =>
+    Array.from({ length: 12 }, (_, i) => ({ index: i + 1, signIndex: i, grahas: i === 8 ? names : [] }));
+
+  for (const format of ['south', 'north']) {
+    const svgNine = C.render({ format, houses: housesWithBhava9(nineNames), lagnaSignIndex: 0 });
+    const groupNine = svgNine.match(/<g data-house="9"[^>]*>([\s\S]*?)<\/g>/)[1];
+    const ys = [...groupNine.matchAll(/<text[^>]*\sy="(-?[\d.]+)"/g)].map((m) => Number(m[1]));
+    assert.ok(ys.length > 0, `${format}: some text rendered for a nine-graha house`);
+    // SOUTH_CELLS[8] = [0, 300] (cy=300); NORTH_CENTERS[9] = [350, 300] (cy=300).
+    const cy = 300;
+    for (const y of ys) {
+      if (format === 'south') assert.ok(y >= cy && y <= cy + 100, `south y ${y} within [${cy}, ${cy + 100}]`);
+      else assert.ok(Math.abs(y - cy) <= 40, `north y ${y} within 40px of ${cy}`);
+    }
+    for (const name of nineNames) assert.match(groupNine, new RegExp(name), `${format} nine-graha house includes ${name}`);
+
+    const svgThree = C.render({ format, houses: housesWithBhava9(threeNames), lagnaSignIndex: 0 });
+    const groupThree = svgThree.match(/<g data-house="9"[^>]*>([\s\S]*?)<\/g>/)[1];
+    for (const name of threeNames) assert.match(groupThree, new RegExp(name), `${format} three-graha house still shows ${name}`);
+  }
+});
+
+test('lagnaSignIndex must be an integer from 0 to 11', () => {
+  const houses = makeHouses();
+  for (const format of ['south', 'north']) {
+    assert.throws(() => C.render({ format, houses, lagnaSignIndex: -1 }), RangeError);
+    assert.throws(() => C.render({ format, houses, lagnaSignIndex: 12 }), RangeError);
+    assert.throws(() => C.render({ format, houses, lagnaSignIndex: 4.5 }), RangeError);
+    assert.throws(() => C.render({ format, houses, lagnaSignIndex: undefined }), RangeError);
+    assert.doesNotThrow(() => C.render({ format, houses, lagnaSignIndex: 0 }));
+    assert.doesNotThrow(() => C.render({ format, houses, lagnaSignIndex: 11 }));
+  }
+});

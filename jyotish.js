@@ -17,10 +17,10 @@ const Jyotish = (() => {
         <button type="button" data-jy-tab="navamsa" aria-controls="jy-navamsa" aria-pressed="false"><span>&#9737;</span>Navamsa<small>D9 chart</small></button>
       </div>
       <div class="cx-profile-bar"><p class="jy-profile-status"></p><button type="button" data-jy-sample>Try a sample chart</button></div>
-      <section id="jy-rashi" class="jy-view"></section>
-      <section id="jy-nakshatras" class="jy-view" hidden></section>
-      <section id="jy-dashas" class="jy-view" hidden></section>
-      <section id="jy-navamsa" class="jy-view" hidden></section>`;
+      <section id="jy-rashi" class="jy-view" aria-live="polite"></section>
+      <section id="jy-nakshatras" class="jy-view" aria-live="polite" hidden></section>
+      <section id="jy-dashas" class="jy-view" aria-live="polite" hidden></section>
+      <section id="jy-navamsa" class="jy-view" aria-live="polite" hidden></section>`;
 
     const $ = selector => root.querySelector(selector);
     let savedChart = null, chart = null, usingSample = false, tab = 'rashi', format = 'south', selectedMaha = null, selectedGraha = null;
@@ -62,7 +62,9 @@ const Jyotish = (() => {
     function nakshatraCard(label, nk) {
       const info = JyotishEngine.nakshatras[nk.index];
       const text = JyotishText.nakshatra[nk.index];
-      return `<div class="jy-nakshatra-card"><p class="acg-small-label">${esc(label)}</p><h4>${esc(info.name)}</h4><p class="jy-nakshatra-meta">Symbol: ${esc(info.symbol)} · Deity: ${esc(info.deity)} · Lord: ${esc(info.lord)} · Pada ${nk.pada}</p><p class="jy-nakshatra-keyword">${esc(text.keyword)}</p><p>${esc(text.body)}</p><blockquote>${esc(text.prompt)}</blockquote></div>`;
+      const grahaInfo = label !== 'Lagna' ? JyotishText.graha[label] : null;
+      const grahaBlock = grahaInfo ? `<p class="jy-kicker">${esc(label)} · ${esc(grahaInfo.theme)}</p><p>${esc(grahaInfo.body)}</p>` : '';
+      return `<div class="jy-nakshatra-card">${grahaBlock}<p class="acg-small-label">${esc(label)}</p><h4>${esc(info.name)}</h4><p class="jy-nakshatra-meta">Symbol: ${esc(info.symbol)} · Deity: ${esc(info.deity)} · Lord: ${esc(info.lord)} · Pada ${nk.pada}</p><p class="jy-nakshatra-keyword">${esc(text.keyword)}</p><p>${esc(text.body)}</p><blockquote>${esc(text.prompt)}</blockquote></div>`;
     }
 
     function renderNakshatras(model) {
@@ -93,7 +95,7 @@ const Jyotish = (() => {
         : `<div class="jy-dasha-now cx-empty">Today's date falls outside this chart's calculated Vimshottari span.</div>`;
 
       const totalYears = dashaModel.mahadashas.reduce((sum, m) => sum + m.years, 0);
-      const timeline = dashaModel.mahadashas.map((m, i) => `<button type="button" class="jy-dasha-block${current && current.maha===i?' is-now':''}" style="flex-basis:${(m.years/totalYears*100).toFixed(3)}%" data-jy-maha="${i}" aria-pressed="${selectedMaha===i}"><strong>${esc(m.lord)}</strong><small>${new Date(m.start).getUTCFullYear()}–${new Date(m.end).getUTCFullYear()}</small></button>`).join('');
+      const timeline = dashaModel.mahadashas.map((m, i) => `<button type="button" class="jy-dasha-block${current && current.maha===i?' is-now':''}" style="flex-basis:${(m.years/totalYears*100).toFixed(3)}%" data-jy-maha="${i}" aria-pressed="${selectedMaha===i}"${current && current.maha===i?' aria-current="true"':''}><strong>${esc(m.lord)}</strong><small>${new Date(m.start).getUTCFullYear()}–${new Date(m.end).getUTCFullYear()}</small></button>`).join('');
 
       const maha = dashaModel.mahadashas[selectedMaha];
       const firstKept = maha.antardashas.findIndex(a => !a.beforeBirth);
@@ -124,7 +126,8 @@ const Jyotish = (() => {
 
     function renderActive() {
       const model = JyotishEngine.sidereal(chart);
-      if (model.status !== 'ready') { $(`#jy-${tab}`).innerHTML = missing(model.message); return; }
+      if (model.status === 'missing') { $(`#jy-${tab}`).innerHTML = missing(model.message); return; }
+      if (model.status === 'error') { $(`#jy-${tab}`).innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
       if (tab === 'rashi') renderRashi(model);
       else if (tab === 'nakshatras') renderNakshatras(model);
       else if (tab === 'navamsa') renderNavamsa(model);
@@ -147,9 +150,9 @@ const Jyotish = (() => {
         selectedMaha = null; selectedGraha = null;
         profileStatus(); renderActive();
       }
-      if ('jyFormat' in data) { format = data.jyFormat; renderActive(); }
-      if ('jyMaha' in data) { selectedMaha = Number(data.jyMaha); renderActive(); }
-      if ('jyGraha' in data) { selectedGraha = data.jyGraha; renderActive(); }
+      if ('jyFormat' in data) { format = data.jyFormat; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-format="${format}"]`)?.focus({preventScroll:true}); }
+      if ('jyMaha' in data) { selectedMaha = Number(data.jyMaha); renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-maha="${selectedMaha}"]`)?.focus({preventScroll:true}); }
+      if ('jyGraha' in data) { selectedGraha = data.jyGraha; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-graha="${selectedGraha}"]`)?.focus({preventScroll:true}); }
     });
 
     profileStatus(); renderActive();

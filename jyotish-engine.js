@@ -38,6 +38,7 @@ const JyotishEngine = (() => {
   const grahaOrder = [['Sun','Su'],['Moon','Mo'],['Mars','Ma'],['Mercury','Me'],['Jupiter','Ju'],['Venus','Ve'],['Saturn','Sa'],['North Node','Ra'],['South Node','Ke']];
   const grahaNames = {'North Node':'Rahu','South Node':'Ketu'};
   function sidereal(chart) {
+    if (chart && chart.status === 'error') return {status:'error', message:chart.message};
     if (!chart || chart.status !== 'ready') return {status:'missing', message:'Add a birth date, recorded time and confirmed birthplace to read the sidereal chart.'};
     const ayan = ayanamsa(new Date(chart.date));
     const place = lon => { const l = natal.mod(lon - ayan), signIndex = Math.floor(l / 30); return {longitude:l, signIndex, sign:rashis[signIndex][0], western:rashis[signIndex][1], degrees:degreesText(l), nakshatra:nakshatraOf(l), navamsaSign:navamsaSign(l)}; };

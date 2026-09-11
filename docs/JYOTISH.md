@@ -163,7 +163,12 @@ itself (see below). For each case it records Swiss Ephemeris's ayanamsa and side
 longitudes (`FLG_SIDEREAL`) for the nine grahas and the Ascendant, and then — as a second,
 independent implementation of the rules above, written in Python rather than imported from
 `jyotish-engine.js` — computes nakshatra index, pada, navamsa sign, the Moon's dasha
-balance and the nine mahadasha lords with start dates. The pyswisseph version (2.10.03) is
+balance and the nine mahadasha lords with start dates. The Python rule functions were
+written from the same plan document as the JavaScript engine, so agreement between them
+verifies faithful transcription of the rules rather than an independently-derived
+implementation of the rules themselves; what is genuinely independent is the underlying
+positions, which come from Swiss Ephemeris rather than from `jyotish-engine.js`'s own
+ayanamsa and tropical-to-sidereal conversion. The pyswisseph version (2.10.03) is
 recorded in the fixture file alongside the cases; Swiss Ephemeris itself is a local test
 tool only and is not shipped.
 
@@ -175,8 +180,10 @@ missing/error passthrough):
 - **Ayanamsa within 0.005°** against the fixture's `swe.get_ayanamsa_ut` value, across
   every case from 1901 to 2100 (the precession-formula agreement over the full supported
   range — looser than the 0.0005° single-value calibration check on `AYANAMSA_T0`
-  described above, because it also has to absorb Swiss Ephemeris's own small drift in
-  ayanamsa across a century and a half).
+  described above, though measured agreement is far tighter than the band allows: the
+  engine and Swiss Ephemeris agree to about 7 × 10⁻⁴ arcsec (1.9 × 10⁻⁷°) across the
+  twelve fixture cases spanning 1901–2099, so the 0.005° band is a guard against
+  regression, not the slop actually expected from the precession formula).
 - **Sidereal longitudes within 0.03°** for every graha and the Lagna — the tropical
   engine's own established tolerance against Swiss Ephemeris (see `docs/NATAL-CHART.md`),
   carried through unchanged since sidereal longitude is just tropical longitude minus a

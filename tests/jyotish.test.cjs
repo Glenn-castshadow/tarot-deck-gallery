@@ -56,6 +56,11 @@ test('sidereal placements: lagna, whole-sign bhavas, grahas with nakshatras and 
   assert.equal(J.sidereal({status:'missing',message:'x'}).status,'missing');
 });
 
+test('sidereal: an error-status chart passes its message through instead of the generic missing prompt',()=>{
+  const errored=J.sidereal({status:'error',message:'Choose a valid instant.'});
+  assert.deepEqual(errored,{status:'error',message:'Choose a valid instant.'});
+});
+
 const reference=require('./fixtures/jyotish-reference.json');
 for(const c of reference.cases) test(`swiss ephemeris reference: ${c.id}`,()=>{
   const chart=natal.calculate({...c.input, houseSystem:'whole-sign'});
