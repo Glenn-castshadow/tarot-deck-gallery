@@ -142,10 +142,15 @@ scripts return 200 over HTTPS, /api/health/ still answers, the section renders w
 chart, and the node suite is 134 passing. Conventions and independent validation are in
 docs/CHART-IN-TIME.md.
 
-## Pending: 2026-09-11 Chinese traditions release
+## 2026-09-11 Chinese traditions release
 
-Not yet deployed; this is Glenn's morning step. Work is on branch `chinese-traditions`
-(HEAD at this writing: 4b7b513), not yet merged to main. Deepens the Four Pillars tab
+Deployed 2026-09-11 from main f3461d7 as /opt/tarot-game/releases/20260911-chinese-traditions
+(hardlink copy of 20260911-chart-in-time with the committed runtime files extracted over it);
+previous release retained for rollback. Glenn ran `sh /tmp/deploy-app.sh` for the service step
+(migration readings.0002_reading_kind_iching applied, ishtar-app restarted, /api/health/ ok), then
+the frontend symlink was swapped. Live checks: all ten rekeyed files return 200 over HTTPS, the
+divination room lists I Ching as the fifth practice, node suite 197 passing, Django 56 passing.
+Originally planned on branch `chinese-traditions`, merged to main before deploy. Deepens the Four Pillars tab
 (hidden stems, Ten Gods, luck pillars) and adds I Ching as a fifth divination practice.
 Conventions and validation are in docs/EXTENDED-ATLAS.md ("BaZi conventions") and
 docs/DIVINATION.md ("I Ching").
