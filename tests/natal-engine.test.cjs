@@ -90,3 +90,25 @@ test('chartAtInstant accepts an instant inside the upper-bound slack',()=>{
   const location=reference.cases[1].input.location;
   assert.equal(engine.chartAtInstant(new Date('2101-01-01T10:59:00Z'),location).status,'ready');
 });
+
+test('regiomontanus cusps: angles recovered, opposites hold, span is 360, polar returns null',()=>{
+  const angles=engine.anglesAt(new Date('2024-03-15T10:20:00Z'),51.5085,-0.1257);
+  const cusps=engine.houseCusps(angles,51.5085,'regiomontanus');
+  assert.equal(cusps.length,12);
+  assert.ok(Math.abs(engine.delta(cusps[0],angles.asc))<1e-9,'cusp 1 is the Ascendant');
+  assert.ok(Math.abs(engine.delta(cusps[9],angles.mc))<1e-9,'cusp 10 is the Midheaven');
+  for(let i=0;i<6;i++) assert.ok(Math.abs(engine.delta(cusps[i+6],cusps[i]+180))<1e-9,`cusp ${i+7} opposes ${i+1}`);
+  const span=cusps.reduce((s,v,i)=>s+engine.mod(cusps[(i+1)%12]-v),0);
+  assert.ok(Math.abs(span-360)<1e-6);
+  // Successive cusps advance in zodiacal order.
+  for(let i=0;i<12;i++) assert.ok(engine.mod(cusps[(i+1)%12]-cusps[i])<180,`cusp ${i+1} precedes ${i+2}`);
+  // At the equator Regiomontanus equals the equal-RA division: cusp 11 sits 30° of RA past the MC.
+  const eq=engine.anglesAt(new Date('2024-03-15T10:20:00Z'),0,0), eqCusps=engine.houseCusps(eq,0,'regiomontanus');
+  const raOf=l=>engine.mod(Math.atan2(Math.sin(l*Math.PI/180)*Math.cos(eq.obliquity*Math.PI/180),Math.cos(l*Math.PI/180))*180/Math.PI);
+  assert.ok(Math.abs(engine.delta(raOf(eqCusps[10]),eq.ramc+30))<1e-6,'equatorial 11th cusp');
+  assert.equal(engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),70,20),70,'regiomontanus')!==null,true,'defined at 70°N');
+  assert.equal(engine.houseCusps(engine.anglesAt(new Date('2024-06-21T12:00:00Z'),88,20),88,'regiomontanus'),null,'undefined inside the polar circle');
+  const chart=engine.chartAtInstant(new Date('2024-03-15T10:20:00Z'),{latitude:51.5085,longitude:-0.1257,timeZone:'Europe/London'},{houseSystem:'regiomontanus'});
+  assert.equal(chart.houseSystem,'regiomontanus');
+  assert.equal(engine.calculate({birthday:'1990-07-15',time:'14:30',location:{latitude:40.7143,longitude:-74.006,timeZone:'America/New_York'},houseSystem:'regiomontanus'}).houseSystem,'regiomontanus');
+});

@@ -45,6 +45,22 @@ const NatalEngine = (() => {
     const {asc,mc,ramc,obliquity}=angles;
     if(system==='whole-sign') return Array.from({length:12},(_,i)=>mod(Math.floor(asc/30)*30+i*30));
     if(system==='equal') return Array.from({length:12},(_,i)=>mod(asc+i*30));
+    if(system==='regiomontanus') {
+      // Regiomontanus: the equator is divided into 30° arcs from the RAMC and projected onto the
+      // ecliptic through the house circles; the pole of each house is tan φH = tan φ · sin D.
+      // Unlike Placidus, this formula never hits a hard domain error before the true pole, but the
+      // houses become impractically compressed well before that. Treat it as unusable once even the
+      // innermost 30° division's auxiliary pole would itself sit beyond the ecliptic's polar circle
+      // (a softened version of Placidus's own 90°-obliquity bound, scaled by that division's sin 30°).
+      if(Math.abs(latitude)>=90-obliquity*Math.sin(30*D)) return null;
+      const eps=obliquity*D, phi=latitude*D;
+      const cusp=arc=>{const poleH=Math.atan(Math.tan(phi)*Math.sin(arc*D)), r=(ramc+arc)*D; return mod(Math.atan2(Math.sin(r),Math.cos(r)*Math.cos(eps)-Math.tan(poleH)*Math.sin(eps))/D);};
+      const c11=cusp(30),c12=cusp(60),c2=cusp(120),c3=cusp(150);
+      const cusps=[asc,c2,c3,mod(mc+180),mod(c11+180),mod(c12+180),mod(asc+180),mod(c2+180),mod(c3+180),mc,c11,c12];
+      if(cusps.some(v=>!Number.isFinite(v))) return null;
+      const span=cusps.reduce((sum,value,index)=>sum+mod(cusps[(index+1)%12]-value),0);
+      return Math.abs(span-360)<1e-5 ? cusps : null;
+    }
     if(system!=='placidus') throw Error('Unknown house system.');
     if(Math.abs(latitude)>=90-obliquity) return null;
     // Placidus divides the semi-diurnal/nocturnal arcs into thirds. Solve the
@@ -93,7 +109,7 @@ const NatalEngine = (() => {
     return aspects.sort((a,b)=>a.orb-b.orb);
   }
   function chartAtInstant(date,location,{houseSystem='placidus',orbScale=1}={}) {
-    if(!['placidus','whole-sign','equal'].includes(houseSystem)) houseSystem='placidus';
+    if(!['placidus','whole-sign','equal','regiomontanus'].includes(houseSystem)) houseSystem='placidus';
     if(![0.75,1,1.25].includes(Number(orbScale))) orbScale=1;
     orbScale=Number(orbScale);
     if(!(date instanceof Date) || !Number.isFinite(+date)) return {status:'error',message:'A valid instant is required.'};
@@ -118,7 +134,7 @@ const NatalEngine = (() => {
     return {status:'ready',date:date.toISOString(),timeZone:location.timeZone,location,houseSystem,notice,points,axes,cusps,angles,aspects:aspectsFor([...points,...axes.slice(0,2)],orbScale),orbScale,balance,moonIllumination:illumination.phase_fraction,moonPhase:astro.MoonPhase(date)};
   }
   function calculate({birthday,time,location,houseSystem='placidus',fold='',orbScale=1}) {
-    if(!['placidus','whole-sign','equal'].includes(houseSystem)) houseSystem='placidus';
+    if(!['placidus','whole-sign','equal','regiomontanus'].includes(houseSystem)) houseSystem='placidus';
     if(![0.75,1,1.25].includes(Number(orbScale))) orbScale=1;
     orbScale=Number(orbScale);
     if(!time) return {status:'missing',message:'Add your birth time and select a birthplace to calculate your natal chart.'};
