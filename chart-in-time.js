@@ -23,9 +23,9 @@ const ChartInTime = (() => {
         <details class="cit-custom-place"><summary>Use coordinates for an unlisted place</summary>
           <label class="cit-manual-toggle"><input type="checkbox" id="cit-manual"> Use these coordinates</label>
           <fieldset id="cit-manual-fields" disabled>
-            <label>Latitude <small>north + / south −</small><input id="cit-lat" type="number" min="-89.9999" max="89.9999" step="any"></label>
-            <label>Longitude <small>east + / west −</small><input id="cit-lon" type="number" min="-180" max="180" step="any"></label>
-            <label>IANA time zone<input id="cit-zone" type="text" list="birth-timezones" placeholder="e.g. Europe/London"></label>
+            <label>Latitude <small>north + / south −</small><input id="cit-lat" type="number" min="-89.9999" max="89.9999" step="any" required></label>
+            <label>Longitude <small>east + / west −</small><input id="cit-lon" type="number" min="-180" max="180" step="any" required></label>
+            <label>IANA time zone<input id="cit-zone" type="text" list="birth-timezones" placeholder="e.g. Europe/London" required></label>
           </fieldset>
         </details>
         <button type="submit" class="cit-primary">Update return charts</button>
@@ -127,8 +127,11 @@ const ChartInTime = (() => {
     $('#cit-place-form').addEventListener('submit', event => {
       event.preventDefault();
       if ($('#cit-manual').checked) {
-        const latitude = Number($('#cit-lat').value), longitude = Number($('#cit-lon').value), timeZone = $('#cit-zone').value.trim();
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) >= 90 || Math.abs(longitude) > 180 || !timeZone) {
+        // Number('') is 0, which is finite and in range, so a blank box would
+        // otherwise be accepted as 0° and cast the chart at Null Island.
+        const latText = $('#cit-lat').value.trim(), lonText = $('#cit-lon').value.trim();
+        const latitude = Number(latText), longitude = Number(lonText), timeZone = $('#cit-zone').value.trim();
+        if (!latText || !lonText || !Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) >= 90 || Math.abs(longitude) > 180 || !timeZone) {
           $('#cit-place-status').textContent = 'Enter a latitude, a longitude and an IANA time zone.';
           return;
         }
@@ -155,7 +158,12 @@ const ChartInTime = (() => {
           manualLocation = value;
           $('#cit-manual').checked = true; $('#cit-manual-fields').disabled = false;
           $('#cit-lat').value = value.latitude; $('#cit-lon').value = value.longitude; $('#cit-zone').value = value.timeZone;
+          // Collapsed, nothing on screen would say the chart is cast at coordinates.
+          $('.cit-custom-place').open = true;
         } else {
+          // A prior manual selection must not survive a later city restore.
+          manualLocation = null;
+          $('#cit-manual').checked = false; $('#cit-manual-fields').disabled = true;
           placePicker.restore(value);   // must follow the input.value assignment above
         }
         renderActive();
