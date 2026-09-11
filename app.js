@@ -349,7 +349,7 @@ try {document.querySelector("#birth-timezones").innerHTML=["UTC",...Intl.support
 birthdayForm.addEventListener("submit", event => {
   event.preventDefault();
   const manual = manualLocationInput.checked ? {source:"manual",label:birthPlaceInput.value.trim() || "Custom location",latitude:Number(document.querySelector("#birth-latitude").value),longitude:Number(document.querySelector("#birth-longitude").value),timeZone:document.querySelector("#birth-timezone").value.trim()} : null;
-  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value };
+  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value,returnLocation:chartInTime.getReturnLocation() };
   try { IshtarStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
   renderBirthdayProfile(saved);
 });
@@ -361,6 +361,7 @@ try {
     birthTimeInput.value = savedBirthday.time || "";
     birthPlaceInput.value = savedBirthday.place || "";
     birthplacePicker.restore(savedBirthday.placeLocation);
+    if (savedBirthday.returnLocation) chartInTime.setReturnLocation(savedBirthday.returnLocation);
     houseSystemInput.value = ["placidus","whole-sign","equal"].includes(savedBirthday.houseSystem) ? savedBirthday.houseSystem : "placidus";
     orbScaleInput.value = [0.75,1,1.25].includes(Number(savedBirthday.orbScale)) ? String(savedBirthday.orbScale) : "1";
     foldInput.value = savedBirthday.fold || "";

@@ -20,11 +20,19 @@ const ChartInTime = (() => {
           <div id="cit-place-list" class="city-suggestions" role="listbox" aria-label="Matching cities" hidden></div></div>
           <p id="cit-place-status" class="city-search-status" role="status">Choose a city, or keep your birthplace.</p>
         </div>
+        <details class="cit-custom-place"><summary>Use coordinates for an unlisted place</summary>
+          <label class="cit-manual-toggle"><input type="checkbox" id="cit-manual"> Use these coordinates</label>
+          <fieldset id="cit-manual-fields" disabled>
+            <label>Latitude <small>north + / south −</small><input id="cit-lat" type="number" min="-89.9999" max="89.9999" step="any"></label>
+            <label>Longitude <small>east + / west −</small><input id="cit-lon" type="number" min="-180" max="180" step="any"></label>
+            <label>IANA time zone<input id="cit-zone" type="text" list="birth-timezones" placeholder="e.g. Europe/London"></label>
+          </fieldset>
+        </details>
         <button type="submit" class="cit-primary">Update return charts</button>
         <button type="button" data-cit-place-reset>Use my birthplace</button>
       </form>
       <section id="cit-solar" class="cit-view"><div class="cit-view-heading"><div><p class="acg-small-label">Solar return</p><h4>The year the Sun begins again.</h4></div><div class="cit-nav" role="group" aria-label="Choose a return"><button type="button" data-cit-step="-1" aria-label="Previous year">←</button><output id="cit-solar-label" aria-live="polite"></output><button type="button" data-cit-step="1" aria-label="Next year">→</button><button type="button" data-cit-now>This year</button></div></div><div id="cit-solar-output" aria-live="polite"></div></section>
-      <section id="cit-lunar" class="cit-view" hidden><div id="cit-lunar-output" aria-live="polite"></div></section>
+      <section id="cit-lunar" class="cit-view" hidden><div class="cit-view-heading"><div><p class="acg-small-label">Lunar return</p><h4>The month the Moon begins again.</h4></div><div class="cit-nav" role="group" aria-label="Choose a return"><button type="button" data-cit-step="-1" aria-label="Previous return">←</button><output id="cit-lunar-label" aria-live="polite"></output><button type="button" data-cit-step="1" aria-label="Next return">→</button><button type="button" data-cit-now>Now</button></div></div><div id="cit-lunar-output" aria-live="polite"></div></section>
       <section id="cit-progressed" class="cit-view" hidden><div id="cit-progressed-output" aria-live="polite"></div></section>`;
 
     const $ = selector => root.querySelector(selector);
@@ -50,7 +58,7 @@ const ChartInTime = (() => {
 
     function renderReturn(kind) {
       const output = $(`#cit-${kind}-output`);
-      // Task 8 adds #cit-lunar-label; the lookup is optional so this keeps working either way.
+      // Solar and lunar each carry their own label element.
       const label = $(`#cit-${kind}-label`);
       const model = ChartInTimeEngine.returnChart({chart, kind, location:place(), index:offsets[kind], reference:new Date()});
       // A previously chosen year must not linger beside an empty or failed state.
@@ -62,7 +70,8 @@ const ChartInTime = (() => {
       const sun = model.chart.points.find(point => point.name === (kind === 'solar' ? 'Sun' : 'Moon'));
       const house = (kind === 'solar' ? ChartInTimeText.returnSunHouse : ChartInTimeText.returnMoonHouse)[sun.house];
       const rising = ChartInTimeText.returnAscendant[model.chart.axes[0].sign];
-      if (kind === 'solar') $('#cit-solar-label').textContent = new Date(model.moment).getUTCFullYear();
+      if (kind === 'solar') label.textContent = new Date(model.moment).getUTCFullYear();
+      else label.textContent = new Date(model.moment).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
       output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}Exact return: <strong>${esc(readable(model.moment))}</strong> · cast for ${esc(place().label || 'the selected place')}</p>
         <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:model.natalPoints, outer:model.chart.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Return chart'], centerSymbol:kind==='solar'?'☉':'☾', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Return chart</span></p></div>
         <div class="cit-reading"><p class="acg-small-label">Return ${esc(sun.name)} in house ${sun.house}</p><h5>${esc(house.title)}</h5><p>${esc(house.body)}</p><blockquote>${esc(house.prompt)}</blockquote>
@@ -95,6 +104,10 @@ const ChartInTime = (() => {
       if ('citNow' in data) { offsets[tab] = 0; renderActive(); }
       if ('citPlaceReset' in data) {
         manualLocation = null;
+        // Leaving the checkbox on would make place() read the manual fields again
+        // on the next submit, so the escape hatch is closed with the selection.
+        $('#cit-manual').checked = false;
+        $('#cit-manual-fields').disabled = true;
         $('#cit-place').value = chart?.location?.label || '';
         placePicker.restore(null);
         // restore() only rewrites the status line when it accepts a selection, so
@@ -104,15 +117,50 @@ const ChartInTime = (() => {
       }
     });
 
-    $('#cit-place-form').addEventListener('submit', event => { event.preventDefault(); renderActive(); });
+    root.addEventListener('change', event => {
+      if (event.target.id === 'cit-manual') {
+        $('#cit-manual-fields').disabled = !event.target.checked;
+        if (!event.target.checked) { manualLocation = null; renderActive(); }
+      }
+    });
+
+    $('#cit-place-form').addEventListener('submit', event => {
+      event.preventDefault();
+      if ($('#cit-manual').checked) {
+        const latitude = Number($('#cit-lat').value), longitude = Number($('#cit-lon').value), timeZone = $('#cit-zone').value.trim();
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) >= 90 || Math.abs(longitude) > 180 || !timeZone) {
+          $('#cit-place-status').textContent = 'Enter a latitude, a longitude and an IANA time zone.';
+          return;
+        }
+        manualLocation = {latitude, longitude, timeZone, label: $('#cit-place').value.trim() || 'Custom place', source: 'manual'};
+      } else {
+        manualLocation = null;
+      }
+      renderActive();
+    });
 
     profileStatus(); renderActive();
-    return {setBirthChart(value) {
-      savedChart = value?.status === 'ready' ? value : null;
-      if (!usingSample) chart = savedChart;
-      if (!chosenPlace() && chart?.location?.label) $('#cit-place').value = chart.location.label;
-      profileStatus(); renderActive();
-    }};
+    return {
+      setBirthChart(value) {
+        savedChart = value?.status === 'ready' ? value : null;
+        if (!usingSample) chart = savedChart;
+        if (!chosenPlace() && chart?.location?.label) $('#cit-place').value = chart.location.label;
+        profileStatus(); renderActive();
+      },
+      getReturnLocation() { return chosenPlace(); },
+      setReturnLocation(value) {
+        if (!value || !Number.isFinite(value.latitude) || !Number.isFinite(value.longitude) || !value.timeZone) return;
+        $('#cit-place').value = value.label || '';
+        if (value.source === 'manual') {
+          manualLocation = value;
+          $('#cit-manual').checked = true; $('#cit-manual-fields').disabled = false;
+          $('#cit-lat').value = value.latitude; $('#cit-lon').value = value.longitude; $('#cit-zone').value = value.timeZone;
+        } else {
+          placePicker.restore(value);   // must follow the input.value assignment above
+        }
+        renderActive();
+      }
+    };
   }
   return {attach};
 })();
