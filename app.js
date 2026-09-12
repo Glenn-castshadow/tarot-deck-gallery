@@ -355,10 +355,15 @@ birthdayForm.addEventListener("invalid",event=>{const details=event.target.close
 for(const input of [birthdayInput,birthTimeInput,birthPlaceInput]) input.addEventListener("input",()=>{foldInput.value="";});
 try {document.querySelector("#birth-timezones").innerHTML=["UTC",...Intl.supportedValuesOf("timeZone")].map(zone=>`<option value="${zone}"></option>`).join("");} catch { /* Manual IANA names remain usable. */ }
 
+function currentBirthProfile() {
+  if (!birthdayInput.value || !birthdayForm.checkValidity()) return null;
+  const manual = manualLocationInput.checked ? {source:"manual",label:birthPlaceInput.value.trim() || "Custom location",latitude:Number(document.querySelector("#birth-latitude").value),longitude:Number(document.querySelector("#birth-longitude").value),timeZone:document.querySelector("#birth-timezone").value.trim()} : null;
+  return { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value,returnLocation:chartInTime.getReturnLocation() };
+}
 birthdayForm.addEventListener("submit", event => {
   event.preventDefault();
-  const manual = manualLocationInput.checked ? {source:"manual",label:birthPlaceInput.value.trim() || "Custom location",latitude:Number(document.querySelector("#birth-latitude").value),longitude:Number(document.querySelector("#birth-longitude").value),timeZone:document.querySelector("#birth-timezone").value.trim()} : null;
-  const saved = { birthday: birthdayInput.value, time: birthTimeInput.value, place: birthPlaceInput.value.trim() || manual?.label || "", placeLocation: manual || birthplacePicker.getSelection(),houseSystem:houseSystemInput.value,orbScale:Number(orbScaleInput.value),fold:foldInput.value,returnLocation:chartInTime.getReturnLocation() };
+  const saved = currentBirthProfile();
+  if (!saved) return;
   try { IshtarStorage.setItem("arcana-birthday-profile-v1", JSON.stringify(saved)); } catch (error) { /* no-op */ }
   renderBirthdayProfile(saved);
 });
@@ -412,7 +417,7 @@ function restoreBirthdayProfile() {
   }
 }
 restoreBirthdayProfile();
-window.BirthRoom = { restore: restoreBirthdayProfile };
+window.BirthRoom = { restore: restoreBirthdayProfile, currentProfile: currentBirthProfile };
 
 const readingOutput = document.querySelector("#reading-output");
 const drawReadingButton = document.querySelector("#draw-reading");

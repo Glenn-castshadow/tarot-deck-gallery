@@ -53,13 +53,14 @@ from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
+from django.db import transaction
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 
 from ishtar.api import auth_required, error, json_byte_size, json_view
 from .models import Entitlement, Profile
 
-PROFILE_KEYS = {'birthday', 'time', 'place', 'placeLocation', 'houseSystem', 'orbScale', 'fold'}
+PROFILE_KEYS = {'birthday', 'time', 'place', 'placeLocation', 'houseSystem', 'orbScale', 'fold', 'returnLocation'}
 PROFILE_MAX_BYTES = 4 * 1024
 
 
@@ -119,6 +120,7 @@ def account_summary(user):
         'features': Entitlement.objects.active_features(user),
         'profile': profile.data if profile else None,
         'newsletter': Subscriber.objects.filter(email=user.email).exists(),
+        'saveBirthDetails': user.save_birth_details,
     }
 
 
@@ -151,15 +153,33 @@ def validate_profile(data):
 
 @json_view(methods=('PUT', 'DELETE'))
 @auth_required
+@transaction.atomic
 def profile(request):
+    user = get_user_model().objects.select_for_update().get(pk=request.user.pk)
     if request.method == 'DELETE':
         Profile.objects.filter(user=request.user).delete()
         return JsonResponse({'ok': True})
+    if not user.save_birth_details:
+        return error('Birth-detail saving is off. Turn it on in your account to save.', status=409)
     message = validate_profile(request.json)
     if message:
         return error(message)
     saved, _ = Profile.objects.update_or_create(user=request.user, defaults={'data': request.json, 'version': 1})
     return JsonResponse({'ok': True, 'updated_at': saved.updated_at.isoformat()})
+
+
+@json_view(methods=('POST',))
+@auth_required
+@transaction.atomic
+def birth_storage(request):
+    if set(request.json) != {'enabled'} or not isinstance(request.json['enabled'], bool):
+        return error('Send {"enabled": true or false}.')
+    user = get_user_model().objects.select_for_update().get(pk=request.user.pk)
+    user.save_birth_details = request.json['enabled']
+    user.save(update_fields=['save_birth_details'])
+    if not user.save_birth_details:
+        Profile.objects.filter(user=user).delete()
+    return JsonResponse({'ok': True, 'saveBirthDetails': user.save_birth_details})
 
 
 from newsletter.models import Subscriber

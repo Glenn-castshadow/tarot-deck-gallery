@@ -9,23 +9,34 @@
   const emailForm = $('#account-email-form'), codeForm = $('#account-code-form'), dialogStatus = $('#account-dialog-status');
   const status = $('#account-status'), list = $('#journal-list');
   let opener = null, journalPage = 1, journalPages = 1;
+  let sessionEmail = null, sessionProfile = null;
   const kindLabel = {'tarot-daily': 'Daily card', 'tarot-spread': 'Tarot spread', lenormand: 'Lenormand', oracle: 'Reflection oracle', runes: 'Runes', geomancy: 'Geomancy', iching: 'I Ching'};
   const esc = value => String(value).replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
 
   function wireRemoteProfile(state) {
-    if (!state.signedIn) { IshtarStorage.setRemote(PROFILE_KEY, null); return; }
+    if (!state.signedIn) { sessionEmail = null; sessionProfile = null; IshtarStorage.setRemote(PROFILE_KEY, null); return; }
+    if (sessionEmail !== state.email) {
+      // Capture a guest reading before installing the account-backed storage adapter.
+      const guest = sessionEmail === null ? IshtarStorage.getItem(PROFILE_KEY) : null;
+      sessionEmail = state.email;
+      try { sessionProfile = guest ? JSON.parse(guest) : null; } catch { sessionProfile = null; }
+    }
+    if (!state.saveBirthDetails) IshtarStorage.removeItem(PROFILE_KEY);
     IshtarStorage.setRemote(PROFILE_KEY, {
-      get: () => account.state().profile ? JSON.stringify(account.state().profile) : null,
-      set: value => { try { account.saveProfile(JSON.parse(value)); } catch {} }
+      get: () => { const profile = account.state().profile || sessionProfile; return profile ? JSON.stringify(profile) : null; },
+      set: value => {
+        try {
+          sessionProfile = JSON.parse(value);
+          if (account.state().saveBirthDetails) account.saveProfile(sessionProfile);
+        } catch {}
+      }
     });
   }
 
   async function reconcileProfile() {
     const state = account.state();
-    if (state.profile) return;
-    const local = IshtarStorage.localItem(PROFILE_KEY);
-    if (!local) return;
-    try { await account.saveProfile(JSON.parse(local)); } catch {}
+    if (state.profile || !state.saveBirthDetails || !sessionProfile?.birthday) return;
+    await account.saveProfile(sessionProfile);
   }
 
   function renderHeader(state) {
@@ -33,11 +44,17 @@
     button.classList.toggle('is-signed-in', state.signedIn);
     button.setAttribute('aria-haspopup', state.signedIn ? 'false' : 'dialog');
     panel.hidden = !state.signedIn;
+    $('#birth-save-status').hidden = !state.signedIn;
     if (!state.signedIn) return;
     $('#account-email').textContent = state.email;
     $('#account-newsletter').checked = state.newsletter;
-    $('#account-sync').textContent = state.syncError ? 'Your latest birth details are on this page but not synced. They will sync the next time you read your sky.'
-      : state.profile ? 'Your birth details are synced to this account.' : 'Your birth details sync to this account when you read your sky.';
+    $('#account-save-birth').checked = state.saveBirthDetails;
+    $('#account-save-profile').hidden = !state.saveBirthDetails;
+    const syncMessage = !state.saveBirthDetails ? 'Saving is off. Birth details you enter stay on this page only.'
+      : state.syncError ? 'Your birth details have not been saved. Choose “Save birth details now” to retry.'
+      : state.profile ? 'Your birth details are saved to your account for your next visit.' : 'Saving is on. Enter your birth details, then choose “Read my sky” or “Save birth details now”.';
+    $('#account-sync').textContent = syncMessage;
+    $('#birth-save-status').textContent = syncMessage;
     $('#account-clear-profile').hidden = !state.profile;
   }
 
@@ -96,6 +113,30 @@
     const result = await account.clearProfile();
     status.textContent = result.ok ? 'Synced birth details removed. The form on this page still shows them until you reload.' : 'Could not remove synced details.';
   });
+  async function saveCurrentBirthDetails() {
+    const profile = window.BirthRoom?.currentProfile();
+    if (!profile) { status.textContent = 'Enter a valid birthday and birth details in Birth sky first.'; return; }
+    sessionProfile = profile;
+    const result = await account.saveProfile(profile);
+    status.textContent = result.ok ? 'Your birth details are saved for your next visit.' : result.message;
+  }
+  $('#account-save-profile').addEventListener('click', async event => {
+    event.target.disabled = true;
+    try { await saveCurrentBirthDetails(); } finally { event.target.disabled = false; }
+  });
+  $('#account-save-birth').addEventListener('change', async event => {
+    const toggle = event.target, enabled = toggle.checked;
+    toggle.disabled = true;
+    const result = await account.setBirthSaving(enabled);
+    toggle.disabled = false;
+    toggle.checked = account.state().saveBirthDetails;
+    if (!result.ok) { status.textContent = result.message; return; }
+    if (!enabled) {
+      IshtarStorage.removeItem(PROFILE_KEY);
+      status.textContent = 'Birth-detail saving is off and the saved copy has been removed.';
+    } else if (window.BirthRoom?.currentProfile()) await saveCurrentBirthDetails();
+    else status.textContent = 'Birth-detail saving is on. Add your details in Birth sky to save them.';
+  });
   $('#account-delete').addEventListener('click', async () => {
     if (!window.confirm('Delete your account, synced birth details and saved readings? This cannot be undone.')) return;
     const result = await account.deleteAccount();
@@ -143,10 +184,15 @@
     const state = await account.refresh();
     if (!state.signedIn) renderHeader(state);
   })();
-  let lastSignedIn = false;
+  let lastAccountEmail = null;
   account.onChange(async state => {
-    if (state.signedIn && !lastSignedIn) { await reconcileProfile(); window.BirthRoom?.restore(); renderJournal(1); }
-    if (!state.signedIn && lastSignedIn) { panel.hidden = true; }
-    lastSignedIn = state.signedIn;
+    const nextEmail = state.signedIn ? state.email : null;
+    const changed = nextEmail !== lastAccountEmail;
+    lastAccountEmail = nextEmail;
+    if (changed && nextEmail) {
+      await reconcileProfile();
+      if (account.state().email === nextEmail) { window.BirthRoom?.restore(); renderJournal(1); }
+    }
+    if (!nextEmail) panel.hidden = true;
   });
 })();

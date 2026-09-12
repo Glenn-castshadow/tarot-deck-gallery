@@ -27,6 +27,10 @@ window.IshtarStorage = (() => {
       if (allowed()) { try { localStorage.setItem(key, value); } catch {} }
     },
     localItem(key) { return localItem(key); },
+    removeItem(key) {
+      memory.delete(key);
+      try { localStorage.removeItem(key); } catch {}
+    },
     setRemote(key, remote) {
       if (remote) { remotes.set(key, remote); return; }
       if (remotes.delete(key)) memory.delete(key);
@@ -35,10 +39,12 @@ window.IshtarStorage = (() => {
   document.addEventListener('DOMContentLoaded', () => {
     const notice = document.querySelector('#storage-notice');
     const status = document.querySelector('#storage-status');
+    let settingsOpener = null;
     const update = () => { status.textContent = allowed() ? 'Optional saving is currently allowed.' : 'Optional saving is currently off.'; };
     notice.hidden = choice === 'allow' || choice === 'decline';
     update();
     document.querySelectorAll('[data-storage-settings]').forEach(button => button.addEventListener('click', () => {
+      settingsOpener = button;
       notice.hidden = false; update(); notice.querySelector('button').focus();
     }));
     notice.querySelectorAll('[data-storage-choice]').forEach(button => button.addEventListener('click', () => {
@@ -49,7 +55,8 @@ window.IshtarStorage = (() => {
         if (allowed()) memory.forEach((value, key) => { if (!remotes.has(key)) localStorage.setItem(key, value); });
       } catch {}
       notice.hidden = true;
-      document.querySelector('[data-storage-settings]').focus({preventScroll: true});
+      const fallback = Array.from(document.querySelectorAll('[data-storage-settings]')).find(button => button.offsetParent != null);
+      (settingsOpener || fallback || document.querySelector('[data-storage-settings]')).focus({preventScroll: true});
     }));
   });
   return api;

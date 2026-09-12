@@ -10,6 +10,17 @@
 .account-card { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
 .account-card h3, .account-journal h3 { font-family: "Playfair Display", serif; font-size: 20px; margin: 0 0 8px; }
 .account-toggle { display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+.account-toggle input { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--plum); }
+.account-toggle input[role="switch"] { appearance: none; width: 44px; height: 26px; padding: 3px; border: 1px solid #958b92; border-radius: 20px; background: #b9adb7; cursor: pointer; }
+.account-toggle input[role="switch"]::before { content: ''; display: block; width: 18px; height: 18px; border-radius: 50%; background: white; }
+.account-toggle input[role="switch"]:checked { background: var(--plum); border-color: var(--plum); }
+.account-toggle input[role="switch"]:checked::before { transform: translateX(18px); }
+.account-toggle input[role="switch"]:focus-visible { outline: 2px solid var(--plum); outline-offset: 3px; }
+.account-toggle input[role="switch"]:disabled { opacity: .55; cursor: wait; }
+.account-birth-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.account-birth-actions .text-button { margin-top: 0; }
+.account-birth-actions [hidden], .birth-save-status[hidden] { display: none; }
+.birth-save-status { grid-column: 1/-1; font-size: 12px; line-height: 1.6; color: #e0d4df; }
 .account-journal { margin-top: 28px; }
 .journal-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .journal-list li { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }

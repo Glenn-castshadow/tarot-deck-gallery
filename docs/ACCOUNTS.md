@@ -1,5 +1,24 @@
 # Accounts
 
+## Birth-detail saving (2026-09-12)
+
+The account panel has a persistent **Save my birth details to my account** switch, a
+**Save birth details now** button for the current form, an edit link, and a button to reopen
+browser-saving preferences. Account saving is independent of optional localStorage consent.
+`User.save_birth_details` defaults to true to preserve existing account behavior (migration
+`0004_user_save_birth_details`); `GET /api/account/` exposes `saveBirthDetails`.
+`POST /api/account/birth-storage/` accepts only `{"enabled": bool}`. Disabling deletes the
+saved profile in the same transaction; subsequent profile PUTs return 409 until enabled.
+The frontend keeps the active reading in page memory, removes any cached local birth profile
+when account saving is off, and does not upload new readings while off.
+
+Two save defects fixed alongside the controls: the profile endpoint now accepts the
+`returnLocation` field already sent by the birth form, and signing in captures a guest's
+in-memory reading before installing account storage. This preserves a reading entered after
+declining local saving when the guest subsequently signs in with account saving enabled.
+The account transition guard is set before asynchronous reconciliation to avoid reentrant
+restores. Save failures are shown beside the birth form as well as in the account panel.
+
 Passwordless accounts for ishtarinsights.com. Spec: docs/superpowers/specs/2026-09-09-accounts-design.md.
 
 ## Service

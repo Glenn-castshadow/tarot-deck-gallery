@@ -22,7 +22,7 @@ class ProfileApiTests(TestCase):
     def test_summary_shape_and_csrf_cookie(self):
         response = self.client.get('/api/account/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {'email': 'reader@example.com', 'features': [], 'profile': None, 'newsletter': False})
+        self.assertEqual(response.json(), {'email': 'reader@example.com', 'features': [], 'profile': None, 'newsletter': False, 'saveBirthDetails': True})
         self.assertIn('csrftoken', response.cookies)
 
     def test_profile_round_trip(self):
@@ -33,6 +33,44 @@ class ProfileApiTests(TestCase):
         delete = self.client.delete('/api/account/profile/')
         self.assertEqual(delete.status_code, 200)
         self.assertIsNone(self.client.get('/api/account/').json()['profile'])
+
+    def test_full_browser_payload_including_return_location_survives_next_visit(self):
+        for location in [None, {'latitude': 51.5, 'longitude': -0.12, 'timeZone': 'Europe/London', 'label': 'London'}]:
+            data = dict(PROFILE, returnLocation=location)
+            self.assertEqual(self.client.put('/api/account/profile/', data, content_type='application/json').status_code, 200)
+            self.client.logout()
+            self.client.force_login(self.user)
+            self.assertEqual(self.client.get('/api/account/').json()['profile'], data)
+
+    def test_saving_preference_persists_and_blocks_old_tabs_from_saving(self):
+        self.client.put('/api/account/profile/', PROFILE, content_type='application/json')
+        off = self.client.post('/api/account/birth-storage/', {'enabled': False}, content_type='application/json')
+        self.assertEqual(off.status_code, 200)
+        summary = self.client.get('/api/account/').json()
+        self.assertFalse(summary['saveBirthDetails'])
+        self.assertIsNone(summary['profile'])
+        self.assertEqual(self.client.put('/api/account/profile/', PROFILE, content_type='application/json').status_code, 409)
+        self.client.logout()
+        self.client.force_login(self.user)
+        self.assertFalse(self.client.get('/api/account/').json()['saveBirthDetails'])
+        self.assertEqual(self.client.post('/api/account/birth-storage/', {'enabled': True}, content_type='application/json').status_code, 200)
+        self.assertEqual(self.client.put('/api/account/profile/', PROFILE, content_type='application/json').status_code, 200)
+        self.assertEqual(self.client.get('/api/account/').json()['profile'], PROFILE)
+
+    def test_saving_preference_requires_boolean_and_authentication(self):
+        for data in [{'enabled': 'false'}, {}, {'enabled': True, 'email': 'other@example.com'}]:
+            self.assertEqual(self.client.post('/api/account/birth-storage/', data, content_type='application/json').status_code, 400)
+        self.client.logout()
+        self.assertEqual(self.client.post('/api/account/birth-storage/', {'enabled': False}, content_type='application/json').status_code, 401)
+
+    def test_saving_preference_is_scoped_to_current_user(self):
+        from accounts.models import Profile
+        other = get_user_model().objects.create_user('other@example.com')
+        Profile.objects.create(user=other, data=PROFILE)
+        self.client.post('/api/account/birth-storage/', {'enabled': False}, content_type='application/json')
+        other.refresh_from_db()
+        self.assertTrue(other.save_birth_details)
+        self.assertTrue(Profile.objects.filter(user=other).exists())
 
     def test_profile_rejects_unknown_keys_and_oversize(self):
         bad = self.client.put('/api/account/profile/', dict(PROFILE, name='x'), content_type='application/json')

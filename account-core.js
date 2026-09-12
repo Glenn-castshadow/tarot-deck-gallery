@@ -5,7 +5,7 @@
   const RESTART = 'That code is no longer valid. Enter your email again.';
   const OFFLINE = 'Could not connect. Please try again.';
   function createAccount({fetch, getCookie}) {
-    const blank = () => ({signedIn: false, email: null, features: [], profile: null, newsletter: false, syncError: false});
+    const blank = () => ({signedIn: false, email: null, features: [], profile: null, newsletter: false, saveBirthDetails: true, syncError: false});
     let state = blank();
     const listeners = new Set();
     const emit = () => listeners.forEach(fn => { try { fn(snapshot()); } catch {} });
@@ -28,7 +28,7 @@
     async function refresh() {
       const {status, data} = await call('GET', `${API}/account/`);
       if (status === 200 && data) {
-        state = {signedIn: true, email: data.email, features: data.features || [], profile: data.profile ?? null, newsletter: Boolean(data.newsletter), syncError: false};
+        state = {signedIn: true, email: data.email, features: data.features || [], profile: data.profile ?? null, newsletter: Boolean(data.newsletter), saveBirthDetails: data.saveBirthDetails !== false, syncError: false};
         emit();
       } else if (status !== 0) signedOut();
       return snapshot();
@@ -50,8 +50,11 @@
     }
     async function signOut() { await call('DELETE', `${AUTH}/auth/session`); signedOut(); }
     async function saveProfile(profile) {
+      if (!state.signedIn || !state.saveBirthDetails) return {ok: false, message: 'Turn on birth-detail saving in your account to save.'};
+      const owner = state.email;
       state.profile = profile; state.syncError = false;
       const {status, data} = await call('PUT', `${API}/account/profile/`, profile);
+      if (state.email !== owner || !state.signedIn || !state.saveBirthDetails) return {ok: false, message: 'Your account or saving preference changed.'};
       if (status === 200) { emit(); return {ok: true, message: ''}; }
       state.syncError = true; emit();
       return {ok: false, message: firstError(data, 'Your birth details were not synced. They stay on this page.')};
@@ -60,6 +63,16 @@
       const {status} = await call('DELETE', `${API}/account/profile/`);
       if (status === 200) { state.profile = null; emit(); }
       return {ok: status === 200};
+    }
+    async function setBirthSaving(enabled) {
+      const owner = state.email;
+      const {status, data} = await call('POST', `${API}/account/birth-storage/`, {enabled: Boolean(enabled)});
+      if (status !== 200 || state.email !== owner || !state.signedIn) return {ok: false, message: firstError(data, 'Your saving preference was not changed. Please try again.')};
+      state.saveBirthDetails = data.saveBirthDetails;
+      state.syncError = false;
+      if (!state.saveBirthDetails) state.profile = null;
+      emit();
+      return {ok: true, message: ''};
     }
     async function listReadings(page = 1) {
       const {status, data} = await call('GET', `${API}/readings/?page=${page}`);
@@ -90,7 +103,7 @@
     }
     return {
       state: snapshot, has: feature => state.signedIn && state.features.includes(feature), refresh, requestCode, confirmCode, signOut,
-      saveProfile, clearProfile, listReadings, getReading, saveReading, updateNote, deleteReading, setNewsletter, deleteAccount,
+      saveProfile, clearProfile, setBirthSaving, listReadings, getReading, saveReading, updateNote, deleteReading, setNewsletter, deleteAccount,
       onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
     };
   }

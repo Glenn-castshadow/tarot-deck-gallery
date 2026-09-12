@@ -2,6 +2,31 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {createAccount} = require('../account-core.js');
 
+test('birth saving can be disabled, survives refresh, and blocks profile writes until enabled', async () => {
+  let enabled=true, profile={birthday:'1990-05-04'}, writes=0;
+  const {fetch}=fakeFetch({
+    'GET /api/account/':()=>[200,{email:'reader@example.com',profile,saveBirthDetails:enabled}],
+    'POST /api/account/birth-storage/':({body})=>{enabled=body.enabled;if(!enabled)profile=null;return [200,{saveBirthDetails:enabled}];},
+    'PUT /api/account/profile/':()=>{writes++;return [200,{ok:true}];}
+  });
+  const account=createAccount({fetch,getCookie:()=>''});await account.refresh();
+  assert.equal((await account.setBirthSaving(false)).ok,true);
+  assert.equal(account.state().profile,null);
+  assert.equal((await account.saveProfile({birthday:'1990-05-04'})).ok,false);
+  assert.equal(writes,0);
+  await account.refresh();assert.equal(account.state().saveBirthDetails,false);
+  await account.setBirthSaving(true);await account.saveProfile({birthday:'1990-05-04',returnLocation:null});
+  assert.equal(writes,1);
+});
+
+test('failed birth-saving preference update leaves the current choice and profile intact', async () => {
+  const {fetch}=fakeFetch({'GET /api/account/':[200,{email:'reader@example.com',profile:{birthday:'1990-05-04'},saveBirthDetails:true}],'POST /api/account/birth-storage/':[503,{error:'Try again.'}]});
+  const account=createAccount({fetch,getCookie:()=>''});await account.refresh();
+  assert.equal((await account.setBirthSaving(false)).ok,false);
+  assert.equal(account.state().saveBirthDetails,true);
+  assert.equal(account.state().profile.birthday,'1990-05-04');
+});
+
 function fakeFetch(routes) {
   const calls = [];
   const fetch = async (url, init = {}) => {

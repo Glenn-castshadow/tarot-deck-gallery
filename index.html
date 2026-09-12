@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="numerology.css?v=2" />
     <link rel="stylesheet" href="mobile-sections.css?v=1" />
     <link rel="stylesheet" href="divination.css?v=iching-1" />
-    <link rel="stylesheet" href="account.css?v=1" />
+    <link rel="stylesheet" href="account.css?v=birth-saving-1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -143,6 +143,7 @@
             </fieldset>
             <p id="newsletter-status" role="status" aria-live="polite" hidden></p>
             <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
+            <p id="birth-save-status" class="birth-save-status" role="status" hidden></p>
           </form>
           <div id="birthday-output" class="birthday-output" aria-live="polite"></div>
         </div>
@@ -191,7 +192,7 @@
         <header class="account-head"><div><p class="section-kicker">Your account</p><h2 id="account-title">Your journal &amp; details</h2><p id="account-email" class="account-email"></p></div><button type="button" id="account-signout">Sign out</button></header>
         <p id="account-status" role="status" aria-live="polite"></p>
         <div class="account-grid">
-          <article class="account-card"><h3>Birth details</h3><p id="account-sync">Your birth details sync to this account when you read your sky.</p><button type="button" id="account-clear-profile" class="text-button">Remove synced birth details</button></article>
+          <article class="account-card"><h3>Birth details</h3><label class="account-toggle"><input type="checkbox" role="switch" id="account-save-birth" aria-describedby="account-birth-help"><span>Save my birth details to my account</span></label><p id="account-birth-help" class="account-fine">Remember your birth date, time and place across visits and devices. Turning this off removes the saved copy; your current reading stays on this page.</p><p id="account-sync" role="status"></p><div class="account-birth-actions"><button type="button" id="account-save-profile" class="text-button">Save birth details now</button><a href="#birthday-room">Edit birth details</a><button type="button" id="account-clear-profile" class="text-button">Remove saved birth details</button></div><p class="account-fine">Browser saving is a separate choice. You can change it any time.</p><button type="button" class="text-button" data-storage-settings>Change browser saving preference</button></article>
           <article class="account-card"><h3>Newsletter</h3><label class="account-toggle"><input type="checkbox" id="account-newsletter"> <span>Email me the Ishtar Insights newsletter and occasional updates.</span></label><p><a href="newsletter-privacy.html">Newsletter privacy</a></p></article>
         </div>
         <section class="account-journal" aria-labelledby="journal-title"><h3 id="journal-title">Saved readings</h3><p id="journal-empty">No saved readings yet. After a reading, choose “Save this reading”.</p><ol id="journal-list" class="journal-list"></ol><nav class="journal-pager" aria-label="Journal pages"><button type="button" id="journal-prev">← Newer</button><span id="journal-page"></span><button type="button" id="journal-next">Older →</button></nav></section>
@@ -236,9 +237,9 @@
       <p id="storage-status"></p>
       <div class="storage-actions"><button type="button" data-storage-choice="decline">No optional saving</button><button type="button" data-storage-choice="allow">Allow saving</button></div>
     </section>
-    <script src="storage-preferences.js?v=newsletter-2"></script>
-    <script src="account-core.js?v=1"></script>
-    <script src="account.js?v=iching-1"></script>
+    <script src="storage-preferences.js?v=birth-saving-1"></script>
+    <script src="account-core.js?v=birth-saving-1"></script>
+    <script src="account.js?v=birth-saving-1"></script>
     <script src="newsletter.js?v=2"></script>
     <script src="birthday-insights.js?v=celestial-atlas-1"></script>
     <script src="birthplace-search.js?v=atlas-2"></script>
@@ -269,7 +270,7 @@
     <script src="numerology.js?v=2"></script>
     <script src="daily-horoscope-engine.js?v=1"></script>
     <script src="daily-horoscope.js?v=1"></script>
-    <script src="app.js?v=daily-horoscope-1"></script>
+    <script src="app.js?v=birth-saving-1"></script>
     <script src="divination-data.js?v=2"></script>
     <script src="divination-engine.js?v=iching-1"></script>
     <script src="divination-art.js?v=iching-1"></script>
