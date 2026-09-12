@@ -1,5 +1,26 @@
 # VPS deployment
 
+## 2026-09-12 Daily horoscope deployment
+
+Deployed frontend commit `fc1a2bd` as `/opt/tarot-game/releases/20260912-daily-horoscope-fc1a2bd`.
+Previous release `/opt/tarot-game/releases/20260912-chart-colours` is retained for rollback.
+The six changed runtime files were archived from the commit and overlaid on a hardlink copy
+using `tar --unlink-first`, preserving the old release's files. Baseline hashes were checked
+before deployment, and `current` was replaced atomically. No backend or nginx changes.
+
+New section `#daily-horoscope` offers all twelve signs, a dated daily reading, lunar theme,
+relationships/work/growth prompts, and a reflection question. It follows the birth-profile
+sign unless manually overridden, refreshes at local midnight, and works in mobile disclosures.
+See `docs/DAILY-HOROSCOPE.md` for calculation and repeat-theme conventions.
+
+Validation: 310 JavaScript tests pass. Browser checks covered automatic sign selection,
+manual override across profile changes, restoring the birth sign, and no horizontal overflow
+at 390px. All six runtime files match the committed bytes on both HTTPS hostnames; account
+health returns 200 with `{"ok":true}`. Live horoscope rendered without browser console errors.
+
+Rollback: create a temporary symlink to `/opt/tarot-game/releases/20260912-chart-colours`,
+then use `mv -Tf` to atomically replace `/opt/tarot-game/current`.
+
 Live URLs: https://ishtarinsights.com/ and https://www.ishtarinsights.com/
 
 Deployed 2026-09-09 from clean commit e11196f. SSH alias: `vps` (129.121.126.72).
