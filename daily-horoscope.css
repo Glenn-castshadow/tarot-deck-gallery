@@ -1,0 +1,50 @@
+.daily-horoscope { grid-column: 1/-1; min-width: 0; margin-top: 28px; padding: clamp(20px, 3vw, 38px); background: #10252e; color: #f4e8d1; border: 1px solid #61787577; }
+.daily-horoscope [hidden] { display: none !important; }
+.dh-header { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+.daily-horoscope .section-kicker, .dh-label { color: #d9c18e; font: 11px/1.6 "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.dh-header h3 { margin: 10px 0; font: 500 clamp(29px,3.5vw,44px)/1.2 "Playfair Display", serif; }
+.dh-header p:last-child { max-width: 620px; color: #bccdce; font-size: 14px; line-height: 1.7; }
+.dh-emblem { position: relative; font: 80px serif; color: #d9c18e; padding: 0 15px; }
+.dh-emblem span { position: absolute; top: 12px; right: 0; font-size: 24px; }
+.dh-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; margin: 26px 0; }
+.dh-controls label { font-size: 12px; color: #c2cecc; }
+.daily-horoscope select, .daily-horoscope button { display: block; color: #f4e8d1; background: #0c222e; border: 1px solid #728e87; padding: 12px 15px; font: 16px "DM Sans", sans-serif; max-width: 100%; }
+.daily-horoscope select { min-width: 210px; margin-top: 8px; color-scheme: dark; }
+.daily-horoscope button { cursor: pointer; font-size: 13px; min-height: 44px; }
+.daily-horoscope button:hover { background: #24404a; }
+.daily-horoscope :is(select,button,summary,a):focus-visible { outline: 2px solid #efca7f; outline-offset: 4px; }
+.dh-controls > p { font-size: 12px; color: #b6c9c7; padding-bottom: 3px; }
+.dh-reading { background: #0b2029; border: 1px solid #6b8e8855; padding: clamp(18px,3vw,30px); }
+.dh-dateline { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: #b7c7c6; font: 11px/1.7 "DM Mono", monospace; border-bottom: 1px solid #6b8e8855; padding-bottom: 16px; }
+.dh-dateline > span { color: #e4cc94; }
+.dh-main { display: flex; gap: 24px; align-items: center; margin: 27px 0; }
+.dh-sign { color: #ddc389; font: 72px/1 serif; }
+.dh-main h4 { font: 500 clamp(25px,3vw,36px)/1.25 "Playfair Display", serif; margin: 7px 0 12px; }
+.dh-main p:last-child, .dh-lenses p, .dh-action > p:last-child { color: #c5d2cc; font-size: 14px; line-height: 1.8; }
+.dh-moon { display: flex; gap: 14px; background: #cad9cb0b; padding: 16px 18px; color: #d7d6b9; }
+.dh-moon > span { font: 30px serif; }
+.dh-moon strong { font-size: 13px; font-weight: 500; }
+.dh-moon p { margin: 6px 0 0; font-size: 12px; line-height: 1.7; color: #b6c7c7; }
+.dh-lenses { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; margin: 26px 0; }
+.dh-lenses h5 { margin: 0 0 9px; font: 500 19px/1.4 "Playfair Display", serif; color: #e6d7b4; }
+.dh-lenses p { margin: 0; }
+.dh-action { border-top: 1px solid #6b8e8855; padding-top: 18px; }
+.dh-action p { margin: 0 0 7px; }
+.dh-reading blockquote { margin: 24px 0 0; border-left: 2px solid #d5b877; padding-left: 18px; color: #e2c990; font: italic 21px/1.6 "Playfair Display", serif; }
+.dh-method { margin-top: 20px; color: #b6c7c7; font-size: 12px; line-height: 1.8; }
+.dh-method summary { cursor: pointer; color: #d7d6b9; padding: 10px 0; }
+.dh-method p { max-width: 800px; margin: 10px 0; }
+.dh-note { font-size: 11px; line-height: 1.7; color: #aebfbc; margin: 15px 0 0; }
+@media (max-width: 700px) {
+  .dh-lenses { grid-template-columns: 1fr; gap: 19px; }
+  .dh-emblem { display: none; }
+  .dh-main { align-items: start; gap: 14px; }
+  .dh-sign { font-size: 42px; padding-top: 8px; }
+  .dh-controls { align-items: start; }
+  .dh-controls > p { flex-basis: 100%; margin: 0; }
+}
+@media print {
+  .daily-horoscope, .dh-reading { background: white !important; border-color: #ccc; color: #18242a; }
+  .daily-horoscope :is(p,h3,h4,h5,span,strong,time,blockquote) { color: #18242a !important; }
+  .dh-controls, .dh-method { display: none; }
+}

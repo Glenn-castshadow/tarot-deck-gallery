@@ -130,6 +130,7 @@ window.MobileSections = (() => {
     const tarotElements = Array.from(room.children).slice(0, Array.from(room.children).findIndex(el => el.id === 'birthday-room'));
     wrap(tarotElements, 'Tarot readings', {key: 'tarot', group: 'main', level: 2, subtitle: 'Daily card · full reading · explore a deck'});
     wrap([document.querySelector('#birthday-room')], 'Birth sky & numerology', {key: 'birthday', group: 'main', level: 2, subtitle: 'Your sky · Chinese zodiac · number readings'});
+    wrap([document.querySelector('#daily-horoscope')], 'Daily horoscope', {key: 'daily-horoscope', group: 'main', level: 2, subtitle: 'Your sign · today’s sky · a moment of reflection'});
     wrap([document.querySelector('#astrocartography-room')], 'Astrocartography', {key: 'world', group: 'main', level: 2, subtitle: 'Explore your sky across the world'});
     wrap([document.querySelector('#celestial-extras')], 'More astrology charts', {key: 'charts', group: 'main', level: 2, subtitle: 'Sky today · two skies · Four Pillars'});
     wrap([document.querySelector('#chart-in-time')], 'Chart in time', {key: 'chart-in-time', group: 'main', level: 2, subtitle: 'Solar & lunar returns · progressions'});
