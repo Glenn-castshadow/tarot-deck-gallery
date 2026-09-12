@@ -18,6 +18,7 @@
         signal: AbortSignal.timeout(15000)
       });
       if (!response.ok) throw Error();
+      try { localStorage.removeItem('arcana-newsletter-subscribed-v1'); } catch {}
       status.textContent = 'Your request is complete. Any matching signup has been removed.';
       form.hidden = true;
     } catch { status.textContent = 'We could not complete your request. Please try again shortly.'; }

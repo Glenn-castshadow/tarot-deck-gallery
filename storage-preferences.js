@@ -7,7 +7,7 @@ window.IshtarStorage = (() => {
   const allowed = () => choice === 'allow';
   function clearSaved() {
     try {
-      Object.keys(localStorage).filter(key => /^arcana-(birthday-profile-v1|reading-deck-v1|daily-v2-.*)$/.test(key))
+      Object.keys(localStorage).filter(key => /^arcana-(birthday-profile-v1|reading-deck-v1|daily-v2-.*|newsletter-subscribed-v1)$/.test(key))
         .forEach(key => localStorage.removeItem(key));
     } catch {}
   }

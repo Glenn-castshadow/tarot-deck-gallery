@@ -433,6 +433,8 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .newsletter-signup { grid-column: 1 / -1; min-width: 0; margin: 12px 0 0; padding: 20px; border: 1px solid #b79a7566; border-radius: 10px; }
 .newsletter-signup legend { padding: 0 8px; color: #f1d5a4; font: 600 21px 'Playfair Display', serif; }
 .newsletter-signup legend small { font: 12px 'DM Sans', sans-serif; }
+.newsletter-signup[hidden], #newsletter-status[hidden] { display: none; }
+#newsletter-status { grid-column: 1/-1; margin: 0; color: #e0d4df; font-size: 12px; line-height: 1.65; }
 .newsletter-signup > label { display: block; margin-bottom: 8px; }
 .newsletter-signup .newsletter-consent { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; font-size: 13px; line-height: 1.6; cursor: pointer; }
 .newsletter-signup .newsletter-consent input { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 4px; accent-color: #d4ad73; }
