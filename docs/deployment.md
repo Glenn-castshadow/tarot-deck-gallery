@@ -1,5 +1,21 @@
 # VPS deployment
 
+## 2026-09-12 Newsletter signup visibility
+
+Deployed `6dfc54a` to `/opt/tarot-game/releases/20260912-newsletter-6dfc54a`; previous
+`20260912-daily-horoscope-fc1a2bd` retained for rollback. Seven runtime files updated.
+The signup fieldset hides and disables for subscribed accounts or after a successful signup.
+Account preference changes restore it when unsubscribed. Guest signup success stores only
+`arcana-newsletter-subscribed-v1` through the consent-aware IshtarStorage wrapper. Turning off
+optional saving removes the persisted flag; the unsubscribe page clears it after success.
+Existing anonymous subscribers from before this change need to sign in or complete the
+idempotent signup again for the browser to recognize them. Account preferences remain authoritative.
+
+Validation: 315 JS tests pass; local browser with mock account API verified already subscribed,
+unsubscribe, and resubscribe flows, with the confirmation outside the hidden form. Both live
+hostnames serve all seven files matching the commit; API health 200 and no live console errors.
+No actual subscriptions were created or removed during testing. No backend changes.
+
 ## 2026-09-12 Daily horoscope deployment
 
 Deployed frontend commit `fc1a2bd` as `/opt/tarot-game/releases/20260912-daily-horoscope-fc1a2bd`.
