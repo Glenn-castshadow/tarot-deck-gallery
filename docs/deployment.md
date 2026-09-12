@@ -1,5 +1,32 @@
 # VPS deployment
 
+## 2026-09-12 Birth-detail saving fix and account preference
+
+Deployed `480e650` as `/opt/tarot-game/releases/20260912-birth-saving-480e650`, retaining
+`20260912-newsletter-6dfc54a` for frontend rollback. Updated accounts/models.py, views.py,
+urls.py and migration `0004_user_save_birth_details` in `/opt/ishtar-app/app` and restarted
+the account service. Migration applied successfully. Verified database backup and previous
+backend modules are in `/opt/ishtar-app/rollback/20260912-birth-saving-480e650` (private).
+Backend rollback can restore the three old modules and restart; the additive column may remain.
+Do not restore the database snapshot over subsequent user activity for a code-only rollback.
+
+Fixes: `returnLocation` from the current birth form was rejected by the account profile API;
+guest details held only in memory were skipped when reconciling after sign-in. Both now save.
+Added a persistent account-saving switch, immediate-save button, edit link, and account-area
+browser-preference control. Turning account saving off deletes the cloud profile and blocks
+new saves server-side; it does not turn off account sessions or subscribe/unsubscribe emails.
+Saving defaults to on to retain existing account behavior. Details rejected before this fix
+must be entered again if they are no longer on the reader's open page.
+
+Validation: 317 JS tests and 60 Django tests pass; migrations check clean. Browser with an
+isolated local Django database exercised decline browser saving → guest birth date/time and
+confirmed Portland birthplace → account creation → reload with all fields restored, saving
+off → reload empty with toggle off, then saving on → newly entered details restored. Mobile
+390px had no overflow; the browser-saving prompt can be reopened from the account area.
+Both HTTPS hostnames match all seven committed frontend files; all four backend files match;
+live health returns 200 and the page loads without console errors. No real account details or
+subscription preferences were changed by testing.
+
 ## 2026-09-12 Newsletter signup visibility
 
 Deployed `6dfc54a` to `/opt/tarot-game/releases/20260912-newsletter-6dfc54a`; previous
