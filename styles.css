@@ -25,7 +25,28 @@ button { cursor: pointer; }
 
 .grain { position: fixed; inset: 0; pointer-events: none; opacity: .12; z-index: 5; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
 .shell { position: relative; max-width: 1440px; margin: 0 auto; padding: 34px 58px 44px; }
-.brand-lockup { display: flex; align-items: center; min-height: 74px; margin-bottom: 8px; }
+/* Celestial hero: Codex's ink-and-gold sky art behind a centered lockup (mockup 02). */
+.masthead { position: relative; overflow: hidden; margin-bottom: 26px; padding: 30px clamp(20px, 5vw, 64px) 0; border-radius: 8px; color: var(--cream); text-align: center; background: #261336 url("assets/celestial-hero.webp") center / cover no-repeat; box-shadow: var(--shadow); }
+.masthead .account-bar { position: absolute; top: 22px; right: 22px; z-index: 2; margin: 0; }
+.masthead .account-button { border-color: rgba(230,177,126,.6); background: rgba(20,9,30,.45); color: var(--cream); }
+.masthead .account-button:hover, .masthead .account-button:focus-visible { background: var(--gold-light); color: var(--plum-dark); }
+.brand-lockup { display: grid; justify-items: center; }
+.brand-lockup img { display: block; width: min(320px, 70vw); height: auto; filter: drop-shadow(0 0 28px rgba(255,220,160,.28)); }
+.eyebrow { justify-content: center; color: var(--gold-light); }
+h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08 "Playfair Display", serif; letter-spacing: -.03em; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
+.lede { max-width: 560px; margin: 16px auto 0; color: rgba(255,250,244,.84); font-size: clamp(15px, 1.6vw, 20px); line-height: 1.55; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 30px; }
+.hero-cta { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 10px 26px; border: 1px solid var(--gold-light); border-radius: 3px; background: var(--gold-light); color: var(--plum-dark); font-size: 15px; font-weight: 600; text-decoration: none; transition: .2s ease; }
+.hero-cta--ghost { background: rgba(20,9,30,.35); color: var(--cream); }
+.hero-cta:hover, .hero-cta:focus-visible { background: var(--cream); color: var(--plum-dark); }
+.hero-cta:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+.hero-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: clamp(60px, 20vw, 300px) calc(-1 * clamp(20px, 5vw, 64px)) 0; padding: 18px clamp(20px, 5vw, 64px); list-style: none; border-top: 1px solid rgba(230,177,126,.28); background: rgba(20,9,30,.6); text-align: left; }
+.hero-strip li { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.hero-strip li + li { padding-left: 18px; border-left: 1px solid rgba(230,177,126,.28); }
+.hero-strip i { color: var(--gold-light); font: 26px/1 "Segoe UI Symbol", "Apple Symbols", serif; }
+.hero-strip b { display: block; color: var(--gold-light); font: 500 10px "DM Mono", monospace; letter-spacing: .18em; text-transform: uppercase; }
+.hero-strip small { display: block; margin-top: 3px; color: rgba(255,250,244,.74); font-size: 13px; }
+@media (max-width: 700px) { .masthead { margin-inline: -17px; padding-top: 70px; border-radius: 0; background-image: url("assets/celestial-hero-900.webp"); } .masthead .account-bar { top: 14px; right: 14px; } .brand-lockup img { width: min(260px, 72vw); } .lede { font-size: 15px; } .hero-cta { flex: 1 1 100%; justify-content: center; } .hero-strip { grid-template-columns: 1fr; gap: 14px; margin-top: 34px; } .hero-strip li + li { padding: 14px 0 0; border-left: 0; border-top: 1px solid rgba(230,177,126,.22); } }
 .section-nav { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 28px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
 .section-nav a { display: flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 24px; color: var(--plum); font-size: 13px; font-weight: 600; text-decoration: none; }
 .section-nav a:hover, .section-nav a:focus-visible { background: var(--plum); color: var(--cream); }
@@ -33,22 +54,6 @@ button { cursor: pointer; }
 #tarot-readings, #birthday-room, #astrocartography-room, #celestial-extras, #archive { scroll-margin-top: 170px; }
 .main-fold > .fold-heading > button { scroll-margin-top: 170px; }
 @media (max-width: 700px) { .section-nav { gap: 0 3px; padding: 6px 0; } .section-nav a { padding: 7px 9px; font-size: 12px; } }
-.brand-lockup img { display: block; width: min(280px, 72vw); height: auto; }
-.masthead { padding: 18px 0 38px; }
-.eyebrow, .section-kicker { text-transform: uppercase; letter-spacing: .16em; font-family: "DM Mono", monospace; font-size: 10px; color: var(--plum); }
-.eyebrow { display: flex; gap: 10px; align-items: center; }
-.eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 134, 78, .16); }
-.eyebrow-line { width: 44px; height: 1px; background: var(--gold); }
-.masthead-row { display: flex; justify-content: space-between; gap: 32px; align-items: end; margin-top: 20px; }
-h1, h2, h3, p { margin: 0; }
-.masthead-row > div:first-child { flex: 1; min-width: 0; container-type: inline-size; }
-h1 { font: 800 clamp(24px, 9.5cqw, 100px)/1.05 "Playfair Display", serif; letter-spacing: -.05em; white-space: nowrap; }
-h1 em { color: var(--plum); font-style: normal; }
-.lede { max-width: 580px; margin-top: 24px; color: var(--ink-soft); font-size: 16px; line-height: 1.65; }
-.sun-mark { width: 108px; height: 108px; flex: 0 0 auto; border: 1px solid var(--gold); border-radius: 50%; display: grid; place-items: center; color: var(--gold); position: relative; margin: 0 18px 8px 0; }
-.sun-mark::before, .sun-mark::after { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(201,134,78,.5); border-radius: 50%; }
-.sun-mark::after { inset: -8px; border-style: dashed; opacity: .65; }
-.sun-mark span { font-size: 31px; }
 
 .reading-room { position: relative; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 30px 42px; margin: 4px 0 48px; padding: clamp(28px, 4vw, 46px); color: var(--cream); background: var(--plum-dark); overflow: hidden; box-shadow: 0 18px 38px rgba(46,25,58,.22); }
 .reading-room::before { content: ""; position: absolute; width: 270px; height: 270px; right: -82px; top: -90px; border: 1px solid rgba(230,177,126,.24); border-radius: 50%; box-shadow: 0 0 0 16px rgba(230,177,126,.06), 0 0 0 32px rgba(230,177,126,.04); pointer-events: none; }
@@ -372,7 +377,7 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 
 @keyframes rise { from { opacity: 0; transform: translateY(11px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 1050px) { .shell { padding-inline: 30px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } .reading-room { grid-template-columns: 1fr; gap: 24px; } .reading-intro h2, .reading-intro > p:last-child { max-width: 680px; } .reading-controls { align-items: center; } .birthday-panel { grid-template-columns: 1fr; gap: 18px; } }
-@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .masthead { padding-top: 10px; } .masthead-row { align-items: start; } .sun-mark { width: 68px; height: 68px; margin: 4px 5px 0 0; } .sun-mark::before { inset: 8px; } .sun-mark::after { inset: -5px; } .sun-mark span { font-size: 21px; } .lede { font-size: 14px; margin-top: 18px; } .reading-room { margin-bottom: 34px; padding: 24px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 142px minmax(0, 1fr); gap: 18px; min-height: 250px; } .daily-reading .drawn-card { width: 138px; } .drawn-card { width: 138px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 13px; } .pick3-item { min-height: 0; padding: 16px; } .pick3-item .drawn-card { width: min(52vw, 178px); margin-bottom: 18px; } .pick3-item h3 { font-size: 25px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } .card-detail-layout { grid-template-columns: 1fr; } .card-detail-art { min-height: 430px; padding: 24px; } .card-detail-image, .card-detail-fallback { width: min(100%, 260px); } .card-detail-zoom { left: 24px; bottom: 14px; } }
+@media (max-width: 700px) { .shell { padding: 24px 17px 30px; } .reading-room { margin-bottom: 34px; padding: 24px 18px; } .reading-controls { align-items: stretch; flex-direction: column; } .draw-button { width: 100%; } .reading-output { min-height: 0; } .daily-reading { grid-template-columns: 142px minmax(0, 1fr); gap: 18px; min-height: 250px; } .daily-reading .drawn-card { width: 138px; } .drawn-card { width: 138px; } .reading-copy h3 { font-size: 26px; } .pick3-reading { grid-template-columns: 1fr; gap: 13px; } .pick3-item { min-height: 0; padding: 16px; } .pick3-item .drawn-card { width: min(52vw, 178px); margin-bottom: 18px; } .pick3-item h3 { font-size: 25px; } .birthday-form { grid-template-columns: 1fr; } .birthday-button { grid-column: auto; width: 100%; } .sky-summary { grid-template-columns: 1fr; } .sky-chart-wrap { min-height: 250px; } .sky-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .horoscope-card { grid-template-columns: 1fr; gap: 12px; } .toolbar { align-items: stretch; flex-direction: column; } .search-box { width: 100%; } .gallery-head { margin-top: 34px; } .gallery { grid-template-columns: 1fr; gap: 16px; } .deck-visual { aspect-ratio: 1.6 / 1; } .footer { flex-direction: column; margin-top: 46px; } .detail-layout { grid-template-columns: 1fr; } .detail-images { min-height: 360px; max-height: 65vh; } .detail-copy { padding: 28px 24px 30px; } .card-detail-layout { grid-template-columns: 1fr; } .card-detail-art { min-height: 430px; padding: 24px; } .card-detail-image, .card-detail-fallback { width: min(100%, 260px); } .card-detail-zoom { left: 24px; bottom: 14px; } }
 @media (max-width: 1050px) {
   .ishtar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ishtar-library-header { align-items: start; flex-direction: column; gap: 16px; }
@@ -417,7 +422,6 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 }
 @media (prefers-reduced-motion: reduce) { .flip-card-rotor { transition: none; } .revealed-copy:not([hidden]) { animation: none; } }
 
-@media (max-width: 700px) { .masthead-row .sun-mark { display: none; } }
 .storage-notice { position: fixed; z-index: 60; bottom: 16px; left: 16px; width: min(480px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 24px; background: var(--cream); color: var(--ink); border: 1px solid var(--gold); border-radius: 12px; box-shadow: var(--shadow); }
 .storage-notice[hidden] { display: none; }
 .storage-notice h2 { font-size: 24px; }
