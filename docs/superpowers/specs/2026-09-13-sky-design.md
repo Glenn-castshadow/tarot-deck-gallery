@@ -129,7 +129,7 @@ traditionally associated with, never as a forecast:
 |---|---|
 | Moon phases | 8 |
 | Sign ingresses | 12 signs, with the moving body named in the sentence |
-| Retrograde planets | 9, Mercury through Pluto |
+| Retrograde planets | 8: Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto |
 | Eclipse kinds | 6: total, annular and partial solar; total, partial and penumbral lunar. These are exactly the kinds Astronomy Engine reports for each eclipse type |
 | Void of course | 1 framing passage naming both traditions |
 | Aspects, for personal transits | 5 |
