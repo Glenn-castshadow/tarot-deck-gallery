@@ -1,42 +1,49 @@
 # VPS deployment
 
-## PENDING — sitemap, robots.txt and the nginx directory-page rule
+## 2026-09-13 Site foundation: hub, seven topic pages, registry-driven journal
 
-**Not yet deployed.** This entry records what a deploy of the site-foundation branch
-would involve, written before that deploy happens, so the procedure is decided in
-advance rather than reconstructed from memory afterward. Do not read this as a record
-of something that shipped — no VPS, nginx or DNS state described here has been touched.
+Deployed `bf30483` (the squash of the site-foundation branch) in two stages, backend first so
+the schema was ready before any page could post to it.
 
-What a deploy would carry:
+**Backend.** `server/ishtar` shipped with `git archive` to `/tmp/ishtar-app-src`, CRs stripped,
+then `sudo sh /tmp/deploy-app.sh`. Migration `readings.0003_reading_summary_category` applied
+(widens `kind` to 32 characters, adds `summary` and `category`, backfills `category` for existing
+rows); `showmigrations readings` now shows 0001-0003 all applied. `createcachetable` was already
+present. The database was copied to `/var/backups/ishtar-app/db-predeploy-20260913-190818.sqlite3`
+first. `ishtar-app` restarted and `/api/health/` returns `{"ok": true}`.
 
-- New root files `robots.txt` and `sitemap.xml`, listing the hub and the six public
-  topic pages (`/tarot/`, `/sky/`, `/charts/`, `/eastern/`, `/numerology/`,
-  `/divination/`); `/account/` is deliberately omitted from both.
-- No code or backend change — this is the last task of site-foundation, adding
-  discoverability files and documentation on top of the seven-page split already live
-  from earlier milestones.
-- One nginx requirement that is not yet applied on the VPS: the server block's existing
-  `location / {` must read `try_files $uri $uri/ =404;` (see the header comment in
-  `server/nginx-ishtar-app.conf` for the reasoning). Whether the live config already has
-  this is unknown from here — it was never required before site-foundation, since the
-  old single-page site had nothing for a bare directory request to resolve against.
-  `server/deploy-app.sh` now warns (does not fail) if this rule looks missing, since the
-  script has no safe, marker-anchored way to edit someone's hand-tuned `location /`.
+**Frontend.** Released as `/opt/tarot-game/releases/20260913-site-foundation-bf30483`, a `cp -al`
+hardlink copy of `20260912-celestial-hero-b49d472` with only the 34 changed or added runtime files
+replaced. Script `/tmp/ishtar-site-foundation.sh` gated on the live `index.html` sha256 and on
+`current` pointing at the expected previous release, extracted the delta with `tar --unlink-first`,
+asserted every replaced file had a link count of 1 before editing it (so the previous release was
+never written through), deleted `app.js`, re-checked the previous release's `app.js` and
+`index.html` afterwards, switched `current` with `mv -Tf`, then curl-checked and rolled back on any
+failure. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260912-celestial-hero-b49d472 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
 
-Procedure to run at actual deploy time (not run yet):
+Change: the single page becomes a hub plus `/tarot/`, `/sky/`, `/charts/`, `/eastern/`,
+`/numerology/`, `/divination/` and `/account/`, each with its own title, description and Open
+Graph tags; `site-shell.js` renders the shared masthead, nav, footer and storage notice;
+`app.js` is deleted and replaced by `birth-lore.js`, `deck-archive.js`, `tarot.js`,
+`natal-room.js`, `chinese-room.js` and `birth-form.js`; `birth-profile.js` owns the birth profile
+for every page; the journal is registry-driven with category chips and a text filter. New root
+files `robots.txt` and `sitemap.xml`.
 
-1. Release the static files the normal way (see the release procedure below), then check
-   the `try_files` line on the VPS: `grep 'try_files' /etc/nginx/sites-available/ishtarinsights.com`.
-2. If it is missing or reads `try_files $uri =404;`, edit it by hand to
-   `try_files $uri $uri/ =404;`, then `nginx -t` and `systemctl reload nginx`.
-3. Verify: `curl -I https://ishtarinsights.com/tarot/` returns `200`, and
-   `curl -I https://ishtarinsights.com/tarot` (no trailing slash) returns a `301` to
-   `/tarot/`. Repeat for at least one more topic page to confirm the rule, not a
-   per-path fluke, is what changed.
-4. Verify `https://ishtarinsights.com/robots.txt` and `https://ishtarinsights.com/sitemap.xml`
-   both return `200`, and that every URL `sitemap.xml` lists resolves `200`.
-5. Once confirmed, replace this entry with a normal dated record of what actually
-   happened, the same way every entry below it does.
+**Nginx: no change was needed.** The site's `location /` already read `try_files $uri $uri/ =404;`
+and already sent `Cache-Control "no-cache"`. The first meant the seven directory pages resolved
+immediately; the second meant no browser could serve a stale `index.html` referencing the deleted
+`app.js` without revalidating, which was the one new failure mode this release introduced.
+`deploy-app.sh` ran `nginx -t` and reloaded as part of the backend stage.
+
+Validation: all eight pages, `robots.txt`, `sitemap.xml` and `cookie-policy.html` return 200 over
+HTTPS; every URL in `sitemap.xml` returns 200; `/tarot` and `/eastern` without a trailing slash
+return 301 to the slashed form, confirming `try_files` rather than a per-path fluke; `/app.js`
+returns 404; every script referenced by `/charts/` returns 200; `www.ishtarinsights.com` serves
+the same release. In a browser, `/charts/` renders all five sections with `SiteShell`, `Rooms`,
+`BirthProfile` and `BirthRoom` present and "Charts" marked `aria-current`, and the hub renders
+seven category cards and a today strip reading the Moon phase in the browser. The only console
+error is the signed-out `/api/account/` 401.
 
 ## 2026-09-12 Celestial hero layout
 
