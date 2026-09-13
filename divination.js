@@ -3,7 +3,7 @@
   const D=DivinationData, E=DivinationEngine, art=DivinationArt.emblem;
   const root=document.querySelector('#divination-room');
   const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const artPath=(kind,id,large=false)=>`assets/divination-v2/${large?'large/':''}${kind}-${typeof id==='number'?String(id).padStart(2,'0'):id}.webp`;
+  const artPath=(kind,id,large=false)=>`/assets/divination-v2/${large?'large/':''}${kind}-${typeof id==='number'?String(id).padStart(2,'0'):id}.webp`;
   function visual(kind,item,large=false) {
     if(kind==='iching') return `<span class="dv-artwork dv-artwork-figure">${art(kind,item)}</span>`;
     return `<span class="dv-artwork"><img src="${artPath(kind,item.id,large)}" alt="" loading="lazy" decoding="async" width="${kind==='runes'||kind==='geomancy'?768:960}" height="${kind==='runes'||kind==='geomancy'?960:1536}">${kind==='runes'||kind==='geomancy'?`<span class="dv-exact-symbol">${art(kind,item)}</span>`:''}</span>`;
@@ -88,15 +88,20 @@
     return `<aside class="dv-synthesis"><p class="dv-kicker">The symbols in conversation</p><h4>${cards[0].keyword}. ${cards[1].keyword}. ${cards[2].keyword}.</h4><p>${mode==='runes'?`Start with ${cards[0].name} as a lens on the situation. Let ${cards[1].name} name a tension to examine, then use ${cards[2].name} to consider your response.`:`Notice the theme of ${cards[0].name}, offer care to what ${cards[1].name} brings up, and make ${cards[2].name} your practice.`}</p><p>These symbols need not agree. Look for where ${cards[0].keyword.toLowerCase()} supports or complicates ${cards[1].keyword.toLowerCase()}. Choose an action that honors what you learn from both.</p><blockquote>${cards[2].prompt}</blockquote></aside>`;
   }
   function saveControl() {
-    return window.IshtarAccount?.state().signedIn ? '<p class="save-reading"><button type="button" data-save-reading="divination">Save this reading to my journal</button><span role="status" aria-live="polite"></span></p>' : '';
+    const signedIn = window.IshtarAccount?.state().signedIn;
+    const label = signedIn ? 'Save this reading to my journal' : 'Sign in to save this reading';
+    return `<p class="save-reading"><button type="button" data-save-reading="${mode}">${label}</button><span role="status" aria-live="polite"></span></p>`;
   }
   window.DivinationRoom = {
     currentDraw() {
       const s = states[mode], r = s.reading;
       if (!r) return null;
-      if (mode === 'geomancy') return {kind: 'geomancy', deck: '', layout: 'shield', question: r.question || '', focus: '', payload: {mothers: r.chart.mothers, selected: r.selected}};
-      if (mode === 'iching') return {kind: 'iching', deck: '', layout: r.method, question: r.question || '', focus: '', payload: {lines: r.lines}};
-      return {kind: mode, deck: '', layout: String(r.ids.length), question: r.question || '', focus: '', payload: {ids: r.ids}};
+      if (mode === 'geomancy') return {kind: 'geomancy', deck: '', layout: 'shield', question: r.question || '', focus: '', payload: {mothers: r.chart.mothers, selected: r.selected}, summary: figure(r.chart.judge).name.slice(0, 120)};
+      if (mode === 'iching') {
+        const h = D.hexagrams[E.readLines(r.lines, D.hexagrams).primary];
+        return {kind: 'iching', deck: '', layout: r.method, question: r.question || '', focus: '', payload: {lines: r.lines}, summary: `Hexagram ${h.number} · ${h.name}`.slice(0, 120)};
+      }
+      return {kind: mode, deck: '', layout: String(r.ids.length), question: r.question || '', focus: '', payload: {ids: r.ids}, summary: r.ids.map(id => items()[id].name).join(' · ').slice(0, 120)};
     },
     loadDraw(reading) {
       const kind = reading?.kind, p = reading?.payload;
@@ -124,6 +129,14 @@
       return true;
     }
   };
+  // These names must match server/ishtar/readings/kinds.py and rooms.js: Rooms.labelFor
+  // prefers the registered label, so a disagreement shows two names for one practice.
+  const labels = {lenormand: 'Lenormand', oracle: 'Ishtar Reflection Oracle', runes: 'Runes', geomancy: 'Geomancy', iching: 'I Ching'};
+  for (const kind of Object.keys(labels)) Rooms.register(kind, {
+    label: labels[kind], category: 'divination',
+    current: () => { const draw = window.DivinationRoom.currentDraw(); return draw && draw.kind === kind ? draw : null; },
+    load: reading => window.DivinationRoom.loadDraw(reading)
+  });
   document.addEventListener('ishtar-account-change', () => output());
   const figure=points=>D.figures.find(f=>f.symbol===points.join(''));
   function shieldOutput(out,r) {

@@ -1,10 +1,15 @@
 # Mobile sections
 
-At widths up to 700px, five main areas become expandable rows: Tarot readings,
-Birth sky & numerology, Astrocartography, More astrology charts, and the deck
-archive. All start closed unless a fragment link opens a particular area.
-Opening a main area closes the others. The floating **Sections** button closes
-the active area and returns to the section list, restoring focus to its row.
+At widths up to 700px, each page's own top-level sections become expandable
+rows: `/tarot/` has Tarot readings and the deck archive; `/sky/` has Daily
+horoscope; `/charts/` has Birth sky, Astrocartography, More astrology charts,
+Chart in time and Horary; `/eastern/` has Chinese zodiac and Jyotish;
+`/numerology/` has the Numerology studio; `/divination/` has Cards &
+divination. `/account/` carries no folds -- it has no `[data-fold]` markup at
+all, so `mobile-sections.js`'s per-page setup has nothing to wrap there. All
+start closed unless a fragment link opens a particular area. Opening a main
+area closes the others. The floating **Sections** button closes the active
+area and returns to the section list, restoring focus to its row.
 
 Within an area, the deck chooser, saved birth form, detailed sky reports,
 numerology practices and combined readings, letter calculations, and cycle
@@ -16,7 +21,7 @@ The disclosures move existing DOM elements; closing a section does not clear
 inputs, redraw cards, change the selected chart, or reset archive search. A
 small MutationObserver enhances newly rendered reports while preserving focus
 and the current disclosure choices in page memory. No disclosure state is saved
-to storage. `app.js` explicitly opens the relevant disclosure before focusing a
+to storage. `tarot.js` explicitly opens the relevant disclosure before focusing a
 tarot chapter or the keyboard search shortcut. Birth-edit buttons, fragment
 links, and initial deep links also open their destination.
 

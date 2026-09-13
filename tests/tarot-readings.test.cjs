@@ -4,8 +4,9 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const Tarot = require('../tarot-readings.js');
 // Use the actual 78-card catalogue without booting the DOM application.
-const catalogue = fs.readFileSync(require.resolve('../app.js'), 'utf8').split('const readingDecks =')[0];
-const cards = vm.runInNewContext(catalogue + '\ntarotCards', {ArchiveDecks:[],TarotReadings:Tarot});
+const source = fs.readFileSync(require.resolve('../tarot.js'), 'utf8');
+const catalogue = source.slice(source.indexOf('const suitProfiles')).split('const readingDecks =')[0];
+const cards = vm.runInNewContext(catalogue + '\ntarotCards', {TarotReadings:Tarot,majorArcana:require('../birth-lore.js').majorArcana});
 const seeded = seed => max => {seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%max;};
 
 test('all three traditional spreads deal the correct count without replacement from all 78 cards', () => {

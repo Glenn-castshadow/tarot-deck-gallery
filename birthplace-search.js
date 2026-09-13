@@ -36,7 +36,7 @@ const BirthplaceSearch = (() => {
       status.textContent=selected?.label===input.value.trim() ? `Selected ${selected.label}.` : initialMessage;
     }
     function load() {
-      if (!citiesPromise) citiesPromise = fetch('assets/cities/cities.json?v=1', {credentials:'omit'}).then(response => {
+      if (!citiesPromise) citiesPromise = fetch('/assets/cities/cities.json?v=1', {credentials:'omit'}).then(response => {
         if (!response.ok) throw Error('City index unavailable');
         return response.json();
       }).then(data => {

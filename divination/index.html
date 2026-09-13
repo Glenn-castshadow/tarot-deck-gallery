@@ -4,21 +4,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#20152b">
-    <title>Ishtar Insights — tarot, astrology and the patterns that guide you</title>
-    <meta name="description" content="Tarot readings, a calculated birth chart, daily horoscopes, Jyotish, numerology and five divination practices — all calculated in your browser.">
+    <title>Cards and divination · Ishtar Insights</title>
+    <meta name="description" content="Lenormand, the Ishtar Reflection Oracle, runes, geomancy and the I Ching, cast in the browser.">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Ishtar Insights — tarot, astrology and the patterns that guide you">
-    <meta property="og:description" content="Tarot readings, a calculated birth chart, daily horoscopes, Jyotish, numerology and five divination practices — all calculated in your browser.">
+    <meta property="og:title" content="Cards and divination · Ishtar Insights">
+    <meta property="og:description" content="Lenormand, the Ishtar Reflection Oracle, runes, geomancy and the I Ching, cast in the browser.">
     <meta property="og:image" content="https://ishtarinsights.com/assets/celestial-hero.webp">
-    <meta property="og:url" content="https://ishtarinsights.com/">
-    <link rel="canonical" href="https://ishtarinsights.com/">
+    <meta property="og:url" content="https://ishtarinsights.com/divination/">
+    <link rel="canonical" href="https://ishtarinsights.com/divination/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css?v=site-shell-1">
     <link rel="stylesheet" href="/site-shell.css?v=2">
     <link rel="stylesheet" href="/account.css?v=journal-filters-1">
-    <link rel="stylesheet" href="/hub.css?v=1">
+    <link rel="stylesheet" href="/divination.css?v=iching-1">
+    <link rel="stylesheet" href="/mobile-sections.css?v=2">
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -26,8 +27,7 @@
       <div data-shell="header"></div>
       <div data-shell="nav"></div>
 
-      <section id="hub-today" class="hub-today" aria-label="Today"></section>
-      <nav id="hub-cards" class="hub-cards" aria-label="Reading paths"></nav>
+      <section id="divination-room" class="divination-room" aria-labelledby="divination-title" data-room="lenormand oracle runes geomancy iching" data-fold="Cards &amp; divination" data-fold-key="divination" data-fold-subtitle="Lenormand · oracle cards · runes · geomancy · I Ching"></section>
 
       <div data-shell="footer"></div>
     </main>
@@ -39,31 +39,30 @@
       <p id="account-dialog-status" role="status" aria-live="polite"></p>
     </dialog>
     <div data-shell="notice"></div>
-    <script>
-      // Bookmarks and the newsletter footer still point at the single page's section hashes.
-      (function () {
-        const map = {'#tarot-readings': '/tarot/', '#ishtar-deck': '/tarot/#ishtar-deck', '#archive': '/tarot/#archive', '#gallery': '/tarot/#gallery',
-          '#daily-horoscope': '/sky/',
-          '#birthday-room': '/charts/#birthday-room', '#astrocartography-room': '/charts/#astrocartography-room', '#celestial-extras': '/charts/#celestial-extras',
-          '#cx-transits': '/charts/#cx-transits', '#cx-synastry': '/charts/#cx-synastry', '#cx-bazi': '/charts/#cx-bazi', '#chart-in-time': '/charts/#chart-in-time', '#horary': '/charts/#horary',
-          '#birthday-chinese': '/eastern/#birthday-chinese', '#jyotish': '/eastern/#jyotish',
-          '#birthday-numbers': '/numerology/#birthday-numbers',
-          '#divination-room': '/divination/', '#account-room': '/account/'};
-        const target = map[location.hash];
-        if (target) location.replace(target);
-      })();
-    </script>
     <script src="/site-shell.js?v=5"></script>
-    <script>SiteShell.mount('hub');</script>
+    <script>SiteShell.mount('divination');</script>
     <script src="/rooms.js?v=pages-2"></script>
     <script src="/storage-preferences.js?v=birth-saving-1"></script>
     <script src="/account-core.js?v=journal-filters-1"></script>
     <script src="/account.js?v=pages-4"></script>
-    <script src="/birthday-insights.js?v=celestial-atlas-1"></script>
-    <script src="/vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
-    <script src="/natal-engine.js?v=horary-1"></script>
-    <script src="/birth-lore.js?v=2"></script>
-    <script src="/birth-profile.js?v=1"></script>
-    <script src="/hub.js?v=1"></script>
+    <script src="/divination-data.js?v=2"></script>
+    <script src="/divination-engine.js?v=iching-1"></script>
+    <script src="/divination-art.js?v=iching-1"></script>
+    <script src="/divination.js?v=journal-filters-3"></script>
+    <script>
+      // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
+      // register once account.js has dispatched the first signed-in state, so wait for it.
+      document.addEventListener('ishtar-account-change', async function once(event) {
+        if (!event.detail.signedIn) return;
+        document.removeEventListener('ishtar-account-change', once);
+        const result = await Rooms.openFromQuery({
+          search: location.search,
+          getReading: id => IshtarAccount.getReading(id),
+          scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView({block: 'start'})
+        });
+        if (result === 'unknown' || result === 'failed') IshtarAccountUI.openPanel('This reading cannot be replayed on this page version.');
+      });
+    </script>
+    <script src="/mobile-sections.js?v=data-fold-3"></script>
   </body>
 </html>

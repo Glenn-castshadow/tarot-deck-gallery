@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#20152b">
+    <title>Your account · Ishtar Insights</title>
+    <meta name="description" content="Sign in, your saved readings, and your birth-detail and browser-saving preferences.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Your account · Ishtar Insights">
+    <meta property="og:description" content="Sign in, your saved readings, and your birth-detail and browser-saving preferences.">
+    <meta property="og:image" content="https://ishtarinsights.com/assets/celestial-hero.webp">
+    <meta property="og:url" content="https://ishtarinsights.com/account/">
+    <link rel="canonical" href="https://ishtarinsights.com/account/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=site-shell-1">
+    <link rel="stylesheet" href="/site-shell.css?v=2">
+    <link rel="stylesheet" href="/account.css?v=journal-filters-1">
+    <link rel="stylesheet" href="/mobile-sections.css?v=2">
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <main class="shell">
+      <div data-shell="header"></div>
+      <div data-shell="nav"></div>
+
+      <section id="account-signed-out" class="account-room" aria-labelledby="account-signed-out-title" hidden>
+        <header class="account-head"><div><p class="section-kicker">Your account</p><h2 id="account-signed-out-title">A place to keep your readings</h2></div></header>
+        <p>An account keeps a journal of the readings you choose to save, and can remember your birth details across visits and devices. Every reading works without one.</p>
+        <p class="account-fine">Signing in uses a one-time code sent to your email. No password to remember.</p>
+        <p><button type="button" class="account-button">Sign in or create an account</button></p>
+      </section>
+
+      <section id="account-room" class="account-room" aria-labelledby="account-title" hidden>
+        <header class="account-head"><div><p class="section-kicker">Your account</p><h2 id="account-title">Your journal &amp; details</h2><p id="account-email" class="account-email"></p></div><button type="button" id="account-signout">Sign out</button></header>
+        <p id="account-status" role="status" aria-live="polite"></p>
+        <div class="account-grid">
+          <article class="account-card"><h3>Birth details</h3><label class="account-toggle"><input type="checkbox" role="switch" id="account-save-birth" aria-describedby="account-birth-help"><span>Save my birth details to my account</span></label><p id="account-birth-help" class="account-fine">Remember your birth date, time and place across visits and devices. Turning this off removes the saved copy; your current reading stays on this page.</p><p id="account-sync" role="status"></p><div class="account-birth-actions"><button type="button" id="account-save-profile" class="text-button">Save birth details now</button><a href="/charts/#birthday-room">Edit birth details</a><button type="button" id="account-clear-profile" class="text-button">Remove saved birth details</button></div><p class="account-fine">Browser saving is a separate choice. You can change it any time.</p><button type="button" class="text-button" data-storage-settings>Change browser saving preference</button></article>
+          <article class="account-card"><h3>Newsletter</h3><label class="account-toggle"><input type="checkbox" id="account-newsletter"> <span>Email me the Ishtar Insights newsletter and occasional updates.</span></label><p><a href="/newsletter-privacy.html">Newsletter privacy</a></p></article>
+        </div>
+        <section class="account-journal" aria-labelledby="journal-title"><h3 id="journal-title">Saved readings</h3><p id="journal-empty">No saved readings yet. After a reading, choose “Save this reading”.</p><div class="journal-filters" role="group" aria-label="Filter saved readings"><button type="button" data-journal-category="" aria-pressed="true">All</button><button type="button" data-journal-category="tarot" aria-pressed="false">Tarot</button><button type="button" data-journal-category="charts" aria-pressed="false">Charts</button><button type="button" data-journal-category="eastern" aria-pressed="false">Eastern</button><button type="button" data-journal-category="numerology" aria-pressed="false">Numerology</button><button type="button" data-journal-category="divination" aria-pressed="false">Divination</button><label>Find <input type="search" id="journal-search" placeholder="question or summary"></label></div><ol id="journal-list" class="journal-list"></ol><nav class="journal-pager" aria-label="Journal pages"><button type="button" id="journal-prev">← Newer</button><span id="journal-page"></span><button type="button" id="journal-next">Older →</button></nav></section>
+        <details class="account-danger"><summary>Delete my account</summary><p>This removes your synced birth details and saved readings. Newsletter signup is separate; use the toggle above first if you want to leave it too.</p><button type="button" id="account-delete">Delete my account permanently</button></details>
+      </section>
+
+      <div data-shell="footer"></div>
+    </main>
+
+    <dialog id="account-dialog" class="account-dialog" aria-labelledby="account-dialog-title">
+      <button type="button" class="close-dialog" data-close-account aria-label="Close sign in">×</button>
+      <form id="account-email-form" class="account-step"><p class="section-kicker">Sign in or create an account</p><h2 id="account-dialog-title">A code, not a password</h2><p>Enter your email and we will send a one-time code. No password to remember. New emails create an account.</p><label for="account-email-input">Email address</label><input id="account-email-input" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com"><button type="submit">Send my code</button><p class="account-fine">Signing in sets a session cookie that is needed for your account to work. See <a href="/cookie-policy.html">cookies &amp; browser storage</a>.</p></form>
+      <form id="account-code-form" class="account-step" hidden><p class="section-kicker">Check your email</p><h2>Enter the code</h2><p id="account-code-hint"></p><label for="account-code-input">Code</label><input id="account-code-input" type="text" inputmode="text" autocomplete="one-time-code" required maxlength="12" autocapitalize="characters" spellcheck="false"><button type="submit">Sign in</button><button type="button" class="text-button" id="account-resend">Send a new code</button><button type="button" class="text-button" id="account-restart">Use a different email</button></form>
+      <p id="account-dialog-status" role="status" aria-live="polite"></p>
+    </dialog>
+    <div data-shell="notice"></div>
+    <script src="/site-shell.js?v=5"></script>
+    <script>SiteShell.mount('account');</script>
+    <script src="/rooms.js?v=pages-2"></script>
+    <script src="/storage-preferences.js?v=birth-saving-1"></script>
+    <script src="/account-core.js?v=journal-filters-1"></script>
+    <script src="/account.js?v=pages-4"></script>
+    <script>
+      // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
+      // register once account.js has dispatched the first signed-in state, so wait for it.
+      document.addEventListener('ishtar-account-change', async function once(event) {
+        if (!event.detail.signedIn) return;
+        document.removeEventListener('ishtar-account-change', once);
+        const result = await Rooms.openFromQuery({
+          search: location.search,
+          getReading: id => IshtarAccount.getReading(id),
+          scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView({block: 'start'})
+        });
+        if (result === 'unknown' || result === 'failed') IshtarAccountUI.openPanel('This reading cannot be replayed on this page version.');
+      });
+    </script>
+    <script src="/mobile-sections.js?v=data-fold-3"></script>
+  </body>
+</html>

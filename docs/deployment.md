@@ -1,5 +1,43 @@
 # VPS deployment
 
+## PENDING — sitemap, robots.txt and the nginx directory-page rule
+
+**Not yet deployed.** This entry records what a deploy of the site-foundation branch
+would involve, written before that deploy happens, so the procedure is decided in
+advance rather than reconstructed from memory afterward. Do not read this as a record
+of something that shipped — no VPS, nginx or DNS state described here has been touched.
+
+What a deploy would carry:
+
+- New root files `robots.txt` and `sitemap.xml`, listing the hub and the six public
+  topic pages (`/tarot/`, `/sky/`, `/charts/`, `/eastern/`, `/numerology/`,
+  `/divination/`); `/account/` is deliberately omitted from both.
+- No code or backend change — this is the last task of site-foundation, adding
+  discoverability files and documentation on top of the seven-page split already live
+  from earlier milestones.
+- One nginx requirement that is not yet applied on the VPS: the server block's existing
+  `location / {` must read `try_files $uri $uri/ =404;` (see the header comment in
+  `server/nginx-ishtar-app.conf` for the reasoning). Whether the live config already has
+  this is unknown from here — it was never required before site-foundation, since the
+  old single-page site had nothing for a bare directory request to resolve against.
+  `server/deploy-app.sh` now warns (does not fail) if this rule looks missing, since the
+  script has no safe, marker-anchored way to edit someone's hand-tuned `location /`.
+
+Procedure to run at actual deploy time (not run yet):
+
+1. Release the static files the normal way (see the release procedure below), then check
+   the `try_files` line on the VPS: `grep 'try_files' /etc/nginx/sites-available/ishtarinsights.com`.
+2. If it is missing or reads `try_files $uri =404;`, edit it by hand to
+   `try_files $uri $uri/ =404;`, then `nginx -t` and `systemctl reload nginx`.
+3. Verify: `curl -I https://ishtarinsights.com/tarot/` returns `200`, and
+   `curl -I https://ishtarinsights.com/tarot` (no trailing slash) returns a `301` to
+   `/tarot/`. Repeat for at least one more topic page to confirm the rule, not a
+   per-path fluke, is what changed.
+4. Verify `https://ishtarinsights.com/robots.txt` and `https://ishtarinsights.com/sitemap.xml`
+   both return `200`, and that every URL `sitemap.xml` lists resolves `200`.
+5. Once confirmed, replace this entry with a normal dated record of what actually
+   happened, the same way every entry below it does.
+
 ## 2026-09-12 Celestial hero layout
 
 Deployed `b49d472` as `/opt/tarot-game/releases/20260912-celestial-hero-b49d472`, a hardlink

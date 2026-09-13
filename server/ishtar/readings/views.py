@@ -4,10 +4,10 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from ishtar.api import auth_required, error, json_byte_size, json_view
+from .kinds import CATEGORIES, KINDS
 from .models import Reading
 
-KINDS = {k for k, _ in Reading.KINDS}
-CREATE_KEYS = {'kind', 'deck', 'layout', 'question', 'focus', 'payload'}
+CREATE_KEYS = {'kind', 'deck', 'layout', 'question', 'focus', 'payload', 'summary'}
 PAYLOAD_MAX_BYTES = 8 * 1024
 NOTE_MAX = 4000
 PER_USER_CAP = 500
@@ -15,9 +15,9 @@ PAGE_SIZE = 50
 
 
 def serialize(reading, with_payload=False):
-    row = {'id': reading.id, 'kind': reading.kind, 'deck': reading.deck, 'layout': reading.layout,
-           'question': reading.question, 'focus': reading.focus, 'note': reading.note,
-           'created_at': reading.created_at.isoformat()}
+    row = {'id': reading.id, 'kind': reading.kind, 'summary': reading.summary, 'category': reading.category,
+           'deck': reading.deck, 'layout': reading.layout, 'question': reading.question, 'focus': reading.focus,
+           'note': reading.note, 'created_at': reading.created_at.isoformat()}
     if with_payload:
         row['payload'] = reading.payload
     return row
@@ -37,7 +37,18 @@ def text(value, limit, name):
 @auth_required
 def collection(request):
     if request.method == 'GET':
-        paginator = Paginator(Reading.objects.filter(user=request.user), PAGE_SIZE)
+        queryset = Reading.objects.filter(user=request.user)
+        category = request.GET.get('category')
+        kind = request.GET.get('kind')
+        if category is not None:
+            if category not in CATEGORIES:
+                return error('Unknown category.')
+            queryset = queryset.filter(category=category)
+        if kind is not None:
+            if kind not in KINDS:
+                return error('Unknown reading kind.')
+            queryset = queryset.filter(kind=kind)
+        paginator = Paginator(queryset, PAGE_SIZE)
         try:
             page = paginator.page(int(request.GET.get('page', '1')))
         except (ValueError, InvalidPage):
@@ -62,7 +73,8 @@ def collection(request):
         return error('The reading payload must be an object under 8 KB.')
     try:
         fields = {'deck': text(body.get('deck'), 40, 'Deck'), 'layout': text(body.get('layout'), 40, 'Layout'),
-                  'question': text(body.get('question'), 240, 'Question'), 'focus': text(body.get('focus'), 40, 'Focus')}
+                  'question': text(body.get('question'), 240, 'Question'), 'focus': text(body.get('focus'), 40, 'Focus'),
+                  'summary': text(body.get('summary'), 120, 'Summary')}
     except ValueError as exc:
         return error(str(exc))
     # Wrapped in one atomic block so the cap check and the insert are not two
@@ -73,7 +85,8 @@ def collection(request):
     with transaction.atomic():
         if Reading.objects.filter(user=request.user).count() >= PER_USER_CAP:
             return error('Your journal is full. Delete a saved reading to make room.', 409)
-        reading = Reading.objects.create(user=request.user, kind=body['kind'], payload=body['payload'], **fields)
+        reading = Reading.objects.create(user=request.user, kind=body['kind'], category=KINDS[body['kind']][1],
+                                          payload=body['payload'], **fields)
     return JsonResponse(serialize(reading, with_payload=True), status=201)
 
 

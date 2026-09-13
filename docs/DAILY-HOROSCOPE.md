@@ -1,6 +1,6 @@
 # Daily horoscope
 
-The `#daily-horoscope` section offers all twelve tropical signs without an account or birth details. The existing birth-profile flow supplies its Sun sign (including its birthday-only approximation when no full chart is available). A manual selection remains selected across profile updates; “Use my birth sign” restores automatic selection. Clearing the profile removes that shortcut. Sign selection stays in page memory.
+The `/sky/#daily-horoscope` section offers all twelve tropical signs without an account or birth details. The existing birth-profile flow supplies its Sun sign (including its birthday-only approximation when no full chart is available). A manual selection remains selected across profile updates; “Use my birth sign” restores automatic selection. Clearing the profile removes that shortcut. Sign selection stays in page memory.
 
 `daily-horoscope-engine.js` uses the vendored Astronomy Engine and NatalEngine placement helper. For each device-local calendar date it samples the geocentric tropical sky at **12:00 UTC**. One date’s sky is cached in memory. The selected sign is the first whole-sign solar house; the Moon supplies the headline and mood, Venus relationships, Mercury work, Sun growth, and Mars the action. Phase and illumination come from Astronomy Engine. All interpretation copy is original. The reflection question rotates by calendar day and sign. Slow-moving placements mean some themes intentionally repeat; these are general symbolic readings, not personal natal transit predictions.
 

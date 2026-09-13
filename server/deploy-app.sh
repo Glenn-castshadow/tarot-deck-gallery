@@ -135,6 +135,16 @@ if marker not in text:
     site.write_text(text[:idx] + snippet + text[idx:])
 PY
 
+# The site's own `location / {` block (not installed or touched by this
+# script) must serve the seven topic directories added in site-foundation
+# through `try_files $uri $uri/ =404;` -- see the header comment in
+# nginx-ishtar-app.conf for why. This script has no safe way to edit that
+# existing block (unlike the marker-anchored insertion above, there is no
+# unique text here to find and replace without risking someone's manual
+# tuning of `location /`), so just warn loudly if it looks missing rather
+# than silently deploying an app half its pages 404 on.
+grep -q 'try_files $uri $uri/' /etc/nginx/sites-available/ishtarinsights.com || echo 'WARNING: add try_files $uri $uri/ =404 to location /'
+
 nginx -t
 systemctl reload nginx
 # Django rejects the bare loopback Host header (DisallowedHost -> 400), so

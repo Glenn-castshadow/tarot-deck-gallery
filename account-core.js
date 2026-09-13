@@ -74,8 +74,11 @@
       emit();
       return {ok: true, message: ''};
     }
-    async function listReadings(page = 1) {
-      const {status, data} = await call('GET', `${API}/readings/?page=${page}`);
+    async function listReadings(page = 1, filters = {}) {
+      const params = new URLSearchParams({page: String(page)});
+      if (filters.category) params.set('category', filters.category);
+      if (filters.kind) params.set('kind', filters.kind);
+      const {status, data} = await call('GET', `${API}/readings/?${params}`);
       return status === 200 ? data : {readings: [], page, pages: 1, count: 0, error: firstError(data, 'Could not load your journal.')};
     }
     async function getReading(id) {

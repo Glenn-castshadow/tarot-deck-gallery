@@ -263,6 +263,13 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
       if(d.numNameKind){state.nameKind=d.numNameKind;renderName();$(`[data-num-name-kind="${state.nameKind}"]`).focus({preventScroll:true});return;}
       if(d.numPeriod){state.period=d.numPeriod;renderCycles();$(`[data-num-period="${state.period}"]`).focus({preventScroll:true});return;}
       if(d.numPairView){state.pairView=d.numPairView;renderPair();$(`[data-num-pair-view="${state.pairView}"]`).focus({preventScroll:true});return;}
+      // The Lo Shu grid comes from BirthdayInsights.renderNumbers() inside this root; the
+      // delegation used to live in natal-room.js only because both shared #birthday-output.
+      if(d.loShu){
+        root.querySelectorAll('[data-lo-shu]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+        $('#lo-shu-detail').innerHTML=BirthdayInsights.numberDetail(BirthdayInsights.numberStudy(parts),Number(d.loShu));
+        return;
+      }
       if(d.numSystem){state.nameSystem=d.numSystem;root.querySelectorAll('[data-num-system]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.numSystem===state.nameSystem)));renderYChoices();renderName();$(`[data-num-system="${state.nameSystem}"]`).focus({preventScroll:true});return;}
       let focus='';
       if('numToday' in d){state.cycleDate=localToday();state.period='day';focus='[data-num-today]';}
@@ -284,3 +291,22 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
   }
   return {attach};
 })();
+
+/* The studio re-attaches itself whenever the stored birth profile changes. natal-room.js
+   rebuilds #birthday-output and leaves #birthday-numbers empty, so this subscriber --
+   registered after that one, because this file loads after it -- fills the container
+   again, carrying the reader's tab, arc and cycle choices across the rebuild.
+   BirthProfile and BirthLore are window properties; the bare identifiers are guarded
+   with typeof so this file still loads under Node for its source-level tests. */
+if (typeof window !== 'undefined' && typeof BirthProfile !== 'undefined' && typeof BirthLore !== 'undefined') {
+  let room = null;
+  BirthProfile.subscribe(state => {
+    const saved = room?.getState();
+    room?.destroy();
+    room = null;
+    const parts = BirthLore.birthdayParts(state?.profile?.birthday);
+    const container = document.querySelector('#birthday-numbers');
+    if (!parts || !container) return;
+    room = Numerology.attach(container, parts, saved);
+  });
+}

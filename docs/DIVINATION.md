@@ -1,6 +1,6 @@
 # Cards & divination
 
-Added 2026-09-09. A separate room at #divination-room with mobile disclosure and five persistent-in-page practice states. No API, browser storage, cookies, account or newsletter requirement. Questions are escaped and held only in page memory; changing mode preserves draws and revealed cards. Reload resets them.
+Added 2026-09-09. A separate room, now its own page at `/divination/#divination-room`, with mobile disclosure and five persistent-in-page practice states. No API, browser storage, cookies, account or newsletter requirement. Questions are escaped and held only in page memory; changing mode preserves draws and revealed cards. Reload resets them.
 
 ## Offerings
 

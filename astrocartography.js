@@ -30,16 +30,16 @@ const Astrocartography = (() => {
     });
   }
   function libraries() {
-    if (!librariesPromise) librariesPromise = Promise.all([loadScript('vendor/d3/d3.min.js','d3'), loadScript('vendor/topojson/topojson-client.min.js','topojson')]).catch(error => { librariesPromise = null; throw error; });
+    if (!librariesPromise) librariesPromise = Promise.all([loadScript('/vendor/d3/d3.min.js','d3'), loadScript('/vendor/topojson/topojson-client.min.js','topojson')]).catch(error => { librariesPromise = null; throw error; });
     return librariesPromise;
   }
   function json(url) { return fetch(url, {credentials:'omit'}).then(response => { if (!response.ok) throw Error('Map data unavailable.'); return response.json(); }); }
   function geography() {
-    if (!geographyPromise) geographyPromise = json('assets/maps/countries-110m.json').catch(error => { geographyPromise = null; throw error; });
+    if (!geographyPromise) geographyPromise = json('/assets/maps/countries-110m.json').catch(error => { geographyPromise = null; throw error; });
     return geographyPromise;
   }
   function cities() {
-    if (!citiesPromise) citiesPromise = json('assets/cities/cities.json?v=1').then(data => BirthplaceSearch.prepare(data.cities)).catch(error => { citiesPromise = null; throw error; });
+    if (!citiesPromise) citiesPromise = json('/assets/cities/cities.json?v=1').then(data => BirthplaceSearch.prepare(data.cities)).catch(error => { citiesPromise = null; throw error; });
     return citiesPromise;
   }
 

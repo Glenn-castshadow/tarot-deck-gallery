@@ -82,6 +82,13 @@ cards carry one-sentence descriptions so the home page reads as a directory, not
 
 ## Part B: Universal saving
 
+The saving *infrastructure* — the kinds registry, the schema columns and filters, the rooms
+registry and the journal UI — is built once, in C0. A kind only becomes saveable in practice
+when its room calls `Rooms.register`, and a room registers in the sub-project that builds it:
+C0 ships the tarot and divination rooms, C1–C4 register the rooms for the kinds they add. So
+the kinds list below is complete from C0 onward while the set of rooms filling it grows track
+by track.
+
 ### Rooms registry
 
 `rooms.js` (shared) exposes `Rooms.register(kind, {label, category, current(), load(payload)})`.
@@ -142,7 +149,13 @@ Each gets its own spec and plan at start. Scope and out-of-scope are fixed here.
 
 ### C0. Foundation: pages, shell, birth profile, rooms registry, saving
 
-Everything in Parts A and B. Ships first because every later track lands on the new pages.
+All of Part A, and the whole of Part B's infrastructure: the kinds registry
+(`readings/kinds.py`), the widened schema with `summary` and `category`, the `?category=`
+and `?kind=` filters, `rooms.js`, and the journal UI on `/account/`. The rooms themselves
+arrive with their features: C0 registers the tarot and divination rooms (seven kinds); the
+nine chart, Jyotish, BaZi and numerology kinds are declared in the registries here and get
+their `Rooms.register` calls and `data-room` markup in C1–C4, each in the sub-project that
+builds the room. Ships first because every later track lands on the new pages.
 Behavior-preserving for existing features: every current section works identically on its
 new page, verified by the existing 200-plus node tests plus browser checks per page at 1400px
 and 390px.

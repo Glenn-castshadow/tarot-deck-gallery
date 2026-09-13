@@ -1,0 +1,23 @@
+/* The hub: a today strip and the seven category cards. */
+.hub-today { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 26px; align-items: start; margin: 4px 0 34px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); background: var(--cream); box-shadow: var(--shadow); }
+.hub-today p { margin: 0; }
+.hub-today .hub-today-item { display: grid; gap: 6px; }
+.hub-today .section-kicker { color: var(--gold); }
+.hub-today strong { font: 600 clamp(19px, 2.2vw, 26px)/1.2 "Playfair Display", serif; color: var(--plum); }
+.hub-today small { color: var(--ink-soft); font-size: 12px; line-height: 1.6; }
+.hub-today a { color: var(--plum); }
+
+.hub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 18px; margin-bottom: 48px; padding: 0; list-style: none; }
+.hub-card { display: grid; align-content: start; gap: 8px; min-height: 132px; padding: 22px 24px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); text-decoration: none; transition: .2s ease; }
+.hub-card:hover, .hub-card:focus-visible { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-2px); }
+.hub-card:focus-visible { outline: 2px solid var(--plum); outline-offset: 3px; }
+.hub-card strong { font: 600 22px/1.2 "Playfair Display", serif; color: var(--plum); }
+.hub-card span { color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+.hub-card em { color: var(--gold); font-style: normal; font-size: 18px; }
+
+@media (max-width: 700px) {
+  .hub-today { gap: 16px; margin-bottom: 26px; }
+  .hub-cards { grid-template-columns: 1fr; gap: 12px; }
+  .hub-card { min-height: 0; padding: 18px 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .hub-card { transition: none; } .hub-card:hover { transform: none; } }

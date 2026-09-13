@@ -119,7 +119,7 @@ the same way the earlier state keys do. The second person's date is never
 saved to storage or transmitted, exactly like the reader's own name: it exists
 only in page memory until the tab or page closes.
 
-The Numerology tab can also be opened with `#birthday-numbers`. Keyboard users
+The Numerology studio can also be opened directly with `/numerology/#birthday-numbers`. Keyboard users
 can select every number, year, month and Lo Shu cell. Focus remains on the
 selected control after updating a report. Native hidden panels, labeled inputs,
 pressed-state buttons and short status regions support assistive technology.

@@ -1,6 +1,6 @@
 # Birthday insights
 
-The birthday room has three perspectives: the existing Western sky portrait with expanded reflection prompts, a Chinese zodiac portrait, and an interactive Lo Shu number study. All calculations run in the browser. The existing `arcana-birthday-profile-v1` localStorage entry holds the date and optional time/place; these inputs are not sent to a service.
+The birthday room's three perspectives now live on their own pages: the Western sky portrait with expanded reflection prompts on `/charts/`, a Chinese zodiac portrait on `/eastern/`, and the Lo Shu number study, now one view among six in the numerology studio, on `/numerology/`. All calculations run in the browser. The existing `arcana-birthday-profile-v1` localStorage entry holds the date and optional time/place; these inputs are not sent to a service.
 
 ## Celestial atlas and city suggestions
 

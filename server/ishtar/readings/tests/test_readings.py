@@ -121,3 +121,41 @@ class ReadingApiTests(TestCase):
         response = self.client.post('/api/readings/', body, content_type='application/json')
         self.assertTrue(400 <= response.status_code < 500, response.status_code)
         self.assertIn('error', response.json())
+
+
+from readings.kinds import KINDS, CATEGORIES
+
+class KindsTests(TestCase):
+    def test_every_kind_has_a_known_category(self):
+        for kind, (label, category) in KINDS.items():
+            self.assertIn(category, CATEGORIES, kind)
+            self.assertTrue(label)
+            self.assertLessEqual(len(kind), 32)
+
+    def test_existing_kinds_are_still_present(self):
+        for kind in ('tarot-daily', 'tarot-spread', 'lenormand', 'oracle', 'runes', 'geomancy', 'iching'):
+            self.assertIn(kind, KINDS)
+
+class SummaryCategoryTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('reader@example.com')
+        self.client.force_login(self.user)
+
+    def test_summary_is_stored_and_category_derived(self):
+        body = dict(SPREAD, summary='Celtic Cross · What next?')
+        row = self.client.post('/api/readings/', body, content_type='application/json').json()
+        self.assertEqual(row['summary'], 'Celtic Cross · What next?')
+        self.assertEqual(row['category'], 'tarot')
+        listed = self.client.get('/api/readings/').json()['readings'][0]
+        self.assertEqual(listed['summary'], 'Celtic Cross · What next?')
+
+    def test_summary_too_long_is_rejected(self):
+        body = dict(SPREAD, summary='x' * 121)
+        self.assertEqual(self.client.post('/api/readings/', body, content_type='application/json').status_code, 400)
+
+    def test_category_filter(self):
+        self.client.post('/api/readings/', SPREAD, content_type='application/json')
+        self.client.post('/api/readings/', {'kind': 'runes', 'payload': {'ids': [1]}}, content_type='application/json')
+        self.assertEqual(self.client.get('/api/readings/?category=divination').json()['count'], 1)
+        self.assertEqual(self.client.get('/api/readings/?kind=tarot-spread').json()['count'], 1)
+        self.assertEqual(self.client.get('/api/readings/?category=nope').status_code, 400)

@@ -51,6 +51,8 @@ evals/tarot-images/runs/**/references/
 # Divination generation masters remain on the NAS; keep the prompt manifest.
 output/imagegen/divination-v2/*.webp
 output/imagegen/divination-v2/review/
+# Source art for the hero and logo stays local; `git add -A` has swept it in twice.
+output/imagegen/*.png
 tmp/imagegen/
 
 # Superpowers SDD scratch workspace (ledger, briefs, review packages)

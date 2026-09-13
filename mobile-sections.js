@@ -69,9 +69,11 @@ window.MobileSections = (() => {
     observer?.disconnect();
     for (const fold of folds) if (!fold.isConnected) folds.delete(fold);
     const deckPicker = document.querySelector('.reading-deck-picker');
-    const selectedDeck = deckPicker.querySelector('[aria-pressed="true"] strong').textContent;
-    wrap([deckPicker], 'Your deck', {key: 'deck-choice', level: 3, subtitle: selectedDeck});
-    deckPicker.closest('.mobile-fold').querySelector('.fold-label small').textContent = selectedDeck;
+    if (deckPicker) {
+      const selectedDeck = deckPicker.querySelector('[aria-pressed="true"] strong').textContent;
+      wrap([deckPicker], 'Your deck', {key: 'deck-choice', level: 3, subtitle: selectedDeck});
+      deckPicker.closest('.mobile-fold').querySelector('.fold-label small').textContent = selectedDeck;
+    }
     document.querySelectorAll('.num-reading-pair').forEach(pair => {
       const article = pair.parentElement;
       if (!article.classList.contains('num-reading')) return;
@@ -98,7 +100,9 @@ window.MobileSections = (() => {
     if (focused && focused !== document.body && focused.isConnected &&
       focused !== document.activeElement && !focused.closest('[hidden]')) focused.focus({preventScroll: true});
     enhancing = false;
-    observer?.observe(document.querySelector('.reading-room'), {childList: true, subtree: true});
+    // Only the pages whose rooms re-render carry a .reading-room to watch.
+    const room = document.querySelector('.reading-room');
+    if (room) observer?.observe(room, {childList: true, subtree: true});
   }
   function reveal(target) {
     if (!target || !phone.matches) return target;
@@ -110,9 +114,6 @@ window.MobileSections = (() => {
   }
   function hashTarget(hash = location.hash) {
     if (!hash) return null;
-    if (hash === '#birthday-numbers') setBirthdayView('numbers');
-    if (hash === '#birthday-chinese') setBirthdayView('chinese');
-    if (hash === '#birthday-room') setBirthdayView('sky');
     try { return document.getElementById(decodeURIComponent(hash.slice(1))) ||
       (['#birthday-numbers', '#birthday-chinese'].includes(hash) ? document.querySelector('#birthday-room') : null); }
     catch { return null; }
@@ -126,24 +127,19 @@ window.MobileSections = (() => {
     });
   }
   function init() {
-    const room = document.querySelector('.reading-room');
-    const tarotElements = Array.from(room.children).slice(0, Array.from(room.children).findIndex(el => el.id === 'birthday-room'));
-    wrap(tarotElements, 'Tarot readings', {key: 'tarot', group: 'main', level: 2, subtitle: 'Daily card · full reading · explore a deck'});
-    wrap([document.querySelector('#birthday-room')], 'Birth sky & numerology', {key: 'birthday', group: 'main', level: 2, subtitle: 'Your sky · Chinese zodiac · number readings'});
-    wrap([document.querySelector('#daily-horoscope')], 'Daily horoscope', {key: 'daily-horoscope', group: 'main', level: 2, subtitle: 'Your sign · today’s sky · a moment of reflection'});
-    wrap([document.querySelector('#astrocartography-room')], 'Astrocartography', {key: 'world', group: 'main', level: 2, subtitle: 'Explore your sky across the world'});
-    wrap([document.querySelector('#celestial-extras')], 'More astrology charts', {key: 'charts', group: 'main', level: 2, subtitle: 'Sky today · two skies · Four Pillars'});
-    wrap([document.querySelector('#chart-in-time')], 'Chart in time', {key: 'chart-in-time', group: 'main', level: 2, subtitle: 'Solar & lunar returns · progressions'});
-    wrap([document.querySelector('#jyotish')], 'Jyotish', {key: 'jyotish', group: 'main', level: 2, subtitle: 'Sidereal chart · nakshatras · dashas'});
-    wrap([document.querySelector('#horary')], 'Horary', {key: 'horary', group: 'main', level: 2, subtitle: 'Lilly’s method · historical practice'});
-    wrap([document.querySelector('#divination-room')], 'Cards & divination', {key: 'divination', group: 'main', level: 2, subtitle: 'Lenormand · oracle cards · runes · geomancy · I Ching'});
-    wrap(Array.from(document.querySelectorAll('#archive,.gallery-head,#gallery,#empty-state')), 'The deck archive', {key: 'archive', group: 'main', level: 2, subtitle: `Browse ${document.querySelector('#archive-total').textContent} across five centuries`});
-    wrap([document.querySelector('#birthday-form')], 'Birth details', {key: 'birth-form', level: 4,
-      subtitle: 'Birthday, time & birthplace', open: !document.querySelector('#birthday-input').value});
+    // Sections declare their own fold config via [data-fold]; a plain data-fold-group="" (as
+    // birth-form uses, being a nested disclosure rather than a top-level "main" section) opts
+    // out of the 'main' default, which a falsy-value fallback (`|| 'main'`) could not express.
+    for (const el of document.querySelectorAll('[data-fold]')) {
+      const members = el.dataset.foldMembers ? Array.from(document.querySelectorAll(el.dataset.foldMembers)) : [el];
+      wrap(members, el.dataset.fold, {key: el.dataset.foldKey, group: el.hasAttribute('data-fold-group') ? el.dataset.foldGroup : 'main', level: Number(el.dataset.foldLevel || 2), subtitle: el.dataset.foldSubtitle || '', open: el.hasAttribute('data-fold-open')});
+    }
     const intro = document.createElement('p');
     intro.id = 'mobile-section-index'; intro.className = 'mobile-section-index';
     intro.textContent = 'Choose a section to begin. Open only what you want to explore.';
-    room.before(intro);
+    // A page with no folds (the account page) needs no section index.
+    const anchor = document.querySelector('.reading-room') || document.querySelector('.mobile-fold');
+    anchor?.before(intro);
     returnButton = document.createElement('button');
     returnButton.type = 'button'; returnButton.className = 'mobile-section-return';
     returnButton.textContent = '↑ Sections'; returnButton.setAttribute('aria-label', 'Close this section and return to all sections');
@@ -153,7 +149,7 @@ window.MobileSections = (() => {
       for (const fold of folds) if (fold.dataset.foldGroup === 'main') setOpen(fold, false);
       const focus = current?.firstElementChild.firstElementChild;
       focus?.focus({preventScroll: true});
-      intro.scrollIntoView({block: 'start', behavior: 'instant'});
+      if (intro.isConnected) intro.scrollIntoView({block: 'start', behavior: 'instant'});
     });
     observer = new MutationObserver(enhance);
     enhance();

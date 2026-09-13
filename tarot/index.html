@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#20152b">
+    <title>Tarot readings · Ishtar Insights</title>
+    <meta name="description" content="A daily card, full spreads in four illustrated decks, and an archive of thirty-two historical and modern tarot decks.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tarot readings · Ishtar Insights">
+    <meta property="og:description" content="A daily card, full spreads in four illustrated decks, and an archive of thirty-two historical and modern tarot decks.">
+    <meta property="og:image" content="https://ishtarinsights.com/assets/celestial-hero.webp">
+    <meta property="og:url" content="https://ishtarinsights.com/tarot/">
+    <link rel="canonical" href="https://ishtarinsights.com/tarot/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=site-shell-1">
+    <link rel="stylesheet" href="/site-shell.css?v=2">
+    <link rel="stylesheet" href="/account.css?v=journal-filters-1">
+    <link rel="stylesheet" href="/tarot-readings.css?v=1">
+    <link rel="stylesheet" href="/mobile-sections.css?v=2">
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <main class="shell">
+      <div data-shell="header"></div>
+      <div data-shell="nav"></div>
+
+      <section class="reading-room" aria-labelledby="reading-title" data-room="tarot-daily tarot-spread">
+        <div data-fold="Tarot readings" data-fold-key="tarot" data-fold-subtitle="Daily card · full reading · explore a deck">
+        <div class="reading-intro">
+          <p class="section-kicker">The reading room</p>
+          <h2 id="reading-title">A question. A ritual. A fuller story.</h2>
+          <p>Begin with a daily card, or settle into a full reading. Let the cards find their places, turn them over, and follow the story they create together.</p>
+          <span class="reading-badge">Ishtar Insights · 78-card core</span>
+        </div>
+        <div class="reading-deck-picker" role="group" aria-label="Choose your deck">
+          <button type="button" data-reading-deck="ishtar" aria-pressed="true"><img src="/assets/ishtar-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Ishtar Insights</strong><small>Lotus &amp; luminous color</small></span></button>
+          <button type="button" data-reading-deck="moebius" aria-pressed="false"><img src="/assets/light-minimal-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Moebius-inspired</strong><small>Light, open &amp; otherworldly</small></span></button>
+          <button type="button" data-reading-deck="arts-and-crafts" aria-pressed="false"><img src="/assets/arts-and-crafts-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Arts &amp; Crafts</strong><small>Botanical &amp; symbolic</small></span></button>
+          <button type="button" data-reading-deck="bacon" aria-pressed="false"><img src="/assets/expressive-figures-deck/cards/00.jpg" alt="" width="60" height="100"><span><strong>Francis Bacon-inspired</strong><small>Raw &amp; expressive</small></span></button>
+        </div>
+        <div id="tarot-readings" class="reading-controls" tabindex="-1">
+          <div class="reading-tabs" role="group" aria-label="Reading room views">
+            <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
+            <button class="reading-tab" data-reading-mode="spread" aria-pressed="false">Full reading</button>
+            <button class="reading-tab" data-reading-mode="deck" aria-pressed="false">Explore deck</button>
+          </div>
+          <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
+        </div>
+        <div id="tarot-settings" class="tarot-settings" hidden>
+          <label>Choose a traditional spread<select id="tarot-spread"><option value="celtic">Celtic Cross · 10 cards</option><option value="horseshoe">Horseshoe · 7 cards</option><option value="three">Past, Present &amp; Possibility · 3 cards</option></select></label>
+          <label>Your focus<select id="tarot-focus"><option value="general">An open reading</option><option value="relationships">Relationships</option><option value="work">Work &amp; creativity</option><option value="growth">Personal growth</option></select></label>
+          <label class="tarot-question">A question to hold <small>Optional · something open, such as “What can help me move forward?”</small><input id="tarot-question" type="text" maxlength="240" placeholder="What would you like to explore?" autocomplete="off" aria-describedby="tarot-settings-note"></label>
+          <p id="tarot-settings-note" class="tarot-settings-note">Choose your focus and question, then use Shuffle &amp; deal to begin a fresh reading. Your question stays on this page.</p>
+        </div>
+        <div id="reading-output" class="reading-output"></div>
+        <section id="ishtar-deck" class="ishtar-library" aria-labelledby="ishtar-title" hidden>
+          <header class="ishtar-library-header">
+            <div>
+              <p class="section-kicker">The complete deck</p>
+              <h3 id="ishtar-title">Ishtar Insights</h3>
+              <p id="reading-deck-description">78 illustrated cards. One unfolding story. Explore every Major Arcana, every suit, and the matching card back.</p>
+            </div>
+            <span class="ishtar-library-count">22 Major · 56 Minor</span>
+          </header>
+          <div class="ishtar-library-tools">
+            <div class="ishtar-filters" role="group" aria-label="Filter deck cards">
+              <button type="button" data-ishtar-filter="all" aria-pressed="true">All cards <span>78</span></button>
+              <button type="button" data-ishtar-filter="major" aria-pressed="false">Major Arcana <span>22</span></button>
+              <button type="button" data-ishtar-filter="Wands" aria-pressed="false">Wands <span>14</span></button>
+              <button type="button" data-ishtar-filter="Cups" aria-pressed="false">Cups <span>14</span></button>
+              <button type="button" data-ishtar-filter="Swords" aria-pressed="false">Swords <span>14</span></button>
+              <button type="button" data-ishtar-filter="Pentacles" aria-pressed="false">Pentacles <span>14</span></button>
+              <button type="button" data-ishtar-filter="back" aria-pressed="false">Card back</button>
+            </div>
+            <label class="ishtar-search"><span class="sr-only">Search cards</span><input id="ishtar-search" type="search" placeholder="Find a card…" autocomplete="off"></label>
+          </div>
+          <div class="ishtar-grid-intro"><p id="ishtar-results" role="status"></p><span>Choose a card to look closer ↗</span></div>
+          <div id="ishtar-grid" class="ishtar-grid"></div>
+          <div id="ishtar-empty" class="ishtar-empty" hidden><p>No cards match this search.</p><button type="button" id="ishtar-reset">Show the full deck</button></div>
+        </section>
+        <p class="reading-note"><span>✧</span> For reflection and creative practice. Your daily card stays the same until tomorrow. Full readings stay on this page until you deal again or reload. Changing decks keeps your current cards and their meanings, so you can compare the artwork.</p>
+        </div>
+      </section>
+
+      <section id="archive" class="toolbar" aria-label="Gallery controls" data-fold="The deck archive" data-fold-key="archive" data-fold-members="#archive,.gallery-head,#gallery,#empty-state">
+        <div class="filter-group" role="group" aria-label="Filter archive decks">
+          <button class="filter active" data-filter="all" aria-pressed="true">All decks <span id="all-count">32</span></button>
+          <button class="filter" data-filter="new" aria-pressed="false">New additions <span id="new-count">18</span></button>
+          <button class="filter" data-filter="historical" aria-pressed="false">Historical <span id="historical-count">15</span></button>
+          <button class="filter" data-filter="modern" aria-pressed="false">Modern <span id="modern-count">17</span></button>
+        </div>
+        <label class="search-box">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <span class="sr-only">Search decks</span>
+          <input id="search" type="search" placeholder="Search artist, tradition, use…" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+      </section>
+
+      <section class="gallery-head">
+        <div>
+          <p class="section-kicker">The collection</p>
+          <h2 id="result-title">Every deck, every lineage</h2>
+        </div>
+        <p id="result-count" class="result-count">32 results</p>
+      </section>
+
+      <section id="gallery" class="gallery" aria-live="polite"></section>
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-symbol">✧</div>
+        <h3>No cards in that spread</h3>
+        <p>Try a different word or clear the search to see the archive again.</p>
+        <button id="clear-search" class="text-button">Clear search</button>
+      </div>
+
+      <div data-shell="footer"></div>
+    </main>
+
+    <dialog id="detail-dialog" class="detail-dialog">
+      <button id="close-dialog" class="close-dialog" aria-label="Close details">×</button>
+      <div id="dialog-content"></div>
+    </dialog>
+    <div id="dialog-backdrop" class="dialog-backdrop" hidden></div>
+    <dialog id="account-dialog" class="account-dialog" aria-labelledby="account-dialog-title">
+      <button type="button" class="close-dialog" data-close-account aria-label="Close sign in">×</button>
+      <form id="account-email-form" class="account-step"><p class="section-kicker">Sign in or create an account</p><h2 id="account-dialog-title">A code, not a password</h2><p>Enter your email and we will send a one-time code. No password to remember. New emails create an account.</p><label for="account-email-input">Email address</label><input id="account-email-input" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com"><button type="submit">Send my code</button><p class="account-fine">Signing in sets a session cookie that is needed for your account to work. See <a href="/cookie-policy.html">cookies &amp; browser storage</a>.</p></form>
+      <form id="account-code-form" class="account-step" hidden><p class="section-kicker">Check your email</p><h2>Enter the code</h2><p id="account-code-hint"></p><label for="account-code-input">Code</label><input id="account-code-input" type="text" inputmode="text" autocomplete="one-time-code" required maxlength="12" autocapitalize="characters" spellcheck="false"><button type="submit">Sign in</button><button type="button" class="text-button" id="account-resend">Send a new code</button><button type="button" class="text-button" id="account-restart">Use a different email</button></form>
+      <p id="account-dialog-status" role="status" aria-live="polite"></p>
+    </dialog>
+    <div data-shell="notice"></div>
+    <script src="/site-shell.js?v=5"></script>
+    <script>SiteShell.mount('tarot');</script>
+    <script src="/rooms.js?v=pages-2"></script>
+    <script src="/storage-preferences.js?v=birth-saving-1"></script>
+    <script src="/account-core.js?v=journal-filters-1"></script>
+    <script src="/account.js?v=pages-4"></script>
+    <script src="/archive-decks.js?v=archive-34"></script>
+    <script src="/tarot-readings.js?v=accounts-3"></script>
+    <script src="/birth-lore.js?v=2"></script>
+    <script src="/deck-archive.js?v=3"></script>
+    <script src="/tarot.js?v=3"></script>
+    <script>
+      // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
+      // register once account.js has dispatched the first signed-in state, so wait for it.
+      document.addEventListener('ishtar-account-change', async function once(event) {
+        if (!event.detail.signedIn) return;
+        document.removeEventListener('ishtar-account-change', once);
+        const result = await Rooms.openFromQuery({
+          search: location.search,
+          getReading: id => IshtarAccount.getReading(id),
+          scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView({block: 'start'})
+        });
+        if (result === 'unknown' || result === 'failed') IshtarAccountUI.openPanel('This reading cannot be replayed on this page version.');
+      });
+    </script>
+    <script src="/mobile-sections.js?v=data-fold-3"></script>
+  </body>
+</html>

@@ -318,3 +318,17 @@ test('listReadings forwards the requested page in the query string', async () =>
   const readingsCall = calls.find(c => c.method === 'GET' && c.url.startsWith('/api/readings/'));
   assert.equal(readingsCall.url, '/api/readings/?page=4');
 });
+
+// Task 3: the journal gains category/kind filter chips, which listReadings must forward as query
+// params -- and omit entirely when not given, so an unfiltered "All" view keeps the plain URL above.
+test('listReadings passes category and kind filters', async () => {
+  const {fetch, calls} = fakeFetch({
+    'GET /api/readings/?page=2&category=tarot&kind=tarot-daily': [200, {readings: [], page: 2, pages: 1, count: 0}],
+    'GET /api/readings/?page=1': [200, {readings: [], page: 1, pages: 1, count: 0}]
+  });
+  const account = createAccount({fetch, getCookie: () => ''});
+  await account.listReadings(2, {category: 'tarot', kind: 'tarot-daily'});
+  await account.listReadings(1, {});
+  assert.equal(calls[0].url, '/api/readings/?page=2&category=tarot&kind=tarot-daily');
+  assert.equal(calls[1].url, '/api/readings/?page=1');
+});

@@ -246,7 +246,7 @@
 @media print {
   @page { margin: 14mm; }
   body, .shell, .reading-room, #birthday-room { margin: 0 !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; border: 0 !important; display: block !important; }
-  .grain, .masthead, .brand-lockup, .reading-intro, .reading-deck-picker, .reading-controls, .reading-output, .ishtar-library, .reading-note, .toolbar, .gallery-head, .gallery, .footer, .birthday-intro, .birthday-form, .birthday-navigation, .birthday-privacy, #birthday-chinese, #birthday-numbers, .detail-dialog, .sky-dialog, .natal-report-nav, .natal-report > header > button, .natal-aspect-filter, .sky-chart-invitation, .sky-chart-caption, #birthday-room .insight-method { display: none !important; }
+  .grain, .masthead, .brand-lockup, .reading-intro, .reading-deck-picker, .reading-controls, .reading-output, .ishtar-library, .reading-note, .toolbar, .gallery-head, .gallery, .footer, .birthday-intro, .birthday-form, .birthday-privacy, .detail-dialog, .sky-dialog, .natal-report-nav, .natal-report > header > button, .natal-aspect-filter, .sky-chart-invitation, .sky-chart-caption, #birthday-room .insight-method { display: none !important; }
   #birthday-sky, .natal-report-panel[hidden] { display: block !important; }
   #birthday-room { --atlas-gold: #604310; --atlas-teal: #235364; --atlas-line: #b5a991; --cream: #151c23; color: #151c23 !important; }
   #birthday-room p, #birthday-room th, #birthday-room td, #birthday-room button, #birthday-room small, #birthday-room strong, #birthday-room h4 { color: #151c23 !important; }
