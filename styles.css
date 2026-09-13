@@ -31,7 +31,7 @@ button { cursor: pointer; }
 .masthead .account-button { border-color: rgba(230,177,126,.6); background: rgba(20,9,30,.45); color: var(--cream); }
 .masthead .account-button:hover, .masthead .account-button:focus-visible { background: var(--gold-light); color: var(--plum-dark); }
 .brand-lockup { display: grid; justify-items: center; }
-.brand-lockup img { display: block; width: min(320px, 70vw); height: auto; filter: drop-shadow(0 0 28px rgba(255,220,160,.28)); }
+.brand-lockup img { display: block; width: min(300px, 66vw); height: auto; filter: drop-shadow(0 0 22px rgba(255,220,160,.22)); }
 .eyebrow { justify-content: center; color: var(--gold-light); }
 h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08 "Playfair Display", serif; letter-spacing: -.03em; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
 .lede { max-width: 560px; margin: 16px auto 0; color: rgba(255,250,244,.84); font-size: clamp(15px, 1.6vw, 20px); line-height: 1.55; }
