@@ -1,5 +1,26 @@
 # VPS deployment
 
+## 2026-09-12 Celestial hero layout
+
+Deployed `b49d472` as `/opt/tarot-game/releases/20260912-celestial-hero-b49d472`, a hardlink
+copy (`cp -al`) of `20260912-birth-saving-480e650` with index.html and styles.css unlinked and
+replaced, plus three new files under assets: celestial-hero.webp (desktop background),
+celestial-hero-900.webp (phone background) and ishtar-insights-logo-hero.webp (white-wordmark
+lotus with the plum background keyed out). Script `/tmp/ishtar-hero-b49d472.sh` gated on the
+live index.html and styles.css hashes, checked the copies were no longer hardlinked before
+stripping CRs, switched `current` atomically and curl-checked the page plus the three assets,
+rolling back on failure. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260912-birth-saving-480e650 /opt/tarot-game/current`.
+
+Change: the paper masthead is replaced by the "02 / Celestial" hero (Codex's sky artwork as a
+cover background, centered logo, new headline and calls to action, three-item strip). The
+sticky section nav, account button and deck-count span are unchanged. Cache keys:
+styles.css?v=celestial-hero-1, account.css?v=celestial-hero-1. No backend, nginx or storage change.
+
+Validation: all five deployed files hash-match the commit over HTTPS (CRs stripped); both
+hostnames return 200; browser at 1440px shows the hero with the moon phases between the calls
+to action and the strip; the only console error is the signed-out `/api/account/` 401.
+
 ## 2026-09-12 Birth-detail saving fix and account preference
 
 Deployed `480e650` as `/opt/tarot-game/releases/20260912-birth-saving-480e650`, retaining
@@ -166,7 +187,9 @@ CRLF on the VPS because this repo stores CRLF blobs and `sh` rejects them:
 ssh vps 'rm -rf /tmp/ishtar-app-src && mkdir -p /tmp/ishtar-app-src'
 git archive --format=tar HEAD server/ishtar | ssh vps 'tar -xf - -C /tmp/ishtar-app-src --strip-components=2'
 git archive --format=tar HEAD server/ishtar-app.service server/deploy-app.sh server/nginx-ishtar-app.conf server/backup-ishtar-app.sh | ssh vps 'tar -xf - -C /tmp --strip-components=1'
-ssh vps 'sed -i "s/$//" /tmp/deploy-app.sh /tmp/backup-ishtar-app.sh /tmp/ishtar-app.service /tmp/nginx-ishtar-app.conf && find /tmp/ishtar-app-src -type f -exec sed -i "s/$//" {} +'
+ssh vps 'sed -i "s/
+$//" /tmp/deploy-app.sh /tmp/backup-ishtar-app.sh /tmp/ishtar-app.service /tmp/nginx-ishtar-app.conf && find /tmp/ishtar-app-src -type f -exec sed -i "s/
+$//" {} +'
 ssh vps 'sh /tmp/deploy-app.sh'
 ```
 
