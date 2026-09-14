@@ -44,6 +44,9 @@
 .tarot-layout-three { aspect-ratio: 100 / 62; }
 .tarot-layout-three .tarot-place { width: 21%; }
 .tarot-layout-three::after, .tarot-layout-three .tarot-cloth-mark { left: 50%; }
+.tarot-layout-question { aspect-ratio: 100 / 58; }
+.tarot-layout-question .tarot-place { width: 20%; }
+.tarot-layout-question::after, .tarot-layout-question .tarot-cloth-mark { left: 50%; }
 .tarot-layout-scroll.is-enlarged .tarot-layout { min-width: 780px; }
 .tarot-table-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin: 18px 0 22px; }
 .tarot-table-tools > p { color: var(--tarot-muted); font: 11px/1.6 'DM Mono', monospace; }
@@ -124,3 +127,15 @@
 .tarot-about { margin-top: 16px; font-size: 13px; }
 .tarot-about summary { cursor: pointer; color: var(--plum); font-weight: 600; }
 .tarot-about p { margin-top: 10px; color: var(--ink-soft); line-height: 1.6; }
+.tarot-layout-relationship { aspect-ratio: 100 / 78; }
+.tarot-layout-relationship .tarot-place { width: 14%; }
+.tarot-layout-relationship::after { left: 50%; top: 28%; width: 62%; }
+.tarot-layout-relationship .tarot-cloth-mark { left: 50%; top: 72%; }
+.tarot-layout-year { aspect-ratio: 100 / 96; }
+.tarot-layout-year .tarot-place { width: 11%; }
+.tarot-layout-year::after { left: 50%; top: 50%; width: 52%; }
+.tarot-layout-year .tarot-cloth-mark { left: 50%; top: 50%; opacity: 0; }
+.tarot-options { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 10px 12px; border: 1px solid #d0a76b40; border-radius: 8px; }
+.tarot-options legend { padding: 0 6px; color: #e1caac; font-size: 12px; }
+.tarot-options label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.tarot-options input { accent-color: #d0a76b; width: 16px; height: 16px; }

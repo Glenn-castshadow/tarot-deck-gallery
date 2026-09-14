@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/styles.css?v=site-shell-1">
     <link rel="stylesheet" href="/site-shell.css?v=3">
     <link rel="stylesheet" href="/account.css?v=journal-filters-1">
-    <link rel="stylesheet" href="/tarot-readings.css?v=2">
+    <link rel="stylesheet" href="/tarot-readings.css?v=3">
     <link rel="stylesheet" href="/mobile-sections.css?v=2">
   </head>
   <body>
@@ -50,10 +50,15 @@
           <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
         </div>
         <div id="tarot-settings" class="tarot-settings" hidden>
-          <label>Choose a traditional spread<select id="tarot-spread"><option value="celtic">Celtic Cross · 10 cards</option><option value="horseshoe">Horseshoe · 7 cards</option><option value="three">Past, Present &amp; Possibility · 3 cards</option></select></label>
+          <label>Choose a traditional spread<select id="tarot-spread"><option value="question">One card &amp; a question · 1 card</option><option value="three">Past, Present &amp; Possibility · 3 cards</option><option value="horseshoe">Horseshoe · 7 cards</option><option value="relationship">Relationship · 7 cards</option><option value="celtic" selected>Celtic Cross · 10 cards</option><option value="year">The Year Ahead · 13 cards</option></select></label>
           <label>Your focus<select id="tarot-focus"><option value="general">An open reading</option><option value="relationships">Relationships</option><option value="work">Work &amp; creativity</option><option value="growth">Personal growth</option></select></label>
+          <fieldset class="tarot-options">
+            <legend>Options for this deal</legend>
+            <label><input type="checkbox" id="tarot-reversals" checked> Include reversed cards</label>
+            <label><input type="checkbox" id="tarot-majors"> Major Arcana only</label>
+          </fieldset>
           <label class="tarot-question">A question to hold <small>Optional · something open, such as “What can help me move forward?”</small><input id="tarot-question" type="text" maxlength="240" placeholder="What would you like to explore?" autocomplete="off" aria-describedby="tarot-settings-note"></label>
-          <p id="tarot-settings-note" class="tarot-settings-note">Choose your focus and question, then use Shuffle &amp; deal to begin a fresh reading. Your question stays on this page.</p>
+          <p id="tarot-settings-note" class="tarot-settings-note">Choose your spread, focus and question, then use Shuffle &amp; deal to begin a fresh reading. The options apply to the next deal and are not saved. Your question stays on this page.</p>
         </div>
         <div id="reading-output" class="reading-output"></div>
         <section id="ishtar-deck" class="ishtar-library" aria-labelledby="ishtar-title" hidden>
@@ -144,11 +149,11 @@
     <script src="/account-core.js?v=journal-filters-1"></script>
     <script src="/account.js?v=pages-4"></script>
     <script src="/archive-decks.js?v=archive-34"></script>
-    <script src="/tarot-readings.js?v=accounts-4"></script>
+    <script src="/tarot-readings.js?v=accounts-5"></script>
     <script src="/tarot-reference.js?v=1"></script>
     <script src="/birth-lore.js?v=2"></script>
     <script src="/deck-archive.js?v=3"></script>
-    <script src="/tarot.js?v=5"></script>
+    <script src="/tarot.js?v=6"></script>
     <script>
       // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
       // register once account.js has dispatched the first signed-in state, so wait for it.

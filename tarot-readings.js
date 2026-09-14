@@ -8,6 +8,17 @@
   const escape = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const position = (name, short, x, y, lens, question, role) => ({name, short, x, y, lens, question, role});
   const spreads = {
+    question: {
+      name: 'One card and a question', subtitle: 'One card · with a clarifier beside it', shape: 'question',
+      description: 'A single card, held against something you are turning over. A second card is dealt beside it at the same moment, for when the first does not land.',
+      tradition: 'Not a traditional layout, and not an oracle: it offers no answer, no yes, no no, and no leaning either way. Both cards are dealt together, so the clarifier is set aside in the same moment as the first card rather than drawn later once the first is known.',
+      pairs: [[0,1,'The card and its clarifier']],
+      advice: 0, outcome: 1,
+      positions: [
+        position('The card','Your card',36,45,'Hold your question and read this card as a description of the ground it stands on rather than a response to it. The useful part is usually the aspect of the meaning you recognise before you have finished reading it.','What part of this had I already half noticed?'),
+        position('A clarifier','Clarifier',64,45,'Turn this over only if the first card left you no purchase. It does not overrule the first or settle anything between them; it offers a second angle on the same ground.','What does this add that the first card left out?')
+      ]
+    },
     celtic: {
       name: 'The Celtic Cross', subtitle: 'Ten cards · the situation in depth', shape: 'celtic',
       description: 'A cross at the heart of the table, a staff beside it. Explore what surrounds your question, what lies underneath it, and how you might move forward.',
@@ -40,6 +51,44 @@
         position('Outside influences','Around you',63,66,'Now look outward at the people and conditions affecting the situation. Distinguish observable facts from assumptions about someone else.','Where could a direct conversation replace a guess?','environment'),
         position('The advice','Advice',77,49,'Read this as an approach to try. Choose a small expression of the card that respects your circumstances and can be revised after you learn from it.','What manageable action would put this advice into practice?','advice'),
         position('A possible outcome','Possibility',90,25,'The final card offers a direction to contemplate. Use the preceding advice to consider how you might encourage, reshape, or avoid that pattern.','What would I like to encourage, and what would I choose to change?','outcome')
+      ]
+    },
+    relationship: {
+      name: 'The Relationship spread', subtitle: 'Seven cards · two people and what runs between them', shape:'relationship',
+      description: 'Two cards face each other with the connection between them, then what helps and what strains it, and finally an approach and where things tend.',
+      tradition: 'A modern arrangement rather than an inherited one — seven-card relationship layouts vary from reader to reader and none is canonical, so this particular order is set out here and in the layout guide rather than attributed to a source. It reads any bond at all: family, friendship, work, or a relationship with something that is not a person.',
+      pairs: [[0,1,'Each side of it'],[3,4,'What helps and what strains'],[5,6,'The approach and where it tends']],
+      advice: 5, outcome: 6,
+      positions: [
+        position('You in this','You',16,28,'Read this as your own part: what you bring, what you want from the bond, and what you are doing with it at present. It describes your side and makes no claim about anybody else.','What am I contributing that I have not looked at directly?'),
+        position('The other person in this','Them',84,28,'This describes the position the other person occupies in the relationship as you are able to observe it — what they appear to be doing and what the bond asks of them. A card cannot report their private thoughts or feelings, and this one does not pretend to.','What have I assumed about them that I have never actually checked?'),
+        position('The connection itself','Between',50,28,'Between the two of you sits the thing neither of you owns alone: the history, the habit, the agreement, spoken or otherwise. Read it as its own subject rather than as a verdict on either party.','What does this bond need that neither of us has been providing?'),
+        position('What helps it','Helps',32,58,'Look for the working part — a shared practice, a tolerance, a piece of good timing. Naming it matters, because the things that hold a bond together are usually the least remarked on.','What is already working that I could do more deliberately?'),
+        position('What strains it','Strains',68,58,'This names the friction. A strain is not the same as a fault, and it is rarely located in one person: read it as a pressure the arrangement is under and describe it plainly.','Where is the pressure actually coming from, as far as I can tell?'),
+        position('An approach to try','Advice',32,86,'Read this as something to attempt rather than a rule to follow. Choose a version of it small enough to try this week and revise afterwards.','What could I try that would still be fair if it does not work?'),
+        position('Where it tends','Tendency',68,86,'This suggests the direction the relationship leans if nothing changes. It is a tendency, not a fate, and a bond has at least two people shaping it.','Which part of that direction is mine to influence?')
+      ]
+    },
+    year: {
+      name: 'The Year Ahead', subtitle: 'Thirteen cards · a theme and twelve months', shape:'year',
+      description: 'A theme for the year sits at the centre, with one card for each of the twelve months ahead arranged around it.',
+      tradition: 'A modern arrangement rather than an inherited one; twelve-month wheels are common in contemporary practice and no particular order is canonical, so this one is set out here. The wheel begins with the month after the reading, so it always covers the year in front of you. Each month is a theme to consider rather than a schedule of events.',
+      pairs: [[0,1,'The theme and the month ahead'],[1,7,'Half a year apart'],[0,12,'The theme and the far end of the year']],
+      advice: 0, outcome: 12,
+      positions: [
+        position('The year’s theme','Theme',50,50,'At the centre, this is the thread the year is asked to be read against. Let it colour the months around it rather than override them.','What would I like this year to be about, and is that what the card describes?'),
+        position('The first month ahead','1st',50,12,'The month immediately after this reading. Read it as the near ground, the part you can already see the shape of.','What is already in motion here?'),
+        position('The second month ahead','2nd',68,17.1,'Read this as the month the first one hands on to, and look for what it develops rather than what it introduces.','What does this continue?'),
+        position('The third month ahead','3rd',81.2,31,'Consider what the first three months have in common before reading this one alone.','What pattern have the first three made?'),
+        position('The fourth month ahead','4th',86,50,'Opposite the tenth month on the wheel. This sits at the first turn, where an early direction usually either settles or is revised.','What would it cost to change direction here?'),
+        position('The fifth month ahead','5th',81.2,69,'Read this as a middle month, the kind that rarely announces itself and often carries the actual work.','What might I be tempted to overlook here?'),
+        position('The sixth month ahead','6th',68,82.9,'Approaching the halfway point. A useful place to ask what has changed since the theme at the centre was drawn.','What is different from what I expected at the start?'),
+        position('The seventh month ahead','7th',50,88,'Directly opposite the first month, at the bottom of the wheel. Read it against that one: the two are the same distance from the year’s midpoint in either direction.','What looks different from here than it did at the beginning?'),
+        position('The eighth month ahead','8th',32,82.9,'Past the midpoint, and the beginning of the return. Consider what is worth carrying into the remaining months and what is not.','What can I stop carrying?'),
+        position('The ninth month ahead','9th',18.8,69,'Read this as a month of consolidation rather than of beginning, whatever the card holds.','What is nearly finished that deserves finishing properly?'),
+        position('The tenth month ahead','10th',14,50,'Opposite the fourth month, at the far turn. What was decided there can usually be assessed here.','Was the direction I took at the first turn the right one?'),
+        position('The eleventh month ahead','11th',18.8,31,'Near the close of the wheel. Read it for what it prepares rather than what it concludes.','What am I setting up without having decided to?'),
+        position('The twelfth month ahead','12th',32,17.1,'The last month of the wheel, sitting beside the first. Read the two together: the year closes next to where it opened, not back at it.','What will have changed by the time this comes round?')
       ]
     },
     three: {
@@ -139,16 +188,32 @@
     const row = minorText[card.suit]?.[ranks.indexOf(card.rank)];
     return row ? {...card,keywords:row[0],upright:row[1],reversed:row[2],prompt:row[3]} : card;
   }
-  function deal(id, cards, randomInt, question='', focus='general') {
+  // `options` was added with the reading options in C2b. Omitting it, or passing an empty object,
+  // deals exactly as this function did before it existed — a test pins that.
+  function deal(id, cards, randomInt, question='', focus='general', options={}) {
     const spread = spreads[id];
-    if (!spread || cards.length < spread.positions.length) throw new RangeError('Choose a spread and a complete deck.');
-    const order = cards.map((_,i)=>i);
+    if (!spread) throw new RangeError('Choose a spread and a complete deck.');
+    const {reversals = true, majorsOnly = false, dealtAt = ''} = options;
+    // A year reading's month labels are computed from this, and validDraw rejects a draw without
+    // it — so a caller that omits it would produce a reading that saves and then cannot be
+    // replayed. Fail here instead, where the mistake is visible.
+    if (id === 'year' && !/^\d{4}-\d{2}-\d{2}$/.test(String(dealtAt))) {
+      throw new RangeError('A year reading needs the date it was dealt.');
+    }
+    // The Major Arcana are exactly indices 0-21 of the catalogue, so narrowing the pool to them
+    // leaves every stored index globally correct; validDraw and loadSpread need no change for it.
+    const order = cards.map((_,i)=>i).filter(i => !majorsOnly || cards[i].type === 'major');
+    if (order.length < spread.positions.length) throw new RangeError('Choose a spread and a complete deck.');
     for (let i=order.length-1;i>0;i--) {
       const j=randomInt(i+1);
       if (!Number.isInteger(j)||j<0||j>i) throw new RangeError('Invalid shuffle value.');
       [order[i],order[j]]=[order[j],order[i]];
     }
-    return {id,question:String(question).trim().slice(0,240),focus:Object.hasOwn(focuses,focus)?focus:'general',cards:order.slice(0,spread.positions.length).map(index=>({index,orientation:randomInt(5)===0?'reversed':'upright'}))};
+    const draw = {id,question:String(question).trim().slice(0,240),focus:Object.hasOwn(focuses,focus)?focus:'general',cards:order.slice(0,spread.positions.length).map(index=>({index,orientation:reversals&&randomInt(5)===0?'reversed':'upright'}))};
+    // Only the year wheel's meaning depends on when it was dealt, so only it stores the date.
+    // Attaching it to every draw would put an unused field in every payload already saved.
+    if (id === 'year') draw.dealtAt = String(dealtAt);
+    return draw;
   }
   function validDraw(draw, cardCount) {
     if (!draw || !Object.hasOwn(spreads, draw.id) || !Array.isArray(draw.cards)) return false;
@@ -159,6 +224,11 @@
       if (item.orientation !== 'upright' && item.orientation !== 'reversed') return false;
       seen.add(item.index);
     }
+    if (draw.id === 'year') {
+      if (typeof draw.dealtAt !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(draw.dealtAt)) return false;
+    } else if (draw.dealtAt !== undefined) {
+      return false;
+    }
     return typeof draw.question === 'string' && draw.question.length <= 240 && Object.hasOwn(focuses, draw.focus);
   }
   // Payload-to-state transform for replaying a saved spread: validates with validDraw, then
@@ -168,7 +238,9 @@
   function loadSpread(payload, cardCount) {
     if (!validDraw(payload, cardCount)) return null;
     const spreadCards = payload.cards.map(c => ({index: c.index, orientation: c.orientation}));
-    return {spread: {id: payload.id, question: payload.question, focus: payload.focus, cards: spreadCards}, revealed: new Set(spreadCards.map((_, slot) => slot))};
+    const spread = {id: payload.id, question: payload.question, focus: payload.focus, cards: spreadCards};
+    if (payload.dealtAt) spread.dealtAt = payload.dealtAt;
+    return {spread, revealed: new Set(spreadCards.map((_, slot) => slot))};
   }
   const meaning = (card, orientation) => orientation === 'reversed' ? card.reversed : card.upright;
   const themeOf = card => suitThemes[card.suit] || suitThemes.major;

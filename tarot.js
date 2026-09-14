@@ -185,8 +185,14 @@
 
   function dailyRevealed() { return loadedDaily ? true : revealedDailyDate === localDateKey(); }
 
+  const dealOptions = () => ({
+    reversals: document.querySelector("#tarot-reversals")?.checked !== false,
+    majorsOnly: document.querySelector("#tarot-majors")?.checked === true,
+    dealtAt: localDateKey()
+  });
+
   function dealSpread() {
-    currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value);
+    currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value, dealOptions());
     revealedSpread.clear();
     renderReading(true);
   }
@@ -218,18 +224,48 @@
     } else updateSpreadReport(Number(slot));
   }
 
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  // dealtAt is a local YYYY-MM-DD key. The wheel starts with the month AFTER it, so month+i
+  // indexes the following month directly: for a September deal, month is 9 and MONTH_NAMES[9]
+  // is October. Math.floor(m / 12) carries the year over at the December boundary.
+  function yearMonthLabels(dealtAt) {
+    const [year, month] = String(dealtAt).split("-").map(Number);
+    if (!Number.isInteger(year) || !Number.isInteger(month)) return [];
+    return Array.from({length: 12}, (_, i) => {
+      const m = month + i;
+      return `${MONTH_NAMES[m % 12]} ${year + Math.floor(m / 12)}`;
+    });
+  }
+
+  // updateSpreadReport is the one function that runs after both a fresh table render (right
+  // after tableHTML writes readingOutput.innerHTML) and every later reveal, so it is also the
+  // single place to relabel the year wheel's twelve month positions. Doing it here means the
+  // aria-label it builds carries the month directly, instead of a correct label being
+  // overwritten back to the engine's date-agnostic ordinal ("The first month ahead") the next
+  // time a card is revealed.
   function updateSpreadReport(lastSlot) {
     if (readingMode !== "spread" || !currentSpread) return;
     const complete = revealedSpread.size === currentSpread.cards.length;
     readingOutput.querySelector("#tarot-reading-report").innerHTML = TarotReadings.reportHTML(currentSpread, tarotCards, revealedSpread);
     const last = Number.isInteger(lastSlot) ? currentSpread.cards[lastSlot] : null;
     readingOutput.querySelector("#tarot-reveal-status").textContent = `${revealedSpread.size} of ${currentSpread.cards.length} cards revealed${last ? ` · ${tarotCards[last.index].name}, ${last.orientation}` : ""}${complete ? " · Your full reading is ready below." : ""}`;
+    // Index 0 is the theme at the centre and is left alone; the twelve months follow it. A
+    // malformed or missing date leaves the ordinal labels in place rather than blanking them.
+    const monthLabels = currentSpread.id === "year" ? yearMonthLabels(currentSpread.dealtAt) : [];
+    if (monthLabels.length === 12) {
+      readingOutput.querySelectorAll(".tarot-table-label").forEach((place, i) => {
+        if (i >= 1 && i <= 12) place.textContent = monthLabels[i - 1];
+      });
+    }
     readingOutput.querySelectorAll("[data-tarot-position]").forEach(button => {
       const slot = Number(button.dataset.tarotPosition), open = revealedSpread.has(slot);
       const position = TarotReadings.spreads[currentSpread.id].positions[slot];
+      const monthLabel = monthLabels.length === 12 && slot >= 1 && slot <= 12 ? monthLabels[slot - 1] : null;
+      const label = monthLabel || position.name;
       button.classList.toggle("is-open", open);
       button.querySelector("small").textContent = open ? "Read meaning ↓" : "Turn over";
-      button.setAttribute("aria-label", open ? `Read ${slot+1}: ${position.name}, ${tarotCards[currentSpread.cards[slot].index].name}` : `Reveal ${slot+1}: ${position.name}`);
+      if (monthLabel && button.childNodes[1]) button.childNodes[1].textContent = monthLabel;
+      button.setAttribute("aria-label", open ? `Read ${slot+1}: ${label}, ${tarotCards[currentSpread.cards[slot].index].name}` : `Reveal ${slot+1}: ${label}`);
     });
     readingOutput.querySelectorAll('[data-tarot-action="next"], [data-tarot-action="all"]').forEach(button=>{button.disabled=complete;});
     window.MobileSections?.enhance();
@@ -353,7 +389,7 @@
     }
 
     if (!currentSpread) {
-      currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value);
+      currentSpread = TarotReadings.deal(tarotSpreadSelect.value, tarotCards, randomInt, tarotQuestionInput.value, tarotFocusSelect.value, dealOptions());
       animateDeal = true;
     }
     readingOutput.innerHTML = TarotReadings.tableHTML(currentSpread, tarotCards, revealedSpread, cardVisual, animateDeal);
