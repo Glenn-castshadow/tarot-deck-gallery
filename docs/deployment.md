@@ -1,5 +1,37 @@
 # VPS deployment
 
+## 2026-09-14 Month void bands
+
+Deployed `75a182d`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-void-bands-75a182d`, a `cp -al` hardlink copy of
+`20260914-sky-e8fe95c` with four files replaced: `sky/index.html`, `sky-calendar.js`,
+`sky-calendar-engine.js` and `sky-calendar.css`. Script `/tmp/ishtar-voidbands.sh` gated on the
+live `sky/index.html` sha256 and on `current` pointing at the expected previous release, switched
+with `mv -Tf`, and rolled back on any failed check. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-sky-e8fe95c /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**This release used the corrected extraction form** recorded in the entry below: the regular
+files are unlinked by hand and then extracted, rather than with `tar --unlink-first`, which fails
+on the page directories now that they exist. It ran first time.
+
+Change: the month view gains a void-of-course strip below the grid and the day detail — one row
+per period with the sign the Moon is crossing, both traditions' starts, the shared closing
+ingress, and a proportional bar with the modern stretch inside the classical one. `monthEvents`
+returns a `voids` key beside `events`, as a lazy memoised getter so the month view is not charged
+for bands it does not read. The four day-cell marks and their legend are unchanged. This closes
+the deferral the sky branch's whole-branch review recorded.
+
+Cache keys: `sky-calendar.css?v=5`, `sky-calendar-engine.js?v=3`, `sky-calendar.js?v=5`.
+`sky-calendar-text.js` is unchanged and stays at `?v=1`.
+
+Validation: all eight pages and all five sky assets return 200 over HTTPS; `/sky/` references the
+three new cache keys; the served JavaScript and CSS contain the strip's own markup, `voidBands`
+and the strip styles; `/api/health/` is unaffected. In a browser at ishtarinsights.com the month
+tab opens in 907 ms, renders 14 bands with both ends carrying their date and the reader's offset,
+the day detail sits 24 px below the grid with the strip after it, and the grid still shows its
+original 24 cell marks and 4 legend items. Only console error is the signed-out 401.
+
 ## 2026-09-14 Sky calendar and the transit-calendar reading kind
 
 Deployed `e8fe95c` (the squash of the sky branch) in two stages, backend first so the new
