@@ -1,5 +1,30 @@
 # VPS deployment
 
+## 2026-09-14 A short void framing for the month tab
+
+Deployed `69f02a5`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-void-brief-69f02a5`, a `cp -al` hardlink copy of
+`20260914-nav-scale-5384daf` with three files replaced: `sky-calendar-text.js`, `sky-calendar.js`
+and `sky/index.html`. Gated on `current` pointing at the expected previous release and on the
+sha256 of all three live files, not just one. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-nav-scale-5384daf /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: the void strip on the month tab opened with the same 1078-character passage the Moon tab
+carries, which is an essay in front of a table on a tab whose job is to list what happens this
+month. It now opens with a 358-character `brief` that stands alone for a reader who never opens
+the Moon tab: what void of course means, that two traditions count different planets, and which
+way the containment runs. The Moon tab still renders the full passage and is named as the place
+the reasoning lives.
+
+Cache keys: `sky-calendar-text.js?v=2` and `sky-calendar.js?v=7` on `/sky/`.
+
+Validation: all eight pages and the four sky assets return 200 over HTTPS; both bumped cache keys
+confirmed on `/sky/`; the served text module contains the brief and the served section script
+reads `T.voidFraming.brief`. In a browser at ishtarinsights.com the month tab's intro measures 358
+characters above 14 void rows and does not contain the full passage, while the Moon tab does. Only
+console error is the signed-out 401 from `/api/account/`.
+
 ## 2026-09-14 Void bar scaling and a centred nav
 
 Deployed `5384daf`. **Static only** — no backend change, no migration, no service restart.
