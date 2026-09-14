@@ -1,57 +1,54 @@
 # VPS deployment
 
-## PENDING — the sky calendar on `/sky/`, and the `transit-calendar` reading kind
+## 2026-09-14 Sky calendar and the transit-calendar reading kind
 
-**Not yet deployed.** This entry records what a deploy of the `sky` branch would involve,
-written before that deploy happens, so the procedure is decided in advance rather than
-reconstructed from memory afterward. Do not read this as a record of something that shipped —
-no VPS, nginx or DNS state described here has been touched, and no release directory has been
-created.
+Deployed `e8fe95c` (the squash of the sky branch) in two stages, backend first so the new
+reading kind existed before any page could post it.
 
-What a deploy would carry:
+**Backend.** `server/ishtar` shipped with `git archive` to `/tmp/ishtar-app-src`, CRs stripped,
+then `sudo sh /tmp/deploy-app.sh`. Migration `readings.0004_alter_reading_kind` applied; all four
+readings migrations now show applied. The database was copied to
+`/var/backups/ishtar-app/db-predeploy-20260914-010840.sqlite3` first. `ishtar-app` restarted at
+01:08:59 UTC, confirmed by `ActiveEnterTimestamp` against the clock, and `/api/health/` returns
+`{"ok": true}`. The restart is the part that matters: `KINDS` is read into module scope at
+import, so an unrestarted worker answers `Unknown reading kind.` for every save. This exact
+failure was reproduced in development before the deploy, which is why the check is explicit here.
 
-- **A backend change that must go first.** `server/ishtar/readings/kinds.py` gains
-  `'transit-calendar': ('Transit calendar', 'sky')`, with migration
-  `readings.0004_alter_reading_kind` (an `AlterField` on `kind`'s `choices` — no column or data
-  change; SQLite rewrites nothing that matters). Until that migration is applied **and the app
-  process restarted**, `POST /api/readings/` answers `Unknown reading kind.` for every save from
-  the new section, because `KINDS` is read into module scope at import time. Frontend first
-  would therefore ship a save button that cannot save.
-- **New static files:** `sky-calendar-engine.js`, `sky-calendar-text.js`, `sky-calendar.js`,
-  `sky-calendar.css`.
-- **Changed static files:** `sky/index.html` (the `#sky-calendar` section, its fold, its
-  `data-room`, the stylesheet and the three scripts), `account/index.html` (the Sky filter
-  chip), `rooms.js` (`transit-calendar` in `PAGES` and `LABELS`), and every page's `rooms.js`
-  cache key.
-- **Cache keys:** `rooms.js?v=sky-1` on all eight pages and `sky-calendar.js?v=4` on `/sky/`.
-  The three other sky files are new, so their keys (`sky-calendar-engine.js?v=1`,
-  `sky-calendar-text.js?v=1`, `sky-calendar.css?v=3`) ship as written and have nothing stale to
-  displace. `account.js` is unchanged and keeps `?v=pages-4` — the
-  journal's category filter is generic over `[data-journal-category]`, so the new Sky chip
-  needed no script change.
-- **No nginx, DNS or storage change.** No new storage key, no new outbound request, no new
-  third-party asset. The vendored Astronomy Engine is already deployed and unchanged.
+**Frontend.** Released as `/opt/tarot-game/releases/20260914-sky-e8fe95c`, a `cp -al` hardlink
+copy of `20260913-site-foundation-bf30483` with thirteen changed or added runtime files replaced.
+Script `/tmp/ishtar-sky.sh` gated on the live `sky/index.html` sha256 and on `current` pointing at
+the expected previous release, and additionally refused to run unless the deployed backend's
+`kinds.py` already contained `transit-calendar`, so the frontend cannot precede the backend even
+by mistake. It asserted a link count of 1 on every replaced file before editing it, re-checked
+the previous release afterwards, switched `current` with `mv -Tf`, then curl-checked and rolled
+back on any failure. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260913-site-foundation-bf30483 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
 
-Procedure to run at actual deploy time (not run yet):
+**One correction during the deploy.** The first run failed at extraction: `tar --unlink-first`,
+which the two previous releases used safely, tries to unlink directory entries as well as files,
+and the seven page directories now exist and are non-empty. The gate worked exactly as intended,
+the run aborted before the symlink switch, the live site was untouched and the previous release
+was verified byte-identical afterwards. The script now unlinks the regular files by hand, which
+is what breaks the hardlink, and then extracts normally. **Any future delta release that touches
+files inside an existing directory needs this form, not `--unlink-first`.**
 
-1. Back up the database the way `2026-09-13 Site foundation` did
-   (`/var/backups/ishtar-app/db-predeploy-<stamp>.sqlite3`).
-2. Ship `server/ishtar` with `git archive`, strip CRs, run `sudo sh /tmp/deploy-app.sh`. Confirm
-   `showmigrations readings` shows 0001–0004 all applied and `/api/health/` returns
-   `{"ok": true}` **before** touching the static release.
-3. Release the static files as a `cp -al` hardlink copy of the current release with only the
-   changed and added files replaced, gated on the live hashes and on `current` pointing at the
-   expected previous release, then switch `current` with `mv -Tf` and roll back on any failure —
-   the same script shape the site-foundation and celestial-hero deploys used.
-4. Verify over HTTPS: `/sky/` returns 200 and so do `sky-calendar-engine.js`,
-   `sky-calendar-text.js`, `sky-calendar.js` and `sky-calendar.css`; `/rooms.js` returns 200 and
-   its body contains `transit-calendar`.
-5. Verify in a browser, signed in: the four tabs render; saving a month from "My transits"
-   returns 201 and the journal row reads `<Month> <Year> · <n> exact contacts`; the **Sky** chip
-   filters the journal to it; "Open" returns to `/sky/?reading=<id>` with the same month and the
-   same contact count. The only console error should be the signed-out `/api/account/` 401.
-6. Once confirmed, replace this entry with a normal dated record of what actually happened, the
-   same way every entry below it does.
+Change: `/sky/` gains the `#sky-calendar` section below the daily horoscope, with four tabs —
+Moon now, this month, retrogrades, and a personal transit calendar saveable to the journal.
+New files `sky-calendar-engine.js`, `sky-calendar-text.js`, `sky-calendar.js`, `sky-calendar.css`.
+Changed: `sky/index.html`, `account/index.html` (the Sky filter chip), `rooms.js`, and the
+`rooms.js` cache key on all eight pages. No nginx, DNS or storage change; the `try_files` rule and
+the `Cache-Control: no-cache` header from the site-foundation deploy already cover this release.
+
+Validation: all eight pages plus the four new files and `rooms.js` return 200 over HTTPS;
+`rooms.js?v=sky-1` confirmed present on every one of the eight pages, which is what keeps the
+journal's Open working for a saved calendar; `/sky/` serves `id="sky-calendar"`,
+`data-room="transit-calendar"` and the new scripts; `/account/` serves the Sky chip; `rooms.js`
+maps `transit-calendar` to `/sky/` with its label. In a browser at ishtarinsights.com all four
+tabs render, the Moon headline reads the current phase and sign with the instant in the reader's
+own zone, and the only console error is the signed-out `/api/account/` 401.
+
+**Deferred, recorded in the spec:** month void bands. `voidPeriods` is implemented and tested but
+has no product caller; the Moon tab shows the current void state, the month grid does not.
 
 ## 2026-09-13 Site foundation: hub, seven topic pages, registry-driven journal
 
