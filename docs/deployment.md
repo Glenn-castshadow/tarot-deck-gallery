@@ -1,5 +1,31 @@
 # VPS deployment
 
+## 2026-09-14 Composite and Davison relationship charts
+
+Deployed `43804ea`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-relationship-charts-43804ea`, a `cp -al` hardlink
+copy of `20260914-chart-depth-8e09eac` with three files replaced (`charts/index.html`,
+`celestial-extras.js`, `celestial-extras.css`) and two added (`relationship-charts-engine.js`,
+`relationship-charts.js`). Gated on `current` and on the sha256 of the three replaced files.
+Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-chart-depth-8e09eac /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: a Synastry / Composite / Davison switch in the Two skies tab, reusing the same partner.
+The composite is a chart of midpoints; the Davison is the sky at the midpoint of the two UTC birth
+instants, from the mean latitude and the near-midpoint longitude, in the house system the reader
+chose. Conventions and tests: `docs/EXTENDED-ATLAS.md`. Suite 480 to 500.
+
+Cache keys: `celestial-extras.js?v=4`, `celestial-extras.css?v=3`, both new files at `?v=1`; only
+`/charts/` loads them.
+
+Validation after the switch: all eight pages and the four assets return 200 over HTTPS; the four
+keys confirmed on `/charts/`; the served scripts carry the switch, the engine and the sources. In a
+browser at ishtarinsights.com with the sample pair, Composite and Davison each render a wheel and
+twelve placement rows with no lunar nodes, the Davison names 1991-09-09 11:52 UTC at 46.11° N,
+37.07° W, and switching back to Synastry restores the two-ring view; no console errors beyond the
+guest account 401s.
+
 ## 2026-09-14 Chart depth: profections, the Lot, minor aspects and patterns
 
 Deployed `8e09eac`. **Static only** — no backend change, no migration, no service restart.
