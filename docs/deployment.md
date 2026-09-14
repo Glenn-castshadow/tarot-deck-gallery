@@ -1,5 +1,39 @@
 # VPS deployment
 
+## 2026-09-14 Chart depth: profections, the Lot, minor aspects and patterns
+
+Deployed `8e09eac`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-chart-depth-8e09eac`, a `cp -al` hardlink copy of
+`20260914-tarot-draws-80328c0` with fifteen files replaced and two added (`chart-depth-engine.js`,
+`chart-depth.js`). Gated on `current` pointing at the expected previous release and on the sha256
+of all fifteen replaced files, which matched `main` before the merge with CRs stripped. Previous
+release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-tarot-draws-80328c0 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: a Traditional techniques section under the natal report on `/charts/` — the annual
+profection for a chosen year with its time lord, the sect-sensitive Part of Fortune, and aspect
+patterns read from majors and minors together. Minor aspects in a separate `chart.minorAspects`,
+with toggles on the report's aspect list and on the explorer wheel. `ClassicalEngine.sect` now
+tests the Sun above the horizon rather than houses 7–12, which was wrong on Whole Sign charts
+near the angles. Suite 456 to 480. Methods: `docs/NATAL-CHART.md`.
+
+Replaced: `index.html`, `charts/`, `eastern/`, `numerology/`, `sky/`, `account/`, `divination/`
+and `tarot/index.html`, `natal-engine.js`, `natal-chart.js`, `natal-room.js`, `sky-chart.js`,
+`classical-engine.js`, `mobile-sections.js`, `celestial-room.css`. Most pages changed only for
+cache keys: `natal-engine.js?v=chart-depth-1` (five pages), `mobile-sections.js?v=data-fold-4`
+(seven pages), `celestial-room.css?v=chart-depth-2` (three), `natal-room.js?v=8` (three),
+`natal-chart.js` and `sky-chart.js` at `?v=chart-depth-2`, `classical-engine.js?v=2`,
+`chart-depth-engine.js?v=1`, `chart-depth.js?v=2`.
+
+Validation after the switch: all eight pages and the nine changed or new assets return 200 over
+HTTPS; every bumped key confirmed on every page that loads the file; the served scripts carry the
+minor aspects, the three techniques, the year selector, the Valens source line, the horizon sect
+test and the phone fold. In a browser at ishtarinsights.com, a guest profile born 1 December 1990
+14:30 London renders the section on 14 September 2026 as age 35 (the 2025 profection, since the
+birthday is still to come), 12th house Aries with Mars, the day formula, and Sagittarius and
+Capricorn stelliums plus a T-square; no console errors beyond the guest account 401s.
+
 ## 2026-09-14 Tarot draws and reading options
 
 Deployed `80328c0`. **Static only** — no backend change, no migration, no service restart.
