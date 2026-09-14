@@ -251,8 +251,18 @@ const SkyCalendar = (() => {
             <p class="sc-note">No void period falls in this month.</p>
           </section>`;
       }
+      // Bars are scaled to duration so a stacked list supports the comparison it invites: the
+      // month's longest band fills the row and the rest are drawn against it. The scale is the
+      // DISPLAYED MONTH, not a fixed number of hours, because within-month comparison is what a
+      // reader is doing here and spans range from minutes to two days. That means a bar changes
+      // meaning when you step months, so the scale is stated above the list rather than left to
+      // be inferred. MIN_BAR keeps a very brief void visible instead of a hairline; the exact
+      // figure is always in the row's own sentence, so the floor costs no information.
+      const MIN_BAR = 2;
+      const longest = Math.max(...bands.map(b => +new Date(b.end) - +new Date(b.start)), 1);
       const rows = bands.map(band => {
         const start = +new Date(band.start), end = +new Date(band.end), span = end - start;
+        const width = Math.max(MIN_BAR, span / longest * 100);
         const modernAt = +new Date(band.modernStart);
         const modernLeft = span > 0 ? Math.max(0, Math.min(100, (modernAt - start) / span * 100)) : 0;
         const hours = span / 3600000;
@@ -262,7 +272,7 @@ const SkyCalendar = (() => {
               <strong>Moon in ${esc(band.sign)}</strong>
               <span>${esc(stamp(band.start))} → ${esc(stamp(band.end))}</span>
             </div>
-            <div class="sc-void-band" role="img" aria-label="Moon in ${esc(band.sign)}. The classical void runs from ${esc(stamp(band.start))} to ${esc(stamp(band.end))}${together ? ', and the modern void runs with it' : `; the modern void is the shorter stretch inside it, from ${esc(stamp(band.modernStart))} to the same end`}.">
+            <div class="sc-void-band" style="width:${width.toFixed(2)}%" role="img" aria-label="Moon in ${esc(band.sign)}. The classical void runs from ${esc(stamp(band.start))} to ${esc(stamp(band.end))}${together ? ', and the modern void runs with it' : `; the modern void is the shorter stretch inside it, from ${esc(stamp(band.modernStart))} to the same end`}.">
               <span class="sc-void-modern" style="left:${modernLeft.toFixed(2)}%;right:0"></span>
             </div>
             <p class="sc-voidnote">${hours < 1 ? 'Under an hour' : `${hours.toFixed(1)} hours`} by the classical rule${together
@@ -270,9 +280,11 @@ const SkyCalendar = (() => {
               : `, ${((end - modernAt) / 3600000).toFixed(1)} by the modern one.`}</p>
           </li>`;
       }).join('');
+      const longestHours = longest / 3600000;
       return `<section class="sc-voids" aria-labelledby="sc-voids-title">
           <h4 id="sc-voids-title">Void-of-course periods</h4>
           <p class="sc-voids-intro">${esc(T.voidFraming.body)}</p>
+          <p class="sc-voids-scale">Bars are drawn to length against this month's longest period: the widest bar is ${esc(longestHours < 1 ? 'under an hour' : `${longestHours.toFixed(1)} hours`)}. The scale changes from month to month.</p>
           <ul class="sc-voidlist">${rows}</ul>
         </section>`;
     }

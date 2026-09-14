@@ -160,3 +160,9 @@
   .sc-voids { margin-top: 20px; }
   .sc-voidhead { font-size: 12.5px; }
 }
+.sc-voids-scale { font-size: 12.5px; line-height: 1.7; color: #9fb6b4; margin: 0 0 16px; }
+/* The bar's own width is set inline per row, so it must not be stretched by the flex/grid
+   parent; let the inline width stand. The 2% floor the renderer applies is 7px inside a 375px
+   phone column, so a pixel floor keeps the briefest void legible at every width. The exact
+   duration is always in the row's sentence, so neither floor costs information. */
+.sc-voidrow .sc-void-band { max-width: 100%; min-width: 12px; }

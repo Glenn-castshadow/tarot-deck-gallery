@@ -105,7 +105,15 @@ cost about a second of aspect searching, so the neighbours' work would be paid a
 away. For the same reason `monthEvents`' `voids` is a **lazy, memoised getter** — the month view
 reads three UTC months for its events and must not be charged three seconds for bands it never
 looks at. The UI caches each month's bands the way it already caches each month's events, so
-stepping back to a month already seen is free. One row per band shows the sign, both starts, the shared
+stepping back to a month already seen is free. **Bars are drawn to length.** The month's longest band fills its row and the rest are scaled
+against it, so a stacked list supports the comparison it invites. The scale is the *displayed
+month* rather than a fixed number of hours, because within-month comparison is what a reader is
+doing here and spans run from minutes to over two days; that means a bar changes meaning when the
+reader steps months, so the scale is stated above the list instead of left to be inferred. Two
+floors keep the briefest void legible — 2% in the renderer and 12px in the stylesheet — and cost
+no information, since the exact duration is always in the row's own sentence.
+
+One row per band shows the sign, both starts, the shared
 end and a proportional bar with the modern stretch inside it — the same shape as the Moon tab,
 since the modern void is contained in the classical one rather than competing with it. The four
 day-cell marks and their legend are deliberately unchanged: a fifth mark on roughly half the
@@ -384,7 +392,7 @@ Run the whole suite:
 node --test tests/*.test.cjs
 ```
 
-which is **417 tests passing** at the time of writing. Note the glob: `node --test tests/` fails
+which is **418 tests passing** at the time of writing. Note the glob: `node --test tests/` fails
 on Node 24 with `MODULE_NOT_FOUND`, so the path must be expanded by the shell.
 
 The three sky-specific files:
@@ -392,7 +400,7 @@ The three sky-specific files:
 ```
 node --test tests/sky-calendar.test.cjs        # 36 tests (engine, incl. the fixture comparison)
 node --test tests/sky-calendar-text.test.cjs   # 3 tests  (copy tables)
-node --test tests/sky-calendar-ui.test.cjs     # 23 tests (section logic, in `vm` with a stub DOM)
+node --test tests/sky-calendar-ui.test.cjs     # 24 tests (section logic, in `vm` with a stub DOM)
 ```
 
 `tests/sky-calendar-ui.test.cjs` has no DOM library and no new dependency: it loads

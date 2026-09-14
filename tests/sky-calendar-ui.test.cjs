@@ -598,3 +598,35 @@ test('a band opening in the previous UTC month still reaches this month', () => 
   assert.ok(app.panels.month.innerHTML.split('sc-voidrow').length - 1 === straddling.bands.length,
     `month ${straddling.month} dropped the band opening ${carried.start}`);
 });
+
+test('band bars are scaled to duration within the month, with a floor for the briefest', () => {
+  const app = mount({clock: new Date('2026-03-15T12:00:00Z')});
+  app.click({scTab: 'month'});
+  const html = app.panels.month.innerHTML;
+
+  // Each row's bar carries its own width. Pull them in document order.
+  const widths = [...html.matchAll(/class="sc-void-band"[^>]*style="width:([\d.]+)%/g)].map(m => Number(m[1]));
+  const bands = localBands(2026, 3);
+  assert.equal(widths.length, bands.length, 'not every band bar carries a width');
+
+  const spans = bands.map(b => new Date(b.end) - new Date(b.start));
+  const longest = Math.max(...spans);
+  assert.ok(spans.some(s => s < longest * 0.5), 'fixture month has no short band to scale against');
+
+  // The longest band fills the row; nothing exceeds it.
+  assert.equal(Math.max(...widths), 100, 'the longest band does not fill the row');
+  // The point of the change: a regression to one width for every row must fail here. Every
+  // other assertion below is satisfied by an all-100 array, so this is the one that binds.
+  assert.ok(new Set(widths).size > 1, 'every bar is the same width -- the bars are not scaled');
+  assert.ok(Math.min(...widths) < 100, 'no bar is narrower than the full row');
+  // Order is preserved: a longer band never renders narrower than a shorter one.
+  const bySpan = spans.map((s, i) => [s, widths[i]]).sort((a, b) => a[0] - b[0]);
+  for (let i = 1; i < bySpan.length; i++) {
+    assert.ok(bySpan[i][1] >= bySpan[i - 1][1],
+      `a ${bySpan[i][0] / 3600000}h band is narrower than a ${bySpan[i - 1][0] / 3600000}h one`);
+  }
+  // A very brief void must stay visible rather than collapsing to a hairline.
+  assert.ok(Math.min(...widths) >= 2, `briefest bar is ${Math.min(...widths)}%, below the floor`);
+  // The scale has to be stated, or a reader stepping months sees bars change meaning silently.
+  assert.ok(/widest bar/i.test(html), 'the strip does not state its scale');
+});
