@@ -1,5 +1,45 @@
 # VPS deployment
 
+## 2026-09-14 Eastern depth: the Chinese year, the annual pillar and Gochar
+
+Deployed `3c225dd`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-eastern-depth-3c225dd`, a `cp -al` hardlink copy of
+`20260914-relationship-charts-43804ea` with twelve files replaced and one added (`chinese-year.js`).
+Gated on `current` and on the sha256 of all twelve replaced files. Previous release retained for
+rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-relationship-charts-43804ea /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change, the last of C3 astrology depth:
+- the Chinese year under the Chinese zodiac portrait on `/eastern/` — how a chosen lunar year's
+  animal relates to the birth animal, every traditional relation that applies;
+- the BaZi annual pillar (流年) in the Four Pillars tab on `/charts/` — the sexagenary year from
+  Li Chun, its Ten God and hidden stems (BaZi stays on `/charts/`, where `rooms.js` already routes it);
+- Gochar, a fifth Jyotish tab on `/eastern/` — the day's sidereal grahas at 12:00 UTC counted
+  whole-sign from the natal Moon, the classical supportive table, no Vedha, a Sade Sati note.
+
+Fixes to live content: five Ten God descriptions stated polarity the wrong way round; Jyotish tables
+on `/eastern/` ran off-screen on phones (the shared `.cx-table-wrap` overflow rule is not loaded
+there, now re-declared in `jyotish.css`). Suite 500 to 518. Conventions: `docs/BIRTHDAY-INSIGHTS.md`,
+`docs/EXTENDED-ATLAS.md`, `docs/JYOTISH.md`.
+
+Cache keys: `celestial-room.css?v=chinese-year-1` (`/charts/`, `/eastern/`, `/numerology/`);
+`celestial-extras-engine.js?v=3`, `celestial-extras.js?v=5`, `celestial-extras.css?v=4` (`/charts/`);
+`jyotish-engine.js?v=2`, `jyotish-text.js?v=2`, `jyotish.js?v=2`, `jyotish.css?v=3`,
+`chinese-room.js?v=3`, `chinese-year.js?v=1` (`/eastern/`).
+
+The deploy gate first carried a check that would have rolled back a correct release: it looked for
+the Gochar tab markup in `/eastern/`'s HTML, but `jyotish.js` renders it. Caught by checking every
+needle against the commit before running; the needle moved to `/jyotish.js`.
+
+Validation after the switch: all eight pages and the ten assets return 200 over HTTPS; every key
+confirmed on its pages; the served scripts carry the relations, the annual pillar, the Gochar
+engine and tab, the corrected polarity text and the table overflow rule. In a browser at
+ishtarinsights.com with a guest profile born 21 July 1990 in London: the Chinese year for 2026
+reads Horse against Horse (same animal and self-punishment); Gochar for 2026-09-14 counts from a
+Mithuna Moon with Saturn in Meena in the 10th; the annual pillar for a Ding Day Master reads 丙午,
+Rob Wealth, Li Chun 3 February 2026 20:01 UTC. No console errors.
+
 ## 2026-09-14 Composite and Davison relationship charts
 
 Deployed `43804ea`. **Static only** — no backend change, no migration, no service restart.
