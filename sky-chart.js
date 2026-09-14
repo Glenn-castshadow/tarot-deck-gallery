@@ -19,7 +19,7 @@ const SkyChart = (() => {
   function attach({dialog,signs,themes}) {
     const canvas=dialog.querySelector('.sky-zoom-canvas'), viewport=dialog.querySelector('.sky-zoom-viewport'), detail=dialog.querySelector('.sky-sign-detail');
     let birthName,selectedName,zoom=100,opener,natalModel=null,natalSelection={kind:'point',key:'Sun'};
-    const exportButton=dialog.querySelector('[data-natal-export]'),aspectToggle=dialog.querySelector('#sky-show-aspects');
+    const exportButton=dialog.querySelector('[data-natal-export]'),aspectToggle=dialog.querySelector('#sky-show-aspects'),minorToggle=dialog.querySelector('#sky-show-minor-aspects');
     const label=dialog.querySelector('#sky-zoom-level'), plus=dialog.querySelector('[data-sky-zoom="in"]'), minus=dialog.querySelector('[data-sky-zoom="out"]');
     function setZoom(value) {
       const oldSize=parseFloat(canvas.style.width) || Math.min(viewport.clientWidth,viewport.clientHeight); zoom=Math.max(100,Math.min(300,value));
@@ -32,9 +32,9 @@ const SkyChart = (() => {
     }
     function paint() {
       if(natalModel) {
-        canvas.innerHTML=NatalChart.renderWheel(natalModel,natalSelection,true,aspectToggle.checked);
+        canvas.innerHTML=NatalChart.renderWheel(natalModel,natalSelection,true,aspectToggle.checked,minorToggle.checked);minorToggle.disabled=!aspectToggle.checked;
         const choice=(kind,key,text)=>`<option value="${kind}:${key}"${natalSelection.kind===kind&&natalSelection.key===String(key)?' selected':''}>${text}</option>`;
-        detail.innerHTML=`<label class="natal-detail-picker">Explore a placement or house<select id="natal-detail-select"><optgroup label="Planets & chart angles">${[...natalModel.points,...natalModel.axes].map(point=>choice('point',point.name,`${point.name} · ${point.sign}`)).join('')}</optgroup><optgroup label="Houses">${natalModel.cusps.map((cusp,index)=>choice('house',String(index+1),`House ${index+1}`)).join('')}</optgroup><optgroup label="Aspects">${natalModel.aspects.map(aspect=>choice('aspect',aspect.id,`${aspect.a} ${aspect.type.toLowerCase()} ${aspect.b}`)).join('')}</optgroup></select></label>${NatalChart.detail(natalModel,natalSelection)}`;
+        detail.innerHTML=`<label class="natal-detail-picker">Explore a placement or house<select id="natal-detail-select"><optgroup label="Planets & chart angles">${[...natalModel.points,...natalModel.axes].map(point=>choice('point',point.name,`${point.name} · ${point.sign}`)).join('')}</optgroup><optgroup label="Houses">${natalModel.cusps.map((cusp,index)=>choice('house',String(index+1),`House ${index+1}`)).join('')}</optgroup><optgroup label="Aspects">${[...natalModel.aspects,...(minorToggle.checked?natalModel.minorAspects||[]:[])].map(aspect=>choice('aspect',aspect.id,`${aspect.a} ${aspect.type.toLowerCase()} ${aspect.b}`)).join('')}</optgroup></select></label>${NatalChart.detail(natalModel,natalSelection)}`;
         return;
       }
       const index=signs.findIndex(sign=>sign.name===selectedName), sign=signs[index], next=signs[(index+1)%signs.length];
@@ -64,10 +64,13 @@ const SkyChart = (() => {
     dialog.addEventListener('close',()=>opener?.focus({preventScroll:true}));
     dialog.querySelectorAll('[data-sky-zoom]').forEach(button=>button.addEventListener('click',()=>setZoom(button.dataset.skyZoom==='fit'?100:zoom+(button.dataset.skyZoom==='in'?25:-25))));
     new ResizeObserver(()=>{if(dialog.open) setZoom(zoom);}).observe(viewport);
-    exportButton.addEventListener('click',()=>{if(natalModel) NatalChart.download(natalModel,natalSelection,aspectToggle.checked);});
+    exportButton.addEventListener('click',()=>{if(natalModel) NatalChart.download(natalModel,natalSelection,aspectToggle.checked,minorToggle.checked);});
     aspectToggle.addEventListener('change',paint);
+    const isMinor=selection=>selection.kind==='aspect'&&Boolean(natalModel?.minorAspects?.some(aspect=>aspect.id===selection.key));
+    // Hiding the minors while one is selected would leave the picker and wheel without it.
+    minorToggle.addEventListener('change',()=>{if(!minorToggle.checked&&isMinor(natalSelection)) natalSelection={kind:'point',key:'Sun'};paint();});
     detail.addEventListener('change',event=>{if(event.target.id==='natal-detail-select'){const [kind,key]=event.target.value.split(':');natalSelection={kind,key};paint();detail.querySelector('#natal-detail-select').focus({preventScroll:true});}});
-    function openWindow(button) {opener=button;exportButton.hidden=!natalModel;aspectToggle.closest('label').hidden=!natalModel;paint();dialog.showModal();setZoom(100);}
+    function openWindow(button) {opener=button;exportButton.hidden=!natalModel;aspectToggle.closest('label').hidden=!natalModel;minorToggle.closest('label').hidden=!natalModel;paint();dialog.showModal();setZoom(100);}
     return {
       open(name,button) {
         natalModel=null;birthName=name;selectedName=name;
@@ -77,7 +80,7 @@ const SkyChart = (() => {
         openWindow(button);
       },
       openNatal(model,button,selection={kind:'point',key:'Sun'}) {
-        natalModel=model;natalSelection=selection;aspectToggle.checked=true;
+        natalModel=model;natalSelection=selection;aspectToggle.checked=true;minorToggle.checked=isMinor(selection);
         dialog.querySelector('#sky-dialog-title').textContent='Your natal chart';
         dialog.querySelector('.sky-chart-legend').textContent='Select a planet or house for its interpretation. Zoom in, then scroll or swipe to move around.';
         dialog.querySelector('.sky-explorer-note').textContent=`Tropical zodiac · ${NatalChart.systemNames[model.houseSystem]} houses · ${model.timeZone} · ${model.date.slice(0,16).replace('T',' ')} UTC. Mean lunar nodes. Interpretations are for reflection.`;

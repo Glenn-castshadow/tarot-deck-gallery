@@ -111,7 +111,7 @@ Regiomontanus is now available wherever `NatalEngine.calculate`/`chartAtInstant`
 system, but the **natal chart's own house-system default is unchanged (Placidus)** — Horary is
 the only feature that selects Regiomontanus, and it always does, since Lilly used it.
 
-**Sect.** A day chart has the Sun in houses 7–12 by the chart's own cusps; otherwise night.
+**Sect.** A day chart has the Sun above the horizon, measured from the Ascendant (the half of the ecliptic from the Descendant round to the Ascendant); otherwise night. Whenever house 1 begins at the Ascendant, as it does in Regiomontanus, that is the same as houses 7–12.
 Sect governs which triplicity ruler applies and which dignities apply to the significators.
 
 **Orbs and moieties in practice.** `HoraryEngine.applyingAspect` finds the nearest of the five

@@ -57,15 +57,21 @@
   let natalModel = null;
   let natalView = "placements";
   let natalAspectFilter = "all";
+  let natalShowMinor = false;
+  // The chosen profection year survives report refreshes and re-renders of the same profile;
+  // it resets only when the birth profile itself changes.
+  let profectionYear = null;
+  let profectionProfileKey = null;
+  const chartDepth = () => natalModel && typeof ChartDepth !== "undefined" ? ChartDepth.render(natalModel,{year:profectionYear}) : "";
   function refreshNatalReport() {
-    if(natalModel) birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,natalAspectFilter);
+    if(natalModel) birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor);
   }
-  // Include every major aspect in print, preserving the on-screen filter afterward.
+  // Print every aspect type the minor-aspect toggle lists, preserving the on-screen filter afterward.
   let natalPrintFocus = false;
   window.addEventListener("beforeprint", () => {
     if (!natalModel) return;
     natalPrintFocus = Boolean(document.activeElement?.closest(".natal-report"));
-    birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,"all");
+    birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,"all",natalShowMinor);
   });
   window.addEventListener("afterprint", () => {
     if (!natalModel) return;
@@ -84,6 +90,20 @@
     }
     const { profile: saved, natal } = state;
     if(natal.status === "ready") natalModel = natal;
+    // Keyed on the birth details alone: house system, orb and return-location edits keep the year.
+    const profileKey = [saved?.birthday, saved?.time, saved?.place].join("|");
+    if (profileKey !== profectionProfileKey || profectionYear === null) {
+      // Until the chart is ready the key stays unset, so the year is worked out again once it is.
+      profectionProfileKey = natalModel ? profileKey : null;
+      // The year whose birthday began the profection in effect today. A chart can be cast for a
+      // future birth date (profection throws RangeError); the year list starts at the birth year.
+      const birthYear = Number(parts.year) || 0;
+      profectionYear = birthYear;
+      if (natalModel && typeof ChartDepthEngine !== "undefined") {
+        try { profectionYear = birthYear + ChartDepthEngine.profection(natalModel, new Date()).age; }
+        catch (error) { if (!(error instanceof RangeError)) throw error; }
+      }
+    }
     const sign = natalModel ? zodiacSigns[natalModel.points[0].index] : zodiacFor(parts);
     const moon = natalModel ? {name:moonNames[Math.round(natalModel.moonPhase / 45) % 8],illumination:Math.round(natalModel.moonIllumination * 100)} : moonPhaseFor(parts.date);
     const decan = natalModel ? `${["1st","2nd","3rd"][Math.floor((natalModel.points[0].longitude % 30) / 10)]} decan` : decanFor(parts,sign);
@@ -110,7 +130,7 @@
       </div>
       <dl class="sky-facts">${facts.map(([label, value, detail, mark]) => `<div class="sky-fact"><dt><span class="sky-fact-symbol" aria-hidden="true">${SkyChart.glyph(mark)}</span>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
       <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><span class="lens-ornament" aria-hidden="true">${["☌","✷","☾"][index]}</span><div><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></div></article>`).join("")}</div>
-      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
+      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor) + chartDepth() : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
     </div>
     <p class="birthday-privacy">Your birthday details are saved in this browser.</p>`;
   });
@@ -125,6 +145,21 @@
       const skyButton = event.target.closest("[data-open-sky]");
       if (skyButton) { skyExplorer.open(skyButton.dataset.openSky,skyButton); return; }
     });
-    birthdayOutput.addEventListener("change",event=>{if(event.target.id === "natal-aspect-filter") {natalAspectFilter=event.target.value;refreshNatalReport();birthdayOutput.querySelector("#natal-aspect-filter").focus({preventScroll:true});}});
+    birthdayOutput.addEventListener("change",event=>{
+      if(!natalModel) return;
+      if(event.target.id === "natal-aspect-filter") {natalAspectFilter=event.target.value;refreshNatalReport();birthdayOutput.querySelector("#natal-aspect-filter").focus({preventScroll:true});return;}
+      if(event.target.id === "natal-minor-aspects") {
+        natalShowMinor=event.target.checked;
+        if(!natalShowMinor && NatalEngine.minorAspectTypes.some(type=>type.name===natalAspectFilter)) natalAspectFilter="all";
+        refreshNatalReport();birthdayOutput.querySelector("#natal-minor-aspects").focus({preventScroll:true});return;
+      }
+      if(event.target.matches("[data-profection-year]")) {
+        const depth=birthdayOutput.querySelector(".chart-depth");
+        if(!depth) return;
+        profectionYear=Number(event.target.value);
+        depth.outerHTML=chartDepth();
+        birthdayOutput.querySelector("[data-profection-year]")?.focus({preventScroll:true});
+      }
+    });
   }
 })();

@@ -108,9 +108,10 @@ first `ishtar-account-change` fires.
 `natal-engine.js` → `natal-chart.js` → `sky-chart.js` → `astrocartography-engine.js` →
 `astrocartography.js` → `bi-wheel.js` → `celestial-extras-engine.js` →
 `celestial-extras.js` → `chart-in-time-engine.js` → `chart-in-time-text.js` →
-`chart-in-time.js` → `classical-engine.js` → `horary-engine.js` → `horary-text.js` →
-`horary-chart.js` → `horary.js` → `birth-lore.js` → `birth-profile.js` →
-`birth-form.js` → `natal-room.js` → `mobile-sections.js`.
+`chart-in-time.js` → `classical-engine.js` → `chart-depth-engine.js` →
+`horary-engine.js` → `horary-text.js` → `horary-chart.js` → `horary.js` →
+`birth-lore.js` → `birth-profile.js` → `birth-form.js` → `chart-depth.js` →
+`natal-room.js` → `mobile-sections.js`.
 
 **`/eastern/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `newsletter.js` → `birthday-insights.js` →

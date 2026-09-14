@@ -96,6 +96,7 @@ window.MobileSections = (() => {
     document.querySelectorAll('.sky-facts').forEach(el => wrap([el], 'Your sky at a glance', {key: 'sky-facts', level: 4}));
     document.querySelectorAll('.horoscope-lenses').forEach(el => wrap([el], 'Explore your sky reading', {key: 'sky-lenses', level: 4}));
     document.querySelectorAll('.natal-report').forEach(el => wrap([el], 'Your natal chart in detail', {key: 'natal-report', level: 4, subtitle: 'Placements, houses & aspects'}));
+    document.querySelectorAll('.chart-depth').forEach(el => wrap([el], 'Traditional techniques', {key: 'chart-depth', level: 4, subtitle: 'Profection, the Lot & patterns'}));
     // Moving a focused control into its disclosure can otherwise drop keyboard focus.
     if (focused && focused !== document.body && focused.isConnected &&
       focused !== document.activeElement && !focused.closest('[hidden]')) focused.focus({preventScroll: true});

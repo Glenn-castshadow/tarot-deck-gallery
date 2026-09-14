@@ -187,6 +187,28 @@
 .sky-explorer-prompt { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--atlas-line); }
 .sky-explorer-prompt strong { display: block; margin-bottom: 9px; color: var(--atlas-teal); font-size: 12px; }
 .sky-explorer-note { flex: 0 0 auto; margin: 0; padding: 13px 26px; border-top: 1px solid var(--atlas-line); color: #b2c5d0; font-size: 11px; line-height: 1.6; }
+.natal-aspect-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 25px; }
+.natal-aspect-filter:has(input[type="checkbox"]) { min-height: 44px; gap: 9px; }
+.natal-aspect-filter input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--atlas-gold); }
+.natal-report input[type="checkbox"]:focus-visible, .chart-depth select:focus-visible { outline: 2px solid var(--atlas-teal); outline-offset: 3px; }
+.sky-aspect-toggles { display: flex; flex-wrap: wrap; justify-content: center; column-gap: 22px; }
+.sky-aspect-toggle:has(input:disabled) { opacity: .55; }
+.chart-depth { margin-top: 35px; padding-top: 28px; border-top: 1px solid var(--atlas-line); min-width: 0; }
+.chart-depth > header h4 { margin: 9px 0 0; color: var(--cream); font: 600 34px/1.15 "Playfair Display", serif; }
+.chart-depth-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(240px,100%),1fr)); gap: 0 25px; margin-top: 22px; }
+.chart-depth-part { min-width: 0; padding: 20px 0 8px; border-top: 1px solid var(--atlas-line); }
+.chart-depth-part h5 { margin: 0 0 16px; color: var(--atlas-gold); font: 24px "Playfair Display", serif; }
+.chart-depth-part p { margin: 12px 0; color: #d4e3e5; font-size: 13px; line-height: 1.7; }
+.chart-depth-part .natal-panel-hint { color: #b8cdd5; font-size: 12px; }
+/* Cells narrower than a whole sign name ("Sagittarius") drop to fewer columns rather than splitting the word. */
+.chart-depth-part dl { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(96px,100%),1fr)); gap: 12px; margin: 16px 0; padding: 14px 0; border-block: 1px solid var(--atlas-line); }
+.chart-depth-part dt { color: var(--atlas-teal); font: 10px/1.4 "DM Mono", monospace; letter-spacing: .05em; text-transform: uppercase; }
+.chart-depth-part dd { margin: 6px 0 0; color: var(--cream); font: 18px/1.3 "Playfair Display", serif; }
+.chart-depth-patterns { margin: 0; padding: 0; list-style: none; }
+.chart-depth-patterns li { padding: 12px 0; border-bottom: 1px solid var(--atlas-line); }
+.chart-depth-patterns strong { display: block; color: var(--cream); font-size: 14px; font-weight: 500; }
+.chart-depth-patterns span { display: block; margin-top: 6px; color: var(--atlas-gold); font: 12px/1.5 "DM Mono", monospace; }
+.chart-depth-patterns small { display: block; margin-top: 6px; color: #b9d0d7; font-size: 11px; line-height: 1.6; }
 @media (max-width: 1000px) {
   #birthday-room { grid-template-columns: 1fr; gap: 27px; padding: 26px; }
   #birthday-room .birthday-intro { position: relative; padding-left: 82px; }
@@ -233,6 +255,7 @@
   .natal-report-nav { gap: 5px; }
   .natal-report-nav button { padding: 9px 11px; font-size: 12px; }
   .natal-house-grid, .natal-aspect-grid, .natal-balance-grid { grid-template-columns: 1fr; }
+  .chart-depth > header h4 { font-size: 28px; }
   .natal-balance-grid { gap: 14px; }
 }
 @media (max-width: 480px) {

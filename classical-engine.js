@@ -91,7 +91,9 @@ const ClassicalEngine = (() => {
 
   function sect(chart) {
     const sun = chart.points.find(p => p.name === 'Sun');
-    return natal.houseFor(sun.longitude, chart.cusps) >= 7 ? 'day' : 'night';
+    // Above the horizon is the half of the ecliptic from the Descendant round to the Ascendant: the
+    // same as houses 7–12 when house 1 begins at the Ascendant, and still right for Whole Sign.
+    return natal.mod(sun.longitude - chart.angles.asc) >= 180 ? 'day' : 'night';
   }
 
   function accidental(point, chart) {

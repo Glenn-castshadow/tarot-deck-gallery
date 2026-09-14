@@ -9,6 +9,11 @@ const NatalEngine = (() => {
   const signGlyphs=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
   const elements=['Fire','Earth','Air','Water'], qualities=['Cardinal','Fixed','Mutable'];
   const aspectTypes=[{name:'Conjunction',angle:0,orb:8,symbol:'☌',tone:'fusion'},{name:'Sextile',angle:60,orb:4,symbol:'⚹',tone:'opportunity'},{name:'Square',angle:90,orb:6,symbol:'□',tone:'friction'},{name:'Trine',angle:120,orb:6,symbol:'△',tone:'flow'},{name:'Opposition',angle:180,orb:8,symbol:'☍',tone:'balance'}];
+  // Minor aspects. A fixed 2° orb that the chart's orb scale deliberately does not multiply: the
+  // scale is a statement about how loose the five major aspects are, and these are already the
+  // fine-grained layer. Kept in their own table so every existing consumer of aspectTypes, and of
+  // chart.aspects, still sees exactly the five majors.
+  const minorAspectTypes=[{name:'Semi-sextile',angle:30,orb:2,symbol:'⚺',tone:'adjustment'},{name:'Semi-square',angle:45,orb:2,symbol:'∠',tone:'strain'},{name:'Sesquiquadrate',angle:135,orb:2,symbol:'⚼',tone:'strain'},{name:'Quincunx',angle:150,orb:2,symbol:'⚻',tone:'adjustment'}];
   function placement(longitude) {
     const value=mod(longitude), index=Math.floor(value/30), minutes=Math.floor((value%30)*60+1e-7);
     return {index,sign:signNames[index],glyph:signGlyphs[index],element:elements[index%4],quality:qualities[index%3],degrees:`${Math.floor(minutes/60)}°${String(minutes%60).padStart(2,'0')}′`,longitude:value};
@@ -90,15 +95,16 @@ const NatalEngine = (() => {
     return null;
   }
   function longitudeAt(name,date) {return astro.Ecliptic(astro.GeoVector(name,date,true)).elon;}
-  function aspectsFor(points,orbScale=1) {
+  function aspectsFor(points,orbScale=1,{minor=false}={}) {
     const aspects=[];
+    const types=minor?[...aspectTypes.map(t=>({...t,scaled:true})),...minorAspectTypes.map(t=>({...t,scaled:false}))]:aspectTypes.map(t=>({...t,scaled:true}));
     for(let i=0;i<points.length;i++) for(let j=i+1;j<points.length;j++) {
       const a=points[i],b=points[j];
       // The nodal axis is inherently opposite; report its contacts with planets instead.
       if((a.kind==='node' && b.kind==='node') || (a.kind==='angle' && b.kind==='angle')) continue;
       const separation=Math.abs(delta(a.longitude,b.longitude));
-      for(const type of aspectTypes) {
-        const orb=Math.abs(separation-type.angle),limit=type.orb*orbScale;
+      for(const type of types) {
+        const orb=Math.abs(separation-type.angle),limit=type.scaled?type.orb*orbScale:type.orb;
         if(orb<=limit) {
           const later=Math.abs(delta(a.longitude+a.speed/24,b.longitude+b.speed/24));
           aspects.push({id:`${a.name}-${b.name}-${type.name}`,a:a.name,b:b.name,type:type.name,angle:type.angle,symbol:type.symbol,tone:type.tone,orb,limit,applying:a.kind==='angle'||b.kind==='angle'?null:Math.abs(later-type.angle)<orb});
@@ -130,7 +136,7 @@ const NatalEngine = (() => {
     const planets=points.filter(point=>point.kind==='planet');
     const balance={elements:Object.fromEntries(elements.map(name=>[name,planets.filter(point=>point.element===name).length])),qualities:Object.fromEntries(qualities.map(name=>[name,planets.filter(point=>point.quality===name).length]))};
     const illumination=astro.Illumination('Moon',date);
-    return {status:'ready',date:date.toISOString(),timeZone:location.timeZone,location,houseSystem,notice,points,axes,cusps,angles,aspects:aspectsFor([...points,...axes.slice(0,2)],orbScale),orbScale,balance,moonIllumination:illumination.phase_fraction,moonPhase:astro.MoonPhase(date)};
+    return {status:'ready',date:date.toISOString(),timeZone:location.timeZone,location,houseSystem,notice,points,axes,cusps,angles,aspects:aspectsFor([...points,...axes.slice(0,2)],orbScale),minorAspects:aspectsFor([...points,...axes.slice(0,2)],orbScale,{minor:true}).filter(a=>minorAspectTypes.some(t=>t.name===a.type)),orbScale,balance,moonIllumination:illumination.phase_fraction,moonPhase:astro.MoonPhase(date)};
   }
   function calculate({birthday,time,location,houseSystem='placidus',fold='',orbScale=1}) {
     if(!['placidus','whole-sign','equal','regiomontanus'].includes(houseSystem)) houseSystem='placidus';
@@ -147,6 +153,6 @@ const NatalEngine = (() => {
     if(chart.status!=='ready') return chart;
     return {...chart,birthday,time,offsetMinutes:resolved.offsetMinutes,ambiguousTime:candidates.length>1};
   }
-  return {calculate,chartAtInstant,localTimeCandidates,anglesAt,houseCusps,houseFor,placement,aspectsFor,mod,delta,signNames,signGlyphs,aspectTypes};
+  return {calculate,chartAtInstant,localTimeCandidates,anglesAt,houseCusps,houseFor,placement,aspectsFor,mod,delta,signNames,signGlyphs,aspectTypes,minorAspectTypes};
 })();
 if(typeof module!=='undefined' && module.exports) module.exports=NatalEngine;

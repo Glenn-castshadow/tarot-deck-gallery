@@ -47,6 +47,9 @@ const DEPENDENCIES = {
   'chart-in-time-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'daily-horoscope-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'horary-engine.js': [ASTRONOMY, 'natal-engine.js', 'classical-engine.js'],
+  // `typeof ClassicalEngine/NatalEngine !== 'undefined' ? ... : require(...)` at module top level.
+  'chart-depth-engine.js': [ASTRONOMY, 'natal-engine.js', 'classical-engine.js'],
+  'chart-depth.js': ['chart-depth-engine.js'], // the same guarded top-level read of ChartDepthEngine.
   'jyotish-engine.js': ['natal-engine.js'],
   'sky-calendar-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'bi-wheel.js': ['natal-engine.js'],
