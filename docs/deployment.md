@@ -1,5 +1,46 @@
 # VPS deployment
 
+## 2026-09-14 Tarot draws and reading options
+
+Deployed `80328c0`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-tarot-draws-80328c0`, a `cp -al` hardlink copy of
+`20260914-card-reference-1b778e8` with four files replaced: `tarot/index.html`, `tarot.js`,
+`tarot-readings.js` and `tarot-readings.css`. Gated on `current` pointing at the expected previous
+release and on the sha256 of all four. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-card-reference-1b778e8 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: three new spreads and two reading options. A one-card draw with a clarifier, a seven-card
+relationship layout, and a thirteen-card year wheel whose months begin with the month after the
+reading. Toggles for reversals and Major Arcana only, page-only with no storage, applying to the
+next deal and deliberately not to the date-seeded daily card. Suite 439 to 456.
+
+Cache keys: `tarot.js?v=6`, `tarot-readings.js?v=accounts-5`, `tarot-readings.css?v=3`.
+`tarot-reference.js` is unchanged at `?v=1`.
+
+**No journal kind was added, and that is why this is a one-stage deploy.** The program spec
+assigned the one-card draw a kind `tarot-yesno`, which would have needed a fifth migration and a
+backend-first release. Building the draw as a two-position spread rather than a room removed the
+need: it saves as an ordinary `tarot-spread` whose `layout` is `question`, and `layout` is an
+unconstrained `CharField`, so the server needed no change at all. Nothing under `server/`, in
+`readings/kinds.py`, in the migrations or in `rooms.js` was touched.
+
+**The year spread stores the date it was dealt.** Its twelve month labels are computed from that
+rather than from the clock, so a reading saved in March and reopened in September still shows the
+months it was dealt for. `validDraw` requires the field on a year draw and rejects it on every
+other spread, which is the half that mattered: every tarot reading already saved predates the
+field, and a validator demanding it generally would have made all of them unreplayable. That was
+proven by mutation before release — forcing the rule onto every spread fails four tests, two of
+which predate this work.
+
+Validation after the switch: all eight pages and the four tarot assets return 200 over HTTPS; the
+three bumped cache keys confirmed on `/tarot/`; the served engine carries all three new spreads,
+the options and the deal-date field; the served section script passes the options and labels the
+wheel. In a browser at ishtarinsights.com the picker offers six spreads with the Celtic Cross
+still default, the year wheel deals thirteen cards labelled October 2026 through September 2027,
+and the month reaches the accessible label as well as the visible one. Only console error is the
+signed-out 401 from `/api/account/`. Conventions: `docs/FULL-READINGS.md`.
+
 ## 2026-09-14 The tarot card reference
 
 Deployed `1b778e8`. **Static only** — no backend change, no migration, no service restart.
