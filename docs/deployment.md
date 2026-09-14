@@ -1,5 +1,39 @@
 # VPS deployment
 
+## 2026-09-14 Void bar scaling and a centred nav
+
+Deployed `5384daf`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-nav-scale-5384daf`, a `cp -al` hardlink copy of
+`20260914-void-bands-75a182d` with eleven files replaced: `site-shell.css`, all eight page
+`index.html` files (for the shell cache key), `sky-calendar.js` and `sky-calendar.css`. Gated on
+the live `site-shell.css` sha256 and on `current` pointing at the expected previous release.
+Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-void-bands-75a182d /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: the month view's void bars are drawn to length against the displayed month's longest
+period rather than all being full width, with the scale stated above the list and floors of 2%
+and 12px keeping the briefest legible. The section nav is centred rather than flush left, which
+is one property on the shared shell stylesheet and therefore lands on all eight pages.
+
+Cache keys: `site-shell.css?v=3` on all eight pages, `sky-calendar.css?v=6` and
+`sky-calendar.js?v=6` on `/sky/`.
+
+**One failure, caught by the gate.** The first run aborted with
+`LIVE_SKY_SHA: parameter not set` — the release script was adapted from the previous one and two
+references to the old gate variable survived the edit. Nothing had been written: `set -eu` and
+the explicit `fail` stopped it before `cp -al`, no release directory existed afterwards, and
+`current` still pointed at the previous release. Worth noting only as evidence the gate earns its
+place even when the thing that breaks is the deploy script rather than the site.
+
+Validation: all eight pages and the three changed assets return 200 over HTTPS;
+`site-shell.css?v=3` confirmed on every one of the eight pages, which is what stops a returning
+reader keeping the old left-aligned nav from cache; the served stylesheet contains
+`justify-content: center`. In a browser at ishtarinsights.com the nav on `/charts/` sits with 96px
+of equal space each side and still marks the current page, and `/sky/` renders 14 void bands with
+14 distinct widths, the widest 706px against a stated 25.0-hour scale and the narrowest 18px at
+the floor. Only console error is the signed-out 401.
+
 ## 2026-09-14 Month void bands
 
 Deployed `75a182d`. **Static only** — no backend change, no migration, no service restart.
