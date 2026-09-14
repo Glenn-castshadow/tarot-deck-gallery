@@ -48,6 +48,7 @@ const DEPENDENCIES = {
   'daily-horoscope-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'horary-engine.js': [ASTRONOMY, 'natal-engine.js', 'classical-engine.js'],
   'jyotish-engine.js': ['natal-engine.js'],
+  'sky-calendar-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'bi-wheel.js': ['natal-engine.js'],
   'horary-chart.js': ['natal-engine.js'],
   'natal-chart.js': ['natal-engine.js'], // `const E = NatalEngine` at module top level.
@@ -72,6 +73,10 @@ const DEPENDENCIES = {
   'chart-in-time.js': ['birthplace-search.js', 'chart-in-time-engine.js', 'chart-in-time-text.js', 'bi-wheel.js', 'natal-engine.js'],
   'horary.js': ['birthplace-search.js', 'horary-engine.js', 'horary-text.js', 'horary-chart.js', 'classical-engine.js', 'natal-engine.js'],
   'jyotish.js': ['jyotish-engine.js', 'jyotish-text.js', 'jyotish-chart.js', 'natal-engine.js'],
+  // `const E = SkyCalendarEngine, T = SkyCalendarText` at module top level; `NatalEngine.calculate`
+  // for the sample chart and for a saved calendar's birth snapshot; `BirthProfile.subscribe` and
+  // `Rooms.register('transit-calendar', ...)` in the self-attach block at the file's end.
+  'sky-calendar.js': ['sky-calendar-engine.js', 'sky-calendar-text.js', 'natal-engine.js', 'birth-profile.js', 'rooms.js'],
   // `BirthProfile.subscribe` whose callback calls `BirthLore.birthdayParts` and
   // `BirthdayInsights.renderChinese/chineseProfile`; the callback fires on subscribe.
   'chinese-room.js': ['birth-lore.js', 'birth-profile.js', 'birthday-insights.js'],

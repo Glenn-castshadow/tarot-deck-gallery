@@ -1,5 +1,58 @@
 # VPS deployment
 
+## PENDING — the sky calendar on `/sky/`, and the `transit-calendar` reading kind
+
+**Not yet deployed.** This entry records what a deploy of the `sky` branch would involve,
+written before that deploy happens, so the procedure is decided in advance rather than
+reconstructed from memory afterward. Do not read this as a record of something that shipped —
+no VPS, nginx or DNS state described here has been touched, and no release directory has been
+created.
+
+What a deploy would carry:
+
+- **A backend change that must go first.** `server/ishtar/readings/kinds.py` gains
+  `'transit-calendar': ('Transit calendar', 'sky')`, with migration
+  `readings.0004_alter_reading_kind` (an `AlterField` on `kind`'s `choices` — no column or data
+  change; SQLite rewrites nothing that matters). Until that migration is applied **and the app
+  process restarted**, `POST /api/readings/` answers `Unknown reading kind.` for every save from
+  the new section, because `KINDS` is read into module scope at import time. Frontend first
+  would therefore ship a save button that cannot save.
+- **New static files:** `sky-calendar-engine.js`, `sky-calendar-text.js`, `sky-calendar.js`,
+  `sky-calendar.css`.
+- **Changed static files:** `sky/index.html` (the `#sky-calendar` section, its fold, its
+  `data-room`, the stylesheet and the three scripts), `account/index.html` (the Sky filter
+  chip), `rooms.js` (`transit-calendar` in `PAGES` and `LABELS`), and every page's `rooms.js`
+  cache key.
+- **Cache keys:** `rooms.js?v=sky-1` on all eight pages and `sky-calendar.js?v=4` on `/sky/`.
+  The three other sky files are new, so their keys (`sky-calendar-engine.js?v=1`,
+  `sky-calendar-text.js?v=1`, `sky-calendar.css?v=3`) ship as written and have nothing stale to
+  displace. `account.js` is unchanged and keeps `?v=pages-4` — the
+  journal's category filter is generic over `[data-journal-category]`, so the new Sky chip
+  needed no script change.
+- **No nginx, DNS or storage change.** No new storage key, no new outbound request, no new
+  third-party asset. The vendored Astronomy Engine is already deployed and unchanged.
+
+Procedure to run at actual deploy time (not run yet):
+
+1. Back up the database the way `2026-09-13 Site foundation` did
+   (`/var/backups/ishtar-app/db-predeploy-<stamp>.sqlite3`).
+2. Ship `server/ishtar` with `git archive`, strip CRs, run `sudo sh /tmp/deploy-app.sh`. Confirm
+   `showmigrations readings` shows 0001–0004 all applied and `/api/health/` returns
+   `{"ok": true}` **before** touching the static release.
+3. Release the static files as a `cp -al` hardlink copy of the current release with only the
+   changed and added files replaced, gated on the live hashes and on `current` pointing at the
+   expected previous release, then switch `current` with `mv -Tf` and roll back on any failure —
+   the same script shape the site-foundation and celestial-hero deploys used.
+4. Verify over HTTPS: `/sky/` returns 200 and so do `sky-calendar-engine.js`,
+   `sky-calendar-text.js`, `sky-calendar.js` and `sky-calendar.css`; `/rooms.js` returns 200 and
+   its body contains `transit-calendar`.
+5. Verify in a browser, signed in: the four tabs render; saving a month from "My transits"
+   returns 201 and the journal row reads `<Month> <Year> · <n> exact contacts`; the **Sky** chip
+   filters the journal to it; "Open" returns to `/sky/?reading=<id>` with the same month and the
+   same contact count. The only console error should be the signed-out `/api/account/` 401.
+6. Once confirmed, replace this entry with a normal dated record of what actually happened, the
+   same way every entry below it does.
+
 ## 2026-09-13 Site foundation: hub, seven topic pages, registry-driven journal
 
 Deployed `bf30483` (the squash of the site-foundation branch) in two stages, backend first so

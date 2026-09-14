@@ -12,7 +12,7 @@ that is called out explicitly rather than smoothed over.
 |---|---|---|---|
 | `/` | `index.html` (repo root) | Hub — celestial hero, today strip, seven category cards | `https://ishtarinsights.com/` |
 | `/tarot/` | `tarot/` | Daily card, full readings, deck chooser, deck archive, gallery | `https://ishtarinsights.com/tarot/` |
-| `/sky/` | `sky/` | Daily horoscope | `https://ishtarinsights.com/sky/` |
+| `/sky/` | `sky/` | Daily horoscope, sky calendar (Moon now, this month, retrogrades, my transits) | `https://ishtarinsights.com/sky/` |
 | `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
 | `/eastern/` | `eastern/` | Chinese zodiac portrait, Jyotish | `https://ishtarinsights.com/eastern/` |
 | `/numerology/` | `numerology/` | The six-view numerology studio | `https://ishtarinsights.com/numerology/` |
@@ -95,7 +95,11 @@ page table but present in the file is called out.
 `account-core.js` → `account.js` → `birthday-insights.js` →
 `vendor/astronomy-engine/astronomy.browser.min.js` → `natal-engine.js` →
 `daily-horoscope-engine.js` → `daily-horoscope.js` → `birth-lore.js` →
-`birth-profile.js` → `natal-room.js` → `mobile-sections.js`.
+`birth-profile.js` → `natal-room.js` → `sky-calendar-engine.js` →
+`sky-calendar-text.js` → `sky-calendar.js` → `mobile-sections.js`.
+The three `sky-calendar-*` files sit after the `?reading=` opener's inline block, which is
+harmless: that block only adds a listener, and `sky-calendar.js` registers its room before the
+first `ishtar-account-change` fires.
 
 **`/charts/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `newsletter.js` → `birthday-insights.js` →
@@ -192,7 +196,8 @@ Per page, the elements actually carrying `data-fold` today:
 
 - `/tarot/`: "Tarot readings" (`key=tarot`), "The deck archive" (`key=archive`,
   `data-fold-members="#archive,.gallery-head,#gallery,#empty-state"`).
-- `/sky/`: "Daily horoscope" (`key=daily-horoscope`).
+- `/sky/`: "Daily horoscope" (`key=daily-horoscope`), "The sky this month"
+  (`key=sky-calendar`).
 - `/charts/`: "Birth sky" (`key=birthday`), "Birth details" (`key=birth-form`, nested —
   `data-fold-group=""`), "Astrocartography" (`key=world`), "More astrology charts"
   (`key=charts`, this is `#celestial-extras`, covering sky-today/transits/synastry/BaZi),
@@ -223,19 +228,25 @@ right place after replaying a saved reading:
 scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView(...)
 ```
 
-Only two elements in the whole site carry it today:
+Only three elements in the whole site carry it today:
 
 - `/tarot/`'s `.reading-room` — `data-room="tarot-daily tarot-spread"`.
 - `/divination/`'s `#divination-room` — `data-room="lenormand oracle runes geomancy iching"`.
+- `/sky/`'s `#sky-calendar` — `data-room="transit-calendar"`.
 
 `rooms.js`'s `PAGES` table also lists `natal`, `solar-return`, `lunar-return`,
 `progressed`, `synastry`, `horary`, `jyotish`, `bazi` and `numerology` as kinds with a
-home page, but **only `tarot.js` and `divination.js` currently call `Rooms.register()`**
-(confirmed by grepping every `.js` file for `Rooms.register`). A saved reading of any of
-those other kinds would resolve to `'unknown'` in `Rooms.openFromQuery` today — the
-`PAGES`/`LABELS` entries are forward declarations for kinds a later sub-project adds
-`register()` calls (and, correspondingly, `data-room` markup) for, per the comment atop
+home page, but **only `tarot.js`, `divination.js` and `sky-calendar.js` currently call
+`Rooms.register()`** (confirmed by grepping every `.js` file for `Rooms.register`). A saved
+reading of any of those other kinds would resolve to `'unknown'` in `Rooms.openFromQuery`
+today — the `PAGES`/`LABELS` entries are forward declarations for kinds a later sub-project
+adds `register()` calls (and, correspondingly, `data-room` markup) for, per the comment atop
 `rooms.js`: "Kinds added by later sub-projects join both lists."
+
+The sky project added `transit-calendar` to all three lists that have to agree —
+`server/ishtar/readings/kinds.py` (which the API validates against), and `rooms.js`'s `PAGES`
+and `LABELS` (which `/account/` needs, since the journal page loads no room module and so
+cannot read a registered room's own label).
 
 ## The `?reading=` opener
 

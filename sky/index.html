@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/site-shell.css?v=2">
     <link rel="stylesheet" href="/account.css?v=journal-filters-1">
     <link rel="stylesheet" href="/daily-horoscope.css?v=1">
+    <link rel="stylesheet" href="/sky-calendar.css?v=4">
     <link rel="stylesheet" href="/mobile-sections.css?v=2">
   </head>
   <body>
@@ -29,6 +30,7 @@
 
       <section class="reading-room" aria-label="Today's sky">
         <section id="daily-horoscope" class="daily-horoscope" aria-labelledby="daily-horoscope-title" data-fold="Daily horoscope" data-fold-key="daily-horoscope" data-fold-subtitle="Your sign · today’s sky · a moment of reflection"></section>
+        <section id="sky-calendar" class="sky-calendar" aria-labelledby="sky-calendar-title" data-fold="The sky this month" data-fold-key="sky-calendar" data-fold-subtitle="The Moon · this month · retrogrades · your transits" data-room="transit-calendar"></section>
       </section>
 
       <div data-shell="footer"></div>
@@ -43,7 +45,7 @@
     <div data-shell="notice"></div>
     <script src="/site-shell.js?v=5"></script>
     <script>SiteShell.mount('sky');</script>
-    <script src="/rooms.js?v=pages-2"></script>
+    <script src="/rooms.js?v=sky-1"></script>
     <script src="/storage-preferences.js?v=birth-saving-1"></script>
     <script src="/account-core.js?v=journal-filters-1"></script>
     <script src="/account.js?v=pages-4"></script>
@@ -69,6 +71,9 @@
         if (result === 'unknown' || result === 'failed') IshtarAccountUI.openPanel('This reading cannot be replayed on this page version.');
       });
     </script>
+    <script src="/sky-calendar-engine.js?v=2"></script>
+    <script src="/sky-calendar-text.js?v=1"></script>
+    <script src="/sky-calendar.js?v=4"></script>
     <script src="/mobile-sections.js?v=data-fold-3"></script>
   </body>
 </html>

@@ -1,0 +1,792 @@
+{
+  "versions": {
+    "pyswisseph": "2.10.3.2"
+  },
+  "source": "pyswisseph Moshier (FLG_MOSEPH); quarters/ingresses/stations bisected in Python, eclipses from swe.lun_eclipse_when/sol_eclipse_when_glob",
+  "quarters": [
+    {
+      "utc": "1902-01-01T16:07:42Z",
+      "quarter": 3
+    },
+    {
+      "utc": "1902-01-09T21:14:31Z",
+      "quarter": 0
+    },
+    {
+      "utc": "1902-01-17T06:38:12Z",
+      "quarter": 1
+    },
+    {
+      "utc": "1902-01-24T00:06:03Z",
+      "quarter": 2
+    },
+    {
+      "utc": "1902-01-31T13:08:25Z",
+      "quarter": 3
+    },
+    {
+      "utc": "1902-07-05T12:59:05Z",
+      "quarter": 0
+    },
+    {
+      "utc": "1902-07-12T12:46:27Z",
+      "quarter": 1
+    },
+    {
+      "utc": "1902-07-20T16:45:02Z",
+      "quarter": 2
+    },
+    {
+      "utc": "1902-07-28T05:14:37Z",
+      "quarter": 3
+    },
+    {
+      "utc": "1950-01-04T07:47:46Z",
+      "quarter": 2
+    },
+    {
+      "utc": "1950-01-11T10:31:02Z",
+      "quarter": 3
+    },
+    {
+      "utc": "1950-01-18T07:59:30Z",
+      "quarter": 0
+    },
+    {
+      "utc": "1950-01-26T04:39:28Z",
+      "quarter": 1
+    },
+    {
+      "utc": "1950-07-07T02:53:22Z",
+      "quarter": 3
+    },
+    {
+      "utc": "1950-07-15T05:05:27Z",
+      "quarter": 0
+    },
+    {
+      "utc": "1950-07-22T10:50:21Z",
+      "quarter": 1
+    },
+    {
+      "utc": "1950-07-29T04:17:35Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2000-01-06T18:13:39Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2000-01-14T13:34:12Z",
+      "quarter": 1
+    },
+    {
+      "utc": "2000-01-21T04:40:25Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2000-01-28T07:56:39Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2000-07-01T19:19:55Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2000-07-08T12:52:45Z",
+      "quarter": 1
+    },
+    {
+      "utc": "2000-07-16T13:55:13Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2000-07-24T11:02:02Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2000-07-31T02:25:10Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2026-01-03T10:02:54Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2026-01-10T15:48:23Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2026-01-18T19:52:01Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2026-01-26T04:47:22Z",
+      "quarter": 1
+    },
+    {
+      "utc": "2026-07-07T19:29:00Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2026-07-14T09:43:36Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2026-07-21T11:05:35Z",
+      "quarter": 1
+    },
+    {
+      "utc": "2026-07-29T14:35:45Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2099-01-07T01:52:07Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2099-01-13T17:27:28Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2099-01-21T09:09:02Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2099-01-29T14:40:11Z",
+      "quarter": 1
+    },
+    {
+      "utc": "2099-07-02T14:22:42Z",
+      "quarter": 2
+    },
+    {
+      "utc": "2099-07-10T15:15:13Z",
+      "quarter": 3
+    },
+    {
+      "utc": "2099-07-18T01:02:27Z",
+      "quarter": 0
+    },
+    {
+      "utc": "2099-07-24T17:11:07Z",
+      "quarter": 1
+    }
+  ],
+  "ingresses": [
+    {
+      "utc": "1902-03-21T13:16:32Z",
+      "body": "Sun",
+      "sign": "Aries"
+    },
+    {
+      "utc": "1902-06-22T09:15:06Z",
+      "body": "Sun",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1902-09-23T23:55:18Z",
+      "body": "Sun",
+      "sign": "Libra"
+    },
+    {
+      "utc": "1902-12-22T18:35:29Z",
+      "body": "Sun",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "1902-01-03T07:30:19Z",
+      "body": "Moon",
+      "sign": "Scorpio"
+    },
+    {
+      "utc": "1902-04-02T20:20:11Z",
+      "body": "Moon",
+      "sign": "Aquarius"
+    },
+    {
+      "utc": "1902-07-02T17:14:26Z",
+      "body": "Moon",
+      "sign": "Gemini"
+    },
+    {
+      "utc": "1902-10-01T03:18:48Z",
+      "body": "Moon",
+      "sign": "Libra"
+    },
+    {
+      "utc": "1902-01-01T23:53:38Z",
+      "body": "Mars",
+      "sign": "Aquarius"
+    },
+    {
+      "utc": "1902-07-20T17:43:27Z",
+      "body": "Mars",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1904-12-20T13:35:21Z",
+      "body": "Uranus",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "1902-05-21T13:31:17Z",
+      "body": "Neptune",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1912-09-10T16:26:33Z",
+      "body": "Pluto",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1950-03-21T04:35:07Z",
+      "body": "Sun",
+      "sign": "Aries"
+    },
+    {
+      "utc": "1950-06-21T23:35:59Z",
+      "body": "Sun",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1950-09-23T14:43:31Z",
+      "body": "Sun",
+      "sign": "Libra"
+    },
+    {
+      "utc": "1950-12-22T10:13:17Z",
+      "body": "Sun",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "1950-01-03T06:56:06Z",
+      "body": "Moon",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1950-04-02T00:40:30Z",
+      "body": "Moon",
+      "sign": "Libra"
+    },
+    {
+      "utc": "1950-07-01T09:19:09Z",
+      "body": "Moon",
+      "sign": "Aquarius"
+    },
+    {
+      "utc": "1950-10-03T10:59:01Z",
+      "body": "Moon",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "1950-03-28T11:05:07Z",
+      "body": "Mars",
+      "sign": "Virgo"
+    },
+    {
+      "utc": "1950-08-10T16:47:29Z",
+      "body": "Mars",
+      "sign": "Scorpio"
+    },
+    {
+      "utc": "1955-08-24T18:02:00Z",
+      "body": "Uranus",
+      "sign": "Leo"
+    },
+    {
+      "utc": "1955-12-24T15:16:17Z",
+      "body": "Neptune",
+      "sign": "Scorpio"
+    },
+    {
+      "utc": "1956-10-20T06:09:37Z",
+      "body": "Pluto",
+      "sign": "Virgo"
+    },
+    {
+      "utc": "2000-03-20T07:35:15Z",
+      "body": "Sun",
+      "sign": "Aries"
+    },
+    {
+      "utc": "2000-06-21T01:47:41Z",
+      "body": "Sun",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2000-09-22T17:27:35Z",
+      "body": "Sun",
+      "sign": "Libra"
+    },
+    {
+      "utc": "2000-12-21T13:37:26Z",
+      "body": "Sun",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2000-01-02T21:31:44Z",
+      "body": "Moon",
+      "sign": "Sagittarius"
+    },
+    {
+      "utc": "2000-04-01T08:12:18Z",
+      "body": "Moon",
+      "sign": "Pisces"
+    },
+    {
+      "utc": "2000-07-01T03:09:19Z",
+      "body": "Moon",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2000-10-01T22:49:46Z",
+      "body": "Moon",
+      "sign": "Sagittarius"
+    },
+    {
+      "utc": "2000-01-04T03:00:54Z",
+      "body": "Mars",
+      "sign": "Pisces"
+    },
+    {
+      "utc": "2000-08-01T01:20:43Z",
+      "body": "Mars",
+      "sign": "Leo"
+    },
+    {
+      "utc": "2003-03-10T20:52:10Z",
+      "body": "Uranus",
+      "sign": "Pisces"
+    },
+    {
+      "utc": "2011-04-04T13:54:16Z",
+      "body": "Neptune",
+      "sign": "Pisces"
+    },
+    {
+      "utc": "2008-01-26T02:40:11Z",
+      "body": "Pluto",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2026-03-20T14:45:58Z",
+      "body": "Sun",
+      "sign": "Aries"
+    },
+    {
+      "utc": "2026-06-21T08:24:30Z",
+      "body": "Sun",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2026-09-23T00:05:13Z",
+      "body": "Sun",
+      "sign": "Libra"
+    },
+    {
+      "utc": "2026-12-21T20:50:14Z",
+      "body": "Sun",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2026-01-02T13:09:00Z",
+      "body": "Moon",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2026-04-01T02:50:46Z",
+      "body": "Moon",
+      "sign": "Libra"
+    },
+    {
+      "utc": "2026-07-01T19:32:51Z",
+      "body": "Moon",
+      "sign": "Aquarius"
+    },
+    {
+      "utc": "2026-10-02T19:54:05Z",
+      "body": "Moon",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2026-01-23T09:16:45Z",
+      "body": "Mars",
+      "sign": "Aquarius"
+    },
+    {
+      "utc": "2026-08-11T08:30:30Z",
+      "body": "Mars",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2026-04-26T00:51:19Z",
+      "body": "Uranus",
+      "sign": "Gemini"
+    },
+    {
+      "utc": "2026-01-26T17:40:03Z",
+      "body": "Neptune",
+      "sign": "Aries"
+    },
+    {
+      "utc": "2043-03-09T01:03:40Z",
+      "body": "Pluto",
+      "sign": "Pisces"
+    },
+    {
+      "utc": "2099-03-20T07:19:14Z",
+      "body": "Sun",
+      "sign": "Aries"
+    },
+    {
+      "utc": "2099-06-20T23:43:10Z",
+      "body": "Sun",
+      "sign": "Cancer"
+    },
+    {
+      "utc": "2099-09-22T16:12:36Z",
+      "body": "Sun",
+      "sign": "Libra"
+    },
+    {
+      "utc": "2099-12-21T14:05:52Z",
+      "body": "Sun",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2099-01-01T11:13:26Z",
+      "body": "Moon",
+      "sign": "Taurus"
+    },
+    {
+      "utc": "2099-04-02T07:02:56Z",
+      "body": "Moon",
+      "sign": "Virgo"
+    },
+    {
+      "utc": "2099-07-01T18:02:06Z",
+      "body": "Moon",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2099-10-01T10:06:11Z",
+      "body": "Moon",
+      "sign": "Taurus"
+    },
+    {
+      "utc": "2099-02-14T00:01:32Z",
+      "body": "Mars",
+      "sign": "Capricorn"
+    },
+    {
+      "utc": "2099-08-26T01:42:29Z",
+      "body": "Mars",
+      "sign": "Taurus"
+    }
+  ],
+  "stations": [
+    {
+      "utc": "1902-02-09T22:18:12Z",
+      "body": "Mercury",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1902-01-25T03:02:25Z",
+      "body": "Venus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1903-02-18T15:34:21Z",
+      "body": "Mars",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1902-06-06T04:30:53Z",
+      "body": "Jupiter",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1902-05-08T06:17:43Z",
+      "body": "Saturn",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1902-03-27T03:48:34Z",
+      "body": "Uranus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1902-03-10T18:14:38Z",
+      "body": "Neptune",
+      "direction": "direct"
+    },
+    {
+      "utc": "1902-03-02T01:05:28Z",
+      "body": "Pluto",
+      "direction": "direct"
+    },
+    {
+      "utc": "1950-01-08T16:54:04Z",
+      "body": "Mercury",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1950-01-10T13:35:11Z",
+      "body": "Venus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1950-02-12T05:48:47Z",
+      "body": "Mars",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1950-06-27T00:13:43Z",
+      "body": "Jupiter",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1950-05-15T09:22:24Z",
+      "body": "Saturn",
+      "direction": "direct"
+    },
+    {
+      "utc": "1950-03-09T19:24:13Z",
+      "body": "Uranus",
+      "direction": "direct"
+    },
+    {
+      "utc": "1950-01-18T19:20:09Z",
+      "body": "Neptune",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "1950-04-28T08:38:10Z",
+      "body": "Pluto",
+      "direction": "direct"
+    },
+    {
+      "utc": "2000-02-21T12:46:28Z",
+      "body": "Mercury",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2001-03-09T01:06:34Z",
+      "body": "Venus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2001-05-11T16:08:16Z",
+      "body": "Mars",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2000-09-29T12:52:00Z",
+      "body": "Jupiter",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2000-01-12T04:58:34Z",
+      "body": "Saturn",
+      "direction": "direct"
+    },
+    {
+      "utc": "2000-05-25T08:20:39Z",
+      "body": "Uranus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2000-05-08T12:30:00Z",
+      "body": "Neptune",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2000-03-15T11:52:27Z",
+      "body": "Pluto",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2026-02-26T06:48:13Z",
+      "body": "Mercury",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2026-10-03T07:15:50Z",
+      "body": "Venus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2027-01-10T12:59:27Z",
+      "body": "Mars",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2026-03-11T03:30:08Z",
+      "body": "Jupiter",
+      "direction": "direct"
+    },
+    {
+      "utc": "2026-07-26T19:56:47Z",
+      "body": "Saturn",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2026-02-04T02:33:23Z",
+      "body": "Uranus",
+      "direction": "direct"
+    },
+    {
+      "utc": "2026-07-07T10:54:38Z",
+      "body": "Neptune",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2026-05-06T15:34:17Z",
+      "body": "Pluto",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-02-15T14:53:53Z",
+      "body": "Mercury",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2100-04-21T04:03:33Z",
+      "body": "Venus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-09-13T23:03:10Z",
+      "body": "Mars",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-01-07T09:21:53Z",
+      "body": "Jupiter",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-01-22T16:51:57Z",
+      "body": "Saturn",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-07-26T23:36:42Z",
+      "body": "Uranus",
+      "direction": "retrograde"
+    },
+    {
+      "utc": "2099-05-23T03:31:30Z",
+      "body": "Neptune",
+      "direction": "direct"
+    },
+    {
+      "utc": "2099-01-14T14:51:38Z",
+      "body": "Pluto",
+      "direction": "direct"
+    }
+  ],
+  "eclipses": [
+    {
+      "utc": "1902-04-22T18:52:37Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "1902-10-17T06:03:23Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "1902-04-08T14:04:56Z",
+      "body": "Sun",
+      "kind": "partial"
+    },
+    {
+      "utc": "1902-05-07T22:34:13Z",
+      "body": "Sun",
+      "kind": "partial"
+    },
+    {
+      "utc": "1950-04-02T20:44:04Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "1950-09-26T04:16:40Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "1950-03-18T15:31:35Z",
+      "body": "Sun",
+      "kind": "annular"
+    },
+    {
+      "utc": "1950-09-12T03:38:12Z",
+      "body": "Sun",
+      "kind": "total"
+    },
+    {
+      "utc": "2000-01-21T04:43:29Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "2000-07-16T13:55:35Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "2000-02-05T12:49:19Z",
+      "body": "Sun",
+      "kind": "partial"
+    },
+    {
+      "utc": "2000-07-01T19:32:30Z",
+      "body": "Sun",
+      "kind": "partial"
+    },
+    {
+      "utc": "2026-03-03T11:33:42Z",
+      "body": "Moon",
+      "kind": "total"
+    },
+    {
+      "utc": "2026-08-28T04:12:58Z",
+      "body": "Moon",
+      "kind": "partial"
+    },
+    {
+      "utc": "2026-02-17T12:11:53Z",
+      "body": "Sun",
+      "kind": "annular"
+    },
+    {
+      "utc": "2026-08-12T17:45:57Z",
+      "body": "Sun",
+      "kind": "total"
+    },
+    {
+      "utc": "2099-04-05T08:29:18Z",
+      "body": "Moon",
+      "kind": "partial"
+    },
+    {
+      "utc": "2099-09-29T10:35:05Z",
+      "body": "Moon",
+      "kind": "penumbral"
+    },
+    {
+      "utc": "2099-03-21T22:52:59Z",
+      "body": "Sun",
+      "kind": "annular"
+    },
+    {
+      "utc": "2099-09-14T16:56:16Z",
+      "body": "Sun",
+      "kind": "total"
+    }
+  ]
+}

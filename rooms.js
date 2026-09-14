@@ -10,6 +10,7 @@
   // Mirrors server/ishtar/readings/kinds.py. Kinds added by later sub-projects join both lists.
   const PAGES = {
     'tarot-daily': '/tarot/', 'tarot-spread': '/tarot/',
+    'transit-calendar': '/sky/',
     lenormand: '/divination/', oracle: '/divination/', runes: '/divination/', geomancy: '/divination/', iching: '/divination/',
     natal: '/charts/', 'solar-return': '/charts/', 'lunar-return': '/charts/', progressed: '/charts/', synastry: '/charts/', horary: '/charts/',
     // BaZi is one tab of the CelestialExtras component, which lives whole on /charts/.
@@ -19,6 +20,7 @@
   // Mirrors the labels in server/ishtar/readings/kinds.py.
   const LABELS = {
     'tarot-daily': 'Daily card', 'tarot-spread': 'Tarot spread',
+    'transit-calendar': 'Transit calendar',
     lenormand: 'Lenormand', oracle: 'Ishtar Reflection Oracle', runes: 'Runes', geomancy: 'Geomancy', iching: 'I Ching',
     natal: 'Birth chart', 'solar-return': 'Solar return', 'lunar-return': 'Lunar return', progressed: 'Progressed chart', synastry: 'Synastry', horary: 'Horary chart',
     jyotish: 'Jyotish chart', bazi: 'Four Pillars',

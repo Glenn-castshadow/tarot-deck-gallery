@@ -28,6 +28,62 @@ every other calculated section already is.
 | Every new astronomical calculation ships independent pyswisseph fixtures | Keep | Codebase convention |
 | Open-source libraries only | Keep | Glenn's global preferences |
 
+## Corrections and deferrals, recorded after the build (2026-09-13)
+
+This spec was written before the work and is kept as written, so the rest of it still reads as
+the design that was proposed. What follows is what the ten-task build and its reviews actually
+established. Where the two disagree, this section is right.
+
+### Deferred, not delivered: month void bands
+
+The `monthEvents` list in Part A promises "**Void bands**, both definitions, from
+`voidPeriods`". **That is not shipped.** `monthEvents` returns quarters, ingresses, stations and
+eclipses; no UI surface renders month voids. The "Moon now" tab shows the *current* void under
+both definitions, which is a different thing: the month grid has no void band on it.
+
+This was not a build failure so much as a dropped stitch. The implementation plan never carried
+the bullet forward into any task, so no task brief could have caught it, and ten tasks shipped
+green without it. It was noticed in the whole-branch review after the last task landed.
+
+`voidPeriods` itself **is** built, guarded, documented and tested — the containment of the
+modern period inside the classical one is asserted across a full year in
+`tests/sky-calendar.test.cjs` — so the engine half of the feature is ready. What is missing is
+only the month-grid rendering. The consequence to be honest about: **`voidPeriods` is a public,
+guarded, tested export with no caller anywhere in the product.** It is not dead code by
+accident; it is a finished half of a deferred feature.
+
+Deferred rather than added late because a new rendering surface introduced after the final
+review is exactly the kind of scope growth that destabilises a branch that is otherwise green,
+and whether the month grid should carry void bands at all is the project owner's call, not a
+reviewer's. If it is wanted, the engine work is already done.
+
+### Three claims in this spec that the build proved wrong
+
+- **Part A, transit sampling: "the fastest of these bodies is the Sun at about 1.02° a day" is
+  wrong.** The Sun's figure is right (measured maximum over a one-day step, 1901–2100: 1.020°)
+  but it is not the fastest of the nine. **Mercury is, at 2.20°/day** (measured over the same
+  range; the engine and `docs/SKY.md` carry the slightly conservative 2.21°). Venus at 1.26° is
+  also faster than the Sun. Daily sampling is still safe, but for a margin against 2.21° rather
+  than 1.02° — `WRAP_GUARD_DEG = 45` is an order of magnitude clear of it either way.
+  `docs/SKY.md`'s "Transit sampling, and why it is safe" already states this correctly; ruling
+  S7(b) ordered the spec brought into line with it.
+
+- **Part D, "already declared in `server/ishtar/readings/kinds.py` and mapped to `/sky/` in
+  `rooms.js`" was wrong on both counts.** The earlier sub-project deliberately deferred the
+  `transit-calendar` kind rather than declaring it ahead of use, and `rooms.js` had no entry for
+  it either. Task 10 had to add the kind to `kinds.py`, the `PAGES` and `LABELS` entries to
+  `rooms.js`, **and migration `readings/0004_alter_reading_kind`**, which widens the model's
+  `kind` choices. That migration is part of this release and has to be applied when it ships.
+
+- **Part A, personal transits: "the ten natal planets always" is wrong on the approximate
+  path.** With a birth time and birthplace the chart's own planets are used and the natal Moon
+  is among them. Without a birth time, `natalTargets` builds its own longitudes at noon UTC and
+  covers **nine**, not ten: the natal Moon is excluded, because a birthday is a local calendar
+  date and the true instant can be up to 26 hours from noon UTC, over which the Moon's longitude
+  moves by as much as **16.67°** — most of a sign. An "exact" contact to a point that uncertain
+  is worse than saying nothing. The angles are excluded on the same path for the separate reason
+  the spec already gives.
+
 ## Part A: `sky-calendar-engine.js`
 
 A pure UMD module, no DOM, testable under Node. It uses the same geocentric apparent longitude
@@ -86,7 +142,8 @@ time order, each carrying a UTC instant the UI renders in the reader's local zon
   and magnitude, and a solar eclipse also carries the latitude and longitude of greatest
   eclipse. Per Glenn's decision these are **global circumstances only**; the section never
   claims an eclipse is or is not visible from where the reader is.
-- **Void bands**, both definitions, from `voidPeriods`.
+- **Void bands**, both definitions, from `voidPeriods`. — **Not shipped; deferred. See
+  *Corrections and deferrals* above.**
 
 ### Retrograde tracker
 
@@ -107,18 +164,20 @@ multi-day band.
   Pluto. **The Moon is excluded by default** and available behind a toggle. This is my
   judgement, not Glenn's instruction: the Moon perfects roughly sixty exact aspects a month and
   would bury every slower contact in the list. The toggle's label says so.
-- **Natal points:** the ten natal planets always. The Ascendant, Midheaven, Descendant and
-  Imum Coeli are added only when the chart resolved to `ready`, meaning a birth time and place
-  were given. A birthday-only profile gets the ten planets and a line saying the angles need a
-  birth time. Mean nodes are excluded to keep the list readable, and the disclosure says so.
+- **Natal points:** the chart's ten natal planets when a birth time and place were given, and
+  **nine** on the approximate noon-UTC path, which excludes the natal Moon (corrected; see
+  *Corrections and deferrals* above). The Ascendant, Midheaven, Descendant and Imum Coeli are
+  added only when the chart resolved to `ready`, meaning a birth time and place were given. A
+  birthday-only profile gets the nine planets and a line saying the angles need a birth time. Mean nodes are excluded to keep the list readable, and the disclosure says so.
 
 **Performance is part of the design.** The naive loop is about 1400 root searches a month and
 would visibly freeze the page. Instead the engine samples each transiting body's longitude once
 per day across the month, roughly 290 ephemeris evaluations, then does all aspect arithmetic on
 those cached values and calls `Search` only where consecutive samples actually bracket a
-crossing. Daily sampling is safe because the fastest of these bodies is the Sun at about 1.02°
-a day; the Moon's toggle drops to six-hour sampling for the same reason in reverse. One month's
-samples are memoized.
+crossing. Daily sampling is safe because the fastest of these bodies moves about 2.21° a day —
+**Mercury, not the Sun** (corrected; see *Corrections and deferrals* above) — well inside the
+45° wrap guard; the Moon's toggle drops to six-hour sampling for the same reason in reverse.
+One month's samples are memoized.
 
 ## Part B: `sky-calendar-text.js`
 
@@ -160,8 +219,10 @@ disclosure and `data-room="transit-calendar"` for the journal's `?reading=` open
 ## Part D: Saving
 
 Only the personal transit calendar is a reading. It registers as kind `transit-calendar` with
-category `sky`, already declared in `server/ishtar/readings/kinds.py` and mapped to `/sky/` in
-`rooms.js`. The payload is the birth snapshot and the month, matching the program spec's table;
+category `sky`. **Neither `server/ishtar/readings/kinds.py` nor `rooms.js` carried it** — this
+spec's claim that both already did was wrong, and Task 10 added the kind, the two `rooms.js`
+entries and migration `readings/0004_alter_reading_kind`, which is part of this release (see
+*Corrections and deferrals* above). The payload is the birth snapshot and the month, matching the program spec's table;
 the room recomputes on open. The summary reads like "March 2027 · 14 exact contacts".
 
 This is the first kind in the `sky` category, so the **Sky filter chip is added to the journal**

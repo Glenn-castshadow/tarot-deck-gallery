@@ -6,6 +6,7 @@ CATEGORIES = ('tarot', 'sky', 'charts', 'eastern', 'numerology', 'divination')
 KINDS = {
     'tarot-daily': ('Daily card', 'tarot'),
     'tarot-spread': ('Tarot spread', 'tarot'),
+    'transit-calendar': ('Transit calendar', 'sky'),
     'lenormand': ('Lenormand', 'divination'),
     'oracle': ('Ishtar Reflection Oracle', 'divination'),
     'runes': ('Runes', 'divination'),

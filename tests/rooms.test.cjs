@@ -42,7 +42,7 @@ test('labelFor and pageFor cover every kind the journal can hold, registered or 
   Rooms._reset();
   const kinds = require('fs').readFileSync(require('path').join(__dirname, '..', 'server', 'ishtar', 'readings', 'kinds.py'), 'utf8');
   const expected = [...kinds.matchAll(/^\s*'?([a-z-]+)'?: \('([^']+)'/gm)].map(m => [m[1], m[2]]);
-  assert.equal(expected.length, 16);
+  assert.equal(expected.length, 17);
   for (const [kind, label] of expected) {
     assert.equal(Rooms.labelFor(kind), label, kind);
     // A kind with no PAGES entry makes journal "Open" fall through to "cannot be
