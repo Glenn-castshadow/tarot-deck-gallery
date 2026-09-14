@@ -592,3 +592,60 @@ test('personal transits refuse an unusable source or an out-of-range month witho
   assert.equal(E.personalTransits(READY, 1901, 1).status, 'ready');
   assert.equal(E.personalTransits(READY, 2100, 12).status, 'ready');
 });
+
+// ---- month void bands (spec Part A: "Void bands, both definitions, from voidPeriods") ----
+
+test('monthEvents returns paired void bands overlapping the month', () => {
+  const {status, voids} = E.monthEvents(2026, 3);
+  assert.equal(status, 'ready');
+  assert.ok(Array.isArray(voids), 'monthEvents must return a voids array');
+  // The Moon changes sign roughly every 2.2 days, and every sign transit closes with a void,
+  // so a month holds about 13. Fewer than 8 or more than 20 means the window is wrong.
+  assert.ok(voids.length >= 8 && voids.length <= 20, `expected ~13 bands, got ${voids.length}`);
+
+  const monthStart = Date.UTC(2026, 2, 1), monthEnd = Date.UTC(2026, 3, 1);
+  for (const band of voids) {
+    // Every band is an interval, not an instant: it has both ends and they are ordered.
+    assert.ok(new Date(band.start) < new Date(band.end), 'band start is not before its end');
+    // It must overlap the month, but need not be contained in it -- a band that opens on the
+    // last evening of February and closes on 1 March is this month's reader's concern too.
+    assert.ok(new Date(band.end) > monthStart && new Date(band.start) < monthEnd,
+      `band ${band.start}..${band.end} does not overlap March 2026`);
+    assert.ok(E.signNames.includes(band.sign), `unknown sign ${band.sign}`);
+    // The two traditions share an end and the modern one starts no earlier, so it sits inside.
+    assert.ok(new Date(band.modernStart) >= new Date(band.start),
+      'the modern band starts before the classical one');
+    assert.ok(new Date(band.modernStart) < new Date(band.end), 'the modern band is empty');
+  }
+});
+
+test('monthEvents void bands keep the events contract untouched', () => {
+  const {events, voids} = E.monthEvents(2026, 7);
+  // Voids are a sibling key precisely so events stays a sorted list of instants.
+  for (const event of events) {
+    assert.equal(typeof event.date, 'string');
+    assert.equal(event.end, undefined, 'an interval leaked into the events array');
+  }
+  assert.notEqual(voids, undefined);
+});
+
+test('an out-of-range month returns a status and no partial void data', () => {
+  for (const [year, month] of [[1900, 12], [2101, 1], [2026, 0], [2026, 13], [2026.5, 3]]) {
+    const result = E.monthEvents(year, month);
+    assert.equal(result.status, 'out-of-range', `${year}-${month}`);
+    assert.equal(result.voids, undefined, `${year}-${month} leaked voids`);
+    assert.equal(result.events, undefined, `${year}-${month} leaked events`);
+  }
+});
+
+test('the padded void window still works at both ends of the supported range', () => {
+  // voidBands pads four days each side and therefore reaches outside 1901-2100. It calls the
+  // ungated voidPeriodsCore on purpose, the same precedent voidStateFor set: the public range
+  // governs the month asked about, not the internal window used to answer it. A future tidy-up
+  // swapping in the guarded voidPeriods would silently empty these two months.
+  for (const [year, month] of [[1901, 1], [2100, 12]]) {
+    const result = E.monthEvents(year, month);
+    assert.equal(result.status, 'ready', `${year}-${month}`);
+    assert.ok(result.voids.length > 0, `${year}-${month} returned no void bands`);
+  }
+});

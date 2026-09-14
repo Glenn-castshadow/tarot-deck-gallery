@@ -228,6 +228,36 @@
 
   // Quarters, ingresses, stations and eclipses for one calendar month (1-12), UTC bounds,
   // sorted ascending.
+  // A void band is an INTERVAL, so it is returned as a sibling of `events` rather than an entry
+  // in it: every member of `events` is an instant with a single `date`, and the local-day
+  // bucketing, the sort and the tests all rely on that. Both traditions are computed over one
+  // window, so they walk the same ingresses and pair by shared end instant; the modern band
+  // always begins at or after the classical one and ends with it (see voidPeriods).
+  // The window is padded so a band that opens late in the previous month, or closes early in the
+  // next, is still offered to this month's reader. Four days exceeds the Moon's ~2.2-day sign
+  // transit, so the padded run's own clipped first period always closes before `from` and is
+  // filtered out; `!clipped` is kept as well because a clipped period's null lastAspect would
+  // otherwise read as a genuinely aspectless sign.
+  const VOID_PAD_MS = 4 * 86400000;
+  function voidBands(from, to) {
+    const wideFrom = new Date(+from - VOID_PAD_MS), wideTo = new Date(+to + VOID_PAD_MS);
+    const classical = voidPeriodsCore(wideFrom, wideTo, CLASSICAL_PLANETS);
+    const modernByEnd = new Map(voidPeriodsCore(wideFrom, wideTo, MODERN_PLANETS).map(p => [p.end, p]));
+    return classical
+      .filter(p => !p.clipped && new Date(p.end) > from && new Date(p.start) < to)
+      .map(p => {
+        const modern = modernByEnd.get(p.end);
+        return {
+          start: p.start,
+          modernStart: modern ? modern.start : p.start,
+          end: p.end,
+          sign: p.sign,
+          lastAspect: p.lastAspect,
+          modernLastAspect: modern ? modern.lastAspect : null
+        };
+      });
+  }
+
   function monthEvents(year, month) {
     // Same guard as personalTransits: both halves have to be real integers in range, or
     // month 0 quietly returns last December, 13 next January and 5.5 rounds to May.
@@ -245,7 +275,18 @@
 
     events.push(...ingresses(from, to), ...stations(from, to), ...eclipses(from, to));
     events.sort((a, b) => new Date(a.date) - new Date(b.date));
-    return {status: 'ready', events};
+    // `voids` is a lazy, memoised getter rather than an eager property. A month's bands cost an
+    // aspect search per sign transit -- about a second -- and the month view slices three UTC
+    // months for its events, so computing bands eagerly would charge three seconds to a caller
+    // that never reads them. The shape the docs describe is unchanged: `result.voids` is an
+    // array on a ready month and absent on an out-of-range one.
+    const result = {status: 'ready', events};
+    let bands = null;
+    Object.defineProperty(result, 'voids', {
+      enumerable: true,
+      get() { return bands || (bands = voidBands(from, to)); }
+    });
+    return result;
   }
 
   function moonIngresses(from, to) {
@@ -534,7 +575,7 @@
 
   return {
     moonNow, lonOf, inRange, signOf, signNames, MIN_YEAR, MAX_YEAR,
-    CLASSICAL_PLANETS, MODERN_PLANETS, voidPeriods,
+    CLASSICAL_PLANETS, MODERN_PLANETS, voidPeriods, voidBands,
     BODIES, speedAt, ingresses, monthEvents, stations, eclipses, retrogradeState, personalTransits
   };
 });

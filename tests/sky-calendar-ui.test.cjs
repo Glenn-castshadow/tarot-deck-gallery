@@ -527,3 +527,74 @@ test('attach returns a null-guarded stub when the section is missing', () => {
   assert.equal(typeof stub.setBirthChart, 'function');
   assert.doesNotThrow(() => stub.setBirthChart(null, null));
 });
+
+// ---- the month void strip ----
+// Bands are intervals, so the month view cannot file them by a single local day the way it
+// files events. These pin the two things that could go wrong quietly: the strip showing a
+// different set of bands than the month actually holds, and a band that opens in the previous
+// UTC month being dropped by the local filter rather than carried into this month's reader's
+// view. Neither throws; both would just show the wrong hours.
+
+// Consecutive months share two of their three engine months, and each engine month runs the
+// void aspect search, so memoising turns a twelve-month scan from ~36 engine calls into ~14.
+const monthMemo = new Map();
+function engineMonth(year, month) {
+  const key = `${year}-${month}`;
+  if (!monthMemo.has(key)) monthMemo.set(key, engine.monthEvents(year, month));
+  return monthMemo.get(key);
+}
+
+function localBands(year, month) {
+  const seen = new Map();
+  for (const delta of [-1, 0, 1]) {
+    const at = new Date(Date.UTC(year, month - 1 + delta, 1));
+    const result = engineMonth(at.getUTCFullYear(), at.getUTCMonth() + 1);
+    if (result.status !== 'ready') continue;
+    for (const band of result.voids) {
+      // Overlap against the LOCAL month, which is what the reader is looking at.
+      const from = new Date(year, month - 1, 1), to = new Date(year, month, 1);
+      if (new Date(band.end) > from && new Date(band.start) < to) seen.set(band.end, band);
+    }
+  }
+  return [...seen.values()].sort((a, b) => a.start < b.start ? -1 : 1);
+}
+
+test('the month strip lists exactly the bands the local month holds', () => {
+  const app = mount({clock: new Date('2026-03-15T12:00:00Z')});
+  app.click({scTab: 'month'});
+  const html = app.panels.month.innerHTML;
+  const expected = localBands(2026, 3);
+
+  assert.ok(html.includes('sc-voids'), 'the month view renders no void strip');
+  assert.ok(expected.length >= 8, `fixture month should hold ~13 bands, found ${expected.length}`);
+  assert.equal(html.split('sc-voidrow').length - 1, expected.length,
+    'the strip shows a different number of bands than the month holds');
+  // A count alone does not bind: September and October 2026 both hold 14 bands, so the wrong
+  // month's set would pass. Pin an instant only this month's set contains.
+  const firstClock = new Intl.DateTimeFormat('en-GB', {hour: '2-digit', minute: '2-digit', hour12: false})
+    .format(new Date(expected[0].start));
+  assert.ok(html.includes(firstClock),
+    `the strip does not render the first band's start (${expected[0].start})`);
+  // Both traditions have to be visibly distinguished, not just the classical one.
+  assert.ok(html.includes('sc-void-modern'), 'the modern stretch is not marked inside the band');
+});
+
+test('a band opening in the previous UTC month still reaches this month', () => {
+  // At UTC-7 a band that opens on the 1st before 07:00 UTC belongs to the previous local day,
+  // and one closing just after a month boundary belongs to the previous local month. Find a
+  // real boundary-straddling band rather than asserting against a hand-picked date.
+  // Stop at the first month that straddles: each localBands call is three engine months of
+  // aspect searching, so evaluating all twelve eagerly costs ~20s for no extra coverage.
+  let straddling = null;
+  for (let month = 1; month <= 12 && !straddling; month++) {
+    const bands = localBands(2026, month);
+    if (bands.some(b => new Date(b.start).getMonth() !== month - 1)) straddling = {month, bands};
+  }
+  assert.ok(straddling, 'no month in 2026 has a band opening in the previous local month');
+
+  const app = mount({clock: new Date(Date.UTC(2026, straddling.month - 1, 15, 12))});
+  app.click({scTab: 'month'});
+  const carried = straddling.bands.find(b => new Date(b.start).getMonth() !== straddling.month - 1);
+  assert.ok(app.panels.month.innerHTML.split('sc-voidrow').length - 1 === straddling.bands.length,
+    `month ${straddling.month} dropped the band opening ${carried.start}`);
+});

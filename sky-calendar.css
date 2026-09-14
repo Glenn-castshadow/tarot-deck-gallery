@@ -142,3 +142,21 @@
   .sky-calendar :is(p,h3,h4,h5,strong,span,blockquote,li) { color: #18242a !important; }
   .sc-tabs, .sc-viewtoggle, .sc-stepper, .sc-transit-bar { display: none; }
 }
+
+/* The month's void strip. One row per band, reusing .sc-void-band and .sc-void-modern from the
+   Moon tab so the same shape means the same thing in both places: a proportional bar whose
+   inner stretch is the modern void sitting inside the classical one. */
+.sc-voids { margin-top: 26px; padding-top: 20px; border-top: 1px solid #33565f; }
+.sc-voids h4 { margin: 0 0 10px; font-size: 15px; font-weight: 600; color: #e6d7b4; }
+.sc-voids-intro { font-size: 13px; line-height: 1.75; color: #b6c9c7; margin: 0 0 18px; max-width: 62ch; }
+.sc-voidlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.sc-voidrow .sc-void-band { margin-bottom: 6px; height: 16px; }
+.sc-voidhead { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 6px; font-size: 13px; }
+.sc-voidhead strong { color: #e6d7b4; font-weight: 500; }
+.sc-voidhead span { color: #9fb6b4; font-variant-numeric: tabular-nums; }
+.sc-voidnote { margin: 0; font-size: 12.5px; line-height: 1.6; color: #9fb6b4; }
+
+@media (max-width: 700px) {
+  .sc-voids { margin-top: 20px; }
+  .sc-voidhead { font-size: 12.5px; }
+}

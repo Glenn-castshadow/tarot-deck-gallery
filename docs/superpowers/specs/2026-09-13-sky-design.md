@@ -34,28 +34,42 @@ This spec was written before the work and is kept as written, so the rest of it 
 the design that was proposed. What follows is what the ten-task build and its reviews actually
 established. Where the two disagree, this section is right.
 
-### Deferred, not delivered: month void bands
+### Delivered after the deferral: month void bands (2026-09-14)
 
 The `monthEvents` list in Part A promises "**Void bands**, both definitions, from
-`voidPeriods`". **That is not shipped.** `monthEvents` returns quarters, ingresses, stations and
-eclipses; no UI surface renders month voids. The "Moon now" tab shows the *current* void under
-both definitions, which is a different thing: the month grid has no void band on it.
+`voidPeriods`". That was **not** shipped by the ten-task build: the implementation plan never
+carried the bullet forward into any task, so no task brief could have caught it, and ten tasks
+shipped green without it. It was noticed in the whole-branch review after the last task landed,
+deferred rather than added late, and then built as a separate change once the branch had merged
+and deployed.
 
-This was not a build failure so much as a dropped stitch. The implementation plan never carried
-the bullet forward into any task, so no task brief could have caught it, and ten tasks shipped
-green without it. It was noticed in the whole-branch review after the last task landed.
+It is now delivered. `monthEvents(year, month)` returns `{status, events, voids}`, and the
+month view carries a void strip below the grid and the list.
 
-`voidPeriods` itself **is** built, guarded, documented and tested — the containment of the
-modern period inside the classical one is asserted across a full year in
-`tests/sky-calendar.test.cjs` — so the engine half of the feature is ready. What is missing is
-only the month-grid rendering. The consequence to be honest about: **`voidPeriods` is a public,
-guarded, tested export with no caller anywhere in the product.** It is not dead code by
-accident; it is a finished half of a deferred feature.
+**`voids` is a sibling key, not an entry in `events`.** Every member of `events` is an instant
+with a single `date`, and the local-day bucketing, the sort and six tasks' tests all rely on
+that. A void band is an interval with two ends and no single date, so folding it into `events`
+would have broken a contract the rest of the section depends on. Each entry is
+`{start, modernStart, end, sign, lastAspect, modernLastAspect}` — the classical start, the
+modern start, the ingress that closes both, and which aspect closed each tradition.
 
-Deferred rather than added late because a new rendering surface introduced after the final
-review is exactly the kind of scope growth that destabilises a branch that is otherwise green,
-and whether the month grid should carry void bands at all is the project owner's call, not a
-reviewer's. If it is wanted, the engine work is already done.
+`voids` is a **lazy, memoised getter**, not an eager property: a month's bands cost an aspect
+search per sign transit, about a second, and the month view slices three UTC months for its
+events, so computing them eagerly charged three seconds to a caller that never read them. The
+shape is unchanged — an array on a ready month, absent on an out-of-range one.
+
+The window is padded by four days on each side so a band that opens late in the previous month,
+or closes early in the next, still reaches this month's reader; four days exceeds the Moon's
+~2.2-day sign transit, so the padded run's own clipped first period always closes before the
+month begins and is filtered out. The UI keeps a band when it **overlaps** the local month
+rather than when a single instant falls inside it, and dedupes on the shared closing ingress,
+since a straddling band is returned by two of the three UTC months it slices.
+
+The strip renders one row per band: the sign the Moon is crossing, both starts, the shared end,
+and a proportional bar with the modern stretch marked inside it — the same shape the Moon tab
+uses, because the modern void is contained in the classical one rather than competing with it.
+The four existing day-cell marks and their legend are unchanged: a fifth mark on roughly half
+the days would have diluted the ones that mark a single moment.
 
 ### Three claims in this spec that the build proved wrong
 
@@ -142,8 +156,8 @@ time order, each carrying a UTC instant the UI renders in the reader's local zon
   and magnitude, and a solar eclipse also carries the latitude and longitude of greatest
   eclipse. Per Glenn's decision these are **global circumstances only**; the section never
   claims an eclipse is or is not visible from where the reader is.
-- **Void bands**, both definitions, from `voidPeriods`. — **Not shipped; deferred. See
-  *Corrections and deferrals* above.**
+- **Void bands**, both definitions, from `voidPeriods`, returned as a sibling `voids` key
+  rather than as entries in `events`. See *Corrections and deferrals* above.
 
 ### Retrograde tracker
 

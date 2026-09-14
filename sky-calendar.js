@@ -222,6 +222,61 @@ const SkyCalendar = (() => {
       return {status: 'ready', events: localSlice(cachedMonth, result => result.events)};
     }
 
+    // Void bands are intervals, so the three-UTC-month slice localSlice does for events is both
+    // wrong and expensive here: wrong because an interval has no single instant to file, and
+    // expensive because voidBands runs an aspect search per sign transit, so three months cost
+    // about a second each and the neighbours' bands are then almost entirely deduped away.
+    // voidBands already takes an arbitrary window, so ask it once for the local month.
+    // Cached per local month the way cachedMonth caches events: a month's bands cost about a
+    // second of aspect searching, and stepping back and forth would otherwise pay it every time.
+    const voidCache = new Map();
+    function localVoids() {
+      const key = `${cursor.year}-${cursor.month}`;
+      if (!voidCache.has(key)) {
+        voidCache.set(key, E.voidBands(new Date(cursor.year, cursor.month - 1, 1),
+                                       new Date(cursor.year, cursor.month, 1)));
+      }
+      return voidCache.get(key);
+    }
+
+    // One row per band: the sign the Moon is crossing, when each tradition's void opens, and the
+    // shared ingress that closes both. The bar is proportional to the classical span with the
+    // modern stretch marked inside it, the same shape the Moon tab uses, because the modern void
+    // is always contained in the classical one rather than competing with it.
+    function voidStrip() {
+      const bands = localVoids();
+      if (!bands.length) {
+        return `<section class="sc-voids" aria-labelledby="sc-voids-title">
+            <h4 id="sc-voids-title">Void-of-course periods</h4>
+            <p class="sc-note">No void period falls in this month.</p>
+          </section>`;
+      }
+      const rows = bands.map(band => {
+        const start = +new Date(band.start), end = +new Date(band.end), span = end - start;
+        const modernAt = +new Date(band.modernStart);
+        const modernLeft = span > 0 ? Math.max(0, Math.min(100, (modernAt - start) / span * 100)) : 0;
+        const hours = span / 3600000;
+        const together = modernAt <= start;
+        return `<li class="sc-voidrow">
+            <div class="sc-voidhead">
+              <strong>Moon in ${esc(band.sign)}</strong>
+              <span>${esc(stamp(band.start))} → ${esc(stamp(band.end))}</span>
+            </div>
+            <div class="sc-void-band" role="img" aria-label="Moon in ${esc(band.sign)}. The classical void runs from ${esc(stamp(band.start))} to ${esc(stamp(band.end))}${together ? ', and the modern void runs with it' : `; the modern void is the shorter stretch inside it, from ${esc(stamp(band.modernStart))} to the same end`}.">
+              <span class="sc-void-modern" style="left:${modernLeft.toFixed(2)}%;right:0"></span>
+            </div>
+            <p class="sc-voidnote">${hours < 1 ? 'Under an hour' : `${hours.toFixed(1)} hours`} by the classical rule${together
+              ? ', and the same by the modern one — the Moon’s last aspect was to one of the six.'
+              : `, ${((end - modernAt) / 3600000).toFixed(1)} by the modern one.`}</p>
+          </li>`;
+      }).join('');
+      return `<section class="sc-voids" aria-labelledby="sc-voids-title">
+          <h4 id="sc-voids-title">Void-of-course periods</h4>
+          <p class="sc-voids-intro">${esc(T.voidFraming.body)}</p>
+          <ul class="sc-voidlist">${rows}</ul>
+        </section>`;
+    }
+
     function stepper(scope) {
       const back = cursor.year === E.MIN_YEAR && cursor.month === 1;
       const forward = cursor.year === E.MAX_YEAR && cursor.month === 12;
@@ -286,6 +341,7 @@ const SkyCalendar = (() => {
         </div>
         <ul class="sc-list"${view === 'list' ? '' : ' hidden'}>${listRows || '<li class="sc-note">No quarters, ingresses, stations or eclipses fall in this month.</li>'}</ul>
         <div class="sc-detail" data-sc-detail aria-live="polite"></div>
+        ${voidStrip()}
         ${conventions('month')}`;
       renderDayDetail();
     }

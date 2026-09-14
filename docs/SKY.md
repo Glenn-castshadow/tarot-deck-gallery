@@ -83,12 +83,33 @@ One edge the engine records rather than hides: the **first** period in any `void
 is bounded by the window start, not by a real ingress, so a `null` last aspect there does not
 mean the transit was genuinely void. That period carries `clipped: true`.
 
-**`voidPeriods` currently has no caller in the product.** The Moon tab's void band comes from
-`moonNow`, which uses the same core over its own window; the design spec's month-grid void bands
-were never rendered and are deferred rather than delivered, with the reasoning recorded under
-*Corrections and deferrals* in `docs/superpowers/specs/2026-09-13-sky-design.md`. The export is
-built, guarded and tested and is the finished half of that deferred feature — not dead code to
-tidy away.
+`voidPeriods` is read twice in the product, for two different spans. The Moon tab's band comes
+from `moonNow`, which runs the same core over its own window around the present moment. The
+month tab's strip comes from `monthEvents`, which returns a `voids` key beside `events`.
+
+**Why `voids` is a sibling key rather than entries in `events`.** Every member of `events` is an
+instant with one `date`, and the local-day bucketing, the sort and several tests all rely on
+that. A band is an interval with two ends and no single date; folding it in would have broken a
+contract the rest of the section depends on. Each entry is
+`{start, modernStart, end, sign, lastAspect, modernLastAspect}`.
+
+**The month window is padded four days each side.** A band that opens late in the previous month
+or closes early in the next is still this month's reader's concern. Four days exceeds the Moon's
+~2.2-day sign transit, so the padded run's own `clipped` first period always closes before the
+month begins and is filtered out — which is also why the filter drops `clipped` periods
+explicitly rather than relying on the overlap test alone.
+
+**The strip asks `voidBands` once for the local month**, rather than slicing three UTC months
+the way the events path does: an interval has no single instant to file, and a month's bands
+cost about a second of aspect searching, so the neighbours' work would be paid and then deduped
+away. For the same reason `monthEvents`' `voids` is a **lazy, memoised getter** — the month view
+reads three UTC months for its events and must not be charged three seconds for bands it never
+looks at. The UI caches each month's bands the way it already caches each month's events, so
+stepping back to a month already seen is free. One row per band shows the sign, both starts, the shared
+end and a proportional bar with the modern stretch inside it — the same shape as the Moon tab,
+since the modern void is contained in the classical one rather than competing with it. The four
+day-cell marks and their legend are deliberately unchanged: a fifth mark on roughly half the
+days would dilute the ones that mark a single moment.
 
 ### Stations: a sign change of the central-difference speed
 
@@ -363,15 +384,15 @@ Run the whole suite:
 node --test tests/*.test.cjs
 ```
 
-which is **411 tests passing** at the time of writing. Note the glob: `node --test tests/` fails
+which is **417 tests passing** at the time of writing. Note the glob: `node --test tests/` fails
 on Node 24 with `MODULE_NOT_FOUND`, so the path must be expanded by the shell.
 
 The three sky-specific files:
 
 ```
-node --test tests/sky-calendar.test.cjs        # 32 tests (engine, incl. the fixture comparison)
+node --test tests/sky-calendar.test.cjs        # 36 tests (engine, incl. the fixture comparison)
 node --test tests/sky-calendar-text.test.cjs   # 3 tests  (copy tables)
-node --test tests/sky-calendar-ui.test.cjs     # 21 tests (section logic, in `vm` with a stub DOM)
+node --test tests/sky-calendar-ui.test.cjs     # 23 tests (section logic, in `vm` with a stub DOM)
 ```
 
 `tests/sky-calendar-ui.test.cjs` has no DOM library and no new dependency: it loads
