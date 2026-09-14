@@ -13,7 +13,7 @@ that is called out explicitly rather than smoothed over.
 | `/` | `index.html` (repo root) | Hub — celestial hero, today strip, seven category cards | `https://ishtarinsights.com/` |
 | `/tarot/` | `tarot/` | Daily card, full readings, deck chooser, deck archive, gallery | `https://ishtarinsights.com/tarot/` |
 | `/sky/` | `sky/` | Daily horoscope, sky calendar (Moon now, this month, retrogrades, my transits) | `https://ishtarinsights.com/sky/` |
-| `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
+| `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, composite and Davison charts, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
 | `/eastern/` | `eastern/` | Chinese zodiac portrait, Jyotish | `https://ishtarinsights.com/eastern/` |
 | `/numerology/` | `numerology/` | The six-view numerology studio | `https://ishtarinsights.com/numerology/` |
 | `/divination/` | `divination/` | Lenormand, oracle, runes, geomancy, I Ching | `https://ishtarinsights.com/divination/` |
@@ -27,7 +27,7 @@ Every other root-level `.html` file (`cookie-policy.html`, `newsletter-privacy.h
 
 **BaZi lives on `/charts/`, not `/eastern/`.** `#cx-bazi` is one tab of the
 `CelestialExtras` component (`celestial-extras.js`), and every tab of that component —
-sky today, transits, synastry, BaZi — ships together in `#celestial-extras` on
+sky today, transits, Two skies (synastry, composite and Davison), BaZi — ships together in `#celestial-extras` on
 `/charts/`. `rooms.js`'s `PAGES` table confirms this in code: `jyotish: '/eastern/',
 bazi: '/charts/'`. The hub's hash-redirect map sends `#cx-bazi` to `/charts/#cx-bazi`,
 not `/eastern/`.
@@ -105,7 +105,8 @@ first `ishtar-account-change` fires.
 **`/charts/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `newsletter.js` → `birthday-insights.js` →
 `birthplace-search.js` → `vendor/astronomy-engine/astronomy.browser.min.js` →
-`natal-engine.js` → `natal-chart.js` → `sky-chart.js` → `astrocartography-engine.js` →
+`natal-engine.js` → `natal-chart.js` → `relationship-charts-engine.js` →
+`relationship-charts.js` → `sky-chart.js` → `astrocartography-engine.js` →
 `astrocartography.js` → `bi-wheel.js` → `celestial-extras-engine.js` →
 `celestial-extras.js` → `chart-in-time-engine.js` → `chart-in-time-text.js` →
 `chart-in-time.js` → `classical-engine.js` → `chart-depth-engine.js` →
@@ -202,7 +203,7 @@ Per page, the elements actually carrying `data-fold` today:
   (`key=sky-calendar`).
 - `/charts/`: "Birth sky" (`key=birthday`), "Birth details" (`key=birth-form`, nested —
   `data-fold-group=""`), "Astrocartography" (`key=world`), "More astrology charts"
-  (`key=charts`, this is `#celestial-extras`, covering sky-today/transits/synastry/BaZi),
+  (`key=charts`, this is `#celestial-extras`, covering sky-today/transits/Two skies (synastry, composite, Davison)/BaZi),
   "Chart in time" (`key=chart-in-time`), "Horary" (`key=horary`).
 - `/eastern/`: "Chinese zodiac" (`key=chinese`), "Birth details" (`key=birth-form`,
   nested), "Jyotish" (`key=jyotish`).

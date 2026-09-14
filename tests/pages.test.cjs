@@ -53,6 +53,8 @@ const DEPENDENCIES = {
   'jyotish-engine.js': ['natal-engine.js'],
   'sky-calendar-engine.js': [ASTRONOMY, 'natal-engine.js'],
   'bi-wheel.js': ['natal-engine.js'],
+  // `typeof NatalEngine !== 'undefined' ? NatalEngine : require(...)` at module top level.
+  'relationship-charts-engine.js': ['natal-engine.js'],
   'horary-chart.js': ['natal-engine.js'],
   'natal-chart.js': ['natal-engine.js'], // `const E = NatalEngine` at module top level.
   'sky-chart.js': ['natal-chart.js'], // `NatalChart.renderWheel(...)` in paint().
@@ -72,7 +74,10 @@ const DEPENDENCIES = {
   'divination.js': ['divination-data.js', 'divination-engine.js', 'divination-art.js', 'rooms.js'],
   'daily-horoscope.js': ['daily-horoscope-engine.js'], // `DailyHoroscopeEngine.signNames` in attach().
   'astrocartography.js': ['astrocartography-engine.js', 'birthplace-search.js'],
-  'celestial-extras.js': ['birthplace-search.js', 'celestial-extras-engine.js', 'bi-wheel.js', 'natal-engine.js'],
+  // `typeof RelationshipChartsEngine/RelationshipCharts/NatalChart` gate the Composite and Davison
+  // switch in Two skies: no throw, but without them the switch silently never appears.
+  'celestial-extras.js': ['birthplace-search.js', 'celestial-extras-engine.js', 'bi-wheel.js', 'natal-engine.js',
+    'relationship-charts-engine.js', 'relationship-charts.js', 'natal-chart.js'],
   'chart-in-time.js': ['birthplace-search.js', 'chart-in-time-engine.js', 'chart-in-time-text.js', 'bi-wheel.js', 'natal-engine.js'],
   'horary.js': ['birthplace-search.js', 'horary-engine.js', 'horary-text.js', 'horary-chart.js', 'classical-engine.js', 'natal-engine.js'],
   'jyotish.js': ['jyotish-engine.js', 'jyotish-text.js', 'jyotish-chart.js', 'natal-engine.js'],

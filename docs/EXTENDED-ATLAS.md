@@ -68,6 +68,91 @@ prompts, and exact placement tables. Leaders connect spaced planet labels to
 their actual angular positions. The same bi-wheel renderer draws the solar
 return, lunar return and progressed charts; see [chart in time](CHART-IN-TIME.md).
 
+### Composite and Davison charts
+
+A method switch inside Two skies offers two more ways to read the same pair of birth
+charts, beside Synastry: Composite and Davison. Both reuse the existing partner form —
+there is no second form and no new state for the second person — and each builds one
+relationship chart, drawn with the same natal wheel. The composite is a symbolic
+midpoint construction with no real moment; the Davison is the real sky at the midpoint
+in time and place between the two births.
+
+`relationship-charts-engine.js` computes both. Composite planets and angles each take
+the near midpoint of the two people's placements: the point on the shorter arc between
+them. When a pair is exactly opposed there is no shorter arc, so the point 90° forward
+of the first person's placement is used instead. The composite Midheaven is the near
+midpoint of the two Midheavens; the composite Ascendant is the near midpoint of the two
+Ascendants, turned 180° whenever that midpoint would fall west of the composite
+Midheaven — every natal Ascendant lies east of its own Midheaven, but the midpoint of
+two such Ascendants does not always keep that relation.
+
+For Placidus and Regiomontanus, each composite house cusp is the near midpoint of the
+corresponding cusps in the two charts, kept on whichever of the two candidates 180°
+apart matches the mean of the two charts' own Ascendant-to-cusp arcs — this is what
+keeps the twelve cusps in order around the wheel, with cusp 10 landing on the composite
+Midheaven. Cusp 1 is the composite Ascendant in every house system except Whole Sign,
+which instead starts, as it always does, at the cusp of the rising sign. Whole Sign and
+Equal houses are recast from the composite Ascendant, since those systems are defined
+by the Ascendant alone. When the two people's charts use different house systems, the
+composite falls back to Equal houses from its own Ascendant, with a notice shown above
+the wheel. The exception is a chart that is Whole Sign only because Placidus could not be
+drawn for that birth (a Whole Sign chart carrying `chartAtInstant`'s fallback notice,
+as for a birth inside a polar circle): the difference is then not a settings mismatch the
+reader could fix, so the composite uses Whole Sign houses from its own Ascendant, with a
+notice saying Placidus cannot be drawn for one of the two birthplaces. If both charts fell
+back, their systems already match and no notice is needed. No composite house is claimed to correspond to either person's houses, under
+any system. Composite aspects are the five majors among the ten composite planets, the
+Ascendant and the Midheaven, at the reader's orb scale, with `applying` fixed to `null`
+on every aspect, since composite placements never move.
+
+The Davison chart takes the midpoint of the two people's resolved UTC birth instants,
+and a place formed from the mean of the two birthplaces' latitudes and the near
+midpoint of their longitudes — again the shorter arc, so a pair either side of the date
+line does not average through Greenwich. `NatalEngine.chartAtInstant` then casts a full
+chart for that moment and place, at the reader's orb scale and in the house system the
+reader chose: a reader chart carrying the fallback notice was chosen as Placidus (the
+notice only ever marks the Placidus fallback), so the Davison chart is cast in Placidus
+rather than inheriting that fallback. If Placidus cannot be drawn at the Davison place
+either, the same Whole Sign fallback and notice used elsewhere on this page apply
+unchanged. The engine drops the lunar nodes from the Davison chart entirely — from its
+points, which the wheel draws, and from its major and minor aspects — so it carries the
+same bodies as the composite.
+
+`relationship-charts.js` renders both views. Its table lists the ten planets plus the
+Ascendant and Midheaven for both charts, and its aspect list every aspect the model
+carries, which is only ever among those bodies. Neither view shows a
+placement or aspect as applying or separating: composite motion is meaningless, and the
+shared aspect list omits that distinction for the Davison chart too.
+
+Sources, named in each chart's About disclosure: Robert Hand, *Planets in Composite*
+(1975); Ronald Davison, *Synastry* (1977).
+
+`tests/relationship-charts.test.cjs` (20 tests) checks the midpoint and opposition
+rules directly, in both argument orders, then four properties that carry the most
+weight. A composite of a chart with itself reproduces that chart's Ascendant,
+Midheaven, every cusp and every planet to 1e-9 — the strongest single check on the
+angle and cusp logic. Swapping the two charts into the composite gives the same points,
+angles and cusps, except for exactly opposed pairs, where the midpoint choice is
+deliberately not symmetric. A Davison of a chart with itself reproduces that chart's
+instant, place and every planet. A Tokyo/Honolulu pair whose longitudes straddle 180°
+lands the Davison place near 170.9°E, proving the near-midpoint longitude rule rather
+than a plain arithmetic mean, which would put the place in the wrong ocean. Further
+cases cover cusp ordering and the Ascendant-east-of-Midheaven rule across every fixture
+pair, a constructed pair where the plain midpoint of the Ascendants would fall west of
+the composite Midheaven, Whole Sign recasting, the mismatched-house-system fallback and
+its notice, the one-sided polar fallback giving a Whole Sign composite in both argument
+orders, a polar reader's Davison chart cast in Placidus at a temperate midpoint, no node
+in the Davison points or aspects, the orb scale taken from the first chart in both
+relationship charts, composite aspects checked directly against `NatalEngine.aspectsFor`, and
+rendering: the real wheel, every planet row, both sources, a scan for predictive
+phrasing, and an empty string for a not-ready model.
+
+During development, the cusp side-choice and the Ascendant turn were mutation-checked:
+replacing the side choice with a plain midpoint breaks cusp order on a real fixture
+pair, and removing the Ascendant turn fails two tests. A reviewer also fuzzed around
+70,000 random high-latitude Placidus pairs, finding no order or Ascendant-side
+violations. These are development checks, not tests committed to the suite.
+
 ## BaZi conventions
 
 The solar year begins at Li Chun (315° apparent solar longitude), and the twelve
