@@ -18,6 +18,33 @@ Birthplace suggestions use a same-origin GeoNames index and run entirely in the 
 - Lunar month names come from the browser's English calendar implementation; the `bis` leap-month suffix is displayed as “(leap)”. Calendar implementations can differ in edge cases; this is not an astronomical ephemeris.
 - Without complete natal inputs, Western sun-sign ranges and decans remain approximate, with an average lunar-cycle estimate. Complete natal inputs use calculated solar longitude, lunar phase and natal positions instead.
 
+## Animal-year relations
+
+Under the Chinese zodiac portrait on `/eastern/`, `chinese-year.js` relates a chosen year's
+animal to the reader's own birth animal, using the same **lunar-year, Lunar New Year boundary**
+as the portrait above, not the Li Chun boundary the BaZi pillars use. The default year is the
+lunar year in effect today, from the same `BirthdayInsights.chineseProfile` formatter; a year
+selector (number input plus step buttons) runs from 1901 to 2100.
+
+Both branches are placed on the traditional twelve-branch cycle and checked against eight
+relations. A pair can carry more than one relation — 寅 Tiger and 亥 Pig are both a six harmony
+and a destruction — and every relation that applies is shown, always in this order:
+
+| Relation | Hanzi | Rule (branch indices 0–11, 子 Zi to 亥 Hai) |
+|---|---|---|
+| Same animal | 本命年 | The chosen year's animal is the birth animal |
+| Trine | 三合 | Four or eight places apart around the cycle |
+| Six harmony | 六合 | One of six fixed pairs: 子丑, 寅亥, 卯戌, 辰酉, 巳申, 午未 |
+| Clash | 六沖 | Exactly six places apart |
+| Harm | 六害 | One of six fixed pairs: 子未, 丑午, 寅巳, 卯辰, 申亥, 酉戌 |
+| Punishment | 刑 | Two distinct animals within 寅巳申 or 丑戌未, or the pair 子卯 |
+| Self-punishment | 自刑 | The chosen year repeats the birth animal, and it is 辰, 午, 酉 or 亥 |
+| Destruction | 破 | One of six fixed pairs: 子酉, 卯午, 巳申, 寅亥, 丑辰, 未戌 |
+
+When none of the eight apply, the page says the tradition names no relation for that pair — it
+never calls a year lucky or unlucky. Each relation's copy is original reflective writing framed
+as traditional association, with no fortune, luck or predictive language.
+
 ## Number conventions
 
 The number perspective now includes an expanded Pythagorean numerology studio.
@@ -34,7 +61,7 @@ Cultural notes distinguish number wordplay from original journal prompts. Four, 
 
 ## Verification
 
-Run `node --test tests/birthday-insights.test.cjs tests/birthplace-search.test.cjs tests/natal-engine.test.cjs` and syntax-check `app.js`, `birthday-insights.js`, `birthplace-search.js`, `natal-engine.js`, `natal-chart.js` and `sky-chart.js`. Boundary fixtures reference HKO's [2024 almanac](https://www.hko.gov.hk/en/gts/astron2024/files/HKO_almanac_2024.pdf), [2020 calendar](https://www.hko.gov.hk/en/publica/calendar/files/Cal_2020.pdf), and [1901–2100 conversion tables](https://www.hko.gov.hk/en/gts/time/conversion.htm).
+Run `node --test tests/birthday-insights.test.cjs tests/birthplace-search.test.cjs tests/natal-engine.test.cjs tests/chinese-year.test.cjs` (7 tests in `chinese-year.test.cjs`) and syntax-check `app.js`, `birthday-insights.js`, `birthplace-search.js`, `natal-engine.js`, `natal-chart.js`, `sky-chart.js`, `chinese-year.js` and `chinese-room.js`. Boundary fixtures reference HKO's [2024 almanac](https://www.hko.gov.hk/en/gts/astron2024/files/HKO_almanac_2024.pdf), [2020 calendar](https://www.hko.gov.hk/en/publica/calendar/files/Cal_2020.pdf), and [1901–2100 conversion tables](https://www.hko.gov.hk/en/gts/time/conversion.htm).
 
 Browser checks should cover all three perspectives, a January/February year boundary, optional time, selecting a Lo Shu number, resubmitting a different date while a perspective is open, and desktop/mobile layout. Confirm existing card draws, large-card viewing and deck comparison still work. Birthday view buttons and Lo Shu cells use native buttons with `aria-pressed`; inactive panels use `hidden`. Number details update without replacing the focused cell.
 

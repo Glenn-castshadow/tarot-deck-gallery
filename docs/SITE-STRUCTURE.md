@@ -119,7 +119,7 @@ first `ishtar-account-change` fires.
 `birthplace-search.js` → `vendor/astronomy-engine/astronomy.browser.min.js` →
 `natal-engine.js` → `jyotish-engine.js` → `jyotish-text.js` → `jyotish-chart.js` →
 `jyotish.js` → `birth-lore.js` → `birth-profile.js` → `birth-form.js` →
-`natal-room.js` → `chinese-room.js` → `mobile-sections.js`.
+`natal-room.js` → `chinese-year.js` → `chinese-room.js` → `mobile-sections.js`.
 
 **`/numerology/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `newsletter.js` → `birthday-insights.js` →

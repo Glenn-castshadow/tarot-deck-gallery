@@ -10,7 +10,7 @@
 .jy-heading h3 { font: 500 clamp(29px,3.5vw,44px)/1.15 "Playfair Display",serif; margin: 10px 0; }
 .jy-heading > p:last-child { font-size: 14px; color: #b5c7c8; line-height: 1.7; max-width: 690px; }
 
-.jy-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin: 25px 0 18px; }
+.jy-tabs { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; margin: 25px 0 18px; }
 .jy-tabs button { position: relative; text-align: left; padding: 18px 15px 18px 54px; font-size: 15px; }
 .jy-tabs button > span { position: absolute; left: 16px; top: 19px; font: 24px serif; color: #d8c085; }
 .jy-tabs small { display: block; font-size: 11px; color: #a9c0c0; margin-top: 6px; }
@@ -19,6 +19,9 @@
 .jy-profile-status { color: #c4cbbe; font-size: 12px; line-height: 1.6; }
 
 .jy-view[hidden] { display: none; }
+
+/* /eastern/ does not load celestial-extras.css, so the borrowed table wrapper needs its own overflow here. */
+.jyotish .cx-table-wrap { overflow-x: auto; }
 
 .jy-format-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
 .jy-format-toggle button { font-size: 12px; padding: 8px 12px; }
@@ -70,6 +73,12 @@
 
 .jy-method-note { margin-top: 14px; color: #acc1c1; font-size: 12px; line-height: 1.8; }
 
+.jy-gochar-intro { color: #bed0cc; font-size: 13px; line-height: 1.8; max-width: 690px; }
+.jy-date-controls { display: flex; gap: 5px; flex-wrap: wrap; margin: 14px 0 18px; }
+.jy-date-controls input { font-size: 16px; }
+.jy-sade-sati { margin: 14px 0; padding: 16px 18px; background: #0b232d; border: 1px solid #6b8e8833; border-left: 3px solid #d8c085; }
+.jy-sade-sati > p:not(.acg-small-label) { margin-top: 6px; color: #bed0cc; font-size: 13px; line-height: 1.8; }
+
 .jy-conventions { border-top: 1px solid #6b8e8844; padding-top: 17px; margin-top: 20px; color: #acc1c1; font-size: 12px; line-height: 1.8; }
 
 @media (max-width: 1000px) {
@@ -77,19 +86,26 @@
   .jy-chart-svg { margin: 0 auto; }
   .jy-dasha-readings { grid-template-columns: 1fr; }
 }
-@media (max-width: 700px) {
-  .jy-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
+@media (max-width: 900px) {
+  /* Five tabs wrap three over two. */
+  .jy-tabs { grid-template-columns: repeat(6,minmax(0,1fr)); }
+  .jy-tabs button { grid-column: span 2; }
+  .jy-tabs button:nth-child(n+4) { grid-column: span 3; }
 }
 @media (max-width: 600px) {
   .jyotish { padding: 20px 14px; }
-  .jy-tabs button { padding-left: 42px; font-size: 13px; }
-  .jy-tabs button > span { left: 12px; font-size: 20px; }
+  .jy-tabs { gap: 6px; }
+  .jy-tabs button { text-align: center; padding: 12px 5px; font-size: 13px; }
+  .jy-tabs button > span { position: static; display: block; margin-bottom: 8px; font-size: 20px; }
+  .jy-tabs small { font-size: 10px; }
+  .jy-date-controls input { flex: 1; width: 130px; }
+  .jy-date-controls button { padding: 9px; }
   .jy-bhava-strip { grid-template-columns: 1fr 1fr; }
   .jy-nakshatra-list { grid-template-columns: 1fr 1fr; }
 }
 @media print {
   .jyotish { break-before: page; border: 0; padding: 0; background: #fff !important; color: #151c23 !important; }
-  .jy-tabs, .jy-format-toggle, .jyotish [data-jy-sample], .jyotish [data-jy-birth] { display: none !important; }
+  .jy-tabs, .jy-format-toggle, .jy-date-controls, .jyotish [data-jy-sample], .jyotish [data-jy-birth] { display: none !important; }
   .jyotish :is(p,h3,h4,h5,th,td,small,strong,summary,blockquote,li) { color: #151c23 !important; }
   .jyotish blockquote { border-left-color: #8a7645; }
   .jyotish details > :not(summary) { display: block !important; }

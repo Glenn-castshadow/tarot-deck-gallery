@@ -27,18 +27,24 @@ browser from the saved birth profile through `setBirthChart`.
   nakshatra readings (keyword, reflection and prompt), nine dasha-lord readings and twelve
   bhava one-liners. Traditional names, symbols, deities and the Vimshottari years are
   factual/traditional data and are not treated as original copy.
+- **Gochar** — the day's sidereal transits of the nine grahas, read against the natal Moon: each
+  graha's sign, degrees, whole-sign house counted from the Moon, and whether tradition counted
+  that house as supportive or demanding, with a Sade Sati note when transiting Saturn is in the
+  12th, 1st or 2nd from the Moon. A date control (previous day, next day, today, a date input)
+  mirrors the transits tab on `/charts/`, within 1901–2100.
 - A "Method & conventions" disclosure on every tab, and a "Try a sample chart" profile bar
   matching the rest of the atlas. Without a recorded birth time and confirmed birthplace the
   section shows the same "Add birth details" prompt used elsewhere in the atlas.
 
-The section's own stylesheet is `jyotish.css`, but `jyotish.js` deliberately reuses classes
-owned by neighbouring sections, the same way `chart-in-time.js` does. `.cx-profile-bar`,
-`.cx-missing`, `.cx-empty` and `.cx-table-wrap` are defined in `celestial-extras.css`;
-`.acg-eyebrow` and `.acg-small-label` are defined in `astrocartography.css`. `jyotish.css`
-re-declares element rules under its own `.jyotish`/`.jy-*` classes rather than editing those
-shared rules (its one direct touch is a print-mode border-color override scoped to
-`.jyotish .cx-table-wrap`), so the section loses styling if any of those shared classes is
-removed or renamed elsewhere.
+The section's own stylesheet is `jyotish.css`, but `jyotish.js` reuses class names owned by
+neighbouring sections, the same way `chart-in-time.js` does: `.cx-profile-bar`, `.cx-missing`,
+`.cx-empty`, `.cx-error` and `.cx-table-wrap` come from `celestial-extras.css`, and `.acg-eyebrow`
+and `.acg-small-label` from `astrocartography.css`. `/eastern/` loads neither of those
+stylesheets, so a borrowed class is styled there only where `jyotish.css` re-declares it.
+`.cx-table-wrap`'s horizontal overflow is re-declared as `.jyotish .cx-table-wrap { overflow-x: auto; }`,
+beside a print-mode border-color override for the same wrapper; `.acg-small-label`,
+`.acg-eyebrow`, `.cx-missing`, `.cx-empty`, `.cx-profile-bar` and `.cx-error` are currently
+unstyled on that page.
 
 ## Conventions
 
@@ -107,6 +113,37 @@ their fifth (`tests/jyotish.test.cjs` checks this equivalence for all twelve sig
 nine parts). The Navamsa chart is drawn from the navamsa Lagna with the nine grahas placed
 by navamsa sign. Vargottama (same sign in D1 and D9) is flagged per graha.
 
+### Gochar
+
+Gochar reads a chosen day's sidereal transits against the natal Moon. Positions are calculated
+for 12:00 UTC on that day — the same instant convention the transits tab on `/charts/` uses — so
+a graha that changes sign during the day is shown in its noon sign. The date control (previous
+day, next day, today, a date input) mirrors that tab too, within 1901–2100.
+
+`JyotishEngine.gochar(chart, day)` casts a transit chart at the birth location with
+`NatalEngine.chartAtInstant` and reads its graha positions through `sidereal()`. Houses are
+counted whole-sign from the natal Moon's own sidereal rashi (the Moon's sign is house 1),
+independent of the transit chart's own ascendant: `houseFromMoon(signIndex, moonSign) =
+(signIndex − moonSign) mod 12 + 1`. `gochar` returns `{status:'missing', …}` for a chart that is
+not ready, and throws `RangeError` for a malformed day string or a year outside 1901–2100.
+
+`GOCHAR_SUPPORTIVE` lists, for each graha, the houses from the Moon that classical Gochara
+counted as supportive: Sun 3, 6, 10, 11; Moon 1, 3, 6, 7, 10, 11; Mars 3, 6, 11; Mercury 2, 4, 6,
+8, 10, 11; Jupiter 2, 5, 7, 9, 11; Venus 1, 2, 3, 4, 5, 8, 9, 11, 12; Saturn, Rahu and Ketu 3, 6,
+11. The tab's "Method & conventions" disclosure names this the classical Gochara scheme counted
+from the Moon, as summarised in Mantreswara's *Phaladeepika* — a summary of the table, not a full
+citation — and notes other texts vary at the margins; the supportive/demanding table it shows is
+rendered directly from `GOCHAR_SUPPORTIVE`, so the copy and the engine cannot drift apart.
+**Vedha — the rule under which a graha in a paired sign was said to cancel a transit — is not
+applied**, and the method text says so.
+
+Sade Sati is flagged when transiting Saturn's house from the Moon is the 12th, 1st or 2nd
+(`sadeSati: [12, 1, 2].includes(saturn.house)`); the tab shows the note only when the flag is
+set. Gochar copy (`jyotish-text.js`'s `gochar` object: an intro, the supportive/demanding
+framings, the Sade Sati note and the method text) is written in the past tense and third person,
+matching the horary section's voice — "Tradition counted this transit as supportive," never a
+verdict.
+
 ### Chart formats
 
 `jyotish-chart.js` is a pure renderer (plain data in, SVG string out, no engine
@@ -139,16 +176,17 @@ Run the whole suite:
 node --test tests/*.test.cjs
 ```
 
-which is **247 tests passing** at the time of writing (the rest of the atlas plus the 50
+which is **518 tests passing** at the time of writing (the rest of the atlas plus the 60
 Jyotish tests below). Note the glob: `node --test tests/` fails on Node 24 with
 `MODULE_NOT_FOUND`, so the path must be expanded by the shell.
 
-The three Jyotish-specific files:
+The four Jyotish-specific files:
 
 ```
-node --test tests/jyotish.test.cjs        # 43 tests
-node --test tests/jyotish-text.test.cjs   # 2 tests
-node --test tests/jyotish-chart.test.cjs  # 5 tests
+node --test tests/jyotish.test.cjs        # 44 tests
+node --test tests/jyotish-text.test.cjs   # 3 tests
+node --test tests/jyotish-chart.test.cjs  # 7 tests
+node --test tests/gochar.test.cjs         # 6 tests
 ```
 
 **`tools/build_jyotish_fixtures.py`** (development only, never shipped) uses pyswisseph in
@@ -214,7 +252,19 @@ missing/error passthrough):
 graha/bhava entry present, minimum lengths, prompts ending in "?"), the banned-vocabulary
 list, and that the 27 nakshatra readings read as distinct prose rather than a templated
 mail-merge (bounded repetition of opening words, first-sentence skeletons and stock
-phrasing).
+phrasing). It also checks the Gochar copy (intro, supportive/demanding framings, Sade Sati
+note, method text): each string is present and non-trivial, the set passes the predictive-scan,
+and the method text names 12:00 UTC, *Phaladeepika* and Vedha by name.
+
+**`tests/gochar.test.cjs`** checks `GOCHAR_SUPPORTIVE`'s table sizes (4, 6, 3, 6, 5, 9, 3, 3, 3
+for Sun through Ketu) and exact values for Jupiter and Venus; `houseFromMoon` against
+hand-computed sign indices, including the wrap past house 12; a full Gochar reading for
+2026-09-14 cross-checked house-by-house and supportive-flag-by-flag against `sidereal()`'s own
+natal Moon, anchored by the independent sanity check that sidereal Saturn is in Meena (Pisces)
+that day; literals for the sample chart that day (natal Moon in Mesha, Saturn in the 12th with Sade Sati on, Jupiter in Karka in the 4th and not supportive); Sade Sati walked one year at a time across 2000–2030 so the flag is shown both
+appearing and clearing over a Saturn cycle; and that `gochar` returns `status:'missing'` for a
+chart that is not ready and throws `RangeError` for an invalid date (`2026-02-30`, `'soon'`) or
+a year outside 1901–2100.
 
 **`tests/jyotish-chart.test.cjs`** checks the renderer structurally: every sign appears
 exactly once per format, the Lagna house is uniquely marked in both South and North
@@ -250,5 +300,6 @@ blank in this environment:
 ## Out of scope
 
 Bhava Chalit and Sripati house cusps, ayanamsas other than Lahiri, other vargas (D10 and
-beyond), pratyantardashas, yogas, ashtakavarga, shadbala, transits (gochar), Chandra Lagna
-charts, and any compatibility (kuta) matching.
+beyond), pratyantardashas, yogas, ashtakavarga, shadbala, Chandra Lagna charts, and any
+compatibility (kuta) matching. Within Gochar: Vedha, Ashtakavarga-weighted transits, and
+transits counted from the Lagna rather than the Moon.

@@ -15,15 +15,18 @@ const Jyotish = (() => {
         <button type="button" data-jy-tab="nakshatras" aria-controls="jy-nakshatras" aria-pressed="false"><span>&#9790;</span>Nakshatras<small>Lunar mansions</small></button>
         <button type="button" data-jy-tab="dashas" aria-controls="jy-dashas" aria-pressed="false"><span>&#8635;</span>Dashas<small>Vimshottari periods</small></button>
         <button type="button" data-jy-tab="navamsa" aria-controls="jy-navamsa" aria-pressed="false"><span>&#9737;</span>Navamsa<small>D9 chart</small></button>
+        <button type="button" data-jy-tab="gochar" aria-controls="jy-gochar" aria-pressed="false"><span>&#9795;</span>Gochar<small>Transits from the Moon</small></button>
       </div>
       <div class="cx-profile-bar"><p class="jy-profile-status"></p><button type="button" data-jy-sample>Try a sample chart</button></div>
       <section id="jy-rashi" class="jy-view" aria-live="polite"></section>
       <section id="jy-nakshatras" class="jy-view" aria-live="polite" hidden></section>
       <section id="jy-dashas" class="jy-view" aria-live="polite" hidden></section>
-      <section id="jy-navamsa" class="jy-view" aria-live="polite" hidden></section>`;
+      <section id="jy-navamsa" class="jy-view" aria-live="polite" hidden></section>
+      <section id="jy-gochar" class="jy-view" aria-live="polite" hidden><p class="jy-gochar-intro">${esc(JyotishText.gochar.intro)}</p><div class="jy-date-controls"><button type="button" data-jy-day="-1" aria-label="Previous day">←</button><label for="jy-gochar-date" class="sr-only">Gochar date</label><input id="jy-gochar-date" type="date" value="${today()}" min="1901-01-01" max="2100-12-31"><button type="button" data-jy-day="1" aria-label="Next day">→</button><button type="button" data-jy-today>Today</button></div><div id="jy-gochar-output"></div></section>`;
 
     const $ = selector => root.querySelector(selector);
-    let savedChart = null, chart = null, usingSample = false, tab = 'rashi', format = 'south', selectedMaha = null, selectedGraha = null;
+    let savedChart = null, chart = null, usingSample = false, tab = 'rashi', format = 'south', selectedMaha = null, selectedGraha = null, gocharDay = today();
+    const ordinal = n => `${n}${['','st','nd','rd'][n] || 'th'}`;  // houses 1-12 only: 11th and 12th fall through to 'th'
     const missing = message => `<div class="cx-missing"><span aria-hidden="true">✧</span><p>${esc(message)}</p><button type="button" data-jy-birth>Add birth details ↑</button></div>`;
 
     function profileStatus() {
@@ -124,7 +127,25 @@ const Jyotish = (() => {
         ${conventions()}`;
     }
 
+    function renderGochar() {
+      const out = $('#jy-gochar-output'), T = JyotishText.gochar;
+      try {
+        const model = JyotishEngine.gochar(chart, gocharDay);
+        if (model.status === 'missing') { out.innerHTML = missing(model.message); return; }
+        if (model.status === 'error') { out.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
+        const saturn = model.grahas.find(g => g.name === 'Saturn');
+        const rows = model.grahas.map(g => `<tr><th scope="row">${esc(g.abbreviation)} ${esc(g.name)}</th><td>${esc(g.sign)} (${esc(g.western)})</td><td>${esc(g.degrees)}</td><td>${esc(ordinal(g.house))}</td><td>${esc(g.supportive ? T.supportive : T.demanding)}</td></tr>`).join('');
+        const scheme = Object.entries(JyotishEngine.GOCHAR_SUPPORTIVE).map(([name, houses]) => `<tr><th scope="row">${esc(name)}</th><td>${esc(houses.map(h => ordinal(h)).join(', '))}</td></tr>`).join('');
+        out.innerHTML = `<p class="acg-small-label">${usingSample?esc('Sample · '):''}Natal Moon · ${esc(model.moonRashi)} (${esc(JyotishEngine.rashis[model.moonSign][1])})</p>
+          <p class="jy-method-note">Positions for 12:00 UTC on ${esc(dateFmt(`${model.day}T12:00:00Z`))}.</p>
+          ${model.sadeSati ? `<div class="jy-sade-sati"><p class="acg-small-label">Sade Sati · Saturn in the ${esc(ordinal(saturn.house))} sign from the natal Moon</p><p>${esc(T.sadeSati)}</p></div>` : ''}
+          <div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Rashi</th><th scope="col">Degrees</th><th scope="col">From the Moon</th><th scope="col">Tradition</th></tr></thead><tbody>${rows}</tbody></table></div>
+          <details class="jy-conventions"><summary>Method &amp; conventions</summary><p>${esc(T.method).replace('Phaladeepika', '<em>Phaladeepika</em>')}</p><div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Supportive houses from the Moon</th></tr></thead><tbody>${scheme}</tbody></table></div></details>`;
+      } catch (error) { out.innerHTML = `<p class="cx-error" role="alert">${esc(error.message)}</p>`; }
+    }
+
     function renderActive() {
+      if (tab === 'gochar') { renderGochar(); return; }
       const model = JyotishEngine.sidereal(chart);
       if (model.status === 'missing') { $(`#jy-${tab}`).innerHTML = missing(model.message); return; }
       if (model.status === 'error') { $(`#jy-${tab}`).innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
@@ -152,7 +173,25 @@ const Jyotish = (() => {
       }
       if ('jyFormat' in data) { format = data.jyFormat; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-format="${format}"]`)?.focus({preventScroll:true}); }
       if ('jyMaha' in data) { selectedMaha = Number(data.jyMaha); renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-maha="${selectedMaha}"]`)?.focus({preventScroll:true}); }
+      if ('jyDay' in data) {
+        const d = new Date(`${gocharDay}T12:00:00Z`);
+        if (Number.isFinite(+d)) {
+          d.setUTCDate(d.getUTCDate() + Number(data.jyDay));
+          const year = d.getUTCFullYear();
+          gocharDay = year < 1901 ? '1901-01-01' : year > 2100 ? '2100-12-31' : d.toISOString().slice(0, 10);
+          $('#jy-gochar-date').value = gocharDay; renderGochar();
+        }
+      }
+      if ('jyToday' in data) { gocharDay = today(); $('#jy-gochar-date').value = gocharDay; renderGochar(); }
       if ('jyGraha' in data) { selectedGraha = data.jyGraha; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-graha="${selectedGraha}"]`)?.focus({preventScroll:true}); }
+    });
+    root.addEventListener('change', event => {
+      if (event.target.id === 'jy-gochar-date') {
+        // An invalid or cleared date keeps the previous day, so the day steps keep working.
+        const value = event.target.value, year = Number(value.slice(0, 4));
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value) && year >= 1901 && year <= 2100) gocharDay = value;
+        event.target.value = gocharDay; renderGochar();
+      }
     });
 
     profileStatus(); renderActive();

@@ -119,6 +119,17 @@ const CelestialExtrasEngine = (() => {
     });
     return {status:'ready',direction:forward?'forward':'backward',startAge,startDays,boundary,pillars};
   }
-  return {positions,between,transits,synastry,bazi,jieBoundary,luckPillars,stems,branches,hiddenStems,tenGod,gods};
+  // The annual (流年) pillar: the sexagenary year beginning at Li Chun, read against the Day Master.
+  function annualPillar(chart, year) {
+    const model = bazi(chart);
+    if (model.status !== 'ready') return {status:'missing', message:'Add a birth date, recorded time and confirmed birthplace to read an annual pillar against your Day Master.'};
+    if (!Number.isInteger(year) || year < 1901 || year > 2100) throw new RangeError('Choose a year from 1901 to 2100.');
+    const index = natal.mod(year - 1984, 60), stemIndex = index % 10, branchIndex = index % 12;
+    const found = astro.SearchSunLongitude(315, new Date(Date.UTC(year, 0, 1)), 60);
+    if (!found) throw new Error('Solar-term search failed.');
+    return {status:'ready', year, index, pillar:pillar(`${year}`, stemIndex, branchIndex), god:tenGod(model.dayStemIndex, stemIndex),
+      hidden:hiddenStems[branchIndex].map(s => ({stemIndex:s, stem:stems[s], god:tenGod(model.dayStemIndex, s)})), liChun:found.date, dayMaster:model.dayMaster};
+  }
+  return {positions,between,transits,synastry,bazi,jieBoundary,luckPillars,annualPillar,stems,branches,hiddenStems,tenGod,gods};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = CelestialExtrasEngine;

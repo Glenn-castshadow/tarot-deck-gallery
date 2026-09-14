@@ -80,6 +80,27 @@ const JyotishEngine = (() => {
     }
     return {status:'ready', moonNakshatra:nk, balanceYears, mahadashas, current};
   }
-  return {AYANAMSA_T0, ayanamsa, nakshatraOf, navamsaSign, sidereal, vimshottari, nakshatras, rashis, lordCycle, dashaYears, grahaOrder};
+  // The classical Gochara table: houses from the natal Moon in which each graha's transit was
+  // traditionally counted as supportive. Vedha (obstruction) is not applied. Conventions: docs/JYOTISH.md.
+  const GOCHAR_SUPPORTIVE = {Sun:[3,6,10,11], Moon:[1,3,6,7,10,11], Mars:[3,6,11], Mercury:[2,4,6,8,10,11], Jupiter:[2,5,7,9,11],
+    Venus:[1,2,3,4,5,8,9,11,12], Saturn:[3,6,11], Rahu:[3,6,11], Ketu:[3,6,11]};
+  const houseFromMoon = (signIndex, moonSign) => natal.mod(signIndex - moonSign, 12) + 1;
+  function gochar(chart, day) {
+    const birth = sidereal(chart);
+    if (birth.status !== 'ready') return birth;
+    const instant = new Date(`${day}T12:00:00Z`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day || '') || !Number.isFinite(+instant) || instant.toISOString().slice(0, 10) !== day) throw new RangeError('Choose a valid calendar date.');
+    if (instant.getUTCFullYear() < 1901 || instant.getUTCFullYear() > 2100) throw new RangeError('Choose a date from 1901 to 2100.');
+    const transit = natal.chartAtInstant(instant, chart.location, {houseSystem: 'whole-sign'});
+    if (transit.status !== 'ready') return {status: 'error', message: transit.message};
+    const moonSign = birth.grahas.find(g => g.name === 'Moon').signIndex;
+    const grahas = sidereal(transit).grahas.map(g => {
+      const house = houseFromMoon(g.signIndex, moonSign);
+      return {name: g.name, abbreviation: g.abbreviation, signIndex: g.signIndex, sign: g.sign, western: g.western, degrees: g.degrees, retrograde: g.retrograde, house, supportive: GOCHAR_SUPPORTIVE[g.name].includes(house)};
+    });
+    const saturn = grahas.find(g => g.name === 'Saturn');
+    return {status: 'ready', day, moonSign, moonRashi: rashis[moonSign][0], grahas, sadeSati: [12, 1, 2].includes(saturn.house)};
+  }
+  return {AYANAMSA_T0, ayanamsa, nakshatraOf, navamsaSign, sidereal, vimshottari, nakshatras, rashis, lordCycle, dashaYears, grahaOrder, GOCHAR_SUPPORTIVE, houseFromMoon, gochar};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = JyotishEngine;

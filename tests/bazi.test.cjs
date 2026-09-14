@@ -97,3 +97,44 @@ test('luck pillars need a ready chart and a counting choice',()=>{
   assert.notEqual(m.direction,f.direction,'the two sexes count in opposite directions for the same chart');
   assert.ok(m.pillars.every(p=>typeof p.god==='string'));
 });
+
+test('annual pillars count from 1984 甲子 across the whole range', () => {
+  const chart = chartFor('1990-07-15', '14:30');
+  const chars = year => extras.annualPillar(chart, year).pillar.characters;
+  assert.equal(chars(1984), '甲子');
+  assert.equal(chars(2026), '丙午');
+  assert.equal(chars(2100), '庚申');
+  assert.equal(chars(1901), '辛丑');
+  assert.throws(() => extras.annualPillar(chart, 1900), RangeError);
+  assert.throws(() => extras.annualPillar(chart, 2026.5), RangeError);
+  assert.equal(extras.annualPillar({status: 'missing'}, 2026).status, 'missing');
+});
+
+test('the annual stem\'s Ten God matches a hand table for 丙, for every Day Master', () => {
+  // 丙 (yang Fire) as seen from each Day Master 甲…癸, worked by hand from the five-phase cycle.
+  const OF_BING = ['eatingGod','hurtingOfficer','friend','robWealth','indirectResource','directResource','sevenKillings','directOfficer','indirectWealth','directWealth'];
+  const seen = new Set();
+  for (let i = 0; i < 20; i++) {
+    const chart = chartFor(new Date(Date.UTC(2000, 0, 1 + i)).toISOString().slice(0, 10), '12:00');
+    const model = extras.bazi(chart);
+    const annual = extras.annualPillar(chart, 2026);
+    assert.equal(annual.god, OF_BING[model.dayStemIndex], `Day Master ${model.dayStemIndex}`);
+    seen.add(model.dayStemIndex);
+  }
+  assert.equal(seen.size, 10, 'every Day Master exercised');
+});
+
+test('the annual pillar\'s hidden stems follow the branch table, each with its Ten God', () => {
+  const chart = chartFor('1990-07-15', '14:30');
+  const annual = extras.annualPillar(chart, 2026);   // 午: 丁, 己
+  assert.deepEqual(annual.hidden.map(h => h.stem[0]), ['丁', '己']);
+  const dm = extras.bazi(chart).dayStemIndex;
+  annual.hidden.forEach(h => assert.equal(h.god, extras.tenGod(dm, h.stemIndex)));
+});
+
+test('the annual pillar names that year\'s Li Chun instant', () => {
+  const chart = chartFor('1990-07-15', '14:30');
+  // Published: 04:02 on 4 February 2026, China Standard Time.
+  const published = Date.UTC(2026, 1, 3, 20, 2);
+  assert.ok(Math.abs(+extras.annualPillar(chart, 2026).liChun - published) < 2 * 60000);
+});

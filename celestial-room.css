@@ -209,6 +209,19 @@
 .chart-depth-patterns strong { display: block; color: var(--cream); font-size: 14px; font-weight: 500; }
 .chart-depth-patterns span { display: block; margin-top: 6px; color: var(--atlas-gold); font: 12px/1.5 "DM Mono", monospace; }
 .chart-depth-patterns small { display: block; margin-top: 6px; color: #b9d0d7; font-size: 11px; line-height: 1.6; }
+.chinese-year { margin-top: 35px; padding-top: 28px; border-top: 1px solid var(--atlas-line); min-width: 0; }
+.chinese-year h5 { margin: 9px 0 20px; color: var(--cream); font: 600 26px/1.25 "Playfair Display", serif; }
+.chinese-year-control { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 22px; }
+.chinese-year-control label { display: flex; flex-direction: column; gap: 8px; color: var(--atlas-teal); font: 10px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.chinese-year-control input { width: 110px; height: 46px; padding: 0 12px; border: 1px solid var(--atlas-line); border-radius: 0; background: #152a39; color: var(--cream); color-scheme: dark; font: 16px "DM Sans", sans-serif; }
+.chinese-year-control button { min-width: 44px; min-height: 44px; padding: 0; border: 1px solid var(--atlas-line); background: transparent; color: var(--atlas-gold); font-size: 18px; }
+.chinese-year-control button:hover { border-color: var(--atlas-gold); background: rgba(239,209,154,.08); }
+.chinese-year-control input:focus-visible, .chinese-year-control button:focus-visible { outline: 2px solid var(--atlas-teal); outline-offset: 3px; }
+.chinese-year-relations { margin: 0; padding: 0; list-style: none; }
+.chinese-year-relations li { padding: 14px 0; border-bottom: 1px solid var(--atlas-line); }
+.chinese-year-relations strong { color: var(--cream); font-size: 14px; font-weight: 500; }
+.chinese-year-relations [lang="zh"] { margin-left: 8px; color: var(--atlas-gold); font: 12px serif; }
+.chinese-year-relations p { margin: 8px 0 0; color: #d4e3e5; font-size: 13px; line-height: 1.7; }
 @media (max-width: 1000px) {
   #birthday-room { grid-template-columns: 1fr; gap: 27px; padding: 26px; }
   #birthday-room .birthday-intro { position: relative; padding-left: 82px; }
@@ -257,6 +270,9 @@
   .natal-house-grid, .natal-aspect-grid, .natal-balance-grid { grid-template-columns: 1fr; }
   .chart-depth > header h4 { font-size: 28px; }
   .natal-balance-grid { gap: 14px; }
+  .chinese-year { margin-top: 28px; padding-top: 22px; }
+  .chinese-year-control { gap: 8px; }
+  .chinese-year-control input { width: 84px; }
 }
 @media (max-width: 480px) {
   #birthday-room .birthday-form { grid-template-columns: 1fr; }
@@ -269,7 +285,7 @@
 @media print {
   @page { margin: 14mm; }
   body, .shell, .reading-room, #birthday-room { margin: 0 !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; border: 0 !important; display: block !important; }
-  .grain, .masthead, .brand-lockup, .reading-intro, .reading-deck-picker, .reading-controls, .reading-output, .ishtar-library, .reading-note, .toolbar, .gallery-head, .gallery, .footer, .birthday-intro, .birthday-form, .birthday-privacy, .detail-dialog, .sky-dialog, .natal-report-nav, .natal-report > header > button, .natal-aspect-filter, .sky-chart-invitation, .sky-chart-caption, #birthday-room .insight-method { display: none !important; }
+  .grain, .masthead, .brand-lockup, .reading-intro, .reading-deck-picker, .reading-controls, .reading-output, .ishtar-library, .reading-note, .toolbar, .gallery-head, .gallery, .footer, .birthday-intro, .birthday-form, .birthday-privacy, .detail-dialog, .sky-dialog, .natal-report-nav, .natal-report > header > button, .natal-aspect-filter, .sky-chart-invitation, .sky-chart-caption, #birthday-room .insight-method, .chinese-year-control { display: none !important; }
   #birthday-sky, .natal-report-panel[hidden] { display: block !important; }
   #birthday-room { --atlas-gold: #604310; --atlas-teal: #235364; --atlas-line: #b5a991; --cream: #151c23; color: #151c23 !important; }
   #birthday-room p, #birthday-room th, #birthday-room td, #birthday-room button, #birthday-room small, #birthday-room strong, #birthday-room h4 { color: #151c23 !important; }

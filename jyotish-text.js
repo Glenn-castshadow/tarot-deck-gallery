@@ -95,6 +95,16 @@ const JyotishText = (() => {
     12: 'The twelfth house is traditionally associated with rest, retreat and letting go of what is no longer carried.'
   };
 
-  return {lagna, graha, nakshatra, dashaLord, bhava};
+  // Gochar: past tense and third person throughout. The supportive table itself
+  // is rendered from JyotishEngine.GOCHAR_SUPPORTIVE so copy and engine cannot drift.
+  const gochar = {
+    intro: 'Gochar, the Jyotish reading of transits, sets the grahas of a chosen day against the birth chart. Each graha is counted in signs from the rashi the Moon occupied at birth, and tradition gave every count its own character.',
+    supportive: 'Tradition counted this transit as supportive',
+    demanding: 'Tradition counted this transit as more demanding',
+    sadeSati: 'Tradition called Saturn’s passage through the 12th, 1st and 2nd signs from the natal Moon Sade Sati, a span of about seven and a half years associated with steady effort. The name marks that association and was never meant as a forecast.',
+    method: 'Positions are calculated for 12:00 UTC on the chosen day, so a graha that changes sign during the day is shown in its noon sign. They use the Lahiri ayanamsa and mean lunar nodes, as elsewhere in this section. Houses are counted whole-sign from the natal Moon’s rashi, which is the 1st. The table below is the classical Gochara scheme counted from the Moon, as summarised in Mantreswara’s Phaladeepika; other texts vary at the margins. Vedha — the rule under which a graha in a paired sign was said to cancel a transit — is not applied. This tab describes traditional associations, not predictions.'
+  };
+
+  return {lagna, graha, nakshatra, dashaLord, bhava, gochar};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = JyotishText;

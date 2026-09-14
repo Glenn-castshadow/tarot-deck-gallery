@@ -6,6 +6,7 @@ const T=require('../jyotish-text.js');
 // built concurrently by separate implementers in separate files (see
 // .superpowers/sdd/2026-09-12-jyotish/progress.md).
 const LORD_CYCLE=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
+const PREDICTIVE=/you will|luck|fortune|misfortune|wealth will|marriage will|death|disease|illness|enemy|enemies|\bgains?\b|\bobstacles?\b/i;
 const GRAHAS=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn','Rahu','Ketu'];
 
 test('jyotish copy is complete and keeps the reflective voice',()=>{
@@ -15,10 +16,19 @@ test('jyotish copy is complete and keeps the reflective voice',()=>{
   for(const g of GRAHAS) assert.ok(T.graha[g].theme&&T.graha[g].body.length>=80,`graha ${g}`);
   for(let i=1;i<=12;i++) assert.ok(T.bhava[i].length>30,`bhava ${i}`);
   const all=JSON.stringify(T);
-  assert.doesNotMatch(all,/you will|luck|fortune|misfortune|wealth will|marriage will|death|disease|illness|enemy|enemies|\bgains?\b|\bobstacles?\b/i);
+  assert.doesNotMatch(all,PREDICTIVE);
   const openings=Object.values(T.nakshatra).map(n=>n.body.split(/\s+/).slice(0,2).join(' ').toLowerCase());
   const counts={}; openings.forEach(o=>counts[o]=(counts[o]||0)+1);
   assert.ok(Math.max(...Object.values(counts))<=6,'varied openings');
+});
+
+test('gochar copy exists, stays in the past tense and passes the predictive scan',()=>{
+  const keys=['intro','supportive','demanding','sadeSati','method'];
+  for(const k of keys) assert.ok(typeof T.gochar[k]==='string'&&T.gochar[k].length>20,`gochar ${k}`);
+  assert.doesNotMatch(keys.map(k=>T.gochar[k]).join(' '),PREDICTIVE);
+  assert.equal(T.gochar.supportive,'Tradition counted this transit as supportive');
+  assert.equal(T.gochar.demanding,'Tradition counted this transit as more demanding');
+  assert.match(T.gochar.method,/12:00 UTC/); assert.match(T.gochar.method,/Phaladeepika/); assert.match(T.gochar.method,/Vedha/);
 });
 
 test('nakshatra copy reads as distinct prose, not a mail-merged skeleton',()=>{

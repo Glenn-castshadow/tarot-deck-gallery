@@ -164,9 +164,9 @@ the school in which the day rolls at 23:00. Double-hours use recorded local civi
 time, with Zi spanning 23:00–00:59. It does not adjust to true solar time. Day
 Master is the heavenly stem of the day. The phase display counts the four stems
 and principal phases of the four branches (eight visible characters), and a
-second view counts hidden stems too (below). Hidden stems, Ten Gods and luck
-pillars are now included; seasonal weighting, elemental strength and annual
-(流年) pillars are not, and no cycle claims to measure fortune or luck.
+second view counts hidden stems too (below). Hidden stems, Ten Gods, luck
+pillars and the annual (流年) pillar are now included; seasonal weighting and
+elemental strength are not, and no cycle claims to measure fortune or luck.
 
 ### Hidden stems (藏干)
 
@@ -252,6 +252,29 @@ Ten-year 大運 chapters, stepping the month pillar through the sexagenary cycle
 - Sample charts get luck pillars too, and the block scrolls horizontally
   inside its own container on narrow screens rather than widening the page.
 
+### Annual pillar (流年)
+
+One solar year's stem and branch, read against the Day Master, shown as its own block in the
+Four Pillars tab beside the luck pillars:
+
+- **Year.** `index = (year − 1984) mod 60`, off the same 1984 甲子 anchor as the year pillar and
+  the luck-pillar cycle; `stemIndex = index mod 10`, `branchIndex = index mod 12`. A year
+  selector (number input plus step buttons) runs from 1901 to 2100; `annualPillar` throws
+  `RangeError` outside that range and returns `{status:'missing', …}` for a chart that is not
+  ready.
+- **Default.** The current solar year — the Gregorian year, or the year before it when today
+  falls before that year's own Li Chun.
+- **Li Chun.** `CelestialExtrasEngine.annualPillar(chart, year)` searches for 315° apparent
+  solar longitude starting from 1 January of the chosen year, the same boundary the year pillar
+  itself uses. The page shows that instant in the reader's own local time zone, labelled with
+  its zone name, not the birth chart's location.
+- **Content.** The pillar's stem and branch, the stem's Ten God against the Day Master, and the
+  branch's hidden stems (from the same table above), each with its own Ten God. The block
+  reuses the Four Pillars tab's existing Ten God theme-and-prompt copy; there is no separate
+  annual-pillar copy set.
+- No luck-cycle (大運) context is layered onto the annual pillar; it reads as its own traditional
+  association, not a forecast.
+
 Sources: Hong Kong Observatory's stems/branches and solar-term explanations:
 https://www.hko.gov.hk/en/gts/time/stemsandbranches.htm
 https://www.hko.gov.hk/en/gts/time/24solarterms.htm
@@ -281,7 +304,7 @@ are recorded in the JSON fixture. Neither package is included in browser code.
 from lunar_python in the same kind of throwaway venv, never shipped, covering
 the twelve existing BaZi births plus four chosen for luck-pillar coverage (both
 directions, and a birth within an hour of a Jie boundary). `tests/bazi.test.cjs`
-(53 tests) checks the hidden-stem table against every branch, `tenGod`
+(57 tests) checks the hidden-stem table against every branch, `tenGod`
 exhaustively for all 10×10 stem pairs, the hidden-stem phase totals, and, from
 the fixture, the hidden stems and Ten Gods of every case and the luck-pillar
 direction and first five pillars for both sexes. The start age is checked to
@@ -290,7 +313,14 @@ interval to whole days plus double-hour buckets (`dayDiff*4 + floor(hourDiff*10/
 months), while this engine uses exact fractional days (`floor(days × 4)`), so
 five of the 32 birth/sex comparisons round to a different month even a full
 month away from a Jie boundary. The test documents this tolerance, with the
-five differing cases listed, rather than papering over it.
+five differing cases listed, rather than papering over it. Four further cases,
+checked directly rather than against the lunar_python fixture, cover the annual
+pillar: the sexagenary characters at 1984, 2026, 2100 and 1901 (and the range
+errors either side); the year stem's Ten God against a hand-worked table of
+丙 as seen from all ten Day Masters; the annual pillar's hidden stems and their
+Ten Gods against the same hidden-stem table used elsewhere; and 2026's Li Chun
+checked to within two minutes of the published instant (04:02 on 4 February
+2026, China Standard Time).
 
 Manual browser checks cover a 1400px desktop and 390px phone, shared birth inputs,
 all four chart views, destinations and keyboard city search, globe/world controls,

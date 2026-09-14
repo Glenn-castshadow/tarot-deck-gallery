@@ -18,6 +18,11 @@
      codebase spells an optional peer (account.js's `window.BirthRoom?.currentProfile()`,
      tarot.js's `window.MobileSections?.reveal(...)`).
 
+     One exception: a peer read behind a bare `typeof Foo !== 'undefined'` guard never throws,
+     but it may still be listed when its absence would silently hide a feature on that page
+     (chinese-room.js lists chinese-year.js for this reason), so a missing script tag fails
+     here instead of quietly dropping the section.
+
    Some bare reads are guarded by a `document.querySelector('#some-id')` presence check --
    natal-room.js loads on three pages that each carry a different subset of its sections.
    Those are recorded as {when: '#id', needs: [...]} and are required only of a page whose
@@ -87,7 +92,9 @@ const DEPENDENCIES = {
   'sky-calendar.js': ['sky-calendar-engine.js', 'sky-calendar-text.js', 'natal-engine.js', 'birth-profile.js', 'rooms.js'],
   // `BirthProfile.subscribe` whose callback calls `BirthLore.birthdayParts` and
   // `BirthdayInsights.renderChinese/chineseProfile`; the callback fires on subscribe.
-  'chinese-room.js': ['birth-lore.js', 'birth-profile.js', 'birthday-insights.js'],
+  // `typeof ChineseYear !== 'undefined'` gates the animal-year section under the portrait:
+  // no throw, but without it the section silently never appears.
+  'chinese-room.js': ['birth-lore.js', 'birth-profile.js', 'birthday-insights.js', 'chinese-year.js'],
   // `const E = NumerologyEngine` at top level; `BirthdayInsights.renderNumbers` in the
   // studio template; `typeof BirthProfile`/`typeof BirthLore` gate the subscriber.
   'numerology.js': ['numerology-engine.js', 'birthday-insights.js', 'birth-profile.js', 'birth-lore.js'],
