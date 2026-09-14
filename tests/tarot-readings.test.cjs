@@ -9,11 +9,11 @@ const catalogue = source.slice(source.indexOf('const suitProfiles')).split('cons
 const cards = vm.runInNewContext(catalogue + '\ntarotCards', {TarotReadings:Tarot,majorArcana:require('../birth-lore.js').majorArcana});
 const seeded = seed => max => {seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%max;};
 
-test('all three traditional spreads deal the correct count without replacement from all 78 cards', () => {
+test('all six spreads deal the correct count without replacement from all 78 cards', () => {
   const reached=new Set();
-  for(const [id,count] of [['celtic',10],['horseshoe',7],['three',3]]) {
+  for(const [id,count] of [['celtic',10],['horseshoe',7],['three',3],['question',2],['relationship',7],['year',13]]) {
     for(let seed=0;seed<80;seed++) {
-      const draw=Tarot.deal(id,cards,seeded(seed));
+      const draw=Tarot.deal(id,cards,seeded(seed),'','general',id==='year'?{dealtAt:'2026-03-09'}:{});
       assert.equal(draw.cards.length,count);
       assert.equal(new Set(draw.cards.map(x=>x.index)).size,count);
       for(const item of draw.cards) {
