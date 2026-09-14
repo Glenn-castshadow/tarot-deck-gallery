@@ -51,6 +51,16 @@ service. Minor Arcana now have 56 distinct sets of upright, reversed and prompt
 copy rather than generic rank/suit combinations. The same meanings are used in
 daily, full reading and card-detail views.
 
+## Card reference
+
+Alongside the reading room, `/tarot/` also offers a "Card reference" tab: 78 standalone entries,
+one per card, documented in `docs/TAROT-REFERENCE.md`. Those entries are separate from the reading
+copy documented above, and deliberately so — a test enforces that no reference entry shares more
+than two four-word runs with its own card's `upright`/`reversed` text. The reading copy above is
+written for a card sitting in a spread position, interpreted through that position's lens and a
+reader's question; the reference is what the card means taken entirely on its own, independent of
+any position, question or spread. See `docs/TAROT-REFERENCE.md` for its sources and derivations.
+
 ## Verification
 
 `node --test tests/*.test.cjs` includes six reading tests: correct full-deck draws,

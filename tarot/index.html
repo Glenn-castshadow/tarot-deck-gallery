@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/styles.css?v=site-shell-1">
     <link rel="stylesheet" href="/site-shell.css?v=3">
     <link rel="stylesheet" href="/account.css?v=journal-filters-1">
-    <link rel="stylesheet" href="/tarot-readings.css?v=1">
+    <link rel="stylesheet" href="/tarot-readings.css?v=2">
     <link rel="stylesheet" href="/mobile-sections.css?v=2">
   </head>
   <body>
@@ -45,7 +45,7 @@
           <div class="reading-tabs" role="group" aria-label="Reading room views">
             <button class="reading-tab active" data-reading-mode="daily" aria-pressed="true">Daily card</button>
             <button class="reading-tab" data-reading-mode="spread" aria-pressed="false">Full reading</button>
-            <button class="reading-tab" data-reading-mode="deck" aria-pressed="false">Explore deck</button>
+            <button class="reading-tab" data-reading-mode="deck" aria-pressed="false">Card reference</button>
           </div>
           <button id="draw-reading" class="draw-button"><span>✦</span> Draw a card</button>
         </div>
@@ -59,9 +59,9 @@
         <section id="ishtar-deck" class="ishtar-library" aria-labelledby="ishtar-title" hidden>
           <header class="ishtar-library-header">
             <div>
-              <p class="section-kicker">The complete deck</p>
+              <p class="section-kicker">All 78 cards</p>
               <h3 id="ishtar-title">Ishtar Insights</h3>
-              <p id="reading-deck-description">78 illustrated cards. One unfolding story. Explore every Major Arcana, every suit, and the matching card back.</p>
+              <p id="reading-deck-description">Every card, with what it holds on its own and the attribution tradition gives it. Choose any of the 78 cards to read its entry, or the matching back.</p>
             </div>
             <span class="ishtar-library-count">22 Major · 56 Minor</span>
           </header>
@@ -77,6 +77,12 @@
             </div>
             <label class="ishtar-search"><span class="sr-only">Search cards</span><input id="ishtar-search" type="search" placeholder="Find a card…" autocomplete="off"></label>
           </div>
+          <details class="tarot-about">
+            <summary>About these attributions</summary>
+            <p>Each card carries the attribution given it by the Hermetic Order of the Golden Dawn, set out in its instruction paper Book T, the system A. E. Waite's deck was built on. The thirty-six pip cards from Two to Ten take the thirty-six decans of the zodiac, with the decan rulers running in Chaldean order from Mars at the first degree of Aries. The aces take the root of their suit's element. The court cards are read here as element within element, the form in common use with Waite's deck; the Golden Dawn's own Knight, Queen, Prince and Princess do not map one to one onto Waite's King, Queen, Knight and Page.</p>
+            <p>The Major Arcana follow Waite's numbering, so Strength is the eighth card and takes Leo, and Justice is the eleventh and takes Libra. The older Marseille order reverses those two numbers and gives neither an astrological attribution. A later variant associated with Aleister Crowley exchanges the attributions of The Star and The Emperor; it is not used here.</p>
+            <p>This is one tradition among several, recorded because the decks on this site descend from it, not because it is the only way the cards have been read.</p>
+          </details>
           <div class="ishtar-grid-intro"><p id="ishtar-results" role="status"></p><span>Choose a card to look closer ↗</span></div>
           <div id="ishtar-grid" class="ishtar-grid"></div>
           <div id="ishtar-empty" class="ishtar-empty" hidden><p>No cards match this search.</p><button type="button" id="ishtar-reset">Show the full deck</button></div>
@@ -138,10 +144,11 @@
     <script src="/account-core.js?v=journal-filters-1"></script>
     <script src="/account.js?v=pages-4"></script>
     <script src="/archive-decks.js?v=archive-34"></script>
-    <script src="/tarot-readings.js?v=accounts-3"></script>
+    <script src="/tarot-readings.js?v=accounts-4"></script>
+    <script src="/tarot-reference.js?v=1"></script>
     <script src="/birth-lore.js?v=2"></script>
     <script src="/deck-archive.js?v=3"></script>
-    <script src="/tarot.js?v=3"></script>
+    <script src="/tarot.js?v=5"></script>
     <script>
       // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
       // register once account.js has dispatched the first signed-in state, so wait for it.

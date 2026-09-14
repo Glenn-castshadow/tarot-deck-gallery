@@ -89,7 +89,8 @@ page table but present in the file is called out.
 
 **`/tarot/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `archive-decks.js` → `tarot-readings.js` →
-`birth-lore.js` → `deck-archive.js` → `tarot.js` → `mobile-sections.js`.
+`tarot-reference.js` → `birth-lore.js` → `deck-archive.js` → `tarot.js` →
+`mobile-sections.js`.
 
 **`/sky/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `birthday-insights.js` →

@@ -85,6 +85,12 @@
   let deckReviewIndex = null;
   let cardDetailState = null;
 
+  const forgetCardInUrl = () => {
+    const url = new URL(location.href);
+    url.searchParams.delete("card");
+    try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
+  };
+
   function selectReadingDeck(id, { render = true } = {}) {
     if (!Object.hasOwn(readingDecks, id)) return;
     activeReadingDeck = id;
@@ -102,7 +108,7 @@
   function renderIshtarDeck() {
     const deck = readingDecks[activeReadingDeck];
     document.querySelector("#ishtar-title").textContent = deck.name;
-    document.querySelector("#reading-deck-description").textContent = deck.description + " Explore all 78 cards and the matching back.";
+    document.querySelector("#reading-deck-description").textContent = deck.description + " Choose any of the 78 cards to read its entry, or the matching back.";
     const query = ishtarSearch.value.trim().toLowerCase();
     ishtarVisibleIndices = tarotCards.flatMap((card, index) => {
       const matchesGroup = ishtarFilter === "all" || card.type === ishtarFilter || card.suit === ishtarFilter;
@@ -256,17 +262,21 @@
       </select>
       <small id="card-deck-help">Same card, another deck</small>
     </label>`;
+    const ref = typeof TarotReference !== 'undefined' && !isBack ? TarotReference.entry(index) : null;
+    const referenceMarkup = ref ? `
+        ${ref.attribution ? `<p class="card-attribution"><span>Attribution</span> ${ref.attribution.line}</p>` : ''}
+        ${ref.reference ? `<p class="card-reference">${ref.reference}</p>` : ''}` : '';
     const notes = isBack ? `<div class="deck-meta"><span>${deck.name}</span><span>Reverse side</span></div>
         <h2 id="card-detail-title">Card back</h2><p class="detail-note">${deck.back}</p>` : `
         <div class="deck-meta"><span>${card.type === "major" ? "Major arcana" : `Minor arcana · ${card.suit}`}</span><span>${orientation}</span></div>
         <h2 id="card-detail-title">${card.name}</h2>
-        <p class="detail-artist">${card.number} · ${card.keywords}</p>
+        <p class="detail-artist">${card.number} · ${card.keywords}</p>${referenceMarkup}
         <dl>
           <dt>Keywords</dt><dd>${card.keywords}</dd>
           <dt>Upright</dt><dd>${card.upright}</dd>
           <dt>Reversed</dt><dd>${card.reversed}</dd>
-        </dl>
-        <p class="detail-note"><strong>Reflection prompt:</strong> ${card.prompt}</p>`;
+          <dt>Reflection</dt><dd>${card.prompt}</dd>
+        </dl>`;
     dialogContent.innerHTML = `<div class="card-detail-toolbar">${navigation}${deckSwitcher}</div><div class="card-detail-layout">
       <div class="card-detail-art">${imageMarkup}<span class="card-detail-zoom">${deck.name} · full artwork</span></div>
       <div class="detail-copy">
@@ -279,6 +289,12 @@
     dialog.setAttribute("aria-labelledby", "card-detail-title");
     if (!dialog.open) dialog.showModal();
     dialog.scrollTop = 0;
+    if (browsing && isBack) forgetCardInUrl();
+    else if (browsing && typeof TarotReference !== 'undefined') {
+      const url = new URL(location.href);
+      url.searchParams.set("card", TarotReference.slug(index));
+      try { history.replaceState(null, "", url); } catch { /* Direct file previews can restrict history updates. */ }
+    }
   }
 
   function stepDeckReview(step) {
@@ -383,6 +399,7 @@
     const card = cardDetailState;
     deckReviewIndex = null;
     cardDetailState = null;
+    forgetCardInUrl();
     if (card) {
       const selector = card.browsing ? `[data-ishtar-card="${card.index}"]` : `[data-card-view="${card.index}"]`;
       document.querySelector(selector)?.focus({ preventScroll: true });
@@ -446,7 +463,7 @@
   window.TarotRoom = {
     // The deck archive shares #detail-dialog and replaces its contents, so it clears the
     // card-detail state through here.
-    clearCardDetail() { deckReviewIndex = null; cardDetailState = null; },
+    clearCardDetail() { deckReviewIndex = null; cardDetailState = null; forgetCardInUrl(); },
     currentDraw() {
       if (readingMode === "daily") {
         const reading = loadedDaily || getDailyReading();
@@ -505,5 +522,9 @@
   window.addEventListener("hashchange", () => {
     if (location.hash === "#ishtar-deck") setReadingMode("deck");
   });
-  setReadingMode(location.hash === "#ishtar-deck" ? "deck" : "daily");
+  const namedCard = typeof TarotReference !== 'undefined'
+    ? TarotReference.indexForSlug(new URLSearchParams(location.search).get("card") || "")
+    : -1;
+  setReadingMode(namedCard >= 0 || location.hash === "#ishtar-deck" ? "deck" : "daily");
+  if (namedCard >= 0) openCardDetails(namedCard, "upright", true);
 })();

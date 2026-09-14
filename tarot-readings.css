@@ -118,3 +118,9 @@
   .tarot-settings, .tarot-table-tools, .tarot-position-nav, .tarot-layout-guide { display: none; }
   .tarot-position-reading { break-inside: avoid; }
 }
+.card-attribution { margin-top: 10px; color: var(--plum); font: 500 12px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.card-attribution span { color: var(--ink-soft); margin-right: 8px; }
+.card-reference { margin-top: 12px; font-size: 15px; line-height: 1.65; }
+.tarot-about { margin-top: 16px; font-size: 13px; }
+.tarot-about summary { cursor: pointer; color: var(--plum); font-weight: 600; }
+.tarot-about p { margin-top: 10px; color: var(--ink-soft); line-height: 1.6; }
