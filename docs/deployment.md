@@ -1,5 +1,49 @@
 # VPS deployment
 
+## 2026-09-14 The tarot card reference
+
+Deployed `1b778e8`. **Static only** — no backend change, no migration, no service restart.
+
+Released as `/opt/tarot-game/releases/20260914-card-reference-1b778e8`, a `cp -al` hardlink copy
+of `20260914-void-brief-69f02a5` with four files replaced and one added: `tarot/index.html`,
+`tarot.js`, `tarot-readings.js`, `tarot-readings.css`, and the new `tarot-reference.js`. Gated on
+`current` pointing at the expected previous release and on the sha256 of all four replaced files.
+Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-void-brief-69f02a5 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change: every one of the 78 cards now carries a standalone reference paragraph and its
+traditional attribution, shown in the card detail dialog. The reading room's third tab is renamed
+from "Explore deck" to "Card reference", an About disclosure names the Golden Dawn and cites
+*Book T*, and every card has a URL at `/tarot/?card=<slug>`. Suite 420 to 439.
+
+Cache keys: `tarot-reference.js?v=1`, `tarot.js?v=5`, `tarot-readings.js?v=accounts-4`,
+`tarot-readings.css?v=2`.
+
+**`tarot-reference.js` ships at `?v=1` deliberately.** It is a new path that production had never
+served, so there is no cached response to bust and no earlier `?v=` value a client could hold. The
+release script asserts the file is absent from the previous release before switching, so a
+surprise existing copy would stop the deploy rather than ship a stale key.
+
+**One failure, caught by the gate.** The first run aborted and rolled back with
+`the served tarot-reference.js has 79 REFERENCE entries, expected 78`. The release was correct and
+the assertion was wrong: `grep -c 'REFERENCE\['` counts every line mentioning the object, which
+includes the `entry()` accessor that reads it, not only the 78 assignment lines. Narrowing the
+pattern to `REFERENCE\[[0-9]*\] =` fixed it. The rollback worked exactly as intended — `current`
+returned to the previous release and the site stayed up throughout — but the aborted release
+directory survives a rollback and has to be removed by hand before re-running, because the script
+refuses to overwrite an existing release. Worth recording twice over: a verification gate can fail
+on the passing path, and a gate that is wrong costs a deploy cycle rather than a broken site.
+
+Validation after the switch: all eight pages and the four tarot assets return 200 over HTTPS; the
+four bumped cache keys are confirmed on `/tarot/`; the string "Explore deck" is absent from the
+served page; the served `tarot-reference.js` carries exactly 78 assignments plus the decan
+derivation and the slug lookup; the served `tarot.js` reads the reference and carries the
+card-URL handling. In a browser at ishtarinsights.com the module resolves with all 78 entries
+filled, `?card=the-star` opens The Star directly with its attribution and a 527-character entry,
+the header reads card-centrically, the About cites *Book T*, and there is no horizontal overflow
+at 390px with the dialog fitting the viewport. Only console errors are the signed-out 401s from
+`/api/account/`. Conventions and sources: `docs/TAROT-REFERENCE.md`.
+
 ## 2026-09-14 A short void framing for the month tab
 
 Deployed `69f02a5`. **Static only** — no backend change, no migration, no service restart.
