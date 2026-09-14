@@ -198,7 +198,12 @@
   const voidFraming = {
     title: 'Void of course, by two different rules',
     body: 'A void-of-course Moon is the gap between the last exact aspect the Moon makes to a planet and the moment it leaves the sign it is travelling through — a stretch with nothing further to complete before it begins again in fresh territory. Two traditions measure that gap differently, and they genuinely disagree. The classical rule, as William Lilly set it out in the seventeenth century, counts only the bodies visible to the naked eye: the Sun, Mercury, Venus, Mars, Jupiter and Saturn. The modern rule adds Uranus, Neptune and Pluto, all discovered long after Lilly wrote. Because the modern list is the classical list plus three more planets, the Moon has more chances to make a final aspect, and an extra chance can only fall at the same moment as the classical one or later — never earlier. Both periods end together, at the ingress. So the modern void always begins at or after the classical void begins, which makes it the shorter of the two and places it wholly inside the longer one. This section shows both and labels which is which, rather than quietly picking a side.',
-    prompt: 'When two traditions disagree about where a boundary falls, what would make you trust one of them over the other?'
+    prompt: 'When two traditions disagree about where a boundary falls, what would make you trust one of them over the other?',
+    // A short form for the month tab, which lists a dozen bands and should not make the reader
+    // work through the full passage before reaching them. It has to stand alone for someone who
+    // never opens the Moon tab, so it still says what a void is, that the two rules disagree, and
+    // which way the containment runs.
+    brief: 'The Moon is void of course between its last exact aspect to a planet and the moment it leaves the sign it is crossing. Two traditions count different planets, so each band below shows both: the modern period is the shorter stretch sitting inside the classical one, and where the two rules agree it fills the whole band. The Moon tab sets out why they differ.'
   };
 
   // Index 0-4, matching SkyCalendarEngine's ASPECTS order [0, 60, 90, 120, 180]; titles

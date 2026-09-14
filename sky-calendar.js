@@ -283,7 +283,7 @@ const SkyCalendar = (() => {
       const longestHours = longest / 3600000;
       return `<section class="sc-voids" aria-labelledby="sc-voids-title">
           <h4 id="sc-voids-title">Void-of-course periods</h4>
-          <p class="sc-voids-intro">${esc(T.voidFraming.body)}</p>
+          <p class="sc-voids-intro">${esc(T.voidFraming.brief)}</p>
           <p class="sc-voids-scale">Bars are drawn to length against this month's longest period: the widest bar is ${esc(longestHours < 1 ? 'under an hour' : `${longestHours.toFixed(1)} hours`)}. The scale changes from month to month.</p>
           <ul class="sc-voidlist">${rows}</ul>
         </section>`;

@@ -630,3 +630,16 @@ test('band bars are scaled to duration within the month, with a floor for the br
   // The scale has to be stated, or a reader stepping months sees bars change meaning silently.
   assert.ok(/widest bar/i.test(html), 'the strip does not state its scale');
 });
+
+test('the month strip uses the brief framing, not the full passage', () => {
+  const app = mount({clock: new Date('2026-03-15T12:00:00Z')});
+  app.click({scTab: 'month'});
+  const month = app.panels.month.innerHTML;
+  assert.ok(month.includes(text.voidFraming.brief.slice(0, 60)), 'the strip does not carry the brief framing');
+  assert.ok(!month.includes(text.voidFraming.body.slice(0, 60)),
+    'the strip still prints the full framing passage');
+  // The full passage still belongs on the Moon tab, where the reader went looking for it.
+  app.click({scTab: 'moon'});
+  assert.ok(app.panels.moon.innerHTML.includes(text.voidFraming.body.slice(0, 60)),
+    'the Moon tab lost the full framing passage');
+});
