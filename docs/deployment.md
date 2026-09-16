@@ -1,5 +1,41 @@
 # VPS deployment
 
+## 2026-09-16 Playing-card cartomancy
+
+Deployed `654214a`. **Static only.** The `cartomancy` kind shipped server-side with C4b.
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-playing-cards-654214a`, a `cp -al` hardlink copy of `20260916-divination-layouts-a6d39bf`.
+- Three files were replaced (`divination/index.html`, `divination.js`, `divination.css`) and one added (`playing-cards.js`).
+- The deploy was gated on `current` and on the sha256 of the three replaced files.
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-divination-layouts-a6d39bf /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (C4c).** A sixth divination practice, tab 06, reads an ordinary 52-card deck.
+- Draws: one card or three, all upright.
+- Copy: original reflective copy for every card.
+- Faces: original SVG faces, and no card image is ever requested.
+- Saving: readings save as `cartomancy`.
+
+**Shared fixes.**
+- A saved reading must use a layout its practice offers. A two-card cartomancy reading used to break the tab.
+- The status line now pluralises correctly, including for oracle and runes.
+
+Suite 538 to 542. Conventions are in `docs/DIVINATION.md`.
+
+**Cache keys.** `divination.js?v=c4c-1`, `divination.css?v=c4c-1` and `playing-cards.js?v=1`, all on `/divination/` only.
+
+**Deploy gate correction.** Before the run, one gate needle was replaced because it would have rolled back a correct release: card names such as "Queen of Spades" are built from a template, so the literal never appears in the served script. The needle now checks a literal suit entry instead.
+
+**Validation after the switch.**
+- All eight pages and the three assets return 200.
+- The keys are confirmed on `/divination/`.
+- The served scripts carry the deck and the practice.
+- In a browser at ishtarinsights.com:
+  - the header reads "Six ways to listen closely";
+  - a three-card deal shows three SVG faces and saves as `cartomancy`, with summary "Two of Clubs · Jack of Spades · Eight of Diamonds";
+  - no card image was requested, and there were no console errors.
+
 ## 2026-09-16 Divination layouts: the Grand Tableau and the geomantic house chart
 
 Deployed `a6d39bf` in two stages, backend first. The frontend posts the new kinds, so the server
