@@ -16,7 +16,7 @@ that is called out explicitly rather than smoothed over.
 | `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, composite and Davison charts, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
 | `/eastern/` | `eastern/` | Chinese zodiac portrait, Jyotish | `https://ishtarinsights.com/eastern/` |
 | `/numerology/` | `numerology/` | The six-view numerology studio | `https://ishtarinsights.com/numerology/` |
-| `/divination/` | `divination/` | Lenormand (including the Grand Tableau), oracle, runes, geomancy (including its house chart view), I Ching | `https://ishtarinsights.com/divination/` |
+| `/divination/` | `divination/` | Lenormand (including the Grand Tableau), oracle, runes, geomancy (including its house chart view), I Ching, playing cards | `https://ishtarinsights.com/divination/` |
 | `/account/` | `account/` | Sign-in, journal, birth-detail and browser-saving preferences, newsletter toggle, delete | `https://ishtarinsights.com/account/` |
 
 `/account/` is deliberately excluded from `sitemap.xml` and disallowed in `robots.txt`
@@ -129,7 +129,7 @@ first `ishtar-account-change` fires.
 
 **`/divination/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `divination-data.js` → `divination-engine.js` →
-`divination-art.js` → `divination.js` → `mobile-sections.js`.
+`divination-art.js` → `playing-cards.js` → `divination.js` → `mobile-sections.js`.
 
 **`/account/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `mobile-sections.js`. No room module, no
@@ -234,12 +234,12 @@ scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollI
 Only four elements in the whole site carry it today:
 
 - `/tarot/`'s `.reading-room` — `data-room="tarot-daily tarot-spread"`.
-- `/divination/`'s `#divination-room` — `data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching"`.
+- `/divination/`'s `#divination-room` — `data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching cartomancy"`.
 - `/sky/`'s `#sky-calendar` — `data-room="transit-calendar"`.
 - `/numerology/`'s `.reading-room` — `data-room="numerology"`.
 
 `rooms.js`'s `PAGES` table also lists `natal`, `solar-return`, `lunar-return`,
-`progressed`, `synastry`, `horary`, `jyotish`, `bazi` and `cartomancy` as kinds with a home
+`progressed`, `synastry`, `horary`, `jyotish` and `bazi` as kinds with a home
 page, but **only `tarot.js`, `divination.js`, `sky-calendar.js` and `numerology.js`
 currently call `Rooms.register()`** (confirmed by grepping every `.js` file for
 `Rooms.register`). A saved reading of any of those other kinds would resolve to
@@ -257,9 +257,12 @@ The C4b divination-layouts project (2026-09-16) did the same for `grand-tableau`
 `geomancy-houses`: both are registered in `divination.js` and carry `data-room` markup on
 `#divination-room`, so a saved reading of either kind now opens correctly rather than
 resolving to `'unknown'`. `cartomancy` was added to `kinds.py` and `rooms.js`'s
-`PAGES`/`LABELS` in the same migration, one release ahead of its own room (C4c), so it
-stays in the forward-declared list above — with no room to save a `cartomancy` reading
-from yet — until that room ships.
+`PAGES`/`LABELS` in the same migration, one release ahead of its own room. That room
+shipped in the C4c playing-cards project (2026-09-16): `cartomancy` is now registered in
+`divination.js` and carries `data-room` markup on `#divination-room` too, so all three C4
+kinds — `grand-tableau`, `geomancy-houses` and `cartomancy` — resolve correctly. The
+`natal`, `solar-return`, `lunar-return`, `progressed`, `synastry`, `horary`, `jyotish` and
+`bazi` entries listed above remain forward declarations, with no `register()` call yet.
 
 ## The `?reading=` opener
 

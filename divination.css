@@ -4,7 +4,7 @@
 .dv-header h2 { font: 600 clamp(28px,3.6vw,48px)/1.16 'Playfair Display',serif; margin: 12px 0; max-width: 660px; }
 .dv-header p:not(.section-kicker) { color: var(--dv-muted); font-size: 15px; line-height: 1.6; }
 .dv-seal { flex: 0 0 88px; width: 88px; height: 88px; border: 1px solid #d6b98288; border-radius: 50%; display: grid; place-items: center; color: var(--dv-accent); font-size: 60px; box-shadow: 0 0 0 9px #d6b98208,0 0 0 10px #d6b98233; }
-.dv-tabs { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; margin-bottom: 32px; }
+.dv-tabs { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 10px; margin-bottom: 32px; }
 .dv-tabs button { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; min-height: 106px; border: 1px solid #b09bba66; padding: 17px; background: transparent; color: var(--dv-ink); text-align: left; font: 600 21px 'Playfair Display',serif; cursor: pointer; }
 .dv-tabs button>span { color: var(--dv-accent); font: 10px 'DM Mono',monospace; }
 .dv-tabs button small { color: var(--dv-muted); font: 11px/1.5 'DM Sans',sans-serif; }
@@ -13,6 +13,8 @@
 .divination-room[data-practice=oracle] { --dv-accent: #edbdb9; }
 .divination-room[data-practice=runes] { --dv-accent: #bbd1c3; }
 .divination-room[data-practice=geomancy] { --dv-accent: #dbbd83; }
+.divination-room[data-practice=cartomancy] { --dv-accent: #c3cdea; }
+@media (max-width: 1000px) { .dv-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 .dv-intro { max-width: 720px; margin-bottom: 25px; }
 .dv-kicker { font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; }
 .dv-intro h3 { margin: 9px 0 13px; font: 600 clamp(25px,3vw,38px)/1.2 'Playfair Display',serif; }
@@ -248,3 +250,22 @@
   .dv-quesited-label { max-width: none; }
 }
 .dv-house-note[hidden] { display: none; }
+
+/* Playing cards: vector faces from playing-cards.js and a CSS-drawn back, so this practice requests no images.
+   Suit colour is never the only cue: each face carries its rank, suit shape and an accessible name. */
+.divination-room, .dv-art-dialog { --pc-back: repeating-linear-gradient(-45deg,transparent 0 9px,#8f9ccb66 9px 10px), repeating-linear-gradient(45deg,#28213d 0 9px,#8f9ccb66 9px 10px); }
+.dv-pc-back { background: var(--pc-back); border: 1px solid #c3cdea; box-shadow: inset 0 0 0 10px #1d1830, inset 0 0 0 11px #c3cdea88; }
+.pc-face { fill: #fbf6ea; stroke: #8a7a5a; stroke-width: 2; }
+.pc-red { fill: #b3261e; }
+.pc-black { fill: #1f1f24; }
+.pc-rank { font: 700 26px Georgia,serif; }
+.pc-court { fill: none; stroke-width: 3; }
+.pc-red .pc-court { stroke: #b3261e; }
+.pc-black .pc-court { stroke: #1f1f24; }
+.pc-monogram { font: 700 64px Georgia,serif; text-anchor: middle; }
+.dv-artwork-vector { padding: 6%; background: #1d1830; }
+.dv-artwork-vector>.pc-card { display: block; width: 100%; height: 100%; margin: 0; max-height: none; }
+[data-practice=cartomancy] .dv-card>.dv-artwork { padding: 10px 10px 48%; }
+[data-practice=cartomancy] .dv-card-number { display: none; }
+[data-practice=cartomancy] .dv-card:not(.is-revealed) .dv-card-back { visibility: visible; color: #c3cdea; text-shadow: 0 0 6px #1d1830; }
+[data-practice=cartomancy] .dv-back-fan i { color: var(--dv-accent); }

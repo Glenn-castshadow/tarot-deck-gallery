@@ -246,11 +246,14 @@ test('the divination save button names a registered kind that matches the curren
     querySelector(sel) { return cache[sel] || (cache[sel] = el()); }, querySelectorAll() { return []; }, closest() { return el(); },
     addEventListener() {}, setAttribute() {}, append() {}, focus() {}, scrollIntoView() {}, showModal() {}, close() {},
     insertAdjacentHTML(_, html) { this.innerHTML = html + this.innerHTML; }}; };
-  const root = el(), registry = {}, win = {};
-  const doc = {querySelector: () => root, createElement: el, body: el(), addEventListener() {}};
+  const root = el(), registry = {}, win = {}, backs = [], listeners = {}, created = [];
+  root.style.setProperty = (name, value) => { if (name === '--dv-back') backs.push(value); };
+  root.addEventListener = (type, fn) => { listeners[type] = fn; };
+  const doc = {querySelector: () => root, createElement: () => { const node = el(); created.push(node); return node; }, body: el(), addEventListener() {}};
+  const PC = require('../playing-cards.js');
   const art = {emblem: () => '', hexagram: () => '', hexagramFromSymbol: () => ''};
   const src = require('node:fs').readFileSync(require('node:path').join(__dirname, '../divination.js'), 'utf8');
-  new Function('document', 'window', 'Rooms', 'DivinationData', 'DivinationEngine', 'DivinationArt', src)(doc, win, {register: (kind, room) => { registry[kind] = room; }}, D, E, art);
+  new Function('document', 'window', 'Rooms', 'DivinationData', 'DivinationEngine', 'DivinationArt', 'PlayingCards', src)(doc, win, {register: (kind, room) => { registry[kind] = room; }}, D, E, art, PC);
   const shuffled = Array.from({length: 36}, (_, i) => (i * 7) % 36);
   const mothers = [[1, 2, 1, 2], [2, 2, 1, 1], [1, 1, 1, 2], [2, 1, 2, 2]];
   const cases = [
@@ -260,6 +263,8 @@ test('the divination save button names a registered kind that matches the curren
     ['runes', {kind: 'runes', layout: '3', payload: {ids: [1, 2, 3]}}],
     ['geomancy', {kind: 'geomancy', payload: {mothers, selected: 2}}],
     ['geomancy-houses', {kind: 'geomancy-houses', payload: {mothers, quesited: 5, selected: 9}}],
+    ['cartomancy', {kind: 'cartomancy', layout: '1', payload: {ids: [51]}}],
+    ['cartomancy', {kind: 'cartomancy', layout: '3', payload: {ids: [0, 51, 32]}}],
     ['iching', {kind: 'iching', layout: 'coins', payload: {lines: [7, 8, 9, 6, 7, 8]}}],
   ];
   for (const [kind, reading] of cases) {
@@ -272,6 +277,46 @@ test('the divination save button names a registered kind that matches the curren
     assert.equal(win.DivinationRoom.currentDraw().kind, kind);
   }
   assert.match(win.DivinationRoom.currentDraw().summary, /^Hexagram /);
+  // Playing cards: layout and summary, vector faces and a CSS back, and no request for missing artwork.
+  for (const [ids, summary] of [[[51], 'King of Spades'], [[0, 51, 32], 'Ace of Hearts · King of Spades · Seven of Clubs']]) {
+    backs.length = 0;
+    assert.equal(win.DivinationRoom.loadDraw({kind: 'cartomancy', payload: {ids}}), true);
+    const draw = win.DivinationRoom.currentDraw();
+    assert.deepEqual([draw.kind, draw.layout, draw.summary, draw.payload.ids], ['cartomancy', String(ids.length), summary, ids]);
+    const out = root.querySelector('.dv-output').innerHTML;
+    assert.equal((out.match(/class="pc-card /g) || []).length, ids.length);
+    assert.match(root.innerHTML, /Six ways to listen closely/);
+    assert.equal((root.innerHTML.match(/class="pc-card /g) || []).length, 52, 'the library shows all 52 faces');
+    assert.deepEqual(backs, ['var(--pc-back)']);
+    for (const back of [true, false]) {
+      const button = {dataset: {dvArt: String(ids[0])}, hasAttribute: name => name === 'data-dv-art' || (back && name === 'data-dv-back')};
+      listeners.click({target: {closest: () => button}});
+      const dialog = created[0].innerHTML;
+      assert.match(dialog, back ? /dv-pc-back/ : new RegExp(`<title>${summary.split(' · ')[0]}</title>`));
+      assert.doesNotMatch(dialog, /<img|\.webp/);
+    }
+    assert.doesNotMatch(root.innerHTML + out, /<img|\.webp|divination-v2/);
+  }
+  // Playing-card practice copy: intro, note, positions, position meanings and every shape of synthesis.
+  const banned = /you will|will happen|is going to|\bluck|fortune|misfortune|death|\bdie\b|illness|disease|curse|doom|destined|guarantee/i;
+  for (const ids of [[7], [0, 1, 2], [0, 51, 32]]) {
+    assert.equal(win.DivinationRoom.loadDraw({kind: 'cartomancy', payload: {ids}}), true);
+    const text = root.innerHTML + root.querySelector('.dv-output').innerHTML;
+    assert.match(text, /Draw from a familiar pack/);
+    assert.match(text, /standard 52-card deck/);
+    assert.match(text, ids.length === 1 ? /What to notice[\s\S]*one thing to notice today/ : /What asks for attention[\s\S]*one small step you could choose/);
+    assert.match(text, ids.length === 1 ? /Take it into your day/ : ids[1] === 1 ? /All three cards are Hearts/ : /The suits here are/);
+    assert.doesNotMatch(text, banned, ids.join());
+    assert.doesNotMatch(text, /'/, `${ids.join()} uses a straight apostrophe`);
+    assert.doesNotMatch(text, /undefined|NaN/);
+  }
+  // A saved reading must use a layout the practice offers; a refused load leaves the practice able to render.
+  for (const [kind, ids] of [['cartomancy', [0, 1]], ['cartomancy', [0, 1, 2, 3, 4]], ['oracle', [0, 1]]]) {
+    assert.equal(win.DivinationRoom.loadDraw({kind, payload: {ids}}), false, `${kind} with ${ids.length} ids`);
+    assert.doesNotThrow(() => listeners.click({target: {closest: () => ({dataset: {dvMode: kind}})}}), `${kind} renders`);
+    assert.doesNotMatch(root.querySelector('.dv-output').innerHTML, /undefined/);
+  }
+  assert.equal(win.DivinationRoom.loadDraw({kind: 'lenormand', payload: {ids: [0, 1, 2, 3, 4]}}), true, 'Lenormand five-card line');
   win.DivinationRoom.loadDraw(cases[5][1]);
   assert.equal(win.DivinationRoom.currentDraw().summary, `House chart · house 5, ${D.houseMatters[4].name}: ${D.figures.find(f => f.symbol === E.houseChart(E.shield(mothers))[4].join('')).name}`);
 });

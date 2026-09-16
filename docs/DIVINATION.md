@@ -1,6 +1,6 @@
 # Cards & divination
 
-Added 2026-09-09. A separate room, now its own page at `/divination/#divination-room`, with mobile disclosure and five persistent-in-page practice states. No API, browser storage, cookies, account or newsletter requirement. Questions are escaped and held only in page memory; changing mode preserves draws and revealed cards. Reload resets them.
+Added 2026-09-09. A separate room, now its own page at `/divination/#divination-room`, with mobile disclosure and six persistent-in-page practice states. No API, browser storage, cookies, account or newsletter requirement. Questions are escaped and held only in page memory; changing mode preserves draws and revealed cards. Reload resets them.
 
 ## Offerings
 
@@ -9,6 +9,7 @@ Added 2026-09-09. A separate room, now its own page at `/divination/#divination-
 - Runes: 24 Elder Futhark symbols rendered as vector marks, original modern reflective meanings; one-rune or Situation/Tension/Response. No blank rune or reversals. Distinguishes historical writing from modern divination.
 - Geomancy: all 16 named patterns; four mothers, transposed daughters, parity-combined nieces, witnesses, judge and optional reconciler. Random mother rows or manually entered parity patterns. Read shield right to left; select any figure for meaning. Puer=1121, Puella=1211. A view switch also shows the same cast as a twelve-house chart with horary judgement steps; see "Geomantic house chart" below. No medical/factual predictive judgments.
 - I Ching: all 64 hexagrams in King Wen order, cast with coins or the yarrow-stalk probabilities, or entered by hand. See "I Ching" below.
+- Playing cards: an ordinary 52-card deck, four suits ace to king, no jokers, upright only, drawn as original vector faces generated in code. One card or three, with suit themes framed as common modern associations, explicitly named as one convention among several. See "Playing cards" below.
 
 ## Mechanics
 
@@ -270,17 +271,149 @@ structural check — the view's own judgement code, lifted out of `divination.js
 standalone — that it names a location for every conjunction and mutation `judge` finds,
 sampled across a broad share of the 65,536 possible casts and every quesited house.
 
+## Playing cards
+
+Sixth practice, added 2026-09-16, `playing-cards.js` and `divination.js`. No raster art at
+all: the 52 card faces are inline SVG generated in code, and the card back is a CSS
+pattern rather than an image, so this practice makes no image requests of any kind — not
+even the shared-back webp that Lenormand, oracle and runes each request through
+`--dv-back`. (Geomancy has no hidden back in its shield, but its welcome fan still requests
+`geomancy-00.webp` through `--dv-back`; the I Ching sets `--dv-back` to `none`.)
+
+**Data shape.** `playing-cards.js`'s `SUITS` holds four entries in the fixed order hearts,
+diamonds, clubs, spades (`{key, name, colour, path}`; hearts and diamonds are `'red'`,
+clubs and spades `'black'`; `path` is the SVG pip mark for that suit). `RANKS` holds
+thirteen entries ace to king (`{key, name, value: 1..13}`). `cards` is built with
+`SUITS.flatMap((suit, s) => RANKS.map((rank, r) => ({id: s*13+r, ...})))`: 52 entries
+`{id: 0..51, rank: 1..13, rankKey, suit, name: "<Rank> of <Suit>", keyword, meaning,
+prompt}` in suit-then-rank order, so id 0 is the Ace of Hearts, id 12 the King of Hearts,
+id 13 the Ace of Diamonds and id 51 the King of Spades. The copy (`COPY`, index-aligned
+with `cards`) gives each card a keyword, a two- or three-sentence reflective meaning and a
+prompt ending in a question mark — all original, and all 52 keywords and 52 meanings are
+unique.
+
+**Pip layouts, as coded.** `pips(rank)` returns coordinates as fractions of the card's
+face area (x across, y down). An ace is a single centred pip, `[[.5, .5]]`. Ranks 11–13
+(jack, queen, king) return `[]`, since court cards are drawn as a monogram instead of
+pips. Ranks 2–10 come from the `LAYOUTS` table, built from two columns `COLS = [0.25,
+0.75]` — a quarter and three-quarters of the way across the face:
+
+```
+2:  (.5,.2) (.5,.8)
+3:  (.5,.2) (.5,.5) (.5,.8)
+4:  (.25,.2) (.75,.2) (.25,.8) (.75,.8)
+5:  4 + (.5,.5)
+6:  (.25,.2) (.75,.2) (.25,.5) (.75,.5) (.25,.8) (.75,.8)
+7:  6 + (.5,.35)
+8:  6 + (.5,.35) (.5,.65)
+9:  (.25,.2) (.75,.2) (.25,.4) (.75,.4) (.25,.6) (.75,.6) (.25,.8) (.75,.8) (.5,.5)
+10: 8-of-the-9 (without its centre) + (.5,.3) (.5,.7)
+```
+
+**`svg(card)`.** Draws these onto a 200×300 card (`FACE = {x:30, y:40, w:140, h:220}`),
+with every pip in the lower half rotated 180° as on a printed card (`mark(...)`'s `flip`
+argument is `y > .5`). Rank and suit sit in two opposite corners — the second corner is
+the same corner markup wrapped in a 180°-rotated group around the card's centre, not a
+second literal copy — and an ace's single pip is drawn larger than the others. Court cards
+(rank ≥ 11) get a rounded, stroked frame (`.pc-court`) holding the rank letter as a large
+monogram in place of pips. Every face carries its rank letter and its suit shape, so
+colour is never the only visual cue. The SVG also has a `<title>` and `aria-label` with the
+card's full name (e.g. "King of Spades"), but inside this room it sits in an
+`aria-hidden="true"` span (see "Artwork" below), so assistive technology takes the name
+from the control around it instead.
+
+## Suit associations
+
+`divination.js`'s `SUIT_THEMES`, matching the per-suit comments inside the `COPY` array in
+`playing-cards.js`: hearts for feeling and relationships, diamonds for resources and practical work, clubs for
+effort, growth and exchange, spades for difficulty, decisions and clear thought. The
+practice's "About this practice" note names these explicitly as "common modern
+English-language associations" and says other traditions assign the suits differently.
+Spades' copy is written to treat difficulty as something to work with rather than as
+misfortune. No test can check that framing; what the deck's own test
+(`tests/playing-cards.test.cjs`) does check, across all 52 cards, is that the keyword,
+meaning and prompt contain none of a fixed list of predictive and fatalistic words ("will
+happen", "fortune", "misfortune", "doom", "destined" and the like) and no straight
+apostrophe.
+
+## Layouts
+
+One card ("What to notice") or three cards ("What is present", "What asks for attention",
+"A next step") — `divination.js`'s `positions()`/`positionMeaning()` for `mode ===
+'cartomancy'`. The three-card synthesis (`cartomancySummary`) reads the first card as
+something already present, the second as what asks for attention, and closes on the
+third card's own prompt as a next step; it then names the suits drawn — singular phrasing
+when all three share a suit ("All three cards are Hearts, the suit of feeling and
+relationships.") or a listed sentence when they don't — and asks the reader to notice
+where the first two cards' keywords meet. The one-card synthesis turns the single card
+into one small chosen action, in the same voice as the other one-card practices.
+
+## Artwork
+
+Vector, generated at draw time and again in the "Explore all 52 cards" library —
+`visual()`'s `cartomancy` branch renders `PC.svg(item)` straight into the page inside an
+`aria-hidden="true"` wrapper span, so the SVG's own `<title>` is hidden from assistive
+technology and the accessible name comes from the control around it: the button text
+(the card's name) in the library, the button's `aria-label` ("Enlarge King of Spades") in
+the spread, and the `role="img"` label ("King of Spades face") in the artwork dialog. No
+`<img>` is ever written for this practice, and no `assets/divination-v2` request or webp
+master exists for it. The card back is CSS, not an image: `--pc-back` (`divination.css`)
+is a two-layer diagonal `repeating-linear-gradient` weave. `render()` sets `--dv-back` to
+`var(--pc-back)` for this practice, and the face-down cards in the spread and the welcome
+fan take their pattern from `.dv-card:not(.is-revealed)` and `.dv-back-fan i` through
+`--dv-back`; `.dv-card-back` inside a face-down card is only the ✧ glyph drawn over that
+pattern. The artwork dialog's enlarged back view uses `--pc-back` directly through
+`.dv-pc-back`, so it is the one "Back" side in this room's dialog that needs no fetched
+image.
+
+## Saving
+
+`currentDraw()` gives cartomancy no special case: it falls through to the generic branch
+shared with Lenormand, oracle and runes, `{kind: 'cartomancy', deck: '', layout:
+String(ids.length), question, focus: '', payload: {ids}, summary}`, with `summary` the
+drawn cards' names joined by " · " and truncated to 120 characters (e.g. "Ace of Hearts ·
+King of Spades · Seven of Clubs"). `loadDraw` restores it through that same generic
+branch. `E.loadIds` rejects anything but one to five distinct in-range ids, and
+`loadDraw` then returns `false` unless the id count is one of the practice's own layout
+options (`modes[kind].options`): one or three for cartomancy, oracle and runes, three or
+five for Lenormand (whose 36-card tableau loads through its own `grand-tableau` branch).
+A refused reading changes no state, so the practice still renders as it was. The `cartomancy` kind ("Playing cards", category
+`divination`) already existed in `kinds.py`, migration `0005` and `rooms.js`'s
+`PAGES`/`LABELS` as of C4b; C4c adds only the frontend room —
+`Rooms.register('cartomancy', ...)` in `divination.js` and `cartomancy` in the
+`data-room` list on `#divination-room` — so no backend change shipped with this practice.
+
+**Tests.** `tests/playing-cards.test.cjs` (4 tests) checks the 52-card, suit-then-rank
+catalogue and its named boundary cards; pip counts exact for ranks 2–10, one pip for an
+ace, none for courts, every pip strictly inside the face (`0 < x,y < 1`), and no duplicate
+pip within a rank; that every `svg(card)` names the card in its `<title>`, carries the
+right `pc-red`/`pc-black` class and the right rank text, and draws the expected number of
+`<path>` suit marks (two corner marks plus one per pip, or three for a court card); and
+that every card's copy is present, unique, free of the banned predictive words and
+straight apostrophes, and ends its prompt with a question mark. `tests/divination.test.cjs`
+extends its save-button wiring test rather than gaining a new one, so it stays at 19
+tests. The extension covers `cartomancy` (both a one- and a three-card draw) with a
+card-count assertion against the rendered `pc-card` elements; a copy scan of the rendered
+practice (intro, note, position labels and meanings, and the synthesis for one card, three
+cards of one suit and three of mixed suits) against the same banned-word list and
+straight-apostrophe check as the deck's own test; and refused loads (`loadDraw` returns
+`false` for cartomancy with two or five ids and oracle with two, and the practice then
+renders without throwing), alongside a Lenormand five-card line that still loads. `tests/pages.test.cjs` pins `playing-cards.js` into
+`divination.js`'s expected script dependencies.
+
 ## Saved kinds
 
 Migration `0005_reading_kind_c4.py` (`server/ishtar/readings/migrations/`, on top of
 `0004_alter_reading_kind`) adds three choices to `Reading.kind`: `grand-tableau` ("Grand
 Tableau"), `geomancy-houses` ("Geomantic house chart") and `cartomancy` ("Playing cards"),
 all in the `divination` category (`server/ishtar/readings/kinds.py`). `rooms.js`'s `PAGES`
-and `LABELS` list all three, but only `grand-tableau` and `geomancy-houses` are registered
-with `Rooms.register()` in `divination.js` and carry `data-room` markup on
-`#divination-room`. `cartomancy` exists server- and `rooms.js`-side one release early — its
-own room ships in C4c — so a saved `cartomancy` reading cannot yet be created, and if one
-existed it would resolve to `'unknown'` in `Rooms.openFromQuery`.
+and `LABELS` list all three, and as of C4c all three are also registered with
+`Rooms.register()` in `divination.js` and carry `data-room` markup on `#divination-room`:
+`grand-tableau` and `geomancy-houses` since C4b, `cartomancy` since this release. Before
+C4c shipped, `cartomancy` existed server- and `rooms.js`-side one release early — its own
+room had not shipped yet, so a saved `cartomancy` reading could not be created, and if one
+had existed it would have resolved to `'unknown'` in `Rooms.openFromQuery`. See "Playing
+cards" above for what the room itself adds.
 
 Django tests (`server/ishtar/readings/tests/test_readings.py`) check that all three C4
 kinds carry the `divination` category (`test_c4_kinds_are_divination`), that the existing
@@ -307,26 +440,43 @@ reflection. Oracle emblems are decorative original motifs, not a traditional alp
 
 ## Validation
 
-`node --test tests/*.test.cjs` — 538 passing tests across the whole suite.
-`tests/divination.test.cjs` has 19: the original ten (catalog completeness,
-without-replacement draws, a hand-calculated shield fixture, invalid input,
-exhaustive judge parity/named-figure checks for all 65,536 mother casts, and
-the I Ching set — see "I Ching" above), plus nine added for the Grand Tableau
-and the geomantic house chart — see "Grand Tableau" and "Geomantic house
-chart" above for what each covers.
+`node --test tests/*.test.cjs` — 542 passing tests across the whole suite, up from 538
+before the playing-card practice was added.
+`tests/divination.test.cjs` is still 19: it gained no new test for cartomancy, since C4c
+extended the existing save-button wiring test (the one- and three-card draws, the practice
+copy scan and the refused-layout loads) rather than adding one — see "Playing cards" above. The original ten
+(catalog completeness, without-replacement draws, a hand-calculated shield fixture,
+invalid input, exhaustive judge parity/named-figure checks for all 65,536 mother casts,
+and the I Ching set — see "I Ching" above) and the nine added for the Grand Tableau and
+the geomantic house chart (see "Grand Tableau" and "Geomantic house chart" above) are
+unchanged. `tests/playing-cards.test.cjs` is new and adds the other 4: the 52-card
+catalogue in suit-then-rank order, pip layouts and their bounds for every rank, `svg()`'s
+title/colour-class/rank-text/path-count output, and the deck's original, unique,
+non-predictive copy — see "Playing cards" above for what each checks.
 
 The Django readings suite (`server/ishtar/readings/tests/test_readings.py`,
-run with `.venv/Scripts/python.exe manage.py test` from `server/ishtar`) has
-16 passing tests, up from 14 before this branch: `test_grand_tableau_saves_and_reads_back`
-and `test_c4_kinds_are_divination` are new — see "Saved kinds" above.
+run with `.venv/Scripts/python.exe manage.py test` from `server/ishtar`) still has
+16 passing tests: C4c is a frontend-only room and shipped no backend change, so this
+count is unchanged since C4b (`test_grand_tableau_saves_and_reads_back` and
+`test_c4_kinds_are_divination` — see "Saved kinds" above — remain the only additions
+over the pre-C4 count of 14).
 
-Browser checks cover all five practices (I Ching's own checks are recorded in
-"I Ching" above), reveal-next/all, state preservation when switching,
-manual all-even shield => Populus, symbol library selection and 320/390px layouts.
+Browser checks recorded here cover the five practices that predate this release (I
+Ching's own checks are recorded in "I Ching" above): reveal-next/all, state
+preservation when switching, manual all-even shield => Populus, symbol library
+selection and 320/390px layouts. Playing cards reuses these same reveal, state and
+library code paths, and its lack of any image request is additionally pinned by the
+automated suite (`tests/divination.test.cjs` asserts no `<img`, `.webp` or
+`divination-v2` string appears anywhere in the room's markup for a cartomancy draw).
+The controller also browser-verified the playing-cards practice at 390px, 1100px and
+1400px: one-card and three-card draws with the SVG faces; the art dialog; no image
+requests; a save kind of `cartomancy`; the tab order, with I Ching as 05 and Playing cards
+as 06; and the pluralised status line ("1 card laid face down. Reveal it below.").
 The shield intentionally scrolls horizontally within its own container on narrow screens;
 its screen-reader descriptions are positioned relative to each cell to avoid page overflow.
-New scripts are divination-data.js, divination-engine.js, divination-art.js and divination.js,
-with divination.css loaded after mobile-sections.css. divination.js initializes before
+The room's scripts are divination-data.js, divination-engine.js, divination-art.js,
+playing-cards.js and divination.js, in that order, and `divination/index.html` loads
+styles.css, site-shell.css, account.css, divination.css and then mobile-sections.css. divination.js initializes before
 mobile-sections.js wraps the main sections. No runtime dependency added.
 
 ## GPT Image 2 artwork (2026-09-09)
