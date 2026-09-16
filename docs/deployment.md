@@ -1,5 +1,35 @@
 # VPS deployment
 
+## 2026-09-16 Floating nav bar with section links
+
+Deployed `3928834`. **Static only.**
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-floating-nav-3928834`, a `cp -al` hardlink copy of
+  `20260916-iching-polish-ef8e428`.
+- Eleven files were replaced (`site-shell.js`, `site-shell.css`, `styles.css` and all eight pages' HTML).
+- The deploy was gated on `current`, on the sha256 of the eleven files (all matched the live release), and on
+  one must-be-absent check (the old `.section-nav { position: sticky` rule gone from the served CSS).
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-iching-polish-ef8e428 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (Glenn's request: the top nav should float; Charts is a long page).** The nav was written to stick
+(`position: sticky; top: 0`) but sat inside a `[data-shell="nav"]` wrapper of its own height, so it scrolled
+away. The mount point is now `display: contents` and one `.page-nav` bar sticks at the top on screens over
+700px, carrying the page links and, on a page with two or more top-level `[data-fold]` sections, a row of
+in-page links built at mount (`SiteShell.collectSections`): Charts gets five, Eastern three, Sky and Tarot two,
+the single-section pages none. Sections scroll in under the bar (`scroll-margin-top: 112px`, replacing the
+old 170px on the five ids in `styles.css`). Phones keep the bar in the flow, since the folds and their
+"↑ Sections" button navigate there. Two tests added to `tests/site-shell.test.cjs`. Suite 568 to 570.
+
+**Cache keys.** `site-shell.js?v=7`, `site-shell.css?v=5` and `styles.css?v=site-shell-2` on all eight pages.
+
+**Validation after the switch.**
+- All eight pages and the three assets return 200; keys and needles confirmed on the served files.
+- In a browser at ishtarinsights.com, 1400px: `/charts/` shows the bar with Birth sky · Astrocartography ·
+  More astrology charts · Chart in time · Horary; after scrolling the bar sits at the top; a section link
+  lands with the heading below the bar. Locally at 375px the bar is static and the section row hidden.
+
 ## 2026-09-16 I Ching line-text polish
 
 Deployed `ef8e428`. **Static only.**
