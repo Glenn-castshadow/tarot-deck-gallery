@@ -1,5 +1,38 @@
 # VPS deployment
 
+## 2026-09-16 I Ching line-text polish
+
+Deployed `ef8e428`. **Static only.**
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-iching-polish-ef8e428`, a `cp -al` hardlink copy of
+  `20260916-chart-polish-007bae5`.
+- Two files were replaced (`iching-lines.js`, `divination/index.html`).
+- The deploy was gated on `current`, on the sha256 of both files (matched the live release), and on four
+  must-be-absent checks against the served `iching-lines.js` ("At this threshold", "From the position of
+  authority", "At the end,", "at the summit").
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-chart-polish-007bae5 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change.** 204 of the 384 line texts lose their stock position phrase ("At this threshold", "From the
+position of authority", "At the end", "At the beginning" and their variants); only that clause changed in
+each, everything else byte-identical. The kicker above each text already names the position and the study
+card shows all six lines together, so the phrases read as a template. Four writer rounds were needed because
+each sweep exposed the next variant; every round had an originality and fidelity review against the
+published translations. A new test refuses the whole phrase family (it would have failed on 204 texts before
+this change). The image-naming device ("The image is …") was left as house style. Suite 567 to 568.
+
+**Cache keys.** `iching-lines.js?v=2` on `/divination/` only.
+
+**Validation after the switch.**
+- All eight pages and both assets return 200; the keys and needles are confirmed on the served files.
+- In a browser at ishtarinsights.com: the I Ching library card for hexagram 3 lists six lines with no stock
+  phrase; `IChingLines` holds 64 hexagrams; the only console error is the signed-out session check.
+
+**Also today.** GitHub Pages on the repository was building the whole repo as a Jekyll site on every push to
+`main` and failing on `{{ }}` in a plan document. The site is served from the VPS, not Pages; Glenn disabled
+Pages in the repository settings (the API now returns 404 for the Pages site).
+
 ## 2026-09-16 Chart-saving polish pass
 
 Deployed `007bae5`. **Static only.** No backend change.
