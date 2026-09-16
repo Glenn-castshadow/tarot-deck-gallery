@@ -57,12 +57,35 @@ takes the hexagram table explicitly, so the engine stays data-free; it throws
 unless given six values each 6–9. 7 and 9 are yang, 6 and 8 are yin; 6 and 9
 are changing. It returns `{primary, changing (positions 0..5), relating
 (hexagram index or null), primarySymbol, relatingSymbol}`; the relating
-hexagram flips every changing line. Since individual line statements (爻辭) are
-out of scope, each changing line is instead read through the six position
-texts in `linePositions`, combined with the line number, standing in for the
-line statements. When no line changes, a sentence says the figure stands as it
+hexagram flips every changing line. Each changing line is read through its own
+original line text (see "Line texts" below); the kicker above it still names the
+line number and its position title from `linePositions`. When no line changes, a sentence says the figure stands as it
 is; when lines do change, the relating hexagram is drawn beside the primary
 one under "Where this may be moving", with its own gloss, meaning and prompt.
+
+**Line texts.** `iching-lines.js` (C4d, 2026-09-16) is a pure UMD data module,
+`IChingLines = {lines, forLine(number, index), has(number)}`. `lines[n]` holds six
+strings for hexagram `n`, bottom line first, for all 64 hexagrams (384 texts). Each
+is one paragraph of two or three sentences on the situation that line has
+traditionally described, in the site's reflective second person. They are not
+translations: the traditional line statements (爻辭) are not reproduced, and the
+texts were written fresh, with at most a line's traditional image named in a few
+words. They were written in eight batches of eight hexagrams, each reviewed for
+closeness to published translations (Wilhelm/Baynes, Legge, Lynn and others),
+for fidelity to the line and for voice, and revised until the reviews passed.
+They carry no verdicts: none of "good fortune", "misfortune", "no blame",
+"remorse", "humiliation", "perseverance furthers" or "the superior man", and no
+predictions. `forLine` returns `null` for an unknown hexagram or an index outside
+0–5. When every line of hexagram 1 or 2 changes, the classic adds a seventh
+statement (用九, 用六); the site shows only the six line texts.
+
+Where they show: in a reading, each changing line's paragraph under the primary
+hexagram; in the library, the study card lists all six lines ("Line n · position
+title", bottom first) in a `<section class="dv-iching-lines" aria-label="The six
+lines">` after the meaning. `divination.js` reads the module through a bare
+`typeof IChingLines` guard. If the module is missing, or has no entry for a
+hexagram, a changing line falls back to its `linePositions` text and the study
+card omits the list. An entry is always complete (six texts) or absent.
 
 **Figures.** `DivinationArt.hexagram(values)` draws an inline SVG of six lines
 bottom-up (yang solid, yin broken); every line is drawn the same way, and a
@@ -88,6 +111,13 @@ prose constraints (meaning length, prompt ends `?`, gloss word count 3–5) for
 hexagrams and the six position texts. A Django test asserts that posting an
 `iching` reading returns 201 (`server/ishtar/readings/tests/test_readings.py`;
 see `server/ishtar/readings` and docs/ACCOUNTS.md "Service").
+`tests/iching-lines.test.cjs` (3 tests) checks every line text: six per
+hexagram, non-empty, two or three sentences, no banned verdict or prediction
+wording, no straight apostrophes, and all 384 unique; `forLine` and `has`
+for valid and invalid arguments; and that all 64 hexagrams are present. A
+wiring test in `tests/divination.test.cjs` runs `divination.js` with a stub
+`IChingLines` covering only hexagram 1, and checks the changing-line texts, the
+fallback for another hexagram, and the study card's list and its absence.
 
 **Browser checks performed.** Casting with both the coin and yarrow methods,
 manual line entry, changing-line sections and the relating figure, the library
@@ -96,6 +126,11 @@ the other four practices regression-checked alongside it, and 390px layout
 with no page overflow. All verified by DOM inspection because the browser
 pane's screenshots rendered blank. The signed-in journal save of an I Ching
 reading was not exercised in the browser (see docs/deployment.md).
+C4d line texts (2026-09-16, local preview): a reading of hexagram 63 with lines
+1 and 4 changing showed both line texts under their kickers; the study card for
+hexagram 29 listed six lines, bottom first; the practice note read the new wording;
+at 375px the page was 375px wide with no overflow, and 1400px was fine; the
+console had no script errors.
 
 ## Grand Tableau
 
@@ -440,9 +475,9 @@ reflection. Oracle emblems are decorative original motifs, not a traditional alp
 
 ## Validation
 
-`node --test tests/*.test.cjs` — 542 passing tests across the whole suite, up from 538
-before the playing-card practice was added.
-`tests/divination.test.cjs` is still 19: it gained no new test for cartomancy, since C4c
+`node --test tests/*.test.cjs` — 546 passing tests across the whole suite, up from 542
+before the I Ching line texts (C4d) added `tests/iching-lines.test.cjs` (3 tests) and one
+wiring test in `tests/divination.test.cjs`, which is now 20. It was 19 after C4c, which gained no new test for cartomancy, since C4c
 extended the existing save-button wiring test (the one- and three-card draws, the practice
 copy scan and the refused-layout loads) rather than adding one — see "Playing cards" above. The original ten
 (catalog completeness, without-replacement draws, a hand-calculated shield fixture,
@@ -475,7 +510,7 @@ as 06; and the pluralised status line ("1 card laid face down. Reveal it below."
 The shield intentionally scrolls horizontally within its own container on narrow screens;
 its screen-reader descriptions are positioned relative to each cell to avoid page overflow.
 The room's scripts are divination-data.js, divination-engine.js, divination-art.js,
-playing-cards.js and divination.js, in that order, and `divination/index.html` loads
+playing-cards.js, iching-lines.js and divination.js, in that order, and `divination/index.html` loads
 styles.css, site-shell.css, account.css, divination.css and then mobile-sections.css. divination.js initializes before
 mobile-sections.js wraps the main sections. No runtime dependency added.
 

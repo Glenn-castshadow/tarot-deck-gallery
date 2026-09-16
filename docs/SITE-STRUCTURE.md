@@ -129,7 +129,7 @@ first `ishtar-account-change` fires.
 
 **`/divination/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `divination-data.js` → `divination-engine.js` →
-`divination-art.js` → `playing-cards.js` → `divination.js` → `mobile-sections.js`.
+`divination-art.js` → `playing-cards.js` → `iching-lines.js` → `divination.js` → `mobile-sections.js`.
 
 **`/account/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `mobile-sections.js`. No room module, no

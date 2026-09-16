@@ -240,12 +240,14 @@ test('the house chart view names a place for every conjunction and mutation the 
   }
 });
 
+// A minimal stand-in DOM element for running the browser IIFE divination.js under Node.
+const el = () => { const cache = {}; return {innerHTML: '', textContent: '', hidden: false, open: false, dataset: {}, style: {setProperty() {}},
+  querySelector(sel) { return cache[sel] || (cache[sel] = el()); }, querySelectorAll() { return []; }, closest() { return el(); },
+  addEventListener() {}, setAttribute() {}, append() {}, focus() {}, scrollIntoView() {}, showModal() {}, close() {},
+  insertAdjacentHTML(_, html) { this.innerHTML = html + this.innerHTML; }}; };
+
 test('the divination save button names a registered kind that matches the current draw in every practice and view', () => {
   // divination.js is a browser IIFE; it runs here against a minimal stand-in DOM.
-  const el = () => { const cache = {}; return {innerHTML: '', textContent: '', hidden: false, open: false, dataset: {}, style: {setProperty() {}},
-    querySelector(sel) { return cache[sel] || (cache[sel] = el()); }, querySelectorAll() { return []; }, closest() { return el(); },
-    addEventListener() {}, setAttribute() {}, append() {}, focus() {}, scrollIntoView() {}, showModal() {}, close() {},
-    insertAdjacentHTML(_, html) { this.innerHTML = html + this.innerHTML; }}; };
   const root = el(), registry = {}, win = {}, backs = [], listeners = {}, created = [];
   root.style.setProperty = (name, value) => { if (name === '--dv-back') backs.push(value); };
   root.addEventListener = (type, fn) => { listeners[type] = fn; };
@@ -319,4 +321,43 @@ test('the divination save button names a registered kind that matches the curren
   assert.equal(win.DivinationRoom.loadDraw({kind: 'lenormand', payload: {ids: [0, 1, 2, 3, 4]}}), true, 'Lenormand five-card line');
   win.DivinationRoom.loadDraw(cases[5][1]);
   assert.equal(win.DivinationRoom.currentDraw().summary, `House chart · house 5, ${D.houseMatters[4].name}: ${D.figures.find(f => f.symbol === E.houseChart(E.shield(mothers))[4].join('')).name}`);
+});
+
+test('changing lines and the I Ching study panel read IChingLines when present, and fall back to position texts otherwise', () => {
+  // divination.js is a browser IIFE; run it here with a stub IChingLines that only covers hexagram 1.
+  const root = el(), win = {}, listeners = {};
+  root.addEventListener = (type, fn) => { listeners[type] = fn; };
+  const doc = {querySelector: () => root, createElement: () => el(), body: el(), addEventListener() {}};
+  const PC = require('../playing-cards.js');
+  const art = {emblem: () => '', hexagram: () => '', hexagramFromSymbol: () => ''};
+  const src = require('node:fs').readFileSync(require('node:path').join(__dirname, '../divination.js'), 'utf8');
+  const stubLines = ['Stub line one text here.', 'Stub line two text here.', 'Stub line three text here.',
+    'Stub line four text here.', 'Stub line five text here.', 'Stub line six text here.'];
+  const stub = {lines: {1: stubLines}, has: n => n === 1, forLine: (n, i) => n === 1 ? stubLines[i] : null};
+  new Function('document', 'window', 'Rooms', 'DivinationData', 'DivinationEngine', 'DivinationArt', 'PlayingCards', 'IChingLines', src)
+    (doc, win, {register() {}}, D, E, art, PC, stub);
+
+  // Hexagram 1, all six lines changing: every changing-line paragraph uses the stub's text.
+  assert.equal(win.DivinationRoom.loadDraw({kind: 'iching', payload: {lines: [9, 9, 9, 9, 9, 9]}}), true);
+  const withStub = root.querySelector('.dv-output').innerHTML;
+  for (const text of stubLines) assert.ok(withStub.includes(text), text);
+
+  // A hexagram the stub lacks (hexagram 43, one changing line) falls back to the position text.
+  assert.equal(win.DivinationRoom.loadDraw({kind: 'iching', payload: {lines: [7, 7, 7, 7, 7, 6]}}), true);
+  const withoutStub = root.querySelector('.dv-output').innerHTML;
+  assert.ok(withoutStub.includes(D.linePositions[5].text));
+  assert.ok(!stubLines.some(text => withoutStub.includes(text)));
+
+  // Study panel: hexagram 1 (study index 0) is covered by the stub and lists all six lines.
+  listeners.click({target: {closest: () => ({dataset: {dvMode: 'iching'}})}});
+  const study1 = root.querySelector('.dv-study').innerHTML;
+  assert.match(study1, /dv-iching-lines/);
+  for (const text of stubLines) assert.ok(study1.includes(text), text);
+  assert.equal((study1.match(/<li>/g) || []).length, 6);
+
+  // Hexagram 2 (study index 1) is not in the stub, so the lines section is absent entirely.
+  const studyButton = {dataset: {dvStudy: '1'}, hasAttribute: name => name === 'data-dv-study'};
+  listeners.click({target: {closest: () => studyButton}});
+  const study2 = root.querySelector('.dv-study').innerHTML;
+  assert.doesNotMatch(study2, /dv-iching-lines/);
 });

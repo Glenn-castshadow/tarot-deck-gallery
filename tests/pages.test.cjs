@@ -75,8 +75,10 @@ const DEPENDENCIES = {
   // `IshtarStorage.getItem(...)` and `Rooms.register(...)`, all at module top level.
   'tarot.js': ['birth-lore.js', 'tarot-readings.js', 'storage-preferences.js', 'rooms.js'],
   // `const D=DivinationData, E=DivinationEngine, art=DivinationArt.emblem, PC=PlayingCards` on
-  // line 3, and `Rooms.register` for the eight divination kinds.
-  'divination.js': ['divination-data.js', 'divination-engine.js', 'divination-art.js', 'playing-cards.js', 'rooms.js'],
+  // line 3, and `Rooms.register` for the eight divination kinds. `typeof IChingLines !==
+  // 'undefined'` guards every read of it (hexagramOutput and the I Ching study panel), so it
+  // never throws -- but its absence would silently drop the line texts, so it is listed anyway.
+  'divination.js': ['divination-data.js', 'divination-engine.js', 'divination-art.js', 'playing-cards.js', 'rooms.js', 'iching-lines.js'],
   'daily-horoscope.js': ['daily-horoscope-engine.js'], // `DailyHoroscopeEngine.signNames` in attach().
   'astrocartography.js': ['astrocartography-engine.js', 'birthplace-search.js'],
   // `typeof RelationshipChartsEngine/RelationshipCharts/NatalChart` gate the Composite and Davison

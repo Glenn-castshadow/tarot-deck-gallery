@@ -183,6 +183,7 @@
 .dv-hexagram-art { padding: 18px; background: #f5ebda; color: #4f344c; box-shadow: inset 0 0 0 6px #f5ebda,inset 0 0 0 7px #a6805644,3px 5px 0 #b29a7388,0 14px 26px #0004; }
 .dv-hexagram-figure figcaption { display: grid; gap: 4px; margin-top: 12px; }.dv-hexagram-figure figcaption span[lang] { font: 30px 'Noto Serif CJK SC','SimSun',serif; }.dv-hexagram-figure figcaption small { color: var(--dv-muted); }
 .dv-line-reading { padding: 14px 0; border-top: 1px solid #ffffff14; }.dv-relating { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #b09bba66; }
+.dv-iching-lines { margin-top: 18px; }.dv-iching-lines ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }.dv-iching-lines li { padding-top: 12px; border-top: 1px solid #ffffff14; }.dv-iching-lines strong { display: block; color: var(--dv-accent); font-size: 13px; }.dv-iching-lines p { margin-top: 4px; font-size: 14px; line-height: 1.85; color: #dfd5e3; }
 
 /* Grand Tableau: 8×4 + 4. Marks use a border style and a text badge, never colour alone. */
 .dv-controls label[hidden] { display: none; }
