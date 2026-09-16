@@ -75,7 +75,7 @@ const DEPENDENCIES = {
   // `IshtarStorage.getItem(...)` and `Rooms.register(...)`, all at module top level.
   'tarot.js': ['birth-lore.js', 'tarot-readings.js', 'storage-preferences.js', 'rooms.js'],
   // `const D=DivinationData, E=DivinationEngine, art=DivinationArt.emblem` on line 3, and
-  // `Rooms.register` for the five divination kinds.
+  // `Rooms.register` for the seven divination kinds.
   'divination.js': ['divination-data.js', 'divination-engine.js', 'divination-art.js', 'rooms.js'],
   'daily-horoscope.js': ['daily-horoscope-engine.js'], // `DailyHoroscopeEngine.signNames` in attach().
   'astrocartography.js': ['astrocartography-engine.js', 'birthplace-search.js'],

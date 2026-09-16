@@ -59,5 +59,65 @@
     return {primary: hexagramIndex(primarySymbol, hexagrams), primarySymbol, changing, relating: relatingSymbol ? hexagramIndex(relatingSymbol, hexagrams) : null, relatingSymbol};
   }
   function loadLines(values) { return validLines(values) ? [...values] : null; }
-  return {randomInt, draw, combine, shield, cast, loadIds, castLine, castHexagram, readLines, loadLines, hexagramIndex};
+  const TABLEAU_CORNERS=[1,8,25,32], TABLEAU_CLOSING=[33,34,35,36], SIGNIFICATORS={man:27,woman:28};
+  const cellOf=p=>({row:Math.floor((p-1)/8),col:(p-1)%8});
+  // Grand Tableau: positions 1–32 in rows of eight, 33–36 the closing row (outside near and knight).
+  function tableauNear(p) {
+    if(!Number.isInteger(p)||p<1||p>32) return [];
+    const a=cellOf(p);
+    return Array.from({length:32},(_,i)=>i+1).filter(q=>{const b=cellOf(q);return q!==p&&Math.abs(a.row-b.row)<=1&&Math.abs(a.col-b.col)<=1;});
+  }
+  function tableauKnight(p) {
+    if(!Number.isInteger(p)||p<1||p>32) return [];
+    const a=cellOf(p);
+    return Array.from({length:32},(_,i)=>i+1).filter(q=>{const b=cellOf(q),dr=Math.abs(a.row-b.row),dc=Math.abs(a.col-b.col);return (dr===1&&dc===2)||(dr===2&&dc===1);});
+  }
+  const validPermutation=(ids,size)=>Array.isArray(ids)&&ids.length===size&&new Set(ids).size===size&&ids.every(i=>Number.isInteger(i)&&i>=0&&i<size);
+  function tableau(ids, significator='none') {
+    if(!validPermutation(ids,36)) throw Error('A Grand Tableau needs all 36 cards once each');
+    if(!Object.hasOwn(SIGNIFICATORS,significator)&&significator!=='none') throw Error('Choose the Man, the Woman or none');
+    const position=significator==='none'?null:ids.indexOf(SIGNIFICATORS[significator])+1;
+    return {cells:ids.map((id,i)=>({position:i+1,id,house:i})),significator,significatorPosition:position,
+      near:position?tableauNear(position):[],knight:position?tableauKnight(position):[],corners:[...TABLEAU_CORNERS],closing:[...TABLEAU_CLOSING]};
+  }
+  function loadTableau(p) {
+    if(!p||typeof p!=='object'||!validPermutation(p.ids,36)) return null;
+    return {ids:[...p.ids],significator:['man','woman','none'].includes(p.significator)?p.significator:'none',
+      selected:Number.isInteger(p.selected)&&p.selected>=0&&p.selected<36?p.selected:0};
+  }
+  // Geomantic house chart: mothers in houses 1–4, daughters 5–8, nieces 9–12. Index 0 is house 1.
+  const sameFigure=(a,b)=>Array.isArray(a)&&Array.isArray(b)&&a.length===4&&b.length===4&&a.every((n,i)=>n===b[i]);
+  function houseChart(chart) {
+    if(!chart||![chart.mothers,chart.daughters,chart.nieces].every(g=>Array.isArray(g)&&g.length===4)) throw Error('A full shield is required');
+    return [...chart.mothers,...chart.daughters,...chart.nieces].map(f=>[...f]);
+  }
+  const houseDistance=(a,b)=>{const d=Math.abs(a-b)%12;return Math.min(d,12-d);};
+  const HOUSE_ASPECTS={2:'sextile',3:'square',4:'trine',6:'opposition'};
+  const HOUSES=Array.from({length:12},(_,i)=>i+1);
+  // One common Renaissance method. House 1 is the querent; adjacency is circular (12 sits beside 1).
+  function judge(houses, quesited) {
+    if(!Array.isArray(houses)||houses.length!==12) throw Error('Twelve houses required');
+    if(!Number.isInteger(quesited)||quesited<2||quesited>12) throw new RangeError('Choose a quesited house from 2 to 12');
+    const at=h=>houses[h-1], querent=at(1), sought=at(quesited);
+    const where=figure=>HOUSES.filter(h=>sameFigure(at(h),figure));
+    const passage=where(querent).filter(h=>h!==1);
+    const occupation=sameFigure(querent,sought);
+    const conjunction=passage.some(h=>h!==quesited&&houseDistance(h,quesited)===1)||where(sought).some(h=>h!==quesited&&h!==1&&houseDistance(h,1)===1);
+    const mutation=HOUSES.some(h=>{const n=h%12+1;if([h,n].some(x=>x===1||x===quesited))return false;
+      return (sameFigure(at(h),querent)&&sameFigure(at(n),sought))||(sameFigure(at(h),sought)&&sameFigure(at(n),querent));});
+    const nearQuerent=HOUSES.filter(h=>h!==1&&h!==quesited&&houseDistance(h,1)===1);
+    const nearSought=HOUSES.filter(h=>h!==1&&h!==quesited&&houseDistance(h,quesited)===1);
+    const translation=nearQuerent.flatMap(a=>nearSought.filter(b=>b!==a&&sameFigure(at(a),at(b))).map(b=>({from:a,to:b})));
+    const aspects=passage.filter(h=>h!==quesited&&HOUSE_ASPECTS[houseDistance(h,quesited)]).map(h=>({house:h,aspect:HOUSE_ASPECTS[houseDistance(h,quesited)]}));
+    return {quesited,querentFigure:[...querent],quesitedFigure:[...sought],passage,occupation,conjunction,mutation,translation,aspects};
+  }
+  function loadHouses(p) {
+    if(!p||typeof p!=='object') return null;
+    try { shield(p.mothers); } catch { return null; }
+    return {mothers:[...p.mothers.map(f=>[...f])],
+      quesited:Number.isInteger(p.quesited)&&p.quesited>=2&&p.quesited<=12?p.quesited:7,
+      selected:Number.isInteger(p.selected)&&p.selected>=1&&p.selected<=12?p.selected:1};
+  }
+  return {randomInt, draw, combine, shield, cast, loadIds, castLine, castHexagram, readLines, loadLines, hexagramIndex,
+    tableauNear, tableauKnight, tableau, loadTableau, houseChart, houseDistance, judge, loadHouses};
 });

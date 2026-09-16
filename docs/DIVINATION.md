@@ -4,10 +4,10 @@ Added 2026-09-09. A separate room, now its own page at `/divination/#divination-
 
 ## Offerings
 
-- Lenormand: all 36 traditional numbered symbols, original line emblems and meanings. Three- or five-card line, unique draws, center focus, neighboring pairs and mirrored ends. Traditional Man/Woman names retained with inclusive contextual interpretation. No Grand Tableau or automatic person selection.
+- Lenormand: all 36 traditional numbered symbols, original line emblems and meanings. Three- or five-card line, unique draws, centre focus, neighbouring pairs and mirrored ends, plus a third layout, the Grand Tableau, laying all 36 cards at once. Traditional Man/Woman names retained with inclusive contextual interpretation. See "Grand Tableau" below.
 - Ishtar Reflection Oracle: 24 original cards with geometric botanical emblems, original writing and questions; single reflection or Notice/Nourish/Practice. Explicitly original, no claimed historical lineage.
 - Runes: 24 Elder Futhark symbols rendered as vector marks, original modern reflective meanings; one-rune or Situation/Tension/Response. No blank rune or reversals. Distinguishes historical writing from modern divination.
-- Geomancy: all 16 named patterns; four mothers, transposed daughters, parity-combined nieces, witnesses, judge and optional reconciler. Random mother rows or manually entered parity patterns. Read shield right to left; select any figure for meaning. Puer=1121, Puella=1211. No astrological house assignment or medical/factual predictive judgments.
+- Geomancy: all 16 named patterns; four mothers, transposed daughters, parity-combined nieces, witnesses, judge and optional reconciler. Random mother rows or manually entered parity patterns. Read shield right to left; select any figure for meaning. Puer=1121, Puella=1211. A view switch also shows the same cast as a twelve-house chart with horary judgement steps; see "Geomantic house chart" below. No medical/factual predictive judgments.
 - I Ching: all 64 hexagrams in King Wen order, cast with coins or the yarrow-stalk probabilities, or entered by hand. See "I Ching" below.
 
 ## Mechanics
@@ -96,11 +96,208 @@ with no page overflow. All verified by DOM inspection because the browser
 pane's screenshots rendered blank. The signed-in journal save of an I Ching
 reading was not exercised in the browser (see docs/deployment.md).
 
+## Grand Tableau
+
+A third Lenormand layout, added 2026-09-16, `divination-engine.js`, `divination-data.js`
+and `divination.js`. It reuses the existing Lenormand catalogue and artwork; no new art
+assets were added.
+
+**Geometry.** Positions are 1-based. `cellOf(p) = {row: floor((p-1)/8), col: (p-1)%8}`
+places positions 1–32 in four rows of eight. `tableauNear(p)` returns every other
+position in 1–32 within one row and one column of `p` (up to eight neighbours, fewer at
+edges and corners); `tableauKnight(p)` returns positions a chess knight's move away
+(`{|Δrow|, |Δcol|} = {1, 2}`). Both return `[]` for any `p` outside 1–32, so the four
+closing positions never have near or knight cells. The four corners are fixed at
+`[1, 8, 25, 32]` and the closing row at `[33, 34, 35, 36]`.
+
+**`tableau(ids, significator='none')`.** `ids` must be a 36-length permutation of 0–35,
+or it throws "A Grand Tableau needs all 36 cards once each". `significator` is `'man'`,
+`'woman'` or `'none'` (default); anything else throws "Choose the Man, the Woman or
+none". The Man is Lenormand id 27 (card 28) and the Woman id 28 (card 29)
+(`SIGNIFICATORS = {man: 27, woman: 28}`). It returns `{cells: [{position, id, house}],
+significator, significatorPosition, near, knight, corners, closing}`; `house` is
+`position - 1`, the index into `tableauHouses`. `near` and `knight` are only populated
+when a significator is chosen; `corners` and `closing` always are.
+
+**`loadTableau(payload)`** validates `payload.ids` as a 36-permutation (`null` if not),
+sanitises `significator` to one of the three values (default `'none'`) and `selected` to
+an integer 0–35 (default 0), and returns fresh copies.
+
+**UI.** Lenormand's "Reading layout" select gains a third option, "Grand Tableau · all 36
+cards", alongside the three- and five-card lines. Choosing it (or loading a saved Grand
+Tableau) reveals a "Significator" select — None (default), The Man, The Woman — that stays
+hidden for the shorter lines. All 36 cards are laid face up at once; unlike the shorter
+lines, there is no tap-to-reveal step. The grid places positions 1–32 in an eight-column
+CSS grid, then a "Closing row" label, then positions 33–36 centred under it. Each cell
+shows its position number, card art, name, a "House of the ⟨name⟩" caption and, when a
+significator is set, a "Significator", "Near" or "Knight" badge. Selecting a cell
+re-renders only the reading article below the grid — the position, house name, card
+keyword, the house's own line from `tableauHouses`, the card's meaning and prompt, and a
+"View artwork" button. Below that, "Reading the tableau" lists the cards near the
+significator and a knight's move away (only when the significator sits in positions
+1–32), the four corners, and the closing row; with no significator it invites choosing
+one, and with a significator in the closing row it explains that the row sits outside the
+grid for nearness and knighting.
+
+**Phone.** At 700px and narrower the tableau keeps its eight-column grid at a 660px
+minimum width and scrolls horizontally inside its own box, and every cell's card image is
+hidden (`.dv-tableau-cell > .dv-artwork { display: none }`) — only the position number,
+name and house caption remain, so all 36 cells stay legible without 36 card images
+crowding the row, and the 36 lazy-loaded images are never requested on a phone. The house-chart view, by contrast, keeps its (smaller) card art on
+phone; see "Geomantic house chart" below.
+
+**House copy.** `tableauHouses` (`divination-data.js`) holds one original sentence per
+position, index-aligned with `lenormand` — position 1 (the Rider) is "news, messages and
+things arriving from outside," position 36 (the Cross) is "duty, responsibility and
+matters that carry real weight." Each line names the house's own domain, not the specific
+card that lands there, since any of the 36 cards can occupy any position.
+
+**Journal.** `currentDraw()` returns `{kind: 'grand-tableau', layout: 'all 36 cards',
+payload: {ids, significator, selected}, summary}`. When a significator is chosen, the
+summary names it and the card whose position it landed in (e.g. "Grand Tableau · the Man
+in the house of the Woman"); when none is chosen, it lists whichever four cards occupy the
+corners of that draw ("Grand Tableau · corners: ⟨card⟩, ⟨card⟩, ⟨card⟩, ⟨card⟩"), truncated
+to 120 characters. `loadDraw` maps the saved `grand-tableau` kind back onto the Lenormand
+practice state, validates the payload with `loadTableau`, sets the layout to 36 cards and
+marks every card revealed (the layout has no reveal state to restore).
+
+**Tests.** `tests/divination.test.cjs` checks `tableauNear`/`tableauKnight` against
+hand-built lists for the top-left and top-right corners (1, 8, both also in the fixed
+`corners` list), an interior cell (12), a non-corner cell in the bottom row (28), and a
+closing-row position (34, both empty); `tableau` finds the Man at
+position 28 and the Woman at 29 in an identity permutation, returns `null`/`[]` for no
+significator, empties `near` when the significator moves into the closing row, and throws
+on a short array, a duplicate id, or an unknown significator; `loadTableau` sanitises or
+rejects malformed payloads.
+
+## Geomantic house chart
+
+A view switch inside Geomancy, added 2026-09-16 — "Shield" or "House chart" — showing the
+same sixteen-figure cast, from `divination-engine.js`'s `houseChart`, `houseDistance`,
+`judge`, `loadHouses` and `divination.js`'s house-chart view functions. The shield itself
+is unchanged; this is a second reading of the same `shield()` result, not a different
+cast.
+
+**Placement.** `houseChart(chart)` requires a full shield's `mothers`, `daughters` and
+`nieces` (each a four-figure array) and returns twelve figures in house order: mothers in
+houses 1–4, daughters in 5–8, nieces in 9–12. Houses run in a circle:
+`houseDistance(a, b) = min(|a−b| mod 12, 12 − (|a−b| mod 12))`, so houses 12 and 1 are one
+house apart and houses 11 and 2 are three apart. Two figures "match" when their four-row
+point patterns are identical, regardless of which mother, daughter or niece produced them.
+
+**`judge(houses, quesited)`.** `houses` must have exactly 12 entries; `quesited` must be
+an integer 2–12 (house 1 is always the querent, so `quesited` of 1 or out of range throws
+a `RangeError`). Given house 1's figure (the querent) and the quesited house's figure:
+- **passage** — every house other than 1 holding the querent's figure (this can include
+  the quesited house itself, if it shares the querent's figure).
+- **occupation** — `true` when the querent's and quesited figures are identical.
+- **conjunction** — `true` when a passage house other than the quesited house sits one
+  house from the quesited house, or a house holding the quesited figure (other than house
+  1 or the quesited house) sits one house from house 1.
+- **mutation** — `true` when some circular neighbouring pair of houses, neither of them
+  house 1 or the quesited house, holds the querent's and quesited figures side by side (in
+  either order).
+- **translation** — for every house next to house 1 and every *different* house next to
+  the quesited house (both excluding house 1 and the quesited house), a `{from, to}` entry
+  when the two hold the same figure. Requiring the two houses to differ was a bug fix made
+  on this branch: a single house that sits next to both house 1 and the quesited house
+  (for example house 2, next to both house 1 and house 3) does not by itself count as a
+  translation — the figure has to travel between two distinct houses, not merely sit
+  beside both from one.
+- **aspects** — for each passage house other than the quesited house itself, when its
+  house-distance to the quesited house is 2, 3, 4 or 6, an aspect (sextile, square, trine,
+  opposition respectively); distances of 1 and 5 get no aspect.
+
+**`loadHouses(payload)`** validates `payload.mothers` by running it through `shield()` (so
+invalid mother figures fail the same way a fresh cast would), then returns sanitised
+`mothers`, `quesited` (2–12, default 7) and `selected` (1–12, default 1), or `null` if
+`payload` isn't an object or the mothers are invalid.
+
+**UI.** The Shield/House chart switch sits above the output; switching re-renders the same
+cast and toggles the About section's house-chart paragraph. The house view opens with a
+"The quesited house" select listing houses 2–12 by name — house 1 is never selectable,
+since it is fixed as the querent — defaulting to house 7. A four-by-three grid of the
+twelve houses follows (house name, figure art and name, and a "Querent"/"Quesited" badge
+on house 1 and the chosen quesited house), with the witnesses, judge and reconciler listed
+beside it on wide screens and below it on narrow ones. Selecting a house re-renders only
+the reading article, showing the house's matter (from `houseMatters`) and the figure's own
+meaning and prompt. Changing the quesited house re-renders the whole output.
+
+**Judgement.** Below the chart, the judgement steps are written out in past-tense horary
+voice, explicitly giving no verdict ("It gives no verdict on the question."): (1) the
+figures in house 1 and the quesited house; (2) passage, the other houses carrying the
+querent's figure; (3) perfection, checking for occupation, conjunction, mutation and
+translation, each explained in a sentence naming the actual houses and figures involved
+(a display-only helper kept in sync with, and checked against, `judge`'s own logic); (4)
+aspects, listing each passage house's aspect to the quesited house, or one of three
+explanatory sentences when there are none (no passage at all; the only passage house is
+the quesited house itself; or no passage house stands 2, 3, 4 or 6 houses away).
+
+**Phone.** At 700px and narrower the house grid drops to three columns and the side list
+(witnesses, judge, reconciler) becomes a four-column row below the grid, with smaller
+artwork — the card art itself stays visible, unlike the Grand Tableau's phone view above.
+
+**Journal.** `currentDraw()` returns `{kind: 'geomancy-houses', layout: 'twelve houses',
+payload: {mothers, quesited, selected}, summary}`; the summary names the quesited house
+and its figure, in the shape "House chart · house 7, Partners and Agreements: Puella",
+truncated to 120 characters. `loadDraw` maps `geomancy-houses` back onto the Geomancy
+practice, validates the payload with `loadHouses`, rebuilds the shield from the saved
+mothers, and sets the practice's view to houses and its quesited house to the saved value.
+
+`saveControl()`'s save button now reads its saved-kind attribute from
+`currentDraw()?.kind`, falling back to the practice name only when there is no draw yet.
+This is needed because the Lenormand and Geomancy practices can each save under two
+different kinds depending on the current reading (`lenormand`/`grand-tableau`,
+`geomancy`/`geomancy-houses`), so the practice name alone no longer identifies which kind
+to save.
+
+**About copy.** The About section's house-chart paragraph (shown only while this view is
+active) states the placement, the circular adjacency, the four perfection definitions and
+the aspect count as coded above, and closes: "Traditions differ over the placement, these
+definitions and how the steps were weighed, so this is one reading among several." It
+links two Princeton pages, both anchors on the same page used for the shield's own source:
+[the geomantic houses](https://www.princeton.edu/~ezb/geomancy/geostep.html#houses) and
+[methods of interpretation](https://www.princeton.edu/~ezb/geomancy/geostep.html#methods).
+
+**Tests.** `tests/divination.test.cjs` checks house placement against a hand-built shield;
+`houseDistance`'s circular wrap (12↔1 is 1, 11↔2 is 3); `judge` against hand-built charts
+covering occupation, conjunction from both directions, mutation, translation and each of
+the four aspects, plus rejection of an out-of-range quesited house and a short house
+array; `loadHouses` sanitising and rejection; the two-different-houses translation fix
+directly (a figure shared by two houses that both neighbour house 1 and the quesited house
+is not a translation, but the same figure in two distinct neighbouring houses is); and a
+structural check — the view's own judgement code, lifted out of `divination.js` and run
+standalone — that it names a location for every conjunction and mutation `judge` finds,
+sampled across a broad share of the 65,536 possible casts and every quesited house.
+
+## Saved kinds
+
+Migration `0005_reading_kind_c4.py` (`server/ishtar/readings/migrations/`, on top of
+`0004_alter_reading_kind`) adds three choices to `Reading.kind`: `grand-tableau` ("Grand
+Tableau"), `geomancy-houses` ("Geomantic house chart") and `cartomancy` ("Playing cards"),
+all in the `divination` category (`server/ishtar/readings/kinds.py`). `rooms.js`'s `PAGES`
+and `LABELS` list all three, but only `grand-tableau` and `geomancy-houses` are registered
+with `Rooms.register()` in `divination.js` and carry `data-room` markup on
+`#divination-room`. `cartomancy` exists server- and `rooms.js`-side one release early — its
+own room ships in C4c — so a saved `cartomancy` reading cannot yet be created, and if one
+existed it would resolve to `'unknown'` in `Rooms.openFromQuery`.
+
+Django tests (`server/ishtar/readings/tests/test_readings.py`) check that all three C4
+kinds carry the `divination` category (`test_c4_kinds_are_divination`), that the existing
+kinds are still present (`test_existing_kinds_are_still_present`), and that a
+`grand-tableau` reading round-trips through create and read
+(`test_grand_tableau_saves_and_reads_back`). As with every kind added here before, the
+backend must deploy and the `ishtar-app` service must restart before the frontend ships —
+`KINDS` is read into module scope at import, so an unrestarted worker rejects the new
+kinds with "Unknown reading kind."
+
 ## Sources and conventions
 
 - Petit Lenormand 36-card system and line layouts: https://www.usgamesinc.com/tarot-and-inspiration/all-products/dreaming-way-lenormand.html
 - Historical 24-character Elder Futhark: https://natmus.dk/historisk-viden/temaer/runer/runer-i-jernalderen/
 - Shield construction: https://www.princeton.edu/~ezb/geomancy/geostep.html
+- The geomantic houses (anchor on the shield-construction page): https://www.princeton.edu/~ezb/geomancy/geostep.html#houses
+- Methods of interpretation, including translation, occupation, conjunction and mutation (anchor on the same page): https://www.princeton.edu/~ezb/geomancy/geostep.html#methods
 - Historical figure naming variations: https://www.princeton.edu/~ezb/geomancy/figures.html
 - King Wen sequence and the 64 hexagram line patterns: https://www.unicode.org/charts/PDF/U4DC0.pdf
 
@@ -110,11 +307,19 @@ reflection. Oracle emblems are decorative original motifs, not a traditional alp
 
 ## Validation
 
-`node --test tests/*.test.cjs` — 197 passing tests across the whole suite.
-`tests/divination.test.cjs` has 10, including the original five for catalog
-completeness, without-replacement draws, a hand-calculated shield fixture,
-invalid input and exhaustive judge parity/named-figure checks for all 65,536
-mother casts, plus the I Ching tests added later (see "I Ching" above).
+`node --test tests/*.test.cjs` — 538 passing tests across the whole suite.
+`tests/divination.test.cjs` has 19: the original ten (catalog completeness,
+without-replacement draws, a hand-calculated shield fixture, invalid input,
+exhaustive judge parity/named-figure checks for all 65,536 mother casts, and
+the I Ching set — see "I Ching" above), plus nine added for the Grand Tableau
+and the geomantic house chart — see "Grand Tableau" and "Geomantic house
+chart" above for what each covers.
+
+The Django readings suite (`server/ishtar/readings/tests/test_readings.py`,
+run with `.venv/Scripts/python.exe manage.py test` from `server/ishtar`) has
+16 passing tests, up from 14 before this branch: `test_grand_tableau_saves_and_reads_back`
+and `test_c4_kinds_are_divination` are new — see "Saved kinds" above.
+
 Browser checks cover all five practices (I Ching's own checks are recorded in
 "I Ching" above), reveal-next/all, state preservation when switching,
 manual all-even shield => Populus, symbol library selection and 320/390px layouts.

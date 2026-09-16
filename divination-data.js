@@ -185,5 +185,60 @@ Cauda Draconis|1112|Departure|The Dragon's Tail marks completion and a movement 
     {id:4,title:"The position of authority",text:"The fifth line occupies the place of central authority within the upper trigram, the position a ruling figure classically holds. Responsibility exercised from here affects other people more than any other position in the hexagram."},
     {id:5,title:"The end, and excess",text:"The sixth and highest line has moved past the position of authority into a place where a quality can tip into its own extreme. Completion here calls for restraint, since what worked at the center can overreach at the summit."}
   ];
-  return {lenormand, runes, oracle, figures, hexagrams, trigrams, linePositions};
+  // Grand Tableau: one sentence per house (position), index-aligned with lenormand. Each must
+  // hold for any card that lands there, since it names the house's own domain, not the card's.
+  const tableauHouses = [
+    'In the house of the Rider — news, messages and things arriving from outside.',
+    'In the house of the Clover — small opportunities and brief, easy interludes.',
+    'In the house of the Ship — what is at a distance, or on the move.',
+    'In the house of the House — home, family and the foundations a life rests on.',
+    'In the house of the Tree — the body, and whatever grows or develops slowly.',
+    'In the house of the Clouds — uncertainty, confusion and matters not yet clear.',
+    'In the house of the Snake — complications, detours and other people’s influence.',
+    'In the house of the Coffin — endings, rest and what has run its course.',
+    'In the house of the Bouquet — invitations, kindness and small gestures of appreciation.',
+    'In the house of the Scythe — quick decisions and clean, deliberate cuts.',
+    'In the house of the Whip — repetition, friction and effort returned to again and again.',
+    'In the house of the Birds — conversation, exchange and the chatter surrounding a matter.',
+    'In the house of the Child — beginnings, small things and matters still learning their shape.',
+    'In the house of the Fox — practical caution, discernment and the workplace.',
+    'In the house of the Bear — strength, protection and how resources are held.',
+    'In the house of the Stars — orientation, inspiration and a sense of wider direction.',
+    'In the house of the Stork — change, transition and a shift already under way.',
+    'In the house of the Dog — loyalty, friendship and dependable support.',
+    'In the house of the Tower — institutions, structure and necessary distance.',
+    'In the house of the Garden — public life, gatherings and shared spaces.',
+    'In the house of the Mountain — obstacles, delay and ground that asks for patience.',
+    'In the house of the Crossroads — choices, options and a decision still open.',
+    'In the house of the Mice — small losses, wear and what quietly drains attention.',
+    'In the house of the Heart — affection, feeling and emotional investment.',
+    'In the house of the Ring — agreements, commitments and matters that repeat.',
+    'In the house of the Book — study, hidden information and what is still to be learned.',
+    'In the house of the Letter — documents, written words and the details they carry.',
+    'In the house of the Man — a person of significance, considered here through their actions rather than an assumed identity.',
+    'In the house of the Woman — a person of significance, considered here through their actions rather than an assumed identity.',
+    'In the house of the Lily — maturity, patience and long experience.',
+    'In the house of the Sun — vitality, visibility and energy that is easy to recognise.',
+    'In the house of the Moon — recognition, feeling and the wish to be appreciated.',
+    'In the house of the Key — openings, insight and a step that becomes possible.',
+    'In the house of the Fish — money, exchange and the movement of resources.',
+    'In the house of the Anchor — stability, steady work and what is worth maintaining.',
+    'In the house of the Cross — duty, responsibility and matters that carry real weight.'
+  ];
+  // Geomantic house chart: reflective notes on the matters traditionally assigned to each house.
+  const houseMatters = [
+    {name: 'The Querent', matter: 'The querent themselves, and the shape of their present situation.'},
+    {name: 'Resources', matter: 'Money, possessions and the resources the querent can draw on.'},
+    {name: 'Siblings and Messages', matter: 'Siblings, neighbours, short journeys and the messages that pass between them.'},
+    {name: 'Home and Foundations', matter: 'Home, land, family history and matters drawing towards their close.'},
+    {name: 'Children and Pleasure', matter: 'Children, creative pleasure and the news that arrives.'},
+    {name: 'Routines and Service', matter: 'Daily routines, working conditions and care freely given or received.'},
+    {name: 'Partners and Agreements', matter: 'Partners, agreements and dealings with the other party in a matter.'},
+    {name: 'Shared Resources', matter: 'Shared resources, debts and matters reaching their natural end.'},
+    {name: 'Journeys and Belief', matter: 'Long journeys, study and the beliefs that give a life its wider shape.'},
+    {name: 'Career and Standing', matter: 'Career, reputation and the exercise of authority.'},
+    {name: 'Friends and Hopes', matter: 'Friends, hopes and the patrons who support them.'},
+    {name: 'Retreat and Hidden Matters', matter: 'Hidden matters, retreat and the quieter difficulties a life holds.'}
+  ];
+  return {lenormand, runes, oracle, figures, hexagrams, trigrams, linePositions, tableauHouses, houseMatters};
 });

@@ -181,3 +181,70 @@
 .dv-hexagram-art { padding: 18px; background: #f5ebda; color: #4f344c; box-shadow: inset 0 0 0 6px #f5ebda,inset 0 0 0 7px #a6805644,3px 5px 0 #b29a7388,0 14px 26px #0004; }
 .dv-hexagram-figure figcaption { display: grid; gap: 4px; margin-top: 12px; }.dv-hexagram-figure figcaption span[lang] { font: 30px 'Noto Serif CJK SC','SimSun',serif; }.dv-hexagram-figure figcaption small { color: var(--dv-muted); }
 .dv-line-reading { padding: 14px 0; border-top: 1px solid #ffffff14; }.dv-relating { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #b09bba66; }
+
+/* Grand Tableau: 8×4 + 4. Marks use a border style and a text badge, never colour alone. */
+.dv-controls label[hidden] { display: none; }
+.dv-tableau { overflow-x: auto; padding: 6px 6px 14px; margin: 12px 0 8px; }
+.dv-tableau-grid { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: 8px; max-width: 1080px; margin: 0 auto; }
+.dv-tableau-label { grid-column: 1 / -1; margin: 12px 0 0; color: var(--dv-muted); font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; text-align: center; }
+.dv-tableau-grid .is-closing-start { grid-column-start: 3; }
+.dv-tableau-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; padding: 0 0 8px; overflow: hidden; border: 1px solid #b09bba55; background: transparent; color: var(--dv-ink); text-align: center; cursor: pointer; }
+.dv-tableau-cell>.dv-artwork { aspect-ratio: 3/4; border-radius: 0; margin-bottom: 4px; }
+.dv-tableau-pos { position: absolute; z-index: 2; top: 4px; left: 4px; min-width: 20px; padding: 2px 5px; border-radius: 10px; background: #181120dd; color: #fff0d8; font: 10px/1.4 'DM Mono',monospace; }
+.dv-tableau-cell strong { padding: 0 4px; font: 600 13px/1.25 'Playfair Display',serif; overflow-wrap: anywhere; }
+.dv-tableau-cell small { padding: 0 4px; color: var(--dv-muted); font-size: 10px; line-height: 1.3; }
+.dv-tableau-badge { margin-top: 2px; padding: 2px 5px; color: #241a30; background: var(--dv-accent); font: normal 9px/1.4 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .06em; }
+.dv-tableau-cell[aria-pressed=true] { background: #dec09022; box-shadow: inset 0 -4px var(--dv-accent); }
+.dv-tableau-cell.is-significator { border: 3px double var(--dv-accent); }
+.dv-tableau-cell.is-near { border: 2px solid var(--dv-accent); }
+.dv-tableau-cell.is-knight { border: 2px dashed var(--dv-accent); }
+.dv-tableau-reading>p.dv-position-note { color: var(--dv-accent); font-size: 12px; }
+.dv-tableau-groups { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,220px),1fr)); gap: 6px 22px; margin-top: 16px; }
+.dv-tableau-groups h5 { margin: 8px 0 4px; color: var(--dv-accent); font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; }
+.dv-tableau-groups ul { margin: 0; padding: 0; list-style: none; }
+.dv-synthesis .dv-tableau-groups li { padding: 5px 0; font-size: 13px; line-height: 1.5; }
+.dv-tableau-groups li>span { display: inline-block; min-width: 26px; color: var(--dv-accent); font: 11px 'DM Mono',monospace; }
+.dv-tableau-groups li small { display: block; padding-left: 26px; color: var(--dv-muted); font-size: 11px; }
+@media (max-width: 700px) {
+  /* Names only on phones: display:none keeps the 36 lazy images from loading at all. */
+  .dv-tableau-grid { min-width: 660px; gap: 6px; }
+  .dv-tableau-cell { padding: 6px 2px 8px; }
+  .dv-tableau-cell>.dv-artwork { display: none; }
+  .dv-tableau-pos { position: static; }
+  .dv-tableau-cell strong { font-size: 12px; }
+  .dv-tableau-hint::after { content: ' Swipe the tableau sideways to see every column.'; }
+}
+@media print { .dv-tableau { overflow: visible; }.dv-tableau-grid { min-width: 0; } }
+
+/* Geomantic house chart: twelve cells in rows of four (three on phones), the witnesses, judge and reconciler beside them. */
+.dv-view-switch { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 16px; }
+.dv-view-switch button { min-height: 44px; padding: 8px 20px; color: var(--dv-accent); background: transparent; border: 1px solid #b8a57d88; font: 600 13px 'DM Sans',sans-serif; cursor: pointer; }
+.dv-view-switch button[aria-pressed=true] { color: #241a30; background: var(--dv-accent); }
+.dv-quesited-label { display: flex; flex-direction: column; gap: 9px; max-width: 360px; margin: 6px 0 14px; color: var(--dv-ink); font-size: 12px; }
+.dv-quesited-label select { min-height: 46px; width: 100%; border: 1px solid #b6a5bc88; padding: 11px 13px; background: #19131f; color: var(--dv-ink); border-radius: 0; font: 14px 'DM Sans',sans-serif; }
+.dv-houses { display: grid; grid-template-columns: minmax(0,1fr) minmax(120px,150px); gap: 18px; align-items: start; margin: 12px 0 8px; }
+.dv-house-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+.dv-house-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; padding: 8px 4px 10px; border: 1px solid #b09bba55; background: #bf9d680a; color: var(--dv-ink); text-align: center; cursor: pointer; }
+.dv-house-cell[aria-pressed=true] { background: #dec09022; box-shadow: inset 0 -4px var(--dv-accent); }
+.dv-house-cell.is-querent { border: 3px double var(--dv-accent); }
+.dv-house-cell.is-quesited { border: 2px solid var(--dv-accent); }
+.dv-house-num { color: var(--dv-accent); font: 12px/1.4 'DM Mono',monospace; }
+.dv-house-cell small, .dv-house-side small { color: var(--dv-muted); font-size: 10px; line-height: 1.3; overflow-wrap: anywhere; }
+.dv-house-cell>.dv-artwork, .dv-house-side .dv-artwork { width: min(100%,96px); margin: 4px 0; }
+.dv-house-cell strong, .dv-house-side strong { font: 500 12px/1.3 'DM Sans',sans-serif; color: var(--dv-accent); overflow-wrap: anywhere; }
+.dv-house-side { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.dv-house-side li { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border: 1px dashed #b09bba55; text-align: center; }
+.dv-judgement { margin: 16px 0 0; padding-left: 22px; }
+.dv-judgement>li { padding: 10px 0; border-top: 1px solid #ffffff14; }
+.dv-judgement h5 { margin: 0; color: var(--dv-accent); font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; }
+.dv-judgement ul { margin: 10px 0 0; padding-left: 18px; }
+.dv-synthesis .dv-judgement ul li { padding: 4px 0; color: #dfd5e3; font-size: 14px; line-height: 1.7; }
+.dv-house-reading>p.dv-position-note { color: var(--dv-accent); font-size: 12px; }
+@media (max-width: 700px) {
+  .dv-houses { grid-template-columns: minmax(0,1fr); }
+  .dv-house-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+  .dv-house-side { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+  .dv-house-cell>.dv-artwork, .dv-house-side .dv-artwork { width: min(100%,72px); }
+  .dv-quesited-label { max-width: none; }
+}
+.dv-house-note[hidden] { display: none; }

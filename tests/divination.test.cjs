@@ -109,3 +109,169 @@ test('i ching reading: primary, changing lines and the relating hexagram',()=>{
   assert.equal(E.loadLines([6,7,8,9,7]),null);assert.equal(E.loadLines([6,7,8,9,7,10]),null);assert.equal(E.loadLines('678978'),null);
   assert.equal(E.hexagramIndex('010010',D.hexagrams),28);
 });
+test('Grand Tableau near and knight cells match hand lists', () => {
+  const near = p => E.tableauNear(p).join(','), knight = p => E.tableauKnight(p).join(',');
+  assert.equal(near(1), '2,9,10');          assert.equal(knight(1), '11,18');
+  assert.equal(near(8), '7,15,16');         assert.equal(knight(8), '14,23');
+  assert.equal(near(12), '3,4,5,11,13,19,20,21'); assert.equal(knight(12), '2,6,18,22,27,29');
+  assert.equal(near(28), '19,20,21,27,29'); assert.equal(knight(28), '11,13,18,22');
+  assert.equal(near(34), '');               assert.equal(knight(34), '');
+});
+
+test('the tableau finds the significator, and refuses anything but a full permutation', () => {
+  const ids = Array.from({length: 36}, (_, i) => i);
+  const man = E.tableau(ids, 'man');
+  assert.equal(man.significatorPosition, 28);     // id 27, the Man, in position 28
+  assert.deepEqual(man.corners, [1, 8, 25, 32]);
+  assert.deepEqual(man.closing, [33, 34, 35, 36]);
+  assert.equal(E.tableau(ids, 'woman').significatorPosition, 29);
+  const none = E.tableau(ids, 'none');
+  assert.equal(none.significatorPosition, null);
+  assert.deepEqual(none.near, []);
+  const moved = [...ids]; [moved[27], moved[33]] = [moved[33], moved[27]];   // Man into the closing row
+  assert.deepEqual(E.tableau(moved, 'man').near, []);
+  assert.throws(() => E.tableau(ids.slice(0, 35), 'none'));
+  assert.throws(() => E.tableau([...ids.slice(0, 35), 0], 'none'));
+  assert.throws(() => E.tableau(ids, 'queen'));
+  assert.deepEqual(E.loadTableau({ids, significator: 'woman', selected: 5}), {ids, significator: 'woman', selected: 5});
+  assert.deepEqual(E.loadTableau({ids, significator: 'x', selected: 99}), {ids, significator: 'none', selected: 0});
+  assert.equal(E.loadTableau({ids: [1, 2]}), null);
+  assert.equal(E.loadTableau(null), null);
+});
+
+const F = ['1111','2222','2211','1122','2112','1221','2121','1212','1222','2221','2212','2122'].map(s => [...s].map(Number));
+const base = () => F.map(f => [...f]);
+const pick = j => ({passage: j.passage, occupation: j.occupation, conjunction: j.conjunction, mutation: j.mutation, translation: j.translation, aspects: j.aspects});
+
+test('house chart placement follows mothers, daughters, nieces', () => {
+  const shield = E.shield([[1,1,1,1],[2,2,2,2],[1,2,1,2],[2,1,2,1]]);
+  const houses = E.houseChart(shield);
+  assert.equal(houses.length, 12);
+  assert.deepEqual(houses.slice(0, 4), shield.mothers);
+  assert.deepEqual(houses.slice(4, 8), shield.daughters);
+  assert.deepEqual(houses.slice(8, 12), shield.nieces);
+  assert.equal(E.houseDistance(12, 1), 1);
+  assert.equal(E.houseDistance(11, 2), 3);
+});
+
+test('judgement finds each mode of perfection and each aspect on hand-built charts', () => {
+  assert.deepEqual(pick(E.judge(base(), 7)), {passage: [], occupation: false, conjunction: false, mutation: false, translation: [], aspects: []});
+  let h = base(); h[6] = [...h[0]];
+  assert.deepEqual(pick(E.judge(h, 7)), {passage: [7], occupation: true, conjunction: false, mutation: false, translation: [], aspects: []});
+  h = base(); h[7] = [...h[0]];
+  assert.equal(E.judge(h, 7).conjunction, true);                      // querent's figure in 8, next to 7
+  h = base(); h[11] = [...h[6]];
+  assert.equal(E.judge(h, 7).conjunction, true);                      // quesited's figure in 12, next to 1
+  h = base(); h[3] = [...h[0]]; h[4] = [...h[6]];
+  assert.deepEqual(pick(E.judge(h, 7)), {passage: [4], occupation: false, conjunction: false, mutation: true, translation: [], aspects: [{house: 4, aspect: 'square'}]});
+  h = base(); h[1] = [...h[5]];
+  assert.deepEqual(E.judge(h, 7).translation, [{from: 2, to: 6}]);    // one figure in 2 (next to 1) and 6 (next to 7)
+  h = base(); h[9] = [...h[0]];
+  assert.deepEqual(E.judge(h, 4).aspects, [{house: 10, aspect: 'opposition'}]);
+  h = base(); h[2] = [...h[0]];
+  assert.deepEqual(E.judge(h, 5).aspects, [{house: 3, aspect: 'sextile'}]);
+  h = base(); h[10] = [...h[0]];
+  assert.deepEqual(E.judge(h, 7).aspects, [{house: 11, aspect: 'trine'}]);
+  assert.throws(() => E.judge(base(), 1), RangeError);
+  assert.throws(() => E.judge(base().slice(0, 11), 7));
+});
+
+test('house chart payloads load or are refused', () => {
+  const mothers = [[1,1,1,1],[2,2,2,2],[1,2,1,2],[2,1,2,1]];
+  assert.deepEqual(E.loadHouses({mothers, quesited: 10, selected: 3}), {mothers, quesited: 10, selected: 3});
+  assert.deepEqual(E.loadHouses({mothers, quesited: 1, selected: 0}), {mothers, quesited: 7, selected: 1});
+  assert.equal(E.loadHouses({mothers: [[1]], quesited: 7}), null);
+  assert.equal(E.loadHouses(null), null);
+});
+test('tableau and house-chart copy is complete and reflective', () => {
+  assert.equal(D.tableauHouses.length, 36);
+  assert.equal(D.houseMatters.length, 12);
+  assert.ok(D.tableauHouses.every(s => s.trim().length > 0));
+  assert.ok(D.houseMatters.every(h => h.name.trim().length > 0 && h.matter.trim().length > 0));
+  const all = [...D.tableauHouses, ...D.houseMatters.map(h => h.name + ' ' + h.matter)].join('\n');
+  assert.doesNotMatch(all, /you will|will happen|\bluck|fortune|death|disease|illness|enemy|enemies|doom|destined/i);
+});
+
+test('translation needs one figure in two different houses, not a single house between the two', () => {
+  // House 2 sits beside both house 1 and house 3; with every figure distinct there is no translation.
+  assert.deepEqual(E.judge(base(), 3).translation, []);
+  assert.deepEqual(E.judge(base(), 11).translation, []);
+  // The same figure in 12 (beside 1) and 4 (beside 3) is a translation for quesited 3.
+  const h = base(); h[3] = [...h[11]];
+  assert.deepEqual(E.judge(h, 3).translation, [{from: 12, to: 4}]);
+});
+
+test('the house chart view names a place for every conjunction and mutation the engine finds, and renders every step', () => {
+  // The view's block is lifted out of divination.js (a browser IIFE) and run with stand-ins for its DOM helpers.
+  const src = require('node:fs').readFileSync(require('node:path').join(__dirname, '../divination.js'), 'utf8');
+  const block = src.slice(src.indexOf('  // Geomantic house chart.'), src.indexOf('  function hexagramOutput'));
+  const esc = v => String(v).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  const figure = points => D.figures.find(f => f.symbol === points.join(''));
+  const states = {geomancy: {quesited: 7}};
+  const view = new Function('D', 'E', 'esc', 'figure', 'states', 'visual', 'saveControl', `${block};return {perfectionDetail, judgement};`)(D, E, esc, figure, states, () => '', () => '');
+  for (let x = 0; x < 65536; x += 7) {
+    const bits = Array.from({length: 16}, (_, i) => ((x >> i) & 1) + 1);
+    const chart = E.shield([0, 1, 2, 3].map(i => bits.slice(i * 4, i * 4 + 4))), houses = E.houseChart(chart);
+    for (let q = 2; q <= 12; q++) {
+      const j = E.judge(houses, q), d = view.perfectionDetail(houses, q);
+      assert.equal(d.conjunction.length > 0, j.conjunction);
+      assert.equal(d.mutation.length > 0, j.mutation);
+      // Every listed house satisfies the engine's definition, and each house is listed once.
+      const same = (h, f) => houses[h - 1].join('') === f.join(''), away = h => h !== 1 && h !== q;
+      assert.equal(new Set(d.conjunction.map(c => c.house)).size, d.conjunction.length);
+      for (const c of d.conjunction) {
+        assert.ok(away(c.house) && c.next.length > 0);
+        for (const n of c.next) {
+          assert.equal(E.houseDistance(c.house, n), 1);
+          assert.ok(n === q ? same(c.house, j.querentFigure) : n === 1 && same(c.house, j.quesitedFigure));
+        }
+      }
+      for (const [x1, x2] of d.mutation) {
+        assert.ok(away(x1) && away(x2) && x2 === x1 % 12 + 1);
+        assert.ok((same(x1, j.querentFigure) && same(x2, j.quesitedFigure)) || (same(x1, j.quesitedFigure) && same(x2, j.querentFigure)));
+      }
+      if (x % 91 === 0) {
+        states.geomancy.quesited = q;
+        const html = view.judgement({chart, house: 1});
+        assert.doesNotMatch(html, /undefined|NaN|\bwill\b|\bluck|fortune\b/i);
+        assert.equal((html.match(/<h5>/g) || []).length, 4);
+      }
+    }
+  }
+});
+
+test('the divination save button names a registered kind that matches the current draw in every practice and view', () => {
+  // divination.js is a browser IIFE; it runs here against a minimal stand-in DOM.
+  const el = () => { const cache = {}; return {innerHTML: '', textContent: '', hidden: false, open: false, dataset: {}, style: {setProperty() {}},
+    querySelector(sel) { return cache[sel] || (cache[sel] = el()); }, querySelectorAll() { return []; }, closest() { return el(); },
+    addEventListener() {}, setAttribute() {}, append() {}, focus() {}, scrollIntoView() {}, showModal() {}, close() {},
+    insertAdjacentHTML(_, html) { this.innerHTML = html + this.innerHTML; }}; };
+  const root = el(), registry = {}, win = {};
+  const doc = {querySelector: () => root, createElement: el, body: el(), addEventListener() {}};
+  const art = {emblem: () => '', hexagram: () => '', hexagramFromSymbol: () => ''};
+  const src = require('node:fs').readFileSync(require('node:path').join(__dirname, '../divination.js'), 'utf8');
+  new Function('document', 'window', 'Rooms', 'DivinationData', 'DivinationEngine', 'DivinationArt', src)(doc, win, {register: (kind, room) => { registry[kind] = room; }}, D, E, art);
+  const shuffled = Array.from({length: 36}, (_, i) => (i * 7) % 36);
+  const mothers = [[1, 2, 1, 2], [2, 2, 1, 1], [1, 1, 1, 2], [2, 1, 2, 2]];
+  const cases = [
+    ['lenormand', {kind: 'lenormand', layout: '3', payload: {ids: [0, 1, 2]}}],
+    ['grand-tableau', {kind: 'grand-tableau', payload: {ids: shuffled, significator: 'man', selected: 3}}],
+    ['oracle', {kind: 'oracle', layout: '1', payload: {ids: [4]}}],
+    ['runes', {kind: 'runes', layout: '3', payload: {ids: [1, 2, 3]}}],
+    ['geomancy', {kind: 'geomancy', payload: {mothers, selected: 2}}],
+    ['geomancy-houses', {kind: 'geomancy-houses', payload: {mothers, quesited: 5, selected: 9}}],
+    ['iching', {kind: 'iching', layout: 'coins', payload: {lines: [7, 8, 9, 6, 7, 8]}}],
+  ];
+  for (const [kind, reading] of cases) {
+    assert.equal(win.DivinationRoom.loadDraw(reading), true, kind);
+    const button = root.querySelector('.dv-output').innerHTML.match(/data-save-reading="([^"]+)"/);
+    assert.ok(button, kind);
+    assert.equal(button[1], kind);
+    assert.ok(registry[kind], kind);
+    assert.equal(registry[kind].current().kind, kind);
+    assert.equal(win.DivinationRoom.currentDraw().kind, kind);
+  }
+  assert.match(win.DivinationRoom.currentDraw().summary, /^Hexagram /);
+  win.DivinationRoom.loadDraw(cases[5][1]);
+  assert.equal(win.DivinationRoom.currentDraw().summary, `House chart · house 5, ${D.houseMatters[4].name}: ${D.figures.find(f => f.symbol === E.houseChart(E.shield(mothers))[4].join('')).name}`);
+});

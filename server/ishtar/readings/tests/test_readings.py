@@ -104,6 +104,16 @@ class ReadingApiTests(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['payload'], payload)
 
+    def test_grand_tableau_saves_and_reads_back(self):
+        payload = {'ids': list(range(36)), 'significator': 'man', 'selected': 27}
+        created = self.create({'kind': 'grand-tableau', 'payload': payload})
+        self.assertEqual(created.status_code, 201)
+        row = created.json()
+        self.assertEqual(row['kind'], 'grand-tableau')
+        self.assertEqual(row['payload'], payload)
+        fetched = self.client.get(f"/api/readings/{row['id']}/").json()
+        self.assertEqual(fetched['payload'], payload)
+
     def test_surrogate_in_payload_returns_4xx_not_500(self):
         # Fix round 2, Item A: json.loads does not validate UTF-16 surrogate
         # pairing (a CPython quirk), so a JSON body containing a literal
@@ -135,6 +145,11 @@ class KindsTests(TestCase):
     def test_existing_kinds_are_still_present(self):
         for kind in ('tarot-daily', 'tarot-spread', 'lenormand', 'oracle', 'runes', 'geomancy', 'iching'):
             self.assertIn(kind, KINDS)
+
+    def test_c4_kinds_are_divination(self):
+        for kind in ('grand-tableau', 'geomancy-houses', 'cartomancy'):
+            self.assertIn(kind, KINDS)
+            self.assertEqual(KINDS[kind][1], 'divination')
 
 class SummaryCategoryTests(TestCase):
     def setUp(self):

@@ -16,7 +16,7 @@ that is called out explicitly rather than smoothed over.
 | `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, composite and Davison charts, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
 | `/eastern/` | `eastern/` | Chinese zodiac portrait, Jyotish | `https://ishtarinsights.com/eastern/` |
 | `/numerology/` | `numerology/` | The six-view numerology studio | `https://ishtarinsights.com/numerology/` |
-| `/divination/` | `divination/` | Lenormand, oracle, runes, geomancy, I Ching | `https://ishtarinsights.com/divination/` |
+| `/divination/` | `divination/` | Lenormand (including the Grand Tableau), oracle, runes, geomancy (including its house chart view), I Ching | `https://ishtarinsights.com/divination/` |
 | `/account/` | `account/` | Sign-in, journal, birth-detail and browser-saving preferences, newsletter toggle, delete | `https://ishtarinsights.com/account/` |
 
 `/account/` is deliberately excluded from `sitemap.xml` and disallowed in `robots.txt`
@@ -231,25 +231,35 @@ right place after replaying a saved reading:
 scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView(...)
 ```
 
-Only three elements in the whole site carry it today:
+Only four elements in the whole site carry it today:
 
 - `/tarot/`'s `.reading-room` — `data-room="tarot-daily tarot-spread"`.
-- `/divination/`'s `#divination-room` — `data-room="lenormand oracle runes geomancy iching"`.
+- `/divination/`'s `#divination-room` — `data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching"`.
 - `/sky/`'s `#sky-calendar` — `data-room="transit-calendar"`.
+- `/numerology/`'s `.reading-room` — `data-room="numerology"`.
 
 `rooms.js`'s `PAGES` table also lists `natal`, `solar-return`, `lunar-return`,
-`progressed`, `synastry`, `horary`, `jyotish`, `bazi` and `numerology` as kinds with a
-home page, but **only `tarot.js`, `divination.js` and `sky-calendar.js` currently call
-`Rooms.register()`** (confirmed by grepping every `.js` file for `Rooms.register`). A saved
-reading of any of those other kinds would resolve to `'unknown'` in `Rooms.openFromQuery`
-today — the `PAGES`/`LABELS` entries are forward declarations for kinds a later sub-project
-adds `register()` calls (and, correspondingly, `data-room` markup) for, per the comment atop
-`rooms.js`: "Kinds added by later sub-projects join both lists."
+`progressed`, `synastry`, `horary`, `jyotish`, `bazi` and `cartomancy` as kinds with a home
+page, but **only `tarot.js`, `divination.js`, `sky-calendar.js` and `numerology.js`
+currently call `Rooms.register()`** (confirmed by grepping every `.js` file for
+`Rooms.register`). A saved reading of any of those other kinds would resolve to
+`'unknown'` in `Rooms.openFromQuery` today — the `PAGES`/`LABELS` entries are forward
+declarations for kinds a later sub-project adds `register()` calls (and, correspondingly,
+`data-room` markup) for, per the comment atop `rooms.js`: "Kinds added by later
+sub-projects join both lists."
 
 The sky project added `transit-calendar` to all three lists that have to agree —
 `server/ishtar/readings/kinds.py` (which the API validates against), and `rooms.js`'s `PAGES`
 and `LABELS` (which `/account/` needs, since the journal page loads no room module and so
 cannot read a registered room's own label).
+
+The C4b divination-layouts project (2026-09-16) did the same for `grand-tableau` and
+`geomancy-houses`: both are registered in `divination.js` and carry `data-room` markup on
+`#divination-room`, so a saved reading of either kind now opens correctly rather than
+resolving to `'unknown'`. `cartomancy` was added to `kinds.py` and `rooms.js`'s
+`PAGES`/`LABELS` in the same migration, one release ahead of its own room (C4c), so it
+stays in the forward-declared list above — with no room to save a `cartomancy` reading
+from yet — until that room ships.
 
 ## The `?reading=` opener
 

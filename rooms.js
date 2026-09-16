@@ -12,6 +12,7 @@
     'tarot-daily': '/tarot/', 'tarot-spread': '/tarot/',
     'transit-calendar': '/sky/',
     lenormand: '/divination/', oracle: '/divination/', runes: '/divination/', geomancy: '/divination/', iching: '/divination/',
+    'grand-tableau': '/divination/', 'geomancy-houses': '/divination/', cartomancy: '/divination/',
     natal: '/charts/', 'solar-return': '/charts/', 'lunar-return': '/charts/', progressed: '/charts/', synastry: '/charts/', horary: '/charts/',
     // BaZi is one tab of the CelestialExtras component, which lives whole on /charts/.
     jyotish: '/eastern/', bazi: '/charts/',
@@ -22,6 +23,7 @@
     'tarot-daily': 'Daily card', 'tarot-spread': 'Tarot spread',
     'transit-calendar': 'Transit calendar',
     lenormand: 'Lenormand', oracle: 'Ishtar Reflection Oracle', runes: 'Runes', geomancy: 'Geomancy', iching: 'I Ching',
+    'grand-tableau': 'Grand Tableau', 'geomancy-houses': 'Geomantic house chart', cartomancy: 'Playing cards',
     natal: 'Birth chart', 'solar-return': 'Solar return', 'lunar-return': 'Lunar return', progressed: 'Progressed chart', synastry: 'Synastry', horary: 'Horary chart',
     jyotish: 'Jyotish chart', bazi: 'Four Pillars',
     numerology: 'Numerology'
