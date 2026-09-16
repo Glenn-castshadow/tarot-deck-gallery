@@ -23,6 +23,17 @@ methods, not the app's reflective prose.
   this as a reduced interpretation, not a separate meaning for every compound day.
 - **Attitude**, also called a Sun number in some systems, sums month and day
   and reduces to 1–9. See [Hans Decoz's Sun number convention](https://www.worldnumerology.com/numerology-sun-numbers/).
+- **Karmic debt** marks a number whose reduction passes through 13, 14, 16 or
+  19: the tradition's four karmic debt numbers. This page looks along each
+  number's own reduction as this site computes it — Life Path from the sum of
+  its month, day and year components, Birth Day from the day itself — so a
+  component sum of 19, as in 1989-10-09 (month 1 + day 9 + year 9 = 19 → 10 →
+  1), carries debt 19/1, and a Birth Day of 13 carries debt 13/4. Some
+  numerologists instead check the unreduced sum of the whole date, so another
+  source may find a debt here that this page does not, or the reverse. A
+  debt block appears in Birth numbers only when Life Path or Birth Day
+  carries one, reading the debt as a recurring question rather than a
+  verdict.
 - **Life arcs (Pinnacles and Challenges)** first reduce the birth month, day and
   year to single digits (`m`, `d`, `y`; an 11/22/33 day or year contributes its
   root). Pinnacle 1 = reduce(m + d), Pinnacle 2 = reduce(d + y), Pinnacle 3 =
@@ -57,6 +68,24 @@ methods, not the app's reflective prose.
   **Maturity** adds Life Path and Expression, retaining master numbers in the
   result. General convention reference:
   [Pythagorean chart methods](https://www.worldnumerology.com/do-your-own-reading/).
+- **Karmic debt, karmic lessons and hidden passion** extend the Pythagorean
+  name reading. Karmic debt follows the rule above, checked along Expression,
+  Soul Urge and Personality's own reduction from their letter totals: DI
+  (D4 + I9 = 13 → 4) carries debt 13/4 for Expression. Karmic lessons are the
+  digits 1–9 that no letter in the entered name carries at all. Hidden
+  passion is the digit or digits carried by the most letters; when several
+  digits tie for the most letters, every tied digit is shown with its count,
+  and when no digit repeats (the highest count is one), a plain sentence
+  replaces the passion copy instead of naming a value. All three are
+  Pythagorean only — Chaldean assigns no letter to 9 and has no lesson
+  tradition of its own — so switching to Chaldean replaces the section with a
+  note that the Pythagorean system shows this name's debt, lessons and
+  passion. These follow modern Pythagorean numerology; the studio footer's
+  "Traditions, methods & sources" disclosure cites Hans Decoz's World
+  Numerology pages on
+  [karmic debt numbers](https://www.worldnumerology.com/numerology-karmic-debt-numbers/),
+  [karmic lessons](https://www.worldnumerology.com/numerology-karmic-lessons/)
+  and [hidden passion](https://www.worldnumerology.com/numerology-hidden-passion/).
 - Every Y defaults to consonant and has an individual vowel checkbox. Moving
   Y between groups changes Soul Urge and Personality, never Expression. The
   user chooses based on pronunciation. Empty vowel/consonant groups show an
@@ -104,40 +133,119 @@ methods, not the app's reflective prose.
 
 `numerology-engine.js` is pure and usable in Node tests; `numerology.js` attaches
 the UI to the birthday numbers panel. A view, selected number, date and optional
-name are held only in page memory. No name is saved to storage or transmitted.
-Editing the name clears the previous reading; toggling a Y recalculates an open
-reading. Resubmitting birthday details recreates the component with its page
-state, updating all calculations (including Maturity). AbortController detaches
-old listeners. Existing birthday storage behavior is unchanged.
+name are held only in page memory. Neither the name nor a second person's
+birth date reaches storage or leaves the page during ordinary browsing;
+saving a reading to the journal is the one explicit action that transmits the
+name (see "Saving a reading" below). Editing the name clears the previous
+reading; toggling a Y recalculates an open reading. Resubmitting birthday
+details recreates the component with its page state, updating all
+calculations (including Maturity). AbortController detaches old listeners.
+Existing birthday storage behavior is unchanged.
 
 The page-memory state object also holds `arc` (the selected life-arc period,
 0–3), `arcView` ('pinnacle' or 'challenge'), `nameSystem` ('pythagorean' or
 'chaldean'), `partnerDate` (the second person's birth date, or '' when none
 has been entered), `partnerRead` (whether that comparison has been submitted),
 and `pairView` ('a', 'b' or 'together'). All six survive a birthday resubmit
-the same way the earlier state keys do. The second person's date is never
-saved to storage or transmitted, exactly like the reader's own name: it exists
-only in page memory until the tab or page closes.
+the same way the earlier state keys do. Like the reader's own name, the
+second person's date leaves page memory only when the reader saves the
+reading (see "Saving a reading" below).
 
 The Numerology studio can also be opened directly with `/numerology/#birthday-numbers`. Keyboard users
 can select every number, year, month and Lo Shu cell. Focus remains on the
 selected control after updating a report. Native hidden panels, labeled inputs,
 pressed-state buttons and short status regions support assistive technology.
 
+## Saving a reading
+
+`numerology.js` registers a `numerology` room with `Rooms.register`, alongside
+the `numerology` reading kind already defined server-side
+(`server/ishtar/readings/kinds.py`). A save control sits under the studio's
+footnote, labelled to open sign-in when the reader is signed out and to save
+the reading when they are signed in.
+
+`Numerology.snapshot(state, birth)` builds the journal entry from the
+attached studio's own state (the room's `current()`). The payload always
+holds the birth date, the open tab, and the view choices for every tab
+(`core`, `period`, `arc`, `arcView`, `pairView`, `nameSystem`, `nameKind`),
+plus the explored cycle date. When a name reading is open — the reader has
+read a name and the studio can read it (`normalizeName` status `ready`, so a
+blank name or one such as "R2D2" does not count) — the payload also holds
+that name (capped at 120 characters) and its Y-vowel choices. When a partner
+comparison has been read and its date parses, the payload holds the
+partner's birth date too. A typed-but-unread name or an unsubmitted partner
+date is never saved. The summary is always `Life Path N` (with its root for a
+master number), with ` · name reading` appended when a name was saved; the
+name itself never appears in the summary. The entry's `layout` is the open
+tab's visible label ("Birth numbers", "Life arcs", "Personal cycles", "Name
+reading", "Two paths" or "Lo Shu"); `restore` reads `payload.tab` and never
+`layout`.
+
+Before the reader saves, a note beside the save control
+(`Numerology.render.saveNote`) says what saving stores beyond the birth date,
+and is hidden when that is nothing. It is re-rendered whenever the name
+reading or the partner comparison changes:
+
+- name only: "Saving includes the name you entered. It is stored on our server
+  with the reading."
+- partner date only: "Saving includes the other person’s birth date you
+  entered. It is stored on our server with the reading."
+- both: "Saving includes the name and the other person’s birth date you
+  entered. Both are stored on our server with the reading."
+
+`Numerology.restore(payload)` reverses the snapshot for the room's `load()`.
+It returns `null` for anything that is not an object, or whose birth date
+does not parse. Otherwise it clamps every view choice to one of its allowed
+values, falling back to the studio's own defaults for anything unrecognised,
+caps a restored name at 120 characters, and keeps only the Y-vowel indices
+that still fall inside that name. A restored partner date that does not
+parse is dropped.
+
+Opening a saved reading re-attaches the studio for the saved birth date and
+view choices, with a status line above the studio reading "Showing a saved
+reading for [date]. Your birth profile is unchanged." The saved reading stays
+pinned — a birth-profile notification that repeats the same saved date is
+ignored — until either the birth date genuinely changes or the reader
+resubmits the birth-date form. Submitting the form is treated as a genuine
+profile change even when the date is unchanged: a capture-phase `submit`
+listener on `#birthday-form` releases the pin before the form's own handler
+runs, so the profile notification that follows already sees it released. In
+either case the studio returns to the reader's own state from before the
+saved reading was opened, not to the saved reading's name or partner date.
+
 ## Verification
 
-Run `node --test tests/*.test.cjs`: 138 tests pass, 0 fail. Of those,
-`node --test tests/numerology.test.cjs` runs 16 numerology tests covering
+Run `node --test tests/*.test.cjs`: 529 tests pass, 0 fail. Of those,
+`node --test tests/numerology.test.cjs` runs 27 numerology tests covering
 published worked examples, master-number differences, strict dates, invalid
 inputs, calendar-year rollover, full year/month consistency, leap-day clamping,
 independent name sums, per-Y choices, empty groups, transliteration and
-unsupported-character handling, plus six added for this work:
-pinnacle/challenge arithmetic hand-derived from single-digit components
-(including a 0 challenge and a master-number Pinnacle 3), the first-period
-boundary for several Life Paths, `currentArc` across periods and at a boundary
-birthday, two-path concords/same-root/pair-number/personal-year-relation cases,
-the Chaldean letter table with per-word compounds and no master numbers, and
-Chaldean compound copy coverage for 10–52.
+unsupported-character handling, pinnacle/challenge arithmetic hand-derived from
+single-digit components (including a 0 challenge and a master-number Pinnacle
+3), the first-period boundary for several Life Paths, `currentArc` across
+periods and at a boundary birthday, two-path concords/same-root/pair-number/
+personal-year-relation cases, the Chaldean letter table with per-word
+compounds and no master numbers, and Chaldean compound copy coverage for
+10–52, plus eleven added for karmic debt, lessons, hidden passion and saving:
+debt found for a Birth Day of 13, 14, 16 or 19 and not for a non-debt day; a
+hand-built Life Path 19/1 (1989-10-09) and a name total that passes through
+13; lessons and hidden passion checked against hand-counted names, including
+a two-way tie (ANNA) and a value carried by three letters (ELEANOR); Chaldean
+name profiles returning `null` for letter counts, lessons and passion; every
+karmic debt, lesson and passion copy entry present and free of predictive or
+fatalist language; the birth and name karmic-debt, lessons and passion blocks
+rendering only when there is something to show, and only under Pythagorean; a
+snapshot/restore round trip preserving every saved field, including that an
+unread name, an unreadable name ("R2D2") or an unsubmitted or unparseable
+partner date is never saved and never reaches the summary, and that the
+layout is each tab's visible label while `restore` reads `payload.tab`; the
+save note's wording for a name, a partner date, both, and neither; the
+rendered birth and name karmic blocks, the Chaldean note, all three save
+notes and the saved-reading banner scanned for predictive or fatalist
+language and straight apostrophes; `restore` rejecting a malformed birthday, clamping unknown tab
+and view choices to their defaults, capping a restored name at 120
+characters, and dropping Y indices beyond that name; and the saved-reading
+pin state machine, including release on a birth-form resubmit.
 
 Browser checks cover the birth reports and calculation traces, year/month/day
 navigation, invalid dates, name edits and per-Y changes, existing Lo Shu selection,

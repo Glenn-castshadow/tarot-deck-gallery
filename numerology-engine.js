@@ -124,5 +124,24 @@
     const yearRelation=distance===0?'same':(distance===1||distance===8)?'adjacent':'apart';
     return {a,b,concord:{a:ca,b:cb,same:ca===cb},sameRoot:a.path.root===b.path.root,pairNumber:reduce(a.path.value+b.path.value),yearRelation};
   }
-  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair,compoundReading,chaldeanValues};
+  const KARMIC_DEBTS=[13,14,16,19];
+  // A karmic debt number is one of 13, 14, 16, 19 met on the way to a number's final value.
+  const karmicDebt=result=>result&&Array.isArray(result.steps)?(result.steps.find(n=>KARMIC_DEBTS.includes(n))??null):null;
+  function letterCounts(profile) {
+    if(!profile||profile.status!=='ready'||profile.system==='chaldean'||!Array.isArray(profile.letters)) return null;
+    const counts=Array(10).fill(0);
+    profile.letters.forEach(x=>{counts[x.value]++;});
+    return counts;
+  }
+  function karmicLessons(profile) {
+    const counts=letterCounts(profile);
+    return counts?[1,2,3,4,5,6,7,8,9].filter(d=>counts[d]===0):null;
+  }
+  function hiddenPassion(profile) {
+    const counts=letterCounts(profile);
+    if(!counts) return null;
+    const count=Math.max(...counts.slice(1));
+    return {digits:[1,2,3,4,5,6,7,8,9].filter(d=>counts[d]===count),count};
+  }
+  return {reduce,parseDate,dateKey,birthday,cycles,cycleYear,dateInMonth,normalizeName,nameProfile,arcs,currentArc,pair,compoundReading,chaldeanValues,KARMIC_DEBTS,karmicDebt,letterCounts,karmicLessons,hiddenPassion};
 });

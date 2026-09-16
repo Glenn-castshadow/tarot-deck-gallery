@@ -187,3 +187,17 @@
 .num-word-table caption { text-align: left; color: var(--num-muted); font: 10px/1.8 'DM Mono', monospace; padding-bottom: 6px; }
 .num-word-table th, .num-word-table td { padding: 8px 10px; border-bottom: 1px solid var(--num-line); text-align: left; }
 .num-word-table td { color: var(--num-teal); font-family: 'DM Mono', monospace; }
+/* Karmic debt, karmic lessons and hidden passion (Birth numbers and the Pythagorean name reading). */
+.num-karmic { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--num-line); }
+.num-karmic > p, .num-karmic-note { color: var(--num-muted); font-size: 12px; line-height: 1.8; margin-block: 18px; }
+.num-karmic-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 14px; list-style: none; padding: 0; margin: 0; }
+.num-karmic-card { min-width: 0; padding: 20px 22px; border: 1px solid var(--num-line); border-radius: 5px; background: #ffffff04; overflow-wrap: anywhere; }
+.num-karmic-card h6 { margin: 8px 0 6px; color: var(--num-gold); font: 500 19px/1.35 'Playfair Display', serif; }
+.num-karmic-card p { color: var(--num-text); font-size: 13px; line-height: 1.8; }
+.num-karmic-card p + p { margin-top: 12px; }
+.num-karmic-card .num-keywords { color: var(--num-teal); font-size: 11px; margin-top: 0; }
+.numerology-room .num-karmic-card blockquote { margin: 16px 0 0; padding-left: 16px; font-size: 17px; }
+.num-karmic-digit { display: block; margin-bottom: 8px; color: var(--num-teal); font: 500 34px/1.1 'Playfair Display', serif; }
+/* A saved reading opened from the journal, and the save control's name note. */
+.numerology-room .num-saved-note { margin: 0 0 18px; padding: 12px 16px; border-left: 2px solid var(--num-teal); background: #a1d7d20d; color: var(--num-text); font-size: 13px; line-height: 1.7; }
+.numerology-room .num-save-note { flex-basis: 100%; color: var(--num-muted); font-size: 12px; line-height: 1.7; }

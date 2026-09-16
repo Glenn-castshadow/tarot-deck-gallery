@@ -224,3 +224,225 @@ test('chaldean compound copy, life-arc, challenge and relating copy are complete
   assert.equal((relatingBlock.match(/prompt:'[^']*\?'/g)||[]).length,12,'every relating entry ends its prompt with a question mark');
   assert.doesNotMatch(relatingBlock,banned);
 });
+
+test('karmic debt is 13, 14, 16 or 19 anywhere in a reduction chain', () => {
+  assert.deepEqual(N.KARMIC_DEBTS, [13, 14, 16, 19]);
+  for (const day of [13, 14, 16, 19]) assert.equal(N.karmicDebt(N.birthday(`2000-01-${day}`).birthDay), day, `day ${day}`);
+  for (const day of [1, 22, 28, 31]) assert.equal(N.karmicDebt(N.birthday(`2000-01-${String(day).padStart(2, '0')}`).birthDay), null, `day ${day}`);
+  // 1989-10-09: month 10 → 1, day 9, year 1989 → 27 → 9; 1 + 9 + 9 = 19 → 10 → 1.
+  const path = N.birthday('1989-10-09').path;
+  assert.deepEqual(path.steps, [19, 10, 1]);
+  assert.equal(N.karmicDebt(path), 19);
+  // D (4) + I (9) = 13 → 4.
+  const di = N.nameProfile('DI');
+  assert.equal(N.karmicDebt(di.expression), 13);
+  assert.equal(N.karmicDebt(null), null);
+});
+
+test('karmic lessons and hidden passion count the name\'s letter values', () => {
+  // A B C → 1 2 3: every other digit is a lesson; 1, 2 and 3 tie at one letter each.
+  const abc = N.nameProfile('ABC');
+  assert.deepEqual(N.karmicLessons(abc), [4, 5, 6, 7, 8, 9]);
+  assert.deepEqual(N.hiddenPassion(abc), {digits: [1, 2, 3], count: 1});
+  // ANNA → A1 N5 N5 A1: lessons are everything but 1 and 5; 1 and 5 tie at two.
+  const anna = N.nameProfile('Anna');
+  assert.deepEqual(N.karmicLessons(anna), [2, 3, 4, 6, 7, 8, 9]);
+  assert.deepEqual(N.hiddenPassion(anna), {digits: [1, 5], count: 2});
+  // ELEANOR → E5 L3 E5 A1 N5 O6 R9: 5 appears three times.
+  const eleanor = N.nameProfile('Eleanor');
+  assert.deepEqual(N.letterCounts(eleanor), [0, 1, 0, 1, 0, 3, 1, 0, 0, 1]);
+  assert.deepEqual(N.hiddenPassion(eleanor), {digits: [5], count: 3});
+  assert.deepEqual(N.karmicLessons(eleanor), [2, 4, 7, 8]);
+});
+
+test('lessons and passion are Pythagorean only and need a ready name', () => {
+  assert.equal(N.karmicLessons(N.nameProfile('Anna', [], null, 'chaldean')), null);
+  assert.equal(N.hiddenPassion(N.nameProfile('Anna', [], null, 'chaldean')), null);
+  assert.equal(N.letterCounts(N.nameProfile('')), null);
+});
+
+const reflectiveBanned = /punish|deserv|past life|past lives|curse|doom|you will|\bluck|fortune|fate\b|destined/i;
+
+test('karmic debt, lesson and passion copy is complete and reflective', () => {
+  const {copy} = require('../numerology.js');
+  const banned = reflectiveBanned;
+  assert.deepEqual(Object.keys(copy.karmicDebtCopy), ['13', '14', '16', '19']);
+  for (const [n, entry] of Object.entries(copy.karmicDebtCopy)) {
+    for (const key of ['title', 'words', 'story', 'prompt']) assert.ok(typeof entry[key] === 'string' && entry[key].length > 0, `debt ${n} ${key}`);
+    assert.match(entry.prompt, /\?$/, `debt ${n} prompt is a question`);
+    assert.doesNotMatch(Object.values(entry).join(' '), banned, `debt ${n}`);
+    assert.doesNotMatch(Object.values(entry).join(' '), /'/, `debt ${n} uses curly apostrophes`);
+  }
+  for (const [name, table] of [['lesson', copy.lessonCopy], ['passion', copy.passionCopy]]) {
+    assert.deepEqual(Object.keys(table), ['1', '2', '3', '4', '5', '6', '7', '8', '9'], name);
+    for (const [d, text] of Object.entries(table)) {
+      assert.ok(typeof text === 'string' && text.length > 0, `${name} ${d}`);
+      assert.doesNotMatch(text, banned, `${name} ${d}`);
+      assert.doesNotMatch(text, /'/, `${name} ${d} uses curly apostrophes`);
+    }
+  }
+});
+
+test('the birth karmic debt block appears only for a debt and names the role and root', () => {
+  const {render} = require('../numerology.js');
+  assert.equal(render.birthKarmic(N.birthday('2000-01-01')), '', 'no debt, no block');
+  const day = render.birthKarmic(N.birthday('2000-01-13'));
+  assert.match(day, /Birth Day · 13\/4/);
+  assert.doesNotMatch(day, /Life Path ·/);
+  const dayOnly = render.birthKarmic(N.birthday('1989-10-19'));
+  // 1989-10-19: 1 + 19→10→1 + 9 = 11 is a master, so only the day carries a debt here.
+  assert.match(dayOnly, /Birth Day · 19\/1/);
+  assert.doesNotMatch(dayOnly, /Life Path ·/);
+  assert.match(render.birthKarmic(N.birthday('1989-10-09')), /Life Path · 19\/1/);
+});
+
+test('name extras: debts, lessons and passion counts are true of the letters', () => {
+  const {render} = require('../numerology.js');
+  // ANNA: A1 N5 N5 A1. Lessons 2 3 4 6 7 8 9; 1 and 5 tie at two letters; total 12, no debt.
+  const anna = render.nameKarmic(N.nameProfile('Anna'));
+  assert.match(anna, /No letter in this name carries 2, 3, 4, 6, 7, 8 or 9\./);
+  assert.match(anna, /1 · carried by two letters/);
+  assert.match(anna, /5 · carried by two letters/);
+  assert.match(anna, /1 and 5 tie for the most letters/);
+  assert.doesNotMatch(anna, /Karmic debt</);
+  // ELEANOR: 5 on three letters, one passion, no tie sentence.
+  const eleanor = render.nameKarmic(N.nameProfile('Eleanor'));
+  assert.match(eleanor, /5 · carried by three letters/);
+  assert.doesNotMatch(eleanor, /tie for the most/);
+  // ABC: every present value on one letter.
+  const abc = render.nameKarmic(N.nameProfile('ABC'));
+  assert.match(abc, /1, 2 and 3 are each carried by one letter, so no number stands out/);
+  assert.doesNotMatch(abc, /carried by one letters/);
+  assert.match(render.nameKarmic(N.nameProfile('A')), /1 is carried by one letter/);
+  // ABCDEFGHI covers 1–9.
+  assert.match(render.nameKarmic(N.nameProfile('ABCDEFGHI')), /Every number from one to nine appears in this name/);
+  // DI: D4 + I9 = 13 → 4 for Expression; vowel I alone is 9, consonant D alone is 4.
+  assert.match(render.nameKarmic(N.nameProfile('DI')), /Expression · 13\/4/);
+  // Chaldean: one sentence, no lessons.
+  const chaldean = render.nameKarmic(N.nameProfile('Anna', [], null, 'chaldean'));
+  assert.match(chaldean, /Pythagorean letter values/);
+  assert.doesNotMatch(chaldean, /No letter in this name carries/);
+});
+
+test('snapshot and restore round-trip a numerology reading', () => {
+  const M = require('../numerology.js');
+  // 2000-02-29: month 2 + day 29 → 11 + year 2000 → 2 = 15 → 6.
+  const birth = N.birthday('2000-02-29');
+  const base = {tab: 'arcs', core: 'birthDay', period: 'month', cycleDate: '2026-09-14', arc: 2, arcView: 'challenge', pairView: 'a', nameSystem: 'pythagorean', nameKind: 'soul', name: '', yVowels: [], nameRead: false, partnerDate: '', partnerRead: false};
+  const plain = M.snapshot(base, birth);
+  assert.deepEqual({...plain, payload: undefined}, {kind: 'numerology', deck: '', layout: 'Life arcs', question: '', focus: '', payload: undefined, summary: 'Life Path 6'});
+  assert.deepEqual(Object.keys(plain.payload).sort(), ['arc', 'arcView', 'birthday', 'core', 'cycleDate', 'nameKind', 'nameSystem', 'pairView', 'period', 'tab', 'v']);
+  assert.equal(plain.payload.v, 1);
+  const back = M.restore(plain.payload);
+  assert.equal(back.birthday, '2000-02-29');
+  assert.deepEqual(back.previous, base);
+
+  const full = {...base, tab: 'name', nameSystem: 'chaldean', name: 'Yvonne Lynn', yVowels: [7], nameRead: true, partnerDate: '1985-11-29', partnerRead: true};
+  const saved = M.snapshot(full, birth);
+  assert.equal(saved.summary, 'Life Path 6 · name reading');
+  assert.doesNotMatch(saved.summary, /yvonne|lynn/i, 'the name never reaches the summary');
+  assert.deepEqual(M.restore(saved.payload).previous, full);
+
+  // A typed but unread name and an unsubmitted partner date are not saved.
+  const unread = M.snapshot({...base, name: 'Yvonne Lynn', yVowels: [7], partnerDate: '1985-11-29'}, birth);
+  assert.equal('name' in unread.payload || 'yVowels' in unread.payload || 'partnerDate' in unread.payload, false);
+  assert.equal(unread.summary, 'Life Path 6');
+  assert.equal(M.snapshot({...base, name: '   ', nameRead: true}, birth).summary, 'Life Path 6');
+  assert.equal(M.snapshot(base, N.birthday('2000-01-08')).summary, 'Life Path 11/2');
+
+  // A name the studio cannot read is not a name reading.
+  const robot = M.snapshot({...base, name: 'R2D2', yVowels: [], nameRead: true}, birth);
+  assert.equal('name' in robot.payload, false);
+  assert.equal(robot.summary, 'Life Path 6');
+  // A compared but unparseable partner date is not saved either.
+  assert.equal('partnerDate' in M.snapshot({...base, partnerDate: '', partnerRead: true}, birth).payload, false);
+
+  // The layout is the tab's visible label; restore reads payload.tab and ignores layout.
+  const labels = {birth: 'Birth numbers', arcs: 'Life arcs', cycles: 'Personal cycles', name: 'Name reading', pair: 'Two paths', loshu: 'Lo Shu'};
+  for (const [tab, label] of Object.entries(labels)) {
+    const entry = M.snapshot({...base, tab}, birth);
+    assert.equal(entry.layout, label);
+    assert.ok(entry.layout.length <= 40, tab);
+    assert.equal(M.restore({...entry.payload, layout: 'birth'}).previous.tab, tab);
+  }
+});
+
+test('the save note names exactly what saving stores beyond the birth date', () => {
+  const {render} = require('../numerology.js');
+  const none = {name: '', nameRead: false, partnerDate: '', partnerRead: false};
+  const name = {...none, name: 'Anna', nameRead: true};
+  const partner = {...none, partnerDate: '1985-11-29', partnerRead: true};
+  assert.equal(render.saveNote(none), '');
+  assert.equal(render.saveNote({...none, name: 'Anna', partnerDate: '1985-11-29'}), '', 'unread entries are not saved');
+  assert.equal(render.saveNote({...name, name: 'R2D2'}), '', 'an unreadable name is not saved');
+  assert.equal(render.saveNote(name), 'Saving includes the name you entered. It is stored on our server with the reading.');
+  assert.equal(render.saveNote(partner), 'Saving includes the other person’s birth date you entered. It is stored on our server with the reading.');
+  assert.equal(render.saveNote({...name, partnerDate: partner.partnerDate, partnerRead: true}), 'Saving includes the name and the other person’s birth date you entered. Both are stored on our server with the reading.');
+});
+
+test('rendered karmic blocks, notes and the saved banner are reflective and use curly apostrophes', () => {
+  const {render} = require('../numerology.js');
+  const none = {name: '', nameRead: false, partnerDate: '', partnerRead: false};
+  const samples = {
+    'birth debt, day': render.birthKarmic(N.birthday('2000-01-13')),
+    'birth debt, path': render.birthKarmic(N.birthday('1989-10-09')),
+    'chaldean note': render.nameKarmic(N.nameProfile('Anna', [], null, 'chaldean')),
+    'save note, name': render.saveNote({...none, name: 'Anna', nameRead: true}),
+    'save note, partner': render.saveNote({...none, partnerDate: '1985-11-29', partnerRead: true}),
+    'save note, both': render.saveNote({name: 'Anna', nameRead: true, partnerDate: '1985-11-29', partnerRead: true}),
+    'saved banner': render.savedBanner('2000-02-29')
+  };
+  for (const name of ['Anna', 'Eleanor', 'ABC', 'A', 'ABCDEFGHI', 'DI']) samples['name ' + name] = render.nameKarmic(N.nameProfile(name));
+  for (const [label, html] of Object.entries(samples)) {
+    assert.ok(html.length > 0, label + ' renders');
+    const text = html.replace(/<[^>]*>/g, ' ');
+    assert.doesNotMatch(text, reflectiveBanned, label);
+    assert.doesNotMatch(text, /'/, label + ' uses curly apostrophes');
+  }
+  for (const part of ['Karmic debt', 'Karmic lessons', 'Hidden passion', 'Some numerologists also check', 'own reduction, starting from its letter total']) {
+    assert.ok(Object.values(samples).some(html => html.includes(part)), part + ' is scanned');
+  }
+});
+
+test('restore rejects malformed payloads and clamps what it keeps', () => {
+  const M = require('../numerology.js');
+  for (const bad of [null, undefined, 'x', 42, [], {}, {birthday: '2000-02-30'}, {birthday: 20000101}]) assert.equal(M.restore(bad), null, JSON.stringify(bad));
+  const odd = M.restore({birthday: '2000-01-01', tab: 'tarot', core: 'x', period: 'week', arc: 7, arcView: 'x', pairView: 'x', nameSystem: 'kabbalah', nameKind: 'x', cycleDate: 'soon', partnerDate: 'yesterday', name: 7, yVowels: 'all'});
+  assert.deepEqual(odd.previous, {tab: 'birth', core: 'path', period: 'year', nameKind: 'expression', arc: -1, arcView: 'pinnacle', pairView: 'together', nameSystem: 'pythagorean', cycleDate: '', name: '', yVowels: [], nameRead: false, partnerDate: '', partnerRead: false});
+  const long = M.restore({birthday: '2000-01-01', name: 'A'.repeat(200)});
+  assert.equal(long.previous.name.length, 120);
+  assert.equal(long.previous.nameRead, true);
+  // YVONNE LYNN: Y at 0 and 7; index 2 is an O; 11 and 99 are past the ten letters.
+  assert.deepEqual(M.restore({birthday: '2000-01-01', name: 'Yvonne Lynn', yVowels: [0, 7, 2, 11, 99, -1, 1.5, '7']}).previous.yVowels, [0, 7]);
+  // The studio's date controls stop at 2100-12-31.
+  assert.equal(M.restore({birthday: '2000-01-01', cycleDate: '2100-12-31'}).previous.cycleDate, '2100-12-31');
+  assert.equal(M.restore({birthday: '2000-01-01', cycleDate: '2101-01-01'}).previous.cycleDate, '');
+});
+
+test('a saved reading stays pinned until the profile changes, then hands back the reader\'s own studio', () => {
+  const M = require('../numerology.js');
+  const own = {tab: 'cycles', name: '', nameRead: false};
+  const savedA = {tab: 'name', name: 'Yvonne Lynn', nameRead: true, partnerDate: '1985-11-29', partnerRead: true};
+  const savedB = {tab: 'pair', name: 'Anna', nameRead: true};
+  // No reading loaded: every notification re-attaches with the current state.
+  const plain = M.pinState();
+  assert.deepEqual(plain.profile('1990-01-01', undefined), {previous: undefined});
+  assert.deepEqual(plain.profile('1990-01-01', own), {previous: own});
+
+  const pins = M.pinState();
+  pins.profile('1990-01-01', undefined);
+  pins.load(own);
+  assert.equal(pins.profile('1990-01-01', savedA), null, 'the same birth date re-announced by account sync is skipped');
+  pins.load(savedA); // a second saved reading keeps the reader's original state
+  assert.equal(pins.profile('1990-01-01', savedB), null);
+  assert.deepEqual(pins.profile('1991-02-02', savedB), {previous: own}, 'a new birth date returns the reader\'s own state, not the saved name or partner');
+  assert.deepEqual(pins.profile('1991-02-02', own), {previous: own}, 'once released, the current state carries as before');
+
+  // Submitting the birth form releases the pin even when the date is unchanged.
+  const resubmit = M.pinState();
+  resubmit.profile('1990-01-01', undefined);
+  resubmit.load(undefined); // opened before any studio existed
+  resubmit.release();
+  assert.deepEqual(resubmit.profile('1990-01-01', savedA), {previous: undefined});
+  assert.deepEqual(resubmit.profile('1990-01-01', own), {previous: own});
+});

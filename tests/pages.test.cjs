@@ -95,9 +95,10 @@ const DEPENDENCIES = {
   // `typeof ChineseYear !== 'undefined'` gates the animal-year section under the portrait:
   // no throw, but without it the section silently never appears.
   'chinese-room.js': ['birth-lore.js', 'birth-profile.js', 'birthday-insights.js', 'chinese-year.js'],
-  // `const E = NumerologyEngine` at top level; `BirthdayInsights.renderNumbers` in the
-  // studio template; `typeof BirthProfile`/`typeof BirthLore` gate the subscriber.
-  'numerology.js': ['numerology-engine.js', 'birthday-insights.js', 'birth-profile.js', 'birth-lore.js'],
+  // `NumerologyEngine` at top level (typeof-guarded only for Node); `BirthdayInsights.renderNumbers` in the
+  // studio template; `typeof BirthProfile`/`typeof BirthLore` gate the subscriber; `typeof Rooms` gates
+  // the journal registration, so without rooms.js the numerology kind never registers.
+  'numerology.js': ['numerology-engine.js', 'birthday-insights.js', 'birth-profile.js', 'birth-lore.js', 'rooms.js'],
   // `const {localDateKey} = BirthLore`, `BirthplaceSearch.attach(...)` and
   // `BirthProfile.save/subscribe/setReturnLocation`. Chart in Time is attached only when
   // its section is present -- /eastern/ and /numerology/ carry the form without it.

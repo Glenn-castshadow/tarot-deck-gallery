@@ -1,7 +1,7 @@
 /* Original reflections and local-only interactions for the numerology studio. */
 const Numerology = (() => {
   'use strict';
-  const E = NumerologyEngine;
+  const E = typeof NumerologyEngine !== 'undefined' ? NumerologyEngine : require('./numerology-engine.js');
   const esc = value => String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const themes = {
     1:{title:'The courage to begin',words:'Initiative · independence · direction',story:'One offers a lens on the moment you stop waiting for a ready-made path. Its symbolism centers on agency: deciding what matters, taking the first step, and allowing experience to refine the plan.',capacity:'A clear intention can give scattered effort a direction. Let independence include the freedom to choose your own pace.',edge:'Notice when self-reliance becomes a refusal to receive help, or when starting something new keeps you from finishing what matters.',connection:'Make your preference clear while leaving room for another person’s equally real needs.',work:'Choose a modest experiment that puts an idea into motion. Give it an end point at which you will review what you learned.',practice:'Begin one thing you have been waiting to feel fully ready for. Keep the first step small.',prompt:'Where can I act with more agency and less need to prove myself?'},
@@ -130,12 +130,117 @@ const Numerology = (() => {
     51:{title:'The clear command',words:'Clarity · decisiveness · direction',story:'A clear head outperforms a loud voice here. Fifty-one makes one decisive call once the essential facts are in, instead of collecting one more opinion before deciding anything at all.',prompt:'What decision have I gathered enough information to make right now?'},
     52:{title:'The long practice',words:'Persistence · repetition · renewal',story:'Fifty-two closes the compound series the way most real skill actually forms: by doing the same thing again, with slightly more attention paid to it each time it gets repeated.',prompt:'Which practice would improve if I repeated it once more with care?'}
   };
+  // Karmic debt 13, 14, 16, 19. Original copy; "karmic" is the tradition's word, not a claim about deserved outcomes.
+  const karmicDebtCopy = {
+    13:{title:'Effort that holds',words:'Patience · craft · follow-through',story:'Thirteen reduces to four, and the tradition reads it as a question about work: the shortcut that looks quicker, the task set down half-built, the plan that stays a plan. It invites a pace of steady effort you can keep, and attention to what gets built when you keep it.',prompt:'Which unfinished piece of work would change most with an ordinary hour each week?'},
+    14:{title:'Freedom with a centre',words:'Moderation · change · steadiness',story:'Behind the five that fourteen reduces to sits an old question about freedom and its limits. It asks you to notice the change made to escape a feeling rather than meet it, and to choose where steadiness would let curiosity go further.',prompt:'Where does my wish for change carry me away from what I actually want?'},
+    16:{title:'Rebuilding on honest ground',words:'Humility · rebuilding · insight',story:'Sixteen, reduced to seven, concerns the structures built around a self-image. When one of them gives way, numerology reads the moment as room to rebuild on plainer, more honest ground rather than as a loss to be hidden.',prompt:'What picture of myself am I defending that no longer fits what I know?'},
+    19:{title:'Standing alone, and asking',words:'Independence · reciprocity · shared strength',story:'Nineteen reduces to one. Its question is self-reliance: the strength of doing things yourself, and what it costs when independence keeps other people out. Leading your own life can include letting help, advice and company in.',prompt:'What would change if I asked for help before I needed it?'}
+  };
+  // Karmic lessons: a value no letter carries. Original copy.
+  const lessonCopy = {
+    1:'Initiative and self-direction are themes this name does not already carry, which makes them worth practising deliberately. Try one small decision made without waiting for agreement.',
+    2:'The name leaves cooperation and patient listening for you to practise on purpose. Ask one real question, then wait for the whole answer.',
+    3:'Expression is a theme these letters do not supply. Practise it deliberately by giving one thought a form someone else can see — a note, a sketch or a sentence said aloud.',
+    4:'With structure and steady craft absent from the name, a routine you keep by choice becomes the practice. Start with something small enough to hold for a month.',
+    5:'Adaptability is not among the themes this name already carries. Practise it on purpose: change one familiar route or method and notice what it teaches.',
+    6:'The name does not already hold the theme of care and responsibility. Practise it deliberately, including the care that keeps your own needs inside the circle.',
+    7:'Reflection and inquiry are themes the name leaves for you to practise by choice. Give one question some unhurried time before reaching for an answer.',
+    8:'Stewardship of time, money and influence is a theme these letters do not carry. Practise it on purpose by deciding what enough looks like before you begin.',
+    9:'Completion and a wide perspective are not themes the name already supplies. Practise them deliberately: finish one small thing and name what it taught you.'
+  };
+  // Hidden passion: the value carried by the most letters. Original copy, shown only when that count is two or more.
+  const passionCopy = {
+    1:'This name returns to one: beginnings, self-direction, the first step. Notice where that readiness already serves you, and where it could leave room for another person’s lead.',
+    2:'Two is a theme the name comes back to — attentiveness, cooperation, the space between people. Consider how that attunement can include your own voice as well as everyone else’s.',
+    3:'The letters return to three, the number of expression and play. Ask what you most enjoy putting into words or images, and who gets to see it.',
+    4:'Four recurs through these letters, bringing structure, craft and steadiness to the fore. Notice which of your routines genuinely support you, and which are simply familiar.',
+    5:'Five is a value this name keeps coming back to: curiosity, movement and change. Consider what kind of variety feeds you, and what kind merely keeps you busy.',
+    6:'Care and responsibility, the themes of six, recur in this name. Reflect on where your care is freely given and where it has quietly become an obligation.',
+    7:'This name returns to seven, the number of inquiry and reflection. Ask which questions you keep circling back to, and what an answer might let you do.',
+    8:'Eight appears again in these letters, drawing attention to stewardship, organisation and the use of influence. Consider what enough would look like, and what it would be for.',
+    9:'The name comes back to nine: completion, compassion and a wide perspective. Notice where that generosity is grounded in the particular people around you.'
+  };
   const localToday = () => {const d=new Date();return E.dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());};
   const numberLabel = result => result ? result.master?`${result.value}/${result.root}`:String(result.value) : '—';
   const spokenLabel = result => result ? result.master?`${result.value}, root ${result.root}`:String(result.value) : '—';
   const trail = result => result.steps.join(' → ');
   const dateLabel = value => new Intl.DateTimeFormat(undefined,{year:'numeric',month:'long',day:'numeric',timeZone:'UTC'}).format(new Date(`${value}T12:00:00Z`));
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  // ponytail: counts above twenty print as numerals; one value on 21+ letters needs a name of 60+ letters.
+  const countWords=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+  const letterCount = n => `${countWords[n] || n} letter${n===1?'':'s'}`;
+  const listJoin = (items, joiner) => items.length<2 ? String(items[0]) : `${items.slice(0,-1).join(', ')} ${joiner} ${items[items.length-1]}`;
+  function debtBlock(entries, convention) {
+    const found=entries.map(([label,result])=>({label,result,debt:E.karmicDebt(result)})).filter(x=>x.debt);
+    if(!found.length) return '';
+    return `<section class="num-karmic"><div class="num-overview-heading"><h5>Karmic debt</h5><p>Numerology’s tradition calls 13, 14, 16 and 19 karmic debt numbers when they appear on the way to a number’s final value. This page reads each as a recurring question to work with, not a verdict on who you are.</p></div><div class="num-karmic-list">${found.map(({label,result,debt})=>{const c=karmicDebtCopy[debt];return `<article class="num-karmic-card"><p class="num-kicker">${esc(label)} · ${debt}/${result.value}</p><h6>${esc(c.title)}</h6><p class="num-keywords">${esc(c.words)}</p><p>${esc(c.story)}</p><blockquote>${esc(c.prompt)}</blockquote></article>`;}).join('')}</div><p>${convention}</p></section>`;
+  }
+  const birthKarmic = birth => debtBlock([[roles.path.label,birth.path],[roles.birthDay.label,birth.birthDay]],'This page looks along each number’s own reduction: Life Path from the sum of its month, day and year components, and Birth Day from the day itself. Some numerologists also check the unreduced sum of the whole date, so another source may find a debt here that this page does not, or the reverse.');
+  function nameKarmic(n) {
+    if(n.system==='chaldean') return '<p class="num-karmic-note">Karmic lessons, hidden passion and karmic debt in the name numbers use the Pythagorean letter values, so switching to the Pythagorean system shows this name’s lessons and passion, and any karmic debt its numbers carry.</p>';
+    const lessons=E.karmicLessons(n), passion=E.hiddenPassion(n);
+    if(!lessons||!passion) return '';
+    const debt=debtBlock([[roles.expression.label,n.expression],[roles.soul.label,n.soul],[roles.personality.label,n.personality]],'This page looks along each name number’s own reduction, starting from its letter total: all letters for Expression, vowels for Soul Urge and consonants for Personality.');
+    const lessonBody=lessons.length?`<p>No letter in this name carries ${listJoin(lessons,'or')}.</p><ul class="num-karmic-list">${lessons.map(d=>`<li class="num-karmic-card"><strong class="num-karmic-digit">${d}</strong><p>${esc(lessonCopy[d])}</p></li>`).join('')}</ul>`:'<p>Every number from one to nine appears in this name, so it holds no karmic lessons in this tradition.</p>';
+    const passionBody=passion.count<2
+      ?`<p>${listJoin(passion.digits,'and')} ${passion.digits.length===1?'is':'are each'} carried by one letter, so no number stands out as a hidden passion.</p>`
+      :`${passion.digits.length>1?`<p>${listJoin(passion.digits,'and')} tie for the most letters, so each is shown.</p>`:''}<ul class="num-karmic-list">${passion.digits.map(d=>`<li class="num-karmic-card"><p class="num-kicker">${d} · carried by ${letterCount(passion.count)}</p><p>${esc(passionCopy[d])}</p></li>`).join('')}</ul>`;
+    return `${debt}<section class="num-karmic"><div class="num-overview-heading"><h5>Karmic lessons</h5><p>The tradition calls a number that no letter in the name carries a karmic lesson. Read it as a theme the name does not already hold, and so one to practise deliberately.</p></div>${lessonBody}</section><section class="num-karmic"><div class="num-overview-heading"><h5>Hidden passion</h5><p>Hidden passion is the tradition’s name for the number carried by the most letters in a name — a theme to notice rather than a trait to live up to.</p></div>${passionBody}</section>`;
+  }
+  // The view choices attach() accepts, each with its fallback. restore() applies the same sets to a saved payload.
+  const CHOICES={tab:[['birth','arcs','cycles','name','pair','loshu'],'birth'],core:[['path','birthDay','attitude'],'path'],period:[['year','month','day'],'year'],nameKind:[['expression','soul','personality','maturity'],'expression'],arc:[[0,1,2,3],-1],arcView:[['pinnacle','challenge'],'pinnacle'],pairView:[['a','b','together'],'together'],nameSystem:[['pythagorean','chaldean'],'pythagorean']};
+  const choices = p => Object.fromEntries(Object.entries(CHOICES).map(([key,[allowed,fallback]])=>[key,allowed.includes(p?.[key])?p[key]:fallback]));
+  // The studio's tabs: id, visible label, subtitle. The label doubles as the journal entry's layout.
+  const TABS=[['birth','Birth numbers','Your foundation'],['arcs','Life arcs','Pinnacles & challenges'],['cycles','Personal cycles','Year · month · day'],['name','Name reading','Letters & expression'],['pair','Two paths','Two birth dates'],['loshu','Lo Shu','The nine-cell square']];
+  const tabLabel = id => TABS.find(t=>t[0]===id)[1];
+  // A name is saved only while a readable name reading is open; a partner date only once compared and valid.
+  const savesName = state => Boolean(state.nameRead && E.normalizeName(String(state.name || '')).status==='ready');
+  const savesPartner = state => Boolean(state.partnerRead && E.parseDate(state.partnerDate));
+  // The note beside the save control, or '' when saving stores nothing the reader typed about anyone.
+  function saveNote(state) {
+    const name=savesName(state), partner=savesPartner(state);
+    if(name&&partner) return 'Saving includes the name and the other person’s birth date you entered. Both are stored on our server with the reading.';
+    if(name) return 'Saving includes the name you entered. It is stored on our server with the reading.';
+    if(partner) return 'Saving includes the other person’s birth date you entered. It is stored on our server with the reading.';
+    return '';
+  }
+  const savedBanner = value => `<p class="num-saved-note" role="status">Showing a saved reading for ${esc(dateLabel(value))}. Your birth profile is unchanged.</p>`;
+  // The journal entry. The name is stored only while a name reading is open, and never in the summary.
+  function snapshot(state, birth) {
+    const withName=savesName(state), payload={v:1,birthday:birth.parts.value,...choices(state),cycleDate:state.cycleDate};
+    if(withName){payload.name=String(state.name).slice(0,120);payload.yVowels=[...state.yVowels];}
+    if(savesPartner(state)) payload.partnerDate=state.partnerDate;
+    return {kind:'numerology',deck:'',layout:tabLabel(payload.tab),question:'',focus:'',payload,summary:`Life Path ${birth.path.value}${birth.path.master?'/'+birth.path.root:''}${withName?' · name reading':''}`};
+  }
+  function restore(payload) {
+    if(!payload||typeof payload!=='object'||!E.parseDate(payload.birthday)) return null;
+    const name=typeof payload.name==='string'?payload.name.slice(0,120):'';
+    const ys=(E.normalizeName(name).ys || []).map(y=>y.index);
+    const partnerDate=E.parseDate(payload.partnerDate)?payload.partnerDate:'';
+    return {birthday:payload.birthday,previous:{...choices(payload),cycleDate:E.parseDate(payload.cycleDate)&&payload.cycleDate<='2100-12-31'?payload.cycleDate:'',name,yVowels:Array.isArray(payload.yVowels)?payload.yVowels.filter(i=>ys.includes(i)):[],nameRead:Boolean(name.trim()),partnerDate,partnerRead:Boolean(partnerDate)}};
+  }
+  // Which state the studio attaches with. A loaded saved reading is pinned: a notification repeating the
+  // birth date already seen is skipped. Leaving it (a new birth date, or release() on a form submit)
+  // hands back the reader's own state from before the first saved reading, not the saved name or partner.
+  function pinState() {
+    let pinned=false, holding=false, own, seen;
+    return {
+      load(current) { if(!holding){own=current;holding=true;} pinned=true; },
+      release() { pinned=false; },
+      profile(birthday, current) {
+        const unchanged=birthday===seen;
+        seen=birthday;
+        if(pinned&&unchanged) return null;
+        pinned=false;
+        if(!holding) return {previous:current};
+        const previous=own;
+        holding=false; own=undefined;
+        return {previous};
+      }
+    };
+  }
+  const saveLabel = () => typeof IshtarAccount !== 'undefined' && IshtarAccount.state().signedIn ? 'Save this reading to my journal' : 'Sign in to save this reading';
   function readNumber(result, role, calculation) {
     if(!result) return `<article class="num-reading num-empty"><h5>${roles[role].label} is not calculated</h5><p>No ${role==='soul'?'vowels':'consonants'} were selected in this spelling. Check the name and any Y choices; an empty group does not mean a missing quality.</p></article>`;
     const t=themes[result.value];
@@ -144,24 +249,20 @@ const Numerology = (() => {
   function attach(root, parts, previous={}) {
     const birth=E.birthday(E.dateKey(parts.year,parts.month,parts.day));
     const initialToday=localToday(), lastDate='2100-12-31';
-    const tabs=['birth','arcs','cycles','name','pair','loshu'];
-    const state={tab:tabs.includes(previous?.tab)?previous.tab:'birth',core:['path','birthDay','attitude'].includes(previous?.core)?previous.core:'path',cycleDate:previous?.cycleDate || initialToday,period:['year','month','day'].includes(previous?.period)?previous.period:'year',name:previous?.name || '',yVowels:previous?.yVowels || [],nameRead:Boolean(previous?.nameRead),nameKind:['expression','soul','personality','maturity'].includes(previous?.nameKind)?previous.nameKind:'expression',
-arc:[0,1,2,3].includes(previous?.arc)?previous.arc:-1,arcView:['pinnacle','challenge'].includes(previous?.arcView)?previous.arcView:'pinnacle',
-partnerDate:E.parseDate(previous?.partnerDate)?previous.partnerDate:'',partnerRead:Boolean(previous?.partnerRead&&E.parseDate(previous?.partnerDate)),pairView:['a','b','together'].includes(previous?.pairView)?previous.pairView:'together',
-nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.nameSystem:'pythagorean',
-};
+    const state={...choices(previous),cycleDate:previous?.cycleDate || initialToday,name:previous?.name || '',yVowels:previous?.yVowels || [],nameRead:Boolean(previous?.nameRead),
+partnerDate:E.parseDate(previous?.partnerDate)?previous.partnerDate:'',partnerRead:Boolean(previous?.partnerRead&&E.parseDate(previous?.partnerDate))};
     if(!E.parseDate(state.cycleDate)||state.cycleDate<birth.parts.value) state.cycleDate=birth.parts.value;
     const controller=new AbortController(), $=selector=>root.querySelector(selector);
     root.classList.add('numerology-room');
-    root.innerHTML=`<header class="num-intro"><div><p class="num-kicker">The numerology studio</p><h4>Numbers with a story.</h4><p>Explore the patterns of a birth date, the rhythm of a year, and the letters of a name. Follow the numbers into a richer conversation with yourself.</p><span class="num-birth-caption">Your birth date · ${dateLabel(birth.parts.value)}</span></div><div class="num-intro-orbit" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><i>✧</i></div></header>
-      <nav class="num-tabs" aria-label="Numerology perspectives">${[['birth','Birth numbers','Your foundation'],['arcs','Life arcs','Pinnacles & challenges'],['cycles','Personal cycles','Year · month · day'],['name','Name reading','Letters & expression'],['pair','Two paths','Two birth dates'],['loshu','Lo Shu','The nine-cell square']].map(([id,label,sub])=>`<button type="button" data-num-tab="${id}" aria-pressed="${state.tab===id}" aria-controls="num-${id}">${label}<small>${sub}</small></button>`).join('')}</nav>
+    root.innerHTML=`${previous?.saved?savedBanner(birth.parts.value):''}<header class="num-intro"><div><p class="num-kicker">The numerology studio</p><h4>Numbers with a story.</h4><p>Explore the patterns of a birth date, the rhythm of a year, and the letters of a name. Follow the numbers into a richer conversation with yourself.</p><span class="num-birth-caption">${previous?.saved?'Birth date in this saved reading':'Your birth date'} · ${dateLabel(birth.parts.value)}</span></div><div class="num-intro-orbit" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><i>✧</i></div></header>
+      <nav class="num-tabs" aria-label="Numerology perspectives">${TABS.map(([id,label,sub])=>`<button type="button" data-num-tab="${id}" aria-pressed="${state.tab===id}" aria-controls="num-${id}">${label}<small>${sub}</small></button>`).join('')}</nav>
       <section id="num-birth" class="num-view"></section>
       <section id="num-arcs" class="num-view"><div class="num-section-heading"><p class="num-kicker">Four chapters</p><h5>The shape of a life, in four arcs.</h5><p>Pinnacles describe the theme traditionally associated with each chapter; challenges describe the recurring question of the same years. Explore any period, past or future.</p></div><div id="num-arcs-content"></div></section>
       <section id="num-cycles" class="num-view"><div class="num-section-heading"><p class="num-kicker">A changing rhythm</p><h5>Put a moment in perspective.</h5><p>Explore a date, then move through the year and the nine-year cycle around it.</p></div><div class="num-date-controls"><button type="button" data-num-day="-1" aria-label="Previous day">←</button><label for="num-cycle-date" class="sr-only">Date to explore</label><input id="num-cycle-date" type="date" value="${esc(state.cycleDate)}" min="${birth.parts.value}" max="${lastDate}"><button type="button" data-num-day="1" aria-label="Next day">→</button><button type="button" data-num-today>Today</button></div><div id="num-cycle-content"></div></section>
-      <section id="num-name" class="num-view"><div class="num-section-heading"><p class="num-kicker">An optional name reading</p><h5>The letters you carry.</h5><p>Explore Expression, Soul Urge, Personality, and a longer-view Maturity number. The traditional starting point is your full name at birth; you can also explore another spelling as a variation.</p></div><div class="num-system-toggle" role="group" aria-label="Name numerology system"><button type="button" data-num-system="pythagorean" aria-pressed="${state.nameSystem==='pythagorean'}">Pythagorean<small>1–9 across A–Z · birth name</small></button><button type="button" data-num-system="chaldean" aria-pressed="${state.nameSystem==='chaldean'}">Chaldean<small>1–8 by sound · the name you use</small></button></div><form id="num-name-form"><label for="num-full-name">Name to explore</label><div class="num-name-entry"><input id="num-full-name" type="text" maxlength="120" value="${esc(state.name)}" placeholder="First, middle and last names…" autocomplete="off" spellcheck="false" aria-describedby="num-name-help"><button type="submit">Read this name <span aria-hidden="true">↗</span></button></div><p id="num-name-help">Include middle names; leave out titles and suffixes. Calculated in this page, with no upload or saved name.</p><fieldset id="num-y-options" hidden><legend>How does each Y sound?</legend><p>Check a Y when it acts as a vowel, as in Lynn. Leave it unchecked when it acts as a consonant, as at the start of Yara. Your choices affect Soul Urge and Personality.</p><div id="num-y-choices"></div></fieldset><p id="num-name-status" role="status"></p></form><div id="num-name-results"></div></section>
-      <section id="num-pair" class="num-view"><div class="num-section-heading"><p class="num-kicker">Two people, two numbers</p><h5>Where two paths meet.</h5><p>Compare your Life Path with another person’s: a partner, a friend, a parent, a colleague. This is a conversation between two themes, not a score. The other date stays on this page.</p></div><form id="num-pair-form"><label for="num-pair-date">The other person’s birthday</label><div class="num-name-entry"><input id="num-pair-date" type="date" value="${esc(state.partnerDate)}" min="0001-01-01" max="${initialToday}" required><button type="submit">Compare paths <span aria-hidden="true">↗</span></button></div><p id="num-pair-status" role="status"></p></form><div id="num-pair-results"></div></section>
+      <section id="num-name" class="num-view"><div class="num-section-heading"><p class="num-kicker">An optional name reading</p><h5>The letters you carry.</h5><p>Explore Expression, Soul Urge, Personality, and a longer-view Maturity number. The traditional starting point is your full name at birth; you can also explore another spelling as a variation.</p></div><div class="num-system-toggle" role="group" aria-label="Name numerology system"><button type="button" data-num-system="pythagorean" aria-pressed="${state.nameSystem==='pythagorean'}">Pythagorean<small>1–9 across A–Z · birth name</small></button><button type="button" data-num-system="chaldean" aria-pressed="${state.nameSystem==='chaldean'}">Chaldean<small>1–8 by sound · the name you use</small></button></div><form id="num-name-form"><label for="num-full-name">Name to explore</label><div class="num-name-entry"><input id="num-full-name" type="text" maxlength="120" value="${esc(state.name)}" placeholder="First, middle and last names…" autocomplete="off" spellcheck="false" aria-describedby="num-name-help"><button type="submit">Read this name <span aria-hidden="true">↗</span></button></div><p id="num-name-help">Include middle names; leave out titles and suffixes. Calculated in this page, with no upload; the name is stored only if you save this reading to your journal.</p><fieldset id="num-y-options" hidden><legend>How does each Y sound?</legend><p>Check a Y when it acts as a vowel, as in Lynn. Leave it unchecked when it acts as a consonant, as at the start of Yara. Your choices affect Soul Urge and Personality.</p><div id="num-y-choices"></div></fieldset><p id="num-name-status" role="status"></p></form><div id="num-name-results"></div></section>
+      <section id="num-pair" class="num-view"><div class="num-section-heading"><p class="num-kicker">Two people, two numbers</p><h5>Where two paths meet.</h5><p>Compare your Life Path with another person’s: a partner, a friend, a parent, a colleague. This is a conversation between two themes, not a score. The other date stays on this page; it is saved only if you compare it and then save the reading to your journal.</p></div><form id="num-pair-form"><label for="num-pair-date">The other person’s birthday</label><div class="num-name-entry"><input id="num-pair-date" type="date" value="${esc(state.partnerDate)}" min="0001-01-01" max="${initialToday}" required><button type="submit">Compare paths <span aria-hidden="true">↗</span></button></div><p id="num-pair-status" role="status"></p></form><div id="num-pair-results"></div></section>
       <section id="num-loshu" class="num-view">${BirthdayInsights.renderNumbers(parts)}</section>
-      <footer class="num-footnote"><p>A symbolic practice for reflection. These readings offer questions and perspectives, rather than measurements of personality or predictions.</p><details class="num-method"><summary>Traditions, methods & sources</summary><p>Birth and name readings use modern Pythagorean conventions. Life Path reduces the month, day and year separately, retaining 11, 22 and 33, then adds and reduces those values. Birth Day shows the original day alongside its reduced interpretation. Attitude adds month and day and always reduces to 1–9.</p><p>Personal cycles use calendar years beginning January 1, with no master numbers retained: birth month + birth day + selected year gives Personal Year; adding the selected month gives Personal Month; adding the day gives Personal Day. Some schools use birthday boundaries instead.</p><p>Name values repeat 1–9 across A–Z. This page adds the full name’s letters before reduction, retaining 11, 22 and 33 at the final reduction; it does not reduce each name separately first. Vowels and consonants are summed separately with the same rule. Maturity adds Life Path and Expression. Accents and common Latin ligatures are transliterated, and the exact A–Z spelling is shown. Other alphabets need a transliteration you choose. Master numbers are paired with their root, not treated as a rank or a measure of worth.</p><p>Chaldean readings use the letter values published by Cheiro (A1 B2 C3 D4 E5 F8 G3 H5 I1 J1 K2 L3 M4 N5 O7 P8 Q1 R2 S3 T4 U6 V6 W6 X5 Y1 Z7; no letter is 9). The compound number is the full sum before reduction; compounds 10–52 are read directly, larger sums are reduced once by adding their digits, and the single-digit root is shown alongside. Chaldean practice traditionally reads the name a person actually uses. No master numbers apply. Vowel and consonant splits belong to the Pythagorean method and are not shown here.</p><p>Lo Shu has its own Chinese cultural and mathematical context. Its modern birthday-digit overlay remains separate from these Pythagorean calculations; its birth-date root reduces master numbers too.</p><p>Calculation references: <a href="https://www.numerology.com/articles/your-numerology-chart/life-path-number-meanings/" target="_blank" rel="noopener">Life Path method</a> · <a href="https://www.worldnumerology.com/do-your-own-reading/" target="_blank" rel="noopener">Pythagorean chart conventions</a> · <a href="https://www.worldnumerology.com/personal-numerology-forecast/" target="_blank" rel="noopener">Calendar-year cycles</a>. All reading text and prompts here are original.</p></details></footer>`;
+      <footer class="num-footnote"><p>A symbolic practice for reflection. These readings offer questions and perspectives, rather than measurements of personality or predictions.</p><details class="num-method"><summary>Traditions, methods & sources</summary><p>Birth and name readings use modern Pythagorean conventions. Life Path reduces the month, day and year separately, retaining 11, 22 and 33, then adds and reduces those values. Birth Day shows the original day alongside its reduced interpretation. Attitude adds month and day and always reduces to 1–9.</p><p>Personal cycles use calendar years beginning January 1, with no master numbers retained: birth month + birth day + selected year gives Personal Year; adding the selected month gives Personal Month; adding the day gives Personal Day. Some schools use birthday boundaries instead.</p><p>Name values repeat 1–9 across A–Z. This page adds the full name’s letters before reduction, retaining 11, 22 and 33 at the final reduction; it does not reduce each name separately first. Vowels and consonants are summed separately with the same rule. Maturity adds Life Path and Expression. Accents and common Latin ligatures are transliterated, and the exact A–Z spelling is shown. Other alphabets need a transliteration you choose. Master numbers are paired with their root, not treated as a rank or a measure of worth.</p><p>Chaldean readings use the letter values published by Cheiro (A1 B2 C3 D4 E5 F8 G3 H5 I1 J1 K2 L3 M4 N5 O7 P8 Q1 R2 S3 T4 U6 V6 W6 X5 Y1 Z7; no letter is 9). The compound number is the full sum before reduction; compounds 10–52 are read directly, larger sums are reduced once by adding their digits, and the single-digit root is shown alongside. Chaldean practice traditionally reads the name a person actually uses. No master numbers apply. Vowel and consonant splits belong to the Pythagorean method and are not shown here.</p><p>Lo Shu has its own Chinese cultural and mathematical context. Its modern birthday-digit overlay remains separate from these Pythagorean calculations; its birth-date root reduces master numbers too.</p><p>Calculation references: <a href="https://www.numerology.com/articles/your-numerology-chart/life-path-number-meanings/" target="_blank" rel="noopener">Life Path method</a> · <a href="https://www.worldnumerology.com/do-your-own-reading/" target="_blank" rel="noopener">Pythagorean chart conventions</a> · <a href="https://www.worldnumerology.com/personal-numerology-forecast/" target="_blank" rel="noopener">Calendar-year cycles</a>. All reading text and prompts here are original.</p><p>Karmic debt, karmic lessons and hidden passion follow modern Pythagorean numerology. Source: Hans Decoz’s World Numerology pages on <a href="https://www.worldnumerology.com/numerology-karmic-debt-numbers/" target="_blank" rel="noopener">karmic debt numbers</a> · <a href="https://www.worldnumerology.com/numerology-karmic-lessons/" target="_blank" rel="noopener">karmic lessons</a> · <a href="https://www.worldnumerology.com/numerology-hidden-passion/" target="_blank" rel="noopener">hidden passion</a>.</p></details></footer><p class="save-reading"><button type="button" data-save-reading="numerology">${saveLabel()}</button><span role="status" aria-live="polite"></span><span class="num-save-note" hidden></span></p>`;
     function showTab() {
       root.querySelectorAll('[data-num-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.numTab===state.tab)));
       root.querySelectorAll('.num-view').forEach(p=>p.hidden=p.id!==`num-${state.tab}`);
@@ -172,7 +273,7 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
       return `<p>Birth month ${birth.parts.month} + birth day ${birth.parts.day} = <strong>${trail(birth.attitude)}</strong>.</p><p>Attitude is reduced to a single digit, including when the intermediate sum is 11, 22 or 33.</p>`;
     }
     function renderBirth() {
-      $('#num-birth').innerHTML=`<div class="num-core-cards" role="group" aria-label="Explore your birth numbers">${['path','birthDay','attitude'].map(kind=>`<button type="button" data-num-core="${kind}" aria-pressed="${state.core===kind}"><span>${roles[kind].label}</span><strong>${kind==='birthDay'?birth.parts.day:numberLabel(birth[kind])}</strong><small>${kind==='birthDay'&&birth.parts.day!==birth.birthDay.value?`Read through ${numberLabel(birth.birthDay)}`:themes[birth[kind].value].words.split(' · ').slice(-2).join(' · ')}</small></button>`).join('')}</div><div id="num-core-reading">${readNumber(birth[state.core],state.core,coreCalculation(state.core))}</div><section class="num-weave"><p class="num-kicker">Read the numbers together</p><h5>${themes[birth.path.value].title} meets ${themes[birth.attitude.value].words.split(' · ')[0].toLowerCase()}.</h5><p>Your Life Path ${numberLabel(birth.path)} offers the wider theme of <strong>${themes[birth.path.value].words.toLowerCase()}</strong>. Your Attitude ${birth.attitude.value} brings <strong>${themes[birth.attitude.value].words.toLowerCase()}</strong> into the way you approach a moment. Notice where these perspectives support one another and where they invite a different response.</p><p>${birth.path.root===birth.birthDay.root?`Life Path and Birth Day share the root ${birth.path.root}. That repeated theme can be a useful thread to revisit in both a larger question and an ordinary daily choice.`:`Your Birth Day ${birth.parts.day}, read through ${numberLabel(birth.birthDay)}, adds the perspective of ${themes[birth.birthDay.value].words.toLowerCase()}. Let it broaden the reading rather than requiring every number to describe the same part of you.`}</p><blockquote>Which theme feels familiar, which one stretches your view, and what small action could bring them into conversation?</blockquote></section>`;
+      $('#num-birth').innerHTML=`<div class="num-core-cards" role="group" aria-label="Explore your birth numbers">${['path','birthDay','attitude'].map(kind=>`<button type="button" data-num-core="${kind}" aria-pressed="${state.core===kind}"><span>${roles[kind].label}</span><strong>${kind==='birthDay'?birth.parts.day:numberLabel(birth[kind])}</strong><small>${kind==='birthDay'&&birth.parts.day!==birth.birthDay.value?`Read through ${numberLabel(birth.birthDay)}`:themes[birth[kind].value].words.split(' · ').slice(-2).join(' · ')}</small></button>`).join('')}</div><div id="num-core-reading">${readNumber(birth[state.core],state.core,coreCalculation(state.core))}</div><section class="num-weave"><p class="num-kicker">Read the numbers together</p><h5>${themes[birth.path.value].title} meets ${themes[birth.attitude.value].words.split(' · ')[0].toLowerCase()}.</h5><p>Your Life Path ${numberLabel(birth.path)} offers the wider theme of <strong>${themes[birth.path.value].words.toLowerCase()}</strong>. Your Attitude ${birth.attitude.value} brings <strong>${themes[birth.attitude.value].words.toLowerCase()}</strong> into the way you approach a moment. Notice where these perspectives support one another and where they invite a different response.</p><p>${birth.path.root===birth.birthDay.root?`Life Path and Birth Day share the root ${birth.path.root}. That repeated theme can be a useful thread to revisit in both a larger question and an ordinary daily choice.`:`Your Birth Day ${birth.parts.day}, read through ${numberLabel(birth.birthDay)}, adds the perspective of ${themes[birth.birthDay.value].words.toLowerCase()}. Let it broaden the reading rather than requiring every number to describe the same part of you.`}</p><blockquote>Which theme feels familiar, which one stretches your view, and what small action could bring them into conversation?</blockquote></section>${birthKarmic(birth)}`;
     }
     const arcModel=E.arcs(birth);
     function ageRange(p) { return p.toAge===null?`age ${p.fromAge} onward`:p.fromAge===0?`birth to age ${p.toAge}`:`ages ${p.fromAge}–${p.toAge}`; }
@@ -210,7 +311,13 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
       $('#num-y-options').hidden=!ys.length||state.nameSystem==='chaldean';
       $('#num-y-choices').innerHTML=ys.map(y=>`<label><input type="checkbox" data-num-y="${y.index}" ${state.yVowels.includes(y.index)?'checked':''}>Y in ${esc(y.word)} · letter ${y.index+1} of the name is a vowel</label>`).join('');
     }
+    function renderSaveNote() {
+      const note=$('.num-save-note');
+      note.textContent=saveNote(state);
+      note.hidden=!note.textContent;
+    }
     function renderName() {
+      renderSaveNote();
       if(!state.nameRead) {
         $('#num-name-results').innerHTML='<div class="num-name-invitation"><span aria-hidden="true">A · B · C <i>↓</i> 1 · 2 · 3</span><h5>A name, seen another way.</h5><p>When you are ready, enter a name to see its numbers, explore each perspective, and follow every letter through the calculation.</p></div>';return;
       }
@@ -220,19 +327,20 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
         const copy=n.reading.readAs>9?compoundCopy[n.reading.readAs]:themes[n.reading.readAs];
         const readingNote=n.reading.readAs===n.compound?'':n.reading.readAs>9?`Compound ${n.compound} is above 52, so it is reduced once (${n.compound} → ${n.reading.readAs}) and read as compound ${n.reading.readAs}.`:`Compound ${n.compound} reduces to ${n.reading.readAs}, which is read as a single digit.`;
         $('#num-name-status').textContent=`Chaldean reading ready · calculated spelling: ${n.normalized}.`;
-        $('#num-name-results').innerHTML=`<div class="num-name-cards num-name-cards-chaldean"><div class="num-compound-card"><span>Name number</span><strong>${n.compound}</strong><small>Compound · root ${n.reading.root}</small></div></div><section class="num-letter-study"><div class="num-overview-heading"><h5>Every letter, by sound.</h5><p>Chaldean values run 1–8. Exact spelling: <strong>${esc(n.normalized)}</strong></p></div><div class="num-letter-words" aria-label="Letter values">${n.words.map(w=>`<div class="num-letter-word">${n.letters.filter(x=>x.wordIndex===w.wordIndex).map(x=>`<span class="num-letter" aria-label="${x.letter}: ${x.value}"><b>${x.letter}</b><small>${x.value}</small></span>`).join('')}</div>`).join('')}</div><table class="num-word-table"><caption>Each word on its own</caption><thead><tr><th scope="col">Word</th><th scope="col">Compound</th><th scope="col">Root</th></tr></thead><tbody>${n.words.map(w=>`<tr><th scope="row">${esc(w.word)}</th><td>${w.compound}</td><td>${w.root}</td></tr>`).join('')}</tbody></table><p class="num-letter-totals">All letters = ${n.compound}${readingNote?' · '+readingNote:''}</p></section><article class="num-reading"><header><div class="num-seal" aria-hidden="true"><span>${n.reading.readAs}</span><small>root ${n.reading.root}</small></div><div><p class="num-kicker">${n.reading.readAs>9?`Compound ${n.reading.readAs}`:`Read as ${n.reading.readAs} · single digit`}</p><h5>${copy.title}</h5><p class="num-keywords">${copy.words}</p></div></header><p class="num-role-lens">Chaldean tradition reads the name you actually use day to day. Try the spelling people call you by, then a formal version, and notice what changes.</p><p>${copy.story}</p><blockquote>${copy.prompt}</blockquote><details class="num-method"><summary>See the calculation</summary><p>${n.letters.map(x=>`${x.letter} (${x.value})`).join(' + ')} = <strong>${n.compound}</strong>; digit sum ${n.reading.root}.</p></details></article>`;
+        $('#num-name-results').innerHTML=`<div class="num-name-cards num-name-cards-chaldean"><div class="num-compound-card"><span>Name number</span><strong>${n.compound}</strong><small>Compound · root ${n.reading.root}</small></div></div><section class="num-letter-study"><div class="num-overview-heading"><h5>Every letter, by sound.</h5><p>Chaldean values run 1–8. Exact spelling: <strong>${esc(n.normalized)}</strong></p></div><div class="num-letter-words" aria-label="Letter values">${n.words.map(w=>`<div class="num-letter-word">${n.letters.filter(x=>x.wordIndex===w.wordIndex).map(x=>`<span class="num-letter" aria-label="${x.letter}: ${x.value}"><b>${x.letter}</b><small>${x.value}</small></span>`).join('')}</div>`).join('')}</div><table class="num-word-table"><caption>Each word on its own</caption><thead><tr><th scope="col">Word</th><th scope="col">Compound</th><th scope="col">Root</th></tr></thead><tbody>${n.words.map(w=>`<tr><th scope="row">${esc(w.word)}</th><td>${w.compound}</td><td>${w.root}</td></tr>`).join('')}</tbody></table><p class="num-letter-totals">All letters = ${n.compound}${readingNote?' · '+readingNote:''}</p></section><article class="num-reading"><header><div class="num-seal" aria-hidden="true"><span>${n.reading.readAs}</span><small>root ${n.reading.root}</small></div><div><p class="num-kicker">${n.reading.readAs>9?`Compound ${n.reading.readAs}`:`Read as ${n.reading.readAs} · single digit`}</p><h5>${copy.title}</h5><p class="num-keywords">${copy.words}</p></div></header><p class="num-role-lens">Chaldean tradition reads the name you actually use day to day. Try the spelling people call you by, then a formal version, and notice what changes.</p><p>${copy.story}</p><blockquote>${copy.prompt}</blockquote><details class="num-method"><summary>See the calculation</summary><p>${n.letters.map(x=>`${x.letter} (${x.value})`).join(' + ')} = <strong>${n.compound}</strong>; digit sum ${n.reading.root}.</p></details></article>${nameKarmic(n)}`;
         return;
       }
       $('#num-name-status').textContent=`Reading ready · calculated spelling: ${n.normalized}.`;
       const kind=state.nameKind, selected=n[kind];
       const group=kind==='soul'?n.letters.filter(x=>x.vowel):kind==='personality'?n.letters.filter(x=>!x.vowel):n.letters;
       const calculation=kind==='maturity'?`<p>Life Path ${numberLabel(birth.path)} + Expression ${numberLabel(n.expression)}: <strong>${birth.path.value} + ${n.expression.value} = ${trail(n.maturity)}</strong>.</p>`:`<p>${kind==='expression'?'All letters':kind==='soul'?'Vowels':'Consonants'}: ${group.map(x=>`${x.letter} (${x.value})`).join(' + ') || 'None'}${selected?` = <strong>${trail(selected)}</strong>`:''}.</p><p>The whole group is added before reduction. Master numbers 11, 22 and 33 are retained at the final reduction.</p>`;
-      $('#num-name-results').innerHTML=`<div class="num-name-cards" role="group" aria-label="Explore your name numbers">${['expression','soul','personality','maturity'].map(key=>`<button type="button" data-num-name-kind="${key}" aria-pressed="${kind===key}"><span>${roles[key].label}</span><strong>${numberLabel(n[key])}</strong><small>${{expression:'All letters',soul:'Vowels',personality:'Consonants',maturity:'Life Path + Expression'}[key]}</small></button>`).join('')}</div><section class="num-letter-study"><div class="num-overview-heading"><h5>Every letter, accounted for.</h5><p>${kind==='maturity'?'The name’s Expression joins your Life Path in the Maturity reading.':`Highlighted letters contribute to ${roles[kind].label}.`} Exact spelling: <strong>${esc(n.normalized)}</strong></p></div><div class="num-letter-words" aria-label="Letter values">${[...new Set(n.letters.map(x=>x.wordIndex))].map(wordIndex=>`<div class="num-letter-word">${n.letters.filter(x=>x.wordIndex===wordIndex).map(x=>`<span class="num-letter${kind==='soul'&&!x.vowel||kind==='personality'&&x.vowel?' is-muted':''}" aria-label="${x.letter}: ${x.value}, ${x.vowel?'vowel':'consonant'}"><b>${x.letter}</b><small>${x.value}</small></span>`).join('')}</div>`).join('')}</div><p class="num-letter-totals">All letters ${n.totals.expression} = vowels ${n.totals.soul} + consonants ${n.totals.personality}</p></section>${readNumber(selected,kind,calculation)}<section class="num-weave"><p class="num-kicker">Name & birth date together</p><h5>Intention into expression.</h5><p>Life Path ${numberLabel(birth.path)} invites you to revisit <strong>${themes[birth.path.value].words.toLowerCase()}</strong>. Expression ${numberLabel(n.expression)} brings <strong>${themes[n.expression.value].words.toLowerCase()}</strong> into the way you contribute. Consider one situation in which you could make room for both perspectives.</p>${n.soul&&n.personality?`<p>Soul Urge ${numberLabel(n.soul)} asks what feels meaningful inwardly; Personality ${numberLabel(n.personality)} explores outward expression. ${n.soul.root===n.personality.root?'They share a root here. Use that repeated theme to ask where your choices feel congruent with what matters to you.':'Their different themes can open a useful question: what would help your outward choices express more of what matters to you inwardly?'}</p>`:''}<blockquote>What feels true to your experience, and what would you put into your own words?</blockquote></section>`;
+      $('#num-name-results').innerHTML=`<div class="num-name-cards" role="group" aria-label="Explore your name numbers">${['expression','soul','personality','maturity'].map(key=>`<button type="button" data-num-name-kind="${key}" aria-pressed="${kind===key}"><span>${roles[key].label}</span><strong>${numberLabel(n[key])}</strong><small>${{expression:'All letters',soul:'Vowels',personality:'Consonants',maturity:'Life Path + Expression'}[key]}</small></button>`).join('')}</div><section class="num-letter-study"><div class="num-overview-heading"><h5>Every letter, accounted for.</h5><p>${kind==='maturity'?'The name’s Expression joins your Life Path in the Maturity reading.':`Highlighted letters contribute to ${roles[kind].label}.`} Exact spelling: <strong>${esc(n.normalized)}</strong></p></div><div class="num-letter-words" aria-label="Letter values">${[...new Set(n.letters.map(x=>x.wordIndex))].map(wordIndex=>`<div class="num-letter-word">${n.letters.filter(x=>x.wordIndex===wordIndex).map(x=>`<span class="num-letter${kind==='soul'&&!x.vowel||kind==='personality'&&x.vowel?' is-muted':''}" aria-label="${x.letter}: ${x.value}, ${x.vowel?'vowel':'consonant'}"><b>${x.letter}</b><small>${x.value}</small></span>`).join('')}</div>`).join('')}</div><p class="num-letter-totals">All letters ${n.totals.expression} = vowels ${n.totals.soul} + consonants ${n.totals.personality}</p></section>${readNumber(selected,kind,calculation)}<section class="num-weave"><p class="num-kicker">Name & birth date together</p><h5>Intention into expression.</h5><p>Life Path ${numberLabel(birth.path)} invites you to revisit <strong>${themes[birth.path.value].words.toLowerCase()}</strong>. Expression ${numberLabel(n.expression)} brings <strong>${themes[n.expression.value].words.toLowerCase()}</strong> into the way you contribute. Consider one situation in which you could make room for both perspectives.</p>${n.soul&&n.personality?`<p>Soul Urge ${numberLabel(n.soul)} asks what feels meaningful inwardly; Personality ${numberLabel(n.personality)} explores outward expression. ${n.soul.root===n.personality.root?'They share a root here. Use that repeated theme to ask where your choices feel congruent with what matters to you.':'Their different themes can open a useful question: what would help your outward choices express more of what matters to you inwardly?'}</p>`:''}<blockquote>What feels true to your experience, and what would you put into your own words?</blockquote></section>${nameKarmic(n)}`;
     }
     function personCard(label, b, key) {
       return `<button type="button" data-num-pair-view="${key}" aria-pressed="${state.pairView===key}"><span>${label}</span><strong>${numberLabel(b.path)}</strong><small>Life Path · ${themes[b.path.value].title}</small></button>`;
     }
     function renderPair() {
+      renderSaveNote();
       if(!state.partnerRead) {
         $('#num-pair-status').textContent=state.partnerDate?'Choose Compare paths when you are ready.':'';
         $('#num-pair-results').innerHTML='<div class="num-name-invitation"><span aria-hidden="true">9 <i>·</i> 1</span><h5>Two dates, side by side.</h5><p>Enter another person’s birthday to see both Life Paths, how their traditional groupings relate, and the number the pair makes together.</p></div>';return;
@@ -286,27 +394,58 @@ nameSystem:['pythagorean','chaldean'].includes(previous?.nameSystem)?previous.na
     $('#num-name-form').addEventListener('submit',event=>{event.preventDefault();state.name=$('#num-full-name').value;state.nameRead=true;renderName();},{signal:controller.signal});
     $('#num-pair-form').addEventListener('submit',event=>{event.preventDefault();state.partnerDate=$('#num-pair-date').value;state.partnerRead=true;renderPair();},{signal:controller.signal});
     $('#num-pair-date').addEventListener('input',event=>{state.partnerDate=event.target.value;state.partnerRead=false;$('#num-pair-status').textContent=state.partnerDate?'Choose Compare paths when you are ready.':'';renderPair();},{signal:controller.signal});
+    document.addEventListener('ishtar-account-change',()=>{$('[data-save-reading]').textContent=saveLabel();},{signal:controller.signal});
     renderBirth();renderArcs();renderCycles();renderYChoices();renderName();renderPair();showTab();
-    return {getState:()=>({...state,yVowels:[...state.yVowels]}),destroy:()=>controller.abort()};
+    return {birth,getState:()=>({...state,yVowels:[...state.yVowels]}),destroy:()=>controller.abort()};
   }
-  return {attach};
+  return {attach, snapshot, restore, pinState, copy:{karmicDebtCopy, lessonCopy, passionCopy}, render:{birthKarmic, nameKarmic, saveNote, savedBanner}};
 })();
+if (typeof module === 'object' && module.exports) module.exports = Numerology;
 
 /* The studio re-attaches itself whenever the stored birth profile changes. natal-room.js
    rebuilds #birthday-output and leaves #birthday-numbers empty, so this subscriber --
    registered after that one, because this file loads after it -- fills the container
    again, carrying the reader's tab, arc and cycle choices across the rebuild.
-   BirthProfile and BirthLore are window properties; the bare identifiers are guarded
-   with typeof so this file still loads under Node for its source-level tests. */
+   BirthProfile, BirthLore, Rooms and MobileSections are window properties; the bare
+   identifiers are guarded with typeof so this file still loads under Node for its tests.
+
+   A saved reading opened from the journal is pinned until the birth form is submitted or the
+   profile's birth date really changes. On /numerology/?reading=<id>, the first signed-in account change starts
+   Rooms.openFromQuery (which awaits a fetch before load() runs) and, in a later listener,
+   re-restores BirthProfile after reconcileProfile. The restore normally lands first; it lands
+   second only when reconcileProfile uploads the guest profile, which is the profile this
+   subscriber already attached with, so a repeated birth date is skipped while pinned (pinState). */
 if (typeof window !== 'undefined' && typeof BirthProfile !== 'undefined' && typeof BirthLore !== 'undefined') {
   let room = null;
+  const pins = Numerology.pinState();
+  const container = () => document.querySelector('#birthday-numbers');
   BirthProfile.subscribe(state => {
-    const saved = room?.getState();
+    const birthday = state?.profile?.birthday;
+    const next = pins.profile(birthday, room?.getState());
+    if (!next) return;
     room?.destroy();
     room = null;
-    const parts = BirthLore.birthdayParts(state?.profile?.birthday);
-    const container = document.querySelector('#birthday-numbers');
-    if (!parts || !container) return;
-    room = Numerology.attach(container, parts, saved);
+    const parts = BirthLore.birthdayParts(birthday);
+    const el = container();
+    if (!parts || !el) return;
+    room = Numerology.attach(el, parts, next.previous);
+  });
+  // Submitting the birth form is a genuine profile change even with the same date. Capture phase runs
+  // before birth-form.js's handler, so the save's notification already sees the pin released.
+  document.addEventListener('submit', event => { if (event.target.id === 'birthday-form') pins.release(); }, true);
+  // The label must match rooms.js and server/ishtar/readings/kinds.py.
+  if (typeof Rooms !== 'undefined') Rooms.register('numerology', {
+    label: 'Numerology', category: 'numerology',
+    current: () => room ? Numerology.snapshot(room.getState(), room.birth) : null,
+    load: reading => {
+      const restored = Numerology.restore(reading?.payload), el = container();
+      const parts = restored && BirthLore.birthdayParts(restored.birthday);
+      if (!parts || !el) return false;
+      pins.load(room?.getState());
+      room?.destroy();
+      room = Numerology.attach(el, parts, {...restored.previous, saved: true});
+      if (typeof MobileSections !== 'undefined') MobileSections.reveal(el);
+      return true;
+    }
   });
 }
