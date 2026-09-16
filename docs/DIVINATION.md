@@ -76,7 +76,7 @@ for fidelity to the line and for voice, and revised until the reviews passed.
 They carry no verdicts: none of "good fortune", "misfortune", "no blame",
 "remorse", "humiliation", "perseverance furthers" or "the superior man", and no
 predictions. `forLine` returns `null` for an unknown hexagram or an index outside
-0–5. When every line of hexagram 1 or 2 changes, the classic adds a seventh
+0–5. A polish pass (2026-09-16) removed the stock position phrases ("At this threshold", "From the position of authority", "At the end" and their variants) from 204 texts, since the kicker above each text already names the position and the study card shows all six together; a test now refuses any such phrase. When every line of hexagram 1 or 2 changes, the classic adds a seventh
 statement (用九, 用六); the site shows only the six line texts.
 
 Where they show: in a reading, each changing line's paragraph under the primary
@@ -111,7 +111,7 @@ prose constraints (meaning length, prompt ends `?`, gloss word count 3–5) for
 hexagrams and the six position texts. A Django test asserts that posting an
 `iching` reading returns 201 (`server/ishtar/readings/tests/test_readings.py`;
 see `server/ishtar/readings` and docs/ACCOUNTS.md "Service").
-`tests/iching-lines.test.cjs` (3 tests) checks every line text: six per
+`tests/iching-lines.test.cjs` (4 tests) checks every line text: six per
 hexagram, non-empty, two or three sentences, no banned verdict or prediction
 wording, no straight apostrophes, and all 384 unique; `forLine` and `has`
 for valid and invalid arguments; and that all 64 hexagrams are present. A
@@ -476,7 +476,7 @@ reflection. Oracle emblems are decorative original motifs, not a traditional alp
 ## Validation
 
 `node --test tests/*.test.cjs` — 546 passing tests across the whole suite, up from 542
-before the I Ching line texts (C4d) added `tests/iching-lines.test.cjs` (3 tests) and one
+before the I Ching line texts (C4d) added `tests/iching-lines.test.cjs` (now 4 tests) and one
 wiring test in `tests/divination.test.cjs`, which is now 20. It was 19 after C4c, which gained no new test for cartomancy, since C4c
 extended the existing save-button wiring test (the one- and three-card draws, the practice
 copy scan and the refused-layout loads) rather than adding one — see "Playing cards" above. The original ten
