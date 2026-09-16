@@ -1,5 +1,31 @@
 # VPS deployment
 
+## 2026-09-16 I Ching line texts
+
+Deployed `616d428`. **Static only.** No backend change and no migration.
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-iching-lines-616d428`, a `cp -al` hardlink copy of `20260916-playing-cards-654214a`.
+- Three files were replaced (`divination/index.html`, `divination.js`, `divination.css`) and one added (`iching-lines.js`).
+- The deploy was gated on `current` and on the sha256 of the three replaced files. The hashes were taken from `main` before the merge and matched the live files.
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-playing-cards-654214a /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (C4d).** All 384 lines of the 64 hexagrams have an original reflection in `iching-lines.js`. A reading shows each changing line's text, and the library study card lists all six lines. The texts are not translations; see `docs/DIVINATION.md` "Line texts".
+
+Suite 542 to 546.
+
+**Cache keys.** `divination.js?v=c4d-2`, `divination.css?v=c4d-2` and `iching-lines.js?v=1`, all on `/divination/` only.
+
+**Validation after the switch.**
+- All eight pages and the four assets return 200.
+- The keys are confirmed on `/divination/`, and the served files carry the module, the wiring and the new practice note. Every gate needle was checked against the merged files before the run.
+- In a browser at ishtarinsights.com:
+  - a coin cast gave hexagram 9 with lines 5 and 6 changing, and both line texts showed;
+  - the study card for hexagram 1 listed six lines;
+  - `IChingLines` held 64 hexagrams;
+  - the only console error was the signed-out session check (401).
+
 ## 2026-09-16 Playing-card cartomancy
 
 Deployed `654214a`. **Static only.** The `cartomancy` kind shipped server-side with C4b.
