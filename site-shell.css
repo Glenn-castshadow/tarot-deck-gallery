@@ -18,7 +18,19 @@
 .hero-strip b { display: block; color: var(--gold-light); font: 500 10px "DM Mono", monospace; letter-spacing: .18em; text-transform: uppercase; }
 .hero-strip small { display: block; margin-top: 3px; color: rgba(255,250,244,.74); font-size: 13px; }
 @media (max-width: 700px) { .masthead { margin-inline: -17px; padding-top: 70px; border-radius: 0; background-image: url("/assets/celestial-hero-900.webp"); } .masthead .account-bar { top: 14px; right: 14px; } .brand-lockup img { width: min(260px, 72vw); } .hero-cta { flex: 1 1 100%; justify-content: center; } .hero-strip { grid-template-columns: 1fr; gap: 14px; margin-top: 34px; } .hero-strip li + li { padding: 14px 0 0; border-left: 0; border-top: 1px solid rgba(230,177,126,.22); } }
-.section-nav { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; margin-bottom: 28px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+/* The mount point is display: contents so .page-nav sticks within the page, not within a wrapper of its own height. */
+[data-shell="nav"] { display: contents; }
+.page-nav { position: sticky; top: 0; z-index: 30; margin-bottom: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+.section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; padding: 10px 0; }
+.page-sections { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px 4px; padding: 0 8px 8px; font-size: 12px; }
+.page-sections span { margin-right: 6px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; }
+.page-sections a { display: flex; align-items: center; min-height: 32px; padding: 4px 10px; border-radius: 16px; color: var(--plum); font-weight: 600; text-decoration: none; }
+.page-sections a:hover, .page-sections a:focus-visible { background: var(--plum); color: var(--cream); }
+.page-sections a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* The floating bar must not cover a heading a section link scrolls to. */
+@media (min-width: 701px) { [data-fold] { scroll-margin-top: 112px; } }
+/* Phones keep the bar in the flow: the folds and their ↑ Sections button do the navigating there. */
+@media (max-width: 700px) { .page-nav { position: static; } .page-sections { display: none; } }
 .section-nav a { display: flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 24px; color: var(--plum); font-size: 13px; font-weight: 600; text-decoration: none; }
 .section-nav a:hover, .section-nav a:focus-visible { background: var(--plum); color: var(--cream); }
 .section-nav a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

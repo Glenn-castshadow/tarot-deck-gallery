@@ -43,15 +43,30 @@
       </header>`;
   }
 
-  function renderNav(page, links) {
+  const esc = value => String(value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+
+  // The page links and, on a page with two or more top-level sections, a row of in-page
+  // links, together in one sticky bar. The [data-shell="nav"] mount point is display: contents
+  // so the bar sticks within the page rather than within its own wrapper.
+  function renderNav(page, links, sections = []) {
     const items = NAV.map(entry => {
       const href = links === 'hash' ? entry.hash : entry.href;
       const current = entry.key === page ? ' aria-current="page"' : '';
       return `<a href="${href}"${current}>${entry.label}</a>`;
     }).join('\n        ');
-    return `<nav class="section-nav" aria-label="Page sections">
+    const row = sections.length > 1
+      ? `<nav class="page-sections" aria-label="On this page"><span>On this page</span>${sections.map(s => `<a href="#${esc(s.id)}">${esc(s.label)}</a>`).join('')}</nav>`
+      : '';
+    return `<div class="page-nav"><nav class="section-nav" aria-label="Site pages">
         ${items}
-      </nav>`;
+      </nav>${row}</div>`;
+  }
+
+  // Top-level [data-fold] sections with an id, in document order: the ones the section row links to.
+  function collectSections(doc) {
+    return Array.from(doc.querySelectorAll('[data-fold]'))
+      .filter(el => el.id && !(el.parentElement && el.parentElement.closest('[data-fold]')))
+      .map(el => ({id: el.id, label: el.dataset.fold}));
   }
 
   function renderFooter() {
@@ -71,10 +86,10 @@
     </section>`;
   }
 
-  function render({page, variant, links = 'page'}) {
+  function render({page, variant, links = 'page', sections = []}) {
     return {
       header: variant === 'hero' ? renderHeroHeader() : renderCompactHeader(page),
-      nav: renderNav(page, links),
+      nav: renderNav(page, links, sections),
       footer: renderFooter(),
       notice: renderNotice()
     };
@@ -82,7 +97,7 @@
 
   function mount(page, {links} = {}) {
     const variant = page === 'hub' ? 'hero' : 'compact';
-    const {header, nav, footer, notice} = render({page, variant, links});
+    const {header, nav, footer, notice} = render({page, variant, links, sections: collectSections(document)});
     const parts = {header, nav, footer, notice};
     Object.keys(parts).forEach(name => {
       const target = document.querySelector(`[data-shell="${name}"]`);
@@ -90,5 +105,5 @@
     });
   }
 
-  return {NAV, render, mount};
+  return {NAV, render, mount, collectSections};
 });

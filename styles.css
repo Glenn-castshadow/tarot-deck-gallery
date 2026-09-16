@@ -29,7 +29,7 @@ button { cursor: pointer; }
 h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08 "Playfair Display", serif; letter-spacing: -.03em; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
 .lede { max-width: 560px; margin: 16px auto 0; color: rgba(255,250,244,.84); font-size: clamp(15px, 1.6vw, 20px); line-height: 1.55; }
 @media (max-width: 700px) { .lede { font-size: 15px; } }
-#tarot-readings, #birthday-room, #astrocartography-room, #celestial-extras, #archive { scroll-margin-top: 170px; }
+#tarot-readings, #birthday-room, #astrocartography-room, #celestial-extras, #archive { scroll-margin-top: 112px; }
 .main-fold > .fold-heading > button { scroll-margin-top: 170px; }
 
 .reading-room { position: relative; display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: 30px 42px; margin: 4px 0 48px; padding: clamp(28px, 4vw, 46px); color: var(--cream); background: var(--plum-dark); overflow: hidden; box-shadow: 0 18px 38px rgba(46,25,58,.22); }
