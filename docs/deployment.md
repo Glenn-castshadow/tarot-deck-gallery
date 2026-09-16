@@ -1,5 +1,57 @@
 # VPS deployment
 
+## 2026-09-16 Chart saving, part A
+
+Deployed `a57e863` in two stages, backend first. The frontend posts two new kinds, so the server
+had to accept them before the pages could send them.
+
+**Stage 1, backend.**
+- The wrapper `/tmp/ishtar-backend-c5a.sh` (the C4b wrapper with the kind and migration names
+  changed) checked health, backed up the live database through SQLite's backup API to
+  `/var/backups/ishtar-app/db-predeploy-20260916-184903.sqlite3` and integrity-checked the copy,
+  refused an archive whose `kinds.py` lacked `davison` or lacked migration 0006, ran
+  `/tmp/deploy-app.sh`, then verified `readings.0006_reading_kind_c5` applied, the service
+  restarted after the run began, and health returned `ok`.
+- The archive is `git archive a57e863 server/ishtar`, re-packed on the server so `manage.py` is
+  at its root, which the wrapper checks.
+- New kinds: `composite` and `davison` (category `charts`). No rollback is needed for the
+  backend: the old frontend never sends them.
+
+**Stage 2, static.**
+- Released as `/opt/tarot-game/releases/20260916-chart-saving-a57e863`, a `cp -al` hardlink copy
+  of `20260916-iching-lines-616d428`.
+- Fourteen files were replaced (`rooms.js`, `natal-engine.js`, `account.css`, `chart-in-time.js`,
+  `horary.js`, `natal-room.js`, `charts/index.html` and the seven other pages' HTML) and one added
+  (`chart-rooms.js`).
+- The deploy was gated on `current`, on the sha256 of the fourteen replaced files (taken from
+  `main` before the merge; all matched the live release), and on the deployed backend's
+  `kinds.py` containing `davison`, so the frontend cannot precede the backend.
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-iching-lines-616d428 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (C5a).** A signed-in reader can save a birth chart, a solar or lunar return, a
+progressed chart or a horary chart (with its question) from `/charts/`, and reopen it from the
+journal as the chart it was. Each saved chart embeds the inputs it was cast from; reopening shows
+a "Saved chart, cast for …" banner with "Use my chart", and the live profile never overwrites a
+reopened chart. `chart-rooms.js` is the shared contract; see `docs/ACCOUNTS.md` "Saved charts".
+
+Suite 546 to 555; Django 18. C5b (two-person charts, BaZi, Jyotish) is static only.
+
+**Cache keys.** `rooms.js?v=c5-kinds-1` and `account.css?v=c5-1` on all eight pages;
+`natal-engine.js?v=c5-1` on five; `chart-rooms.js?v=1`, `chart-in-time.js?v=2`, `horary.js?v=2`
+on `/charts/`; `natal-room.js?v=9` on charts, eastern and sky.
+
+**Validation after the switch.**
+- All eight pages and the seven changed assets return 200; every key and needle is confirmed on
+  the served files (each needle was checked with `git show a57e863:<file> | grep -cF` first).
+- In a browser at ishtarinsights.com: the five rooms register; `Rooms.pageFor('composite')` is
+  `/charts/`; the save controls and note render on the birth chart and the solar return; a
+  reopened solar return for another birth shows its banner and "Solar return 2025 · Ascendant
+  Libra"; a reopened horary chart shows "Saved question · 16 September 2026 at 14:02, London,
+  United Kingdom"; the only console error is the signed-out session check (401).
+- Signed-in saving and reopening through the journal were not exercised (they need Glenn's login);
+  the local stand-in-DOM tests cover the save and reopen round trips.
+
 ## 2026-09-16 I Ching line texts
 
 Deployed `616d428`. **Static only.** No backend change and no migration.
