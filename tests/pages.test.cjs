@@ -83,13 +83,15 @@ const DEPENDENCIES = {
   'astrocartography.js': ['astrocartography-engine.js', 'birthplace-search.js'],
   // `typeof RelationshipChartsEngine/RelationshipCharts/NatalChart` gate the Composite and Davison
   // switch in Two skies: no throw, but without them the switch silently never appears.
+  // ChartRooms.restoredGate() at attach; Rooms.register behind a typeof guard, without it saving silently disappears.
   'celestial-extras.js': ['birthplace-search.js', 'celestial-extras-engine.js', 'bi-wheel.js', 'natal-engine.js',
-    'relationship-charts-engine.js', 'relationship-charts.js', 'natal-chart.js'],
+    'relationship-charts-engine.js', 'relationship-charts.js', 'natal-chart.js', 'chart-rooms.js', 'rooms.js'],
   // ChartRooms.restoredGate() at attach; Rooms.register behind a typeof guard, but without it saving silently disappears.
   'chart-in-time.js': ['birthplace-search.js', 'chart-in-time-engine.js', 'chart-in-time-text.js', 'bi-wheel.js', 'natal-engine.js', 'chart-rooms.js', 'rooms.js'],
   // ChartRooms.placeFrom in castNow; Rooms.register behind a typeof guard, without it saving silently disappears.
   'horary.js': ['birthplace-search.js', 'horary-engine.js', 'horary-text.js', 'horary-chart.js', 'classical-engine.js', 'natal-engine.js', 'chart-rooms.js', 'rooms.js'],
-  'jyotish.js': ['jyotish-engine.js', 'jyotish-text.js', 'jyotish-chart.js', 'natal-engine.js'],
+  // ChartRooms.restoredGate() at attach; Rooms.register behind a typeof guard, without it saving silently disappears.
+  'jyotish.js': ['jyotish-engine.js', 'jyotish-text.js', 'jyotish-chart.js', 'natal-engine.js', 'chart-rooms.js', 'rooms.js'],
   // `const E = SkyCalendarEngine, T = SkyCalendarText` at module top level; `NatalEngine.calculate`
   // for the sample chart and for a saved calendar's birth snapshot; `BirthProfile.subscribe` and
   // `Rooms.register('transit-calendar', ...)` in the self-attach block at the file's end.

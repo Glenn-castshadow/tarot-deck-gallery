@@ -98,9 +98,6 @@
 
   const archiveCounts = {all:decks.length,new:decks.filter(isNewArchiveDeck).length,historical:decks.filter(deck=>deck.category==='historical').length,modern:decks.filter(deck=>deck.category==='modern').length};
   Object.entries(archiveCounts).forEach(([key,count]) => {document.querySelector(`#${key}-count`).textContent=count;});
-  // The live deck count sits in the hub's hero masthead, which the tarot page does not carry.
-  const archiveTotal = document.querySelector("#archive-total");
-  if (archiveTotal) archiveTotal.textContent = `${decks.length} decks`;
   // The archive mobile fold's subtitle mirrors that live count; set before mobile-sections.js runs.
   document.querySelector("#archive").dataset.foldSubtitle = `Browse ${decks.length} decks across five centuries`;
   setArchiveFilter(new URLSearchParams(location.search).get("archive"));

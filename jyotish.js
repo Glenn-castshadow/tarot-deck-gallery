@@ -26,18 +26,24 @@ const Jyotish = (() => {
 
     const $ = selector => root.querySelector(selector);
     let savedChart = null, chart = null, usingSample = false, tab = 'rashi', format = 'south', selectedMaha = null, selectedGraha = null, gocharDay = today();
+    const restored = ChartRooms.restoredGate();   // {birth} while a saved chart is open
     const ordinal = n => `${n}${['','st','nd','rd'][n] || 'th'}`;  // houses 1-12 only: 11th and 12th fall through to 'th'
     const missing = message => `<div class="cx-missing"><span aria-hidden="true">✧</span><p>${esc(message)}</p><button type="button" data-jy-birth>Add birth details ↑</button></div>`;
 
     function profileStatus() {
       $('.jy-profile-status').textContent = usingSample
         ? 'Sample chart · illustrative birth details, not your personal chart.'
+        : restored.active() ? `Saved chart · ${chart.birthday} · ${chart.time} · ${chart.location.label || 'Selected place'}`
         : chart ? `Your birth sky · ${chart.birthday} · ${chart.time} · ${chart.location.label || 'Selected birthplace'}`
         : 'Use your birth details above to read your sidereal chart.';
       $('[data-jy-sample]').textContent = usingSample ? 'Use my profile' : 'Try a sample chart';
     }
 
     const formatToggle = () => `<div class="jy-format-toggle" role="group" aria-label="Chart style"><button type="button" data-jy-format="south" aria-pressed="${format==='south'}">South Indian</button><button type="button" data-jy-format="north" aria-pressed="${format==='north'}">North Indian</button></div>`;
+
+    const restoredBanner = () => restored.active() ? ChartRooms.banner(`Saved chart · cast for ${ChartRooms.describe(restored.get().birth)}`, {live: 'jyotish'}) : '';
+    const saveControl = () => usingSample ? '' : ChartRooms.saveControl('jyotish', ChartRooms.NOTES.one);
+    const framed = html => `${restoredBanner()}${html}${saveControl()}`;
 
     function chartArt(houses, lagnaSignIndex, model, title) {
       const abbreviations = Object.fromEntries(model.grahas.map(g => [g.name, g.abbreviation]));
@@ -50,7 +56,7 @@ const Jyotish = (() => {
       const abbrByName = Object.fromEntries(model.grahas.map(g => [g.name, g.abbreviation]));
       const rows = model.grahas.map(g => `<tr><th scope="row">${esc(g.abbreviation)} ${esc(g.name)}</th><td>${esc(g.sign)}</td><td>${esc(g.degrees)}</td><td>${esc(g.nakshatra.name)}</td><td>${g.nakshatra.pada}</td><td>${g.house}</td><td>${g.retrograde?'Retrograde':'Direct'}${g.vargottama?' · Vargottama':''}</td></tr>`).join('');
       const bhavaCards = model.houses.map(house => `<div class="jy-bhava-card"><span class="jy-bhava-head">${house.index} · ${esc(house.sign)}${house.grahas.length?` · ${house.grahas.map(name=>esc(abbrByName[name]||name)).join(' ')}`:''}</span><small>${esc(JyotishText.bhava[house.index])}</small></div>`).join('');
-      $('#jy-rashi').innerHTML = `${formatToggle()}
+      $('#jy-rashi').innerHTML = framed(`${formatToggle()}
         <div class="jy-chart-row">
           <div class="jy-chart-art">${chartArt(model.houses, model.lagna.signIndex, model, `Rashi · ${model.lagna.sign} lagna`)}</div>
           <div class="jy-reading"><p class="acg-small-label">${usingSample?esc('Sample · '):''}Lagna · ${esc(model.lagna.sign)} (${esc(model.lagna.western)}) ${esc(model.lagna.degrees)}</p><h5>${esc(lagnaText.title)}</h5><p>${esc(lagnaText.body)}</p><blockquote>${esc(lagnaText.prompt)}</blockquote></div>
@@ -59,7 +65,7 @@ const Jyotish = (() => {
         <div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Rashi</th><th scope="col">Degrees</th><th scope="col">Nakshatra</th><th scope="col">Pada</th><th scope="col">Bhava</th><th scope="col">Motion</th></tr></thead><tbody>${rows}</tbody></table></div>
         <p class="acg-small-label">Bhavas</p>
         <div class="jy-bhava-strip">${bhavaCards}</div>
-        ${conventions()}`;
+        ${conventions()}`);
     }
 
     function nakshatraCard(label, nk) {
@@ -75,12 +81,12 @@ const Jyotish = (() => {
       const others = [...model.grahas.filter(g => g.name !== 'Moon').map(g => ({name:g.name, nakshatra:g.nakshatra})), {name:'Lagna', nakshatra:model.lagna.nakshatra}];
       if (!selectedGraha || !others.some(g => g.name === selectedGraha)) selectedGraha = others[0].name;
       const chosen = others.find(g => g.name === selectedGraha);
-      $('#jy-nakshatras').innerHTML = `<p class="acg-small-label">${usingSample?esc('Sample · '):''}Your Moon's nakshatra</p>
+      $('#jy-nakshatras').innerHTML = framed(`<p class="acg-small-label">${usingSample?esc('Sample · '):''}Your Moon's nakshatra</p>
         ${nakshatraCard('Moon', moon.nakshatra)}
         <p class="acg-small-label">Other placements</p>
         <div class="jy-nakshatra-list" role="group" aria-label="Other placements by nakshatra">${others.map(g => `<button type="button" data-jy-graha="${esc(g.name)}" aria-pressed="${selectedGraha===g.name}">${esc(g.name)}<small>${esc(JyotishEngine.nakshatras[g.nakshatra.index].name)}</small></button>`).join('')}</div>
         ${chosen ? nakshatraCard(chosen.name, chosen.nakshatra) : ''}
-        ${conventions()}`;
+        ${conventions()}`);
     }
 
     function renderDashas(model, dashaModel) {
@@ -105,18 +111,18 @@ const Jyotish = (() => {
       const shownAntar = firstKept === -1 ? [] : maha.antardashas.slice(firstKept);
       const antarTable = `<div class="cx-table-wrap"><table><thead><tr><th scope="col">Lord</th><th scope="col">From</th><th scope="col">To</th></tr></thead><tbody>${shownAntar.map((a, idx) => `<tr><th scope="row">${esc(a.lord)}</th><td>${dateFmt(a.start)}${idx===0 && firstKept>0?'<br><small>in progress at birth</small>':''}</td><td>${dateFmt(a.end)}</td></tr>`).join('')}</tbody></table></div>`;
 
-      $('#jy-dashas').innerHTML = `${nowCard}
+      $('#jy-dashas').innerHTML = framed(`${nowCard}
         <p class="acg-small-label">Vimshottari mahadasha timeline</p>
         <div class="jy-dasha-scroll"><div class="jy-dasha-timeline">${timeline}</div></div>
         <p class="acg-small-label">${esc(maha.lord)} mahadasha · antardashas</p>
         <p class="jy-dasha-note">Dasha instants are calculated in UTC; dates below are shown in your local calendar format.</p>
         ${antarTable}
-        ${conventions()}`;
+        ${conventions()}`);
     }
 
     function renderNavamsa(model) {
       const rows = model.grahas.map(g => `<tr><th scope="row">${esc(g.abbreviation)} ${esc(g.name)}</th><td>${esc(g.sign)}</td><td>${esc(JyotishEngine.rashis[g.navamsaSign][0])}</td><td>${g.vargottama?'Yes':'No'}</td></tr>`).join('');
-      $('#jy-navamsa').innerHTML = `${formatToggle()}
+      $('#jy-navamsa').innerHTML = framed(`${formatToggle()}
         <div class="jy-chart-row">
           <div class="jy-chart-art">${chartArt(model.navamsaHouses, model.navamsaLagna.signIndex, model, `Navamsa · ${model.navamsaLagna.sign} lagna`)}</div>
           <div class="jy-reading"><p class="acg-small-label">${usingSample?esc('Sample · '):''}Navamsa Lagna · ${esc(model.navamsaLagna.sign)} (${esc(model.navamsaLagna.western)})</p><p>The navamsa, or D9 chart, divides each rashi into nine equal parts and is traditionally read alongside the birth chart to confirm a placement's strength and for questions of marriage and dharma. A graha keeping the same sign in both charts is called vargottama.</p></div>
@@ -124,7 +130,7 @@ const Jyotish = (() => {
         <p class="acg-small-label">Placements</p>
         <div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Rashi (D1)</th><th scope="col">Navamsa (D9)</th><th scope="col">Vargottama</th></tr></thead><tbody>${rows}</tbody></table></div>
         <p class="jy-method-note">Navamsa sign = (9 × sign index + part index) mod 12, where each rashi is split into nine parts of 3°20′.</p>
-        ${conventions()}`;
+        ${conventions()}`);
     }
 
     function renderGochar() {
@@ -136,12 +142,38 @@ const Jyotish = (() => {
         const saturn = model.grahas.find(g => g.name === 'Saturn');
         const rows = model.grahas.map(g => `<tr><th scope="row">${esc(g.abbreviation)} ${esc(g.name)}</th><td>${esc(g.sign)} (${esc(g.western)})</td><td>${esc(g.degrees)}</td><td>${esc(ordinal(g.house))}</td><td>${esc(g.supportive ? T.supportive : T.demanding)}</td></tr>`).join('');
         const scheme = Object.entries(JyotishEngine.GOCHAR_SUPPORTIVE).map(([name, houses]) => `<tr><th scope="row">${esc(name)}</th><td>${esc(houses.map(h => ordinal(h)).join(', '))}</td></tr>`).join('');
-        out.innerHTML = `<p class="acg-small-label">${usingSample?esc('Sample · '):''}Natal Moon · ${esc(model.moonRashi)} (${esc(JyotishEngine.rashis[model.moonSign][1])})</p>
+        out.innerHTML = framed(`<p class="acg-small-label">${usingSample?esc('Sample · '):''}Natal Moon · ${esc(model.moonRashi)} (${esc(JyotishEngine.rashis[model.moonSign][1])})</p>
           <p class="jy-method-note">Positions for 12:00 UTC on ${esc(dateFmt(`${model.day}T12:00:00Z`))}.</p>
           ${model.sadeSati ? `<div class="jy-sade-sati"><p class="acg-small-label">Sade Sati · Saturn in the ${esc(ordinal(saturn.house))} sign from the natal Moon</p><p>${esc(T.sadeSati)}</p></div>` : ''}
           <div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Rashi</th><th scope="col">Degrees</th><th scope="col">From the Moon</th><th scope="col">Tradition</th></tr></thead><tbody>${rows}</tbody></table></div>
-          <details class="jy-conventions"><summary>Method &amp; conventions</summary><p>${esc(T.method).replace('Phaladeepika', '<em>Phaladeepika</em>')}</p><div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Supportive houses from the Moon</th></tr></thead><tbody>${scheme}</tbody></table></div></details>`;
+          <details class="jy-conventions"><summary>Method &amp; conventions</summary><p>${esc(T.method).replace('Phaladeepika', '<em>Phaladeepika</em>')}</p><div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Supportive houses from the Moon</th></tr></thead><tbody>${scheme}</tbody></table></div></details>`);
       } catch (error) { out.innerHTML = `<p class="cx-error" role="alert">${esc(error.message)}</p>`; }
+    }
+
+    function selectTab(name) {
+      tab = name;
+      root.querySelectorAll('[data-jy-tab]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.jyTab === tab)));
+      root.querySelectorAll('.jy-view').forEach(panel => panel.hidden = panel.id !== `jy-${tab}`);
+      renderActive();
+    }
+    function current() {
+      if (!chart || usingSample) return null;
+      const model = JyotishEngine.sidereal(chart);
+      if (model.status !== 'ready') return null;
+      const birth = restored.active() ? restored.get().birth : ChartRooms.birthFromChart(chart);
+      return birth ? ChartRooms.reading('jyotish', {payload: {v: 1, birth, tab, gochar: gocharDay}, summary: ChartRooms.summaries.jyotish(model), layout: 'sidereal'}) : null;
+    }
+    function load(reading) {
+      const payload = ChartRooms.validate('jyotish', reading?.payload);
+      if (!payload) return false;
+      const natal = ChartRooms.natalFrom(payload.birth);
+      if (natal.status !== 'ready' || JyotishEngine.sidereal(natal).status !== 'ready') return false;
+      usingSample = false; chart = natal; selectedMaha = null; selectedGraha = null;
+      restored.set({birth: payload.birth});
+      gocharDay = payload.gochar; $('#jy-gochar-date').value = gocharDay;
+      profileStatus(); selectTab(payload.tab);
+      if (typeof MobileSections !== 'undefined') MobileSections.reveal(root);
+      return true;
     }
 
     function renderActive() {
@@ -158,19 +190,16 @@ const Jyotish = (() => {
     root.addEventListener('click', event => {
       const button = event.target.closest('button'); if (!button) return;
       const data = button.dataset;
-      if ('jyTab' in data) {
-        tab = data.jyTab;
-        root.querySelectorAll('[data-jy-tab]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        root.querySelectorAll('.jy-view').forEach(panel => panel.hidden = panel.id !== `jy-${tab}`);
-        renderActive();
-      }
+      if ('jyTab' in data) { selectTab(data.jyTab); }
       if ('jyBirth' in data) { document.querySelector('#birthday-input').focus(); document.querySelector('#birthday-form').scrollIntoView({block:'center'}); }
       if ('jySample' in data) {
+        restored.clear();
         usingSample = !usingSample;
         chart = usingSample ? NatalEngine.calculate(sample) : savedChart;
         selectedMaha = null; selectedGraha = null;
         profileStatus(); renderActive();
       }
+      if ('chartLive' in data) { restored.clear(); chart = savedChart; selectedMaha = null; selectedGraha = null; profileStatus(); renderActive(); $(`#jy-${tab}`).querySelector('[data-save-reading]')?.focus({preventScroll:true}); }
       if ('jyFormat' in data) { format = data.jyFormat; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-format="${format}"]`)?.focus({preventScroll:true}); }
       if ('jyMaha' in data) { selectedMaha = Number(data.jyMaha); renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-maha="${selectedMaha}"]`)?.focus({preventScroll:true}); }
       if ('jyDay' in data) {
@@ -195,9 +224,11 @@ const Jyotish = (() => {
     });
 
     profileStatus(); renderActive();
+    if (typeof Rooms !== 'undefined') Rooms.register('jyotish', {label: 'Jyotish chart', category: 'eastern', current, load});
     return {
       setBirthChart(value) {
         savedChart = value?.status === 'ready' ? value : null;
+        if (restored.active()) return;
         if (!usingSample) { chart = savedChart; selectedMaha = null; selectedGraha = null; }
         profileStatus(); renderActive();
       }

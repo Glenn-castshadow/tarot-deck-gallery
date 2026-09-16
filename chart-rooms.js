@@ -70,6 +70,8 @@
     }
     if (kind === 'jyotish') {
       if (!JYOTISH_TABS.includes(payload.tab) || !isDate(payload.gochar)) return null;
+      const gocharYear = Number(payload.gochar.slice(0, 4));
+      if (gocharYear < 1901 || gocharYear > 2100) return null;
       return {...out, tab: payload.tab, gochar: payload.gochar};
     }
     if (kind === 'bazi') {
@@ -103,7 +105,10 @@
     solarReturn: model => `Solar return ${new Date(model.moment).getUTCFullYear()} · Ascendant ${model.chart.axes[0].sign}`,
     lunarReturn: model => `Lunar return ${shortDate(model.moment)} · Ascendant ${model.chart.axes[0].sign}`,
     progressed: ({target, method}) => `Progressed to ${target.slice(0, 4)} · ${method}`,
-    horary: ({result, house, date}) => `House ${house} · Ascendant ${result.chart.axes[0].sign} · ${shortDate(date + 'T00:00:00Z')}`
+    horary: ({result, house, date}) => `House ${house} · Ascendant ${result.chart.axes[0].sign} · ${shortDate(date + 'T00:00:00Z')}`,
+    twoPerson: (kind, birth, partner) => `${{synastry: 'Synastry', composite: 'Composite', davison: 'Davison'}[kind]} · ${shortDate(birth.date + 'T00:00:00Z')} · ${shortDate(partner.date + 'T00:00:00Z')}`,
+    bazi: model => { const p = model.pillars[2]; return `Day pillar ${p.characters} · ${p.stem[1]} ${p.branch[1]}`; },
+    jyotish: model => `Lagna ${model.lagna.sign} · Moon in ${model.grahas.find(g => g.name === 'Moon').nakshatra.name}`
   };
 
   const saveLabel = () => typeof IshtarAccount !== 'undefined' && IshtarAccount.state().signedIn ? 'Save this chart to my journal' : 'Sign in to save this chart';

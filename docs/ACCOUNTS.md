@@ -21,14 +21,15 @@ restores. Save failures are shown beside the birth form as well as in the accoun
 
 Passwordless accounts for ishtarinsights.com. Spec: docs/superpowers/specs/2026-09-09-accounts-design.md.
 
-## Saved charts (C5a, 2026-09-16)
+## Saved charts (C5a–C5b, 2026-09-16)
 
-`chart-rooms.js` is the shared saving contract for the chart rooms; today it is loaded on
-`/charts/` after `natal-engine.js` (C5b adds it to `/eastern/` for Jyotish). Its exports,
-one line each:
+`chart-rooms.js` is the shared saving contract for the chart rooms; it is loaded on
+`/charts/` after `natal-engine.js`, and on `/eastern/` after `natal-engine.js` too, for
+Jyotish. Its exports, one line each:
 
-- `KINDS` — the ten chart kinds the module knows about (five wired to rooms so far:
-  `natal`, `solar-return`, `lunar-return`, `progressed`, `horary`).
+- `KINDS` — the ten chart kinds the module knows about, all now wired to rooms:
+  `natal`, `solar-return`, `lunar-return`, `progressed`, `horary`, `synastry`,
+  `composite`, `davison`, `bazi`, `jyotish`.
 - `NOTES` — the three disclosure strings shown beside the save button (below).
 - `validate(kind, payload)` — sanitises a saved payload for a kind, or returns `null`.
 - `birthFromChart(chart)` — builds a `birth` object from a computed, ready natal chart.
@@ -49,7 +50,7 @@ one line each:
 - `restoredGate()` — `{set, clear, get, active}`, the reopened-chart gate a room keeps
   while a saved chart is on screen.
 
-### Payload (C5a kinds)
+### Payload
 
 `payload.v` is `1`. `payload.birth` (all kinds but horary) is `{date, time, place:
 {name, lat, lon, tz}, houseSystem, fold, orbScale}`, taken from the profile.
@@ -64,6 +65,10 @@ one line each:
 | `horary` | `birth` is omitted; `moment: {date, time, place}` from `#ho-date`,
   `#ho-time` and the chosen place; `house: 1..12` | `'regiomontanus'` | the question
   text, clipped to 240 |
+| `synastry`, `composite`, `davison` | `partner` (the second person's `birth`, same
+  shape as `birth`) | house system | — |
+| `bazi` | `pillar` (the selected Four Pillars tab, `0`–`3`) | `'four-pillars'` | — |
+| `jyotish` | `tab` (the open Jyotish view), `gochar` (the selected Gochar date) | `'sidereal'` | — |
 
 ### Disclosure notes
 
@@ -78,6 +83,15 @@ chart" button clears the gate and re-renders from the live profile. Horary keeps
 object — a fresh "Cast the chart" click always replaces the result outright — but does
 skip refreshing its default place while a saved question is open.
 
+In `celestial-extras.js`, the save button's kind follows whichever method (Synastry,
+Composite or Davison) is currently in view. "Use my chart" restores the reader's own
+chart from the gate but leaves the partner form and the compared `partner` chart alone,
+so a two-person reading stays comparable after returning to the live profile. If
+reopening a saved two-person or BaZi chart fails its readiness check, `load()` rolls
+back every field it had changed, including the partner form, rather than leaving the
+page saved-but-broken. In `jyotish.js`, reopening a saved chart also restores the tab
+it was saved from (`payload.tab`), not always Rashi.
+
 ### Reopening
 
 `?reading=ID` reaches the page through the shared opener (`rooms.js`'s
@@ -86,11 +100,10 @@ scrolls to `[data-room~="KIND"]`.
 
 ### Tests
 
-`tests/chart-rooms.test.cjs` (5 tests), `tests/chart-in-time-room.test.cjs` (2),
-`tests/horary-room.test.cjs` (1); Django: `test_c5_kinds_are_charts`,
+`tests/chart-rooms.test.cjs` (7 tests), `tests/chart-in-time-room.test.cjs` (2),
+`tests/horary-room.test.cjs` (1), `tests/celestial-extras-room.test.cjs` (1),
+`tests/jyotish-room.test.cjs` (1); Django: `test_c5_kinds_are_charts`,
 `test_two_person_chart_kinds_save`.
-
-C5b adds the two-person charts (`synastry`, `composite`, `davison`), BaZi and Jyotish.
 
 ## Service
 

@@ -57,6 +57,7 @@ test('validate accepts each kind and refuses bad payloads', () => {
     ['horary', {v: 1, moment: {date: '2026-09-16', time: '14:02', place: BIRTH.place}, house: 13}],
     ['horary', {v: 1, moment: {date: '2026-09-16', time: '14:02'}, house: 7}],
     ['jyotish', {v: 1, birth: BIRTH, tab: 'moon', gochar: '2026-09-16'}],
+    ['jyotish', {v: 1, birth: BIRTH, tab: 'gochar', gochar: '1850-01-01'}],
     ['bazi', {v: 1, birth: BIRTH, pillar: 4}],
   ];
   for (const [kind, payload] of bad) assert.equal(R.validate(kind, payload), null, `${kind} ${JSON.stringify(payload)}`);
@@ -106,4 +107,13 @@ test('a save button relabels in place on ishtar-account-change', () => {
   global.IshtarAccount = {state: () => ({signedIn: true})};
   try { handler(); } finally { delete global.IshtarAccount; }
   assert.equal(button.textContent, 'Save this chart to my journal');
+});
+
+test('summaries for two-person charts, BaZi and Jyotish', () => {
+  const a = {...BIRTH, date: '1980-03-12'}, b = {...BIRTH, date: '1982-07-04'};
+  assert.equal(R.summaries.twoPerson('synastry', a, b), 'Synastry · 12 Mar 1980 · 4 Jul 1982');
+  assert.equal(R.summaries.twoPerson('composite', a, b), 'Composite · 12 Mar 1980 · 4 Jul 1982');
+  assert.equal(R.summaries.twoPerson('davison', a, b), 'Davison · 12 Mar 1980 · 4 Jul 1982');
+  assert.equal(R.summaries.bazi({pillars: [null, null, {characters: '甲子', stem: ['甲', 'Jia'], branch: ['子', 'Zi']}, null]}), 'Day pillar 甲子 · Jia Zi');
+  assert.equal(R.summaries.jyotish({lagna: {sign: 'Simha'}, grahas: [{name: 'Sun', nakshatra: {name: 'Magha'}}, {name: 'Moon', nakshatra: {name: 'Rohini'}}]}), 'Lagna Simha · Moon in Rohini');
 });

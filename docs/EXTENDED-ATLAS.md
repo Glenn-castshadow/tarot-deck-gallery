@@ -12,7 +12,8 @@ Astrocartography displays a prominently labeled sample instant (2000-01-01
 12:00 UTC) until the user supplies complete birth details. The companion views
 have an explicit sample button, with synthetic New York and London births.
 Sample mode does not overwrite the saved birth profile. The second person's
-synastry data is held only in the page, not localStorage.
+synastry data is held only in the page, not localStorage — an explicit save now stores
+it in the chart's own journal entry (see "Saving" below).
 
 ## Astrocartography
 
@@ -152,6 +153,21 @@ replacing the side choice with a plain midpoint breaks cusp order on a real fixt
 pair, and removing the Ascendant turn fails two tests. A reviewer also fuzzed around
 70,000 random high-latitude Placidus pairs, finding no order or Ascendant-side
 violations. These are development checks, not tests committed to the suite.
+
+## Saving
+
+Two skies (Synastry, Composite, Davison) and Four Pillars are each a chart room with the
+same explicit, opt-in saving as the rest of `/charts/` (`chart-rooms.js`; see
+`docs/ACCOUNTS.md`, "Saved charts"). Saving a two-person chart stores `payload.birth`
+(the reader's own chart) and `payload.partner` (the other person's, the same shape),
+beside the note "Saving stores both people’s birth details."; the save button's kind
+follows whichever method — Synastry, Composite or Davison — is currently in view.
+Reopening restores both people's birth details, recomputes both charts and shows the
+saved method, without touching the live profile; "Use my chart" then swaps the reader's
+own chart back to the live profile while leaving the partner as reopened. Saving a Four
+Pillars reading stores `payload.birth` and `payload.pillar` (the selected pillar, `0`–
+`3`), beside the note "Saving stores the birth details this chart was cast from."
+Reopening restores the birth details and reselects that pillar.
 
 ## BaZi conventions
 

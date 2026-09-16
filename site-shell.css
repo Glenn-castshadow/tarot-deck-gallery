@@ -6,7 +6,6 @@
 .masthead .account-button:hover, .masthead .account-button:focus-visible { background: var(--gold-light); color: var(--plum-dark); }
 .brand-lockup { display: grid; justify-items: center; }
 .brand-lockup img { display: block; width: min(300px, 66vw); height: auto; filter: drop-shadow(0 0 22px rgba(255,220,160,.22)); }
-.eyebrow { justify-content: center; color: var(--gold-light); }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 30px; }
 .hero-cta { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 10px 26px; border: 1px solid var(--gold-light); border-radius: 3px; background: var(--gold-light); color: var(--plum-dark); font-size: 15px; font-weight: 600; text-decoration: none; transition: .2s ease; }
 .hero-cta--ghost { background: rgba(20,9,30,.35); color: var(--cream); }
@@ -36,7 +35,7 @@
 .storage-notice a { color: var(--plum); }
 
 /* Compact masthead: topic pages carry the account bar, a smaller logo and the page title
-   instead of the hub's full hero (eyebrow, lede, hero actions and hero strip are absent). */
+   instead of the hub's full hero (lede, hero actions and hero strip are absent). */
 .masthead--compact { padding-bottom: 30px; }
 .masthead--compact .brand-lockup img { width: 160px; }
 .masthead--compact h1 { max-width: none; margin: 14px auto 0; font-size: clamp(15px, 1.6vw, 20px); letter-spacing: normal; }

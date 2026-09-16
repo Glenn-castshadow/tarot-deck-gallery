@@ -22,7 +22,6 @@
     return `<header class="masthead masthead--hero">
         <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="brand-lockup"><img src="/assets/ishtar-insights-logo-hero.webp" alt="Ishtar Insights lotus logo" width="1233" height="895"></div>
-        <div class="eyebrow"><span class="eyebrow-line"></span> Visual research library <span class="eyebrow-dot"></span> <span id="archive-total">32 decks</span> <span class="eyebrow-line"></span></div>
         <h1>A little clarity. A deeper connection.</h1>
         <p class="lede">Explore tarot, astrology, and the patterns that guide you.</p>
         <div class="hero-actions"><a class="hero-cta" href="/tarot/">Begin a reading <span aria-hidden="true">→</span></a><a class="hero-cta hero-cta--ghost" href="/charts/">Explore your birth sky</a></div>

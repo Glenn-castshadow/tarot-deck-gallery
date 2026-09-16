@@ -46,6 +46,17 @@ beside a print-mode border-color override for the same wrapper; `.acg-small-labe
 `.acg-eyebrow`, `.cx-missing`, `.cx-empty`, `.cx-profile-bar` and `.cx-error` are currently
 unstyled on that page.
 
+## Saving
+
+Jyotish is a chart room with the same explicit, opt-in saving as the rest of the atlas
+(`chart-rooms.js`; see `docs/ACCOUNTS.md`, "Saved charts"), loaded on `/eastern/` after
+`natal-engine.js`. Saving stores `payload.birth` (the birth details the sidereal chart
+was cast from), `payload.tab` (the open view — Rashi, Nakshatras, Dashas, Navamsa or
+Gochar) and `payload.gochar` (the selected Gochar date), beside the note "Saving stores
+the birth details this chart was cast from." Reopening restores the birth details,
+recomputes the sidereal chart and reopens on the tab it was saved from, without
+touching the live profile.
+
 ## Conventions
 
 ### Ayanamsa
@@ -293,9 +304,10 @@ blank in this environment:
   exactly (no horizontal overflow), and neighbouring sections (`#chart-in-time` and the
   rest of the atlas) remained present and were not hidden or altered by the Jyotish
   section's markup or styles.
-- The signed-in account state was not exercised: this section reads the saved birth
-  profile only and writes nothing back, so there is no signed-in-specific behaviour to
-  verify.
+- The signed-in account state was not exercised during this Task 2 check: at the time,
+  this section only read the saved birth profile, so there was no signed-in-specific
+  behaviour to verify. The C5b chart-saving project later added an explicit, signed-in
+  save/reopen path — see "Saving" above.
 
 ## Out of scope
 
