@@ -77,8 +77,8 @@
     if (!list) return;
     const data = await account.listReadings(page, {category: journalCategory});
     journalPage = data.page; journalPages = data.pages; journalReadings = data.readings;
-    // Three of the six category chips have no room registering their kinds yet, so an empty
-    // filtered view is the normal case. It must not read as an empty journal.
+    // A category filter can be empty even though the reader has readings in other categories;
+    // it must not read as an empty journal.
     const empty = $('#journal-empty');
     empty.hidden = data.count > 0;
     if (!data.count && journalCategory && !data.error) {

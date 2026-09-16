@@ -140,6 +140,12 @@
 
   if (birthdayOutput) {
     birthdayOutput.addEventListener("click", event => {
+      if (event.target.closest("[data-chart-live]")) {
+        restored = null;
+        renderPortrait(BirthProfile.current(), null);
+        birthdayOutput.querySelector("[data-save-reading]")?.focus({preventScroll: true});
+        return;
+      }
       const natalButton = event.target.closest("[data-open-natal]");
       if(natalButton && natalModel) {skyExplorer.openNatal(natalModel,natalButton,{kind:natalButton.dataset.openNatal,key:natalButton.dataset.natalKey});return;}
       const reportButton = event.target.closest("[data-natal-view]");
@@ -165,13 +171,7 @@
       }
     });
 
-    birthdayOutput.addEventListener("click", event => {
-      if (!event.target.closest("[data-chart-live]")) return;
-      restored = null;
-      renderPortrait(BirthProfile.current(), null);
-      birthdayOutput.querySelector("[data-save-reading]")?.focus({preventScroll: true});
-    });
-    if (typeof Rooms !== "undefined" && typeof ChartRooms !== "undefined") Rooms.register("natal", {
+    if (typeof Rooms !== "undefined") Rooms.register("natal", {
       label: "Birth chart", category: "charts",
       current: () => {
         const birth = restored ? restored.birth : ChartRooms.birthFromChart(natalModel);

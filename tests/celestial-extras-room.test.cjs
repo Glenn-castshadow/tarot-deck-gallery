@@ -20,7 +20,10 @@ function boot() {
   Rooms._reset();
   const root = el(), listeners = {};
   root.addEventListener = (type, fn) => { listeners[type] = fn; };
-  root.querySelector('#cx-partner-form').addEventListener = (type, fn) => { if (type === 'submit') listeners.submitPartner = () => fn({preventDefault() {}}); };
+  root.querySelector('#cx-partner-form').addEventListener = (type, fn) => {
+    if (type === 'submit') listeners.submitPartner = () => fn({preventDefault() {}});
+    if (type === 'input') listeners.inputPartner = (target = {id: 'cx-partner-date'}) => fn({target});
+  };
   root.querySelector('#cx-annual-year').value = '2026';
   const src = fs.readFileSync(path.join(__dirname, '../celestial-extras.js'), 'utf8');
   const picker = {selection: null, getSelection() { return this.selection; }, restore(v) { this.selection = v; }};
@@ -63,11 +66,14 @@ test('celestial extras registers the two-person rooms and BaZi, and readings rou
   assert.match(root.querySelector('#cx-synastry-output').innerHTML, /data-save-reading="synastry"[\s\S]*Saving stores both people’s birth details\./);
 
   // A load() the engine refuses while the live synastry chart is on screen must roll back everything
-  // it mutated on the way in: the partner form fields, not just chart/partner/method/tab.
+  // it mutated on the way in: the partner form fields, not just chart/partner/method/tab. Composite
+  // readiness is checked against the composite engine itself (item 3), not the synastry model, so
+  // the failure has to come from that engine now.
   const refused = ChartRooms.reading('composite', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), partner: {...partnerBirth, date: '1975-01-01'}}});
-  const originalSynastry = CelestialExtrasEngine.synastry;
-  CelestialExtrasEngine.synastry = (...args) => { CelestialExtrasEngine.synastry = originalSynastry; return {status: 'missing', message: 'x'}; };
-  assert.equal(Rooms.get('composite').load(refused), false, 'the engine refuses the restored synastry model');
+  const originalComposite = RelationshipChartsEngine.composite;
+  RelationshipChartsEngine.composite = () => ({status: 'missing', message: 'x'});
+  assert.equal(Rooms.get('composite').load(refused), false, 'the engine refuses the restored composite chart');
+  RelationshipChartsEngine.composite = originalComposite;
   assert.equal(root.querySelector('#cx-partner-date').value, '1982-07-04', 'the partner form is rolled back, not left on the refused payload');
   assert.deepEqual(picker.getSelection(), {latitude: 48.8566, longitude: 2.3522, timeZone: 'Europe/Paris', label: 'Paris, France'}, 'the picker selection is rolled back too');
   assert.equal(root.querySelector('.cx-custom-place').open, false, 'the custom-place details element is rolled back closed');
@@ -142,4 +148,58 @@ test('celestial extras registers the two-person rooms and BaZi, and readings rou
   listeners.click({target: {closest: () => ({dataset: {cxSample: ''}})}});
   assert.equal(Rooms.get('bazi').current(), null);
   assert.equal(Rooms.get('synastry').current(), null);
+});
+
+test('the partner form input listener keeps the restored banner while a two-person chart is open', () => {
+  const {root, listeners, api} = boot();
+  api.setBirthChart(chart);
+  const saved = ChartRooms.reading('composite', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), partner: partnerBirth}});
+  assert.equal(Rooms.get('composite').load(saved), true);
+  listeners.inputPartner();
+  assert.match(root.querySelector('#cx-synastry-output').innerHTML, /restored-chart[\s\S]*data-chart-live/, 'the reader can still return to their own chart while editing the partner form');
+});
+
+test('load() for composite and Davison checks the relationship chart itself, not the synastry model', () => {
+  const {root, listeners, api, picker} = boot();
+  api.setBirthChart(chart);
+  listeners.click({target: {closest: () => ({dataset: {cxTab: 'synastry'}})}});
+  root.querySelector('#cx-partner-date').value = '1982-07-04'; root.querySelector('#cx-partner-time').value = '08:00';
+  root.querySelector('#cx-partner-fold').value = '';
+  picker.selection = {latitude: 48.8566, longitude: 2.3522, timeZone: 'Europe/Paris', label: 'Paris, France'};
+  listeners.submitPartner();
+  assert.equal(Rooms.get('synastry').current().kind, 'synastry', 'synastryModel is ready before the failing load');
+
+  const before = root.querySelector('#cx-partner-date').value;
+  const saved = ChartRooms.reading('composite', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), partner: partnerBirth}});
+  const originalComposite = RelationshipChartsEngine.composite;
+  // Not self-resetting after one call: load() renders the composite chart (which calls the
+  // engine once) before its own readiness check calls it again.
+  RelationshipChartsEngine.composite = () => ({status: 'error', message: 'x'});
+  const result = Rooms.get('composite').load(saved);
+  RelationshipChartsEngine.composite = originalComposite;
+
+  assert.equal(result, false, 'the composite engine refusal must fail the load even though synastry is ready');
+  assert.equal(root.querySelector('#cx-partner-date').value, before, 'the partner form is rolled back');
+  assert.doesNotMatch(root.querySelector('#cx-synastry-output').innerHTML, /restored-chart/, 'no restored banner from a rolled-back load');
+});
+
+test('load() for synastry checks the synastry model, rolls back on refusal, and reopens with the banner naming both people', () => {
+  const {root, api} = boot();
+  api.setBirthChart(chart);
+  const saved = ChartRooms.reading('synastry', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), partner: partnerBirth}});
+
+  // A refused synastry model must roll back everything load() mutated on the way in.
+  const before = root.querySelector('#cx-partner-date').value;
+  const originalSynastry = CelestialExtrasEngine.synastry;
+  CelestialExtrasEngine.synastry = (...args) => { CelestialExtrasEngine.synastry = originalSynastry; return {status: 'missing', message: 'x'}; };
+  assert.equal(Rooms.get('synastry').load(saved), false, 'the synastry engine refusal must fail the load');
+  assert.equal(root.querySelector('#cx-partner-date').value, before, 'the partner form is rolled back');
+  assert.doesNotMatch(root.querySelector('#cx-synastry-output').innerHTML, /restored-chart/, 'no restored banner from a rolled-back load');
+
+  // A valid synastry reopen succeeds and shows the banner naming both people.
+  assert.equal(Rooms.get('synastry').load(saved), true);
+  const out = root.querySelector('#cx-synastry-output').innerHTML;
+  assert.match(out, /class="restored-chart" role="status">Saved chart · cast for 29 November 1985 at 09:15, London, United Kingdom and 4 July 1982 at 08:00, Paris, France/);
+  assert.match(out, /data-chart-live="synastry"/);
+  assert.deepEqual(Rooms.get('synastry').current().payload, saved.payload);
 });

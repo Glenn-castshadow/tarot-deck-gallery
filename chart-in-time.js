@@ -206,13 +206,22 @@ const ChartInTime = (() => {
         usingSample = !usingSample;
         chart = usingSample ? NatalEngine.calculate(sample) : savedChart;
         offsets.solar = 0; offsets.lunar = 0;
+        lastModel.solar = lastModel.lunar = lastModel.progressed = null;   // see setBirthChart
         targetFloor(); profileStatus(); renderActive();
       }
       if ('citStep' in data) { offsets[tab] += Number(data.citStep); renderActive(); }
       if ('citNow' in data) { offsets[tab] = 0; renderActive(); }
       if ('citToday' in data) { $('#cit-target').value = today(); renderProgressed(); }
       if ('citPlaceReset' in data) { if (restored.active()) restored.set({...restored.get(), place: null}); resetToBirthplace(); onLocationChange?.(); }
-      if ('chartLive' in data) { restored.clear(); chart = usingSample ? chart : savedChart; targetFloor(); profileStatus(); renderActive(); root.querySelector(`#cit-${tab}-output [data-save-reading]`)?.focus({preventScroll: true}); }
+      if ('chartLive' in data) {
+        restored.clear();
+        chart = usingSample ? chart : savedChart;
+        offsets.solar = 0; offsets.lunar = 0;
+        $('#cit-target').value = today(); $('#cit-method').value = 'secondary';
+        lastModel.solar = lastModel.lunar = lastModel.progressed = null;   // see setBirthChart
+        targetFloor(); profileStatus(); renderActive();
+        root.querySelector(`#cit-${tab}-output [data-save-reading]`)?.focus({preventScroll: true});
+      }
     });
 
     root.addEventListener('change', event => {
@@ -244,7 +253,7 @@ const ChartInTime = (() => {
     });
 
     targetFloor(); profileStatus(); renderActive();
-    if (typeof Rooms !== 'undefined' && typeof ChartRooms !== 'undefined') {
+    if (typeof Rooms !== 'undefined') {
       for (const [kind, label] of [['solar-return', 'Solar return'], ['lunar-return', 'Lunar return'], ['progressed', 'Progressed chart']]) {
         Rooms.register(kind, {label, category: 'charts', current: () => current(kind), load: reading => load(kind, reading)});
       }
@@ -254,6 +263,8 @@ const ChartInTime = (() => {
         savedChart = value?.status === 'ready' ? value : null;
         if (restored.active()) return;
         if (!usingSample) chart = savedChart;
+        // A hidden tab's current() must not pair a new birth with an old model.
+        lastModel.solar = lastModel.lunar = lastModel.progressed = null;
         if (!chosenPlace() && chart?.location?.label) $('#cit-place').value = chart.location.label;
         targetFloor(); profileStatus(); renderActive();
       },

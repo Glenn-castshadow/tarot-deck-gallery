@@ -384,6 +384,17 @@ const Horary = (() => {
       let candidates;
       try { candidates = NatalEngine.localTimeCandidates(payload.moment.date, payload.moment.time, location.timeZone); } catch { return false; }
       if (!candidates.length) return false;
+      // Snapshot everything this call is about to overwrite, so a failed cast (the
+      // engine refuses the restored moment) can put the form and reading back as they were.
+      const before = {
+        question: $('#ho-question-text').value, house: $('#ho-house-matter').value,
+        date: $('#ho-date').value, time: $('#ho-time').value, dateTouched,
+        place: $('#ho-place').value, manual: $('#ho-manual').checked, manualFieldsDisabled: $('#ho-manual-fields').disabled,
+        customPlaceOpen: $('.ho-custom-place').open,
+        lat: $('#ho-lat').value, lon: $('#ho-lon').value, zone: $('#ho-zone').value,
+        castStatus: $('#ho-cast-status').textContent,
+        result, lastCast, restoredMoment,
+      };
       $('#ho-question-text').value = typeof reading.question === 'string' ? reading.question.slice(0, 240) : '';
       $('#ho-house-matter').value = String(payload.house);
       $('#ho-date').value = payload.moment.date; $('#ho-time').value = payload.moment.time; dateTouched = true;
@@ -391,7 +402,16 @@ const Horary = (() => {
       $('#ho-manual').checked = true; $('#ho-manual-fields').disabled = false; $('.ho-custom-place').open = true;
       // Strings, as a real input would hold: resolvedLocation() trims them on the next cast.
       $('#ho-lat').value = String(payload.moment.place.lat); $('#ho-lon').value = String(payload.moment.place.lon); $('#ho-zone').value = payload.moment.place.tz;
-      if (!castNow({instant: candidates[0].utc, location, houseMatter: payload.house, dateValue: payload.moment.date, timeValue: payload.moment.time})) return false;
+      if (!castNow({instant: candidates[0].utc, location, houseMatter: payload.house, dateValue: payload.moment.date, timeValue: payload.moment.time})) {
+        $('#ho-question-text').value = before.question; $('#ho-house-matter').value = before.house;
+        $('#ho-date').value = before.date; $('#ho-time').value = before.time; dateTouched = before.dateTouched;
+        $('#ho-place').value = before.place;
+        $('#ho-manual').checked = before.manual; $('#ho-manual-fields').disabled = before.manualFieldsDisabled; $('.ho-custom-place').open = before.customPlaceOpen;
+        $('#ho-lat').value = before.lat; $('#ho-lon').value = before.lon; $('#ho-zone').value = before.zone;
+        $('#ho-cast-status').textContent = before.castStatus;
+        result = before.result; lastCast = before.lastCast; restoredMoment = before.restoredMoment;
+        return false;
+      }
       restoredMoment = payload.moment;
       $('#ho-cast-status').textContent = `Saved chart, cast for ${location.label || 'the saved place'}.`;
       selectTab('question');
@@ -399,7 +419,7 @@ const Horary = (() => {
       return true;
     }
 
-    if (typeof Rooms !== 'undefined' && typeof ChartRooms !== 'undefined') Rooms.register('horary', {label: 'Horary chart', category: 'charts', current, load});
+    if (typeof Rooms !== 'undefined') Rooms.register('horary', {label: 'Horary chart', category: 'charts', current, load});
 
     return {
       setBirthChart(value) {

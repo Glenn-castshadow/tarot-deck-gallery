@@ -14,6 +14,17 @@ const el = () => { const cache = {}; return {innerHTML: '', textContent: '', val
 const chart = NatalEngine.calculate({birthday: '1990-07-15', time: '14:30', location: {latitude: 40.7143, longitude: -74.006, timeZone: 'America/New_York', label: 'New York, United States'}});
 const other = NatalEngine.calculate({birthday: '1985-11-29', time: '09:15', location: {latitude: 51.5085, longitude: -0.1257, timeZone: 'Europe/London', label: 'London, United Kingdom'}});
 
+function boot() {
+  Rooms._reset();
+  const root = el(), listeners = {};
+  root.addEventListener = (type, fn) => { listeners[type] = fn; };
+  const src = fs.readFileSync(path.join(__dirname, '../jyotish.js'), 'utf8');
+  const Jyotish = new Function('JyotishEngine', 'JyotishText', 'JyotishChart', 'NatalEngine', 'Rooms', 'ChartRooms', 'document', src + '\nreturn Jyotish;')
+    (JyotishEngine, JyotishText, {render: () => ''}, NatalEngine, Rooms, ChartRooms, {querySelector: () => el()});
+  const api = Jyotish.attach(root);
+  return {root, listeners, api};
+}
+
 test('the Jyotish room saves the birth, the tab and the Gochar date, and reopens them', () => {
   Rooms._reset();
   const root = el(), listeners = {};
@@ -57,4 +68,48 @@ test('the Jyotish room saves the birth, the tab and the Gochar date, and reopens
   assert.deepEqual(room.current().payload.birth, ChartRooms.birthFromChart(chart));
   listeners.click({target: {closest: () => ({dataset: {jySample: ''}})}});
   assert.equal(room.current(), null);
+});
+
+test('load() resets the chart format to south', () => {
+  const {root, listeners, api} = boot();
+  const room = Rooms.get('jyotish');
+  api.setBirthChart(chart);
+  listeners.click({target: {closest: () => ({dataset: {jyFormat: 'north'}})}});
+  assert.match(root.querySelector('#jy-rashi').innerHTML, /data-jy-format="north" aria-pressed="true"/, 'the north toggle is active before reopening');
+
+  const saved = ChartRooms.reading('jyotish', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), tab: 'rashi', gochar: '2026-03-01'}});
+  assert.equal(room.load(saved), true);
+  assert.match(root.querySelector('#jy-rashi').innerHTML, /data-jy-format="south" aria-pressed="true"/, 'reopening a chart resets the format toggle to south, the attach default');
+});
+
+test('the Gochar restored banner renders above the controls, not inside the output', () => {
+  const {root, api} = boot();
+  api.setBirthChart(chart);
+  const room = Rooms.get('jyotish');
+  const saved = ChartRooms.reading('jyotish', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), tab: 'gochar', gochar: '2026-03-01'}});
+  assert.equal(room.load(saved), true);
+  assert.match(root.querySelector('.jy-gochar-banner').innerHTML, /restored-chart/, 'the banner is rendered into its own div above the intro and date controls');
+  assert.doesNotMatch(root.querySelector('#jy-gochar-output').innerHTML, /restored-chart/, 'the output itself carries no banner');
+  assert.match(root.innerHTML, /<section id="jy-gochar"[^>]*><div class="jy-gochar-banner">/, 'the banner div is the template\'s first child of the Gochar section');
+});
+
+test('"Use my chart" and the sample toggle clear a stale Gochar banner even from another tab', () => {
+  const {root, listeners, api} = boot();
+  api.setBirthChart(chart);
+  const room = Rooms.get('jyotish');
+  const saved = ChartRooms.reading('jyotish', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), tab: 'gochar', gochar: '2026-03-01'}});
+  assert.equal(room.load(saved), true);
+  assert.match(root.querySelector('.jy-gochar-banner').innerHTML, /restored-chart/, 'sanity: the banner is showing before the gate clears');
+
+  // The Gochar tab is hidden now, so only renderGochar (not run again yet) would
+  // normally refresh its banner div -- chartLive must clear it directly.
+  listeners.click({target: {closest: () => ({dataset: {jyTab: 'rashi'}})}});
+  listeners.click({target: {closest: () => ({dataset: {chartLive: 'jyotish'}})}});
+  assert.equal(root.querySelector('.jy-gochar-banner').innerHTML, '', 'chartLive clears the hidden Gochar banner too');
+
+  // Same story for the sample toggle, reopened and switched away again.
+  assert.equal(room.load(saved), true);
+  listeners.click({target: {closest: () => ({dataset: {jyTab: 'rashi'}})}});
+  listeners.click({target: {closest: () => ({dataset: {jySample: ''}})}});
+  assert.equal(root.querySelector('.jy-gochar-banner').innerHTML, '', 'the sample toggle clears the hidden Gochar banner too');
 });

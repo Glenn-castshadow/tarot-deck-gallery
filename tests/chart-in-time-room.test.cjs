@@ -113,3 +113,29 @@ test('a load() the engine refuses restores the previously active tab and chart',
   assert.notEqual(Rooms.get('solar-return').current(), null, 'the live solar reading still works');
   assert.match(root.querySelector('.cit-profile-status').textContent, /^Your birth sky/, 'the live profile status line is back');
 });
+
+test('"Use my chart" resets the offset, target date and progression method to their live defaults', () => {
+  const {listeners, api} = boot();
+  api.setBirthChart(chart);
+
+  const savedLunar = ChartRooms.reading('lunar-return', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), target: '2026-03-01', offset: 2, place: null}});
+  assert.equal(Rooms.get('lunar-return').load(savedLunar), true);
+  listeners.click({target: {closest: () => ({dataset: {chartLive: 'lunar-return'}})}});
+  assert.equal(Rooms.get('lunar-return').current().payload.offset, 0, 'the lunar offset resets to 0');
+
+  const savedProg = ChartRooms.reading('progressed', {payload: {v: 1, birth: ChartRooms.birthFromChart(other), target: '2026-03-01', method: 'tertiary'}});
+  assert.equal(Rooms.get('progressed').load(savedProg), true);
+  listeners.click({target: {closest: () => ({dataset: {chartLive: 'progressed'}})}});
+  assert.equal(Rooms.get('progressed').current().payload.method, 'secondary', 'the progression method resets to secondary');
+});
+
+test('setBirthChart invalidates lastModel for every kind, so a hidden tab does not pair a new birth with an old model', () => {
+  const {listeners, api} = boot();
+  api.setBirthChart(chart);
+  assert.notEqual(Rooms.get('solar-return').current(), null, 'lastModel.solar is set from the initial render on the solar tab');
+  listeners.click({target: {closest: () => ({dataset: {citTab: 'lunar'}})}});
+  api.setBirthChart(other);
+  assert.equal(Rooms.get('solar-return').current(), null, 'a hidden tab must not pair the new birth with the old model');
+  listeners.click({target: {closest: () => ({dataset: {citTab: 'solar'}})}});
+  assert.notEqual(Rooms.get('solar-return').current(), null, 'rendering the solar tab again recomputes lastModel.solar');
+});

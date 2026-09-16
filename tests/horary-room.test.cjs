@@ -80,3 +80,33 @@ test('the horary room saves the moment, the house and the question, and reopens 
   assert.equal(room.load({payload: {v: 1, moment: {date: '2026-13-01', time: '14:02', place: saved.payload.moment.place}, house: 7}}), false);
   assert.equal(room.current().payload.house, 2);
 });
+
+test('a load() whose cast fails restores the form and reading exactly as they were', () => {
+  Rooms._reset();
+  const root = el(), listeners = {};
+  root.addEventListener = (type, fn) => { listeners[type] = fn; };
+  const src = fs.readFileSync(path.join(__dirname, '../horary.js'), 'utf8');
+  const Horary = new Function('BirthplaceSearch', 'HoraryEngine', 'HoraryText', 'HoraryChart', 'ClassicalEngine', 'NatalEngine', 'Rooms', 'ChartRooms', src + '\nreturn Horary;')
+    ({attach: () => ({getSelection: () => null, restore() {}})}, HoraryEngine, HoraryText, {render: () => ''}, ClassicalEngine, NatalEngine, Rooms, ChartRooms);
+  Horary.attach(root);
+  const room = Rooms.get('horary');
+
+  const first = ChartRooms.reading('horary', {payload: {v: 1, moment: {date: '2026-09-16', time: '14:02', place: {name: 'London, United Kingdom', lat: 51.5085, lon: -0.1257, tz: 'Europe/London'}}, house: 7}, question: 'Will the roof hold through winter?', layout: 'regiomontanus'});
+  assert.equal(room.load(first), true, 'the first reopen succeeds');
+  const questionBefore = root.querySelector('#ho-question-text').value;
+  const dateBefore = root.querySelector('#ho-date').value;
+  const castStatusBefore = root.querySelector('#ho-cast-status').textContent;
+  const payloadBefore = room.current().payload;
+
+  const second = ChartRooms.reading('horary', {payload: {v: 1, moment: {date: '2026-01-01', time: '09:00', place: {name: 'Paris, France', lat: 48.8566, lon: 2.3522, tz: 'Europe/Paris'}}, house: 3}, question: 'A different question entirely', layout: 'regiomontanus'});
+  const originalCast = HoraryEngine.cast;
+  HoraryEngine.cast = (...args) => { HoraryEngine.cast = originalCast; return {status: 'missing', message: 'x'}; };
+  let result;
+  try { result = room.load(second); } finally { HoraryEngine.cast = originalCast; }
+
+  assert.equal(result, false, 'the failed cast must refuse the load');
+  assert.equal(root.querySelector('#ho-question-text').value, questionBefore, 'the question textarea is rolled back');
+  assert.equal(root.querySelector('#ho-date').value, dateBefore, 'the date field is rolled back');
+  assert.equal(root.querySelector('#ho-cast-status').textContent, castStatusBefore, 'the cast status line is rolled back');
+  assert.deepEqual(room.current().payload, payloadBefore, 'the previously reopened reading is still current');
+});

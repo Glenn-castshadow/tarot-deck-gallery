@@ -169,7 +169,9 @@ const CelestialExtras = (() => {
       restored.set({kind, birth: payload.birth, partnerBirth: kind === 'bazi' ? null : payload.partner});
       if (kind === 'bazi') { pillarIndex = payload.pillar; openGod = ''; profileStatus(); selectTab('bazi'); }
       else { partner = partnerNatal; fillPartnerForm(payload.partner); selectMethod(kind); profileStatus(); selectTab('synastry'); }
-      const ok = kind === 'bazi' ? CelestialExtrasEngine.bazi(chart).status === 'ready' : synastryModel?.status === 'ready';
+      const ok = kind === 'bazi' ? CelestialExtrasEngine.bazi(chart).status === 'ready'
+        : kind === 'composite' || kind === 'davison' ? RelationshipChartsEngine[kind](chart, partner).status === 'ready'
+        : synastryModel?.status === 'ready';
       if (!ok) {
         restored.clear(); ({chart, partner, sample, method, pillarIndex, openGod} = before);
         if (kind !== 'bazi') {
@@ -216,7 +218,7 @@ const CelestialExtras = (() => {
       if(event.target.id==='cx-luck-sex') {luckSex=event.target.value;renderBazi();$('#cx-luck-sex').focus({preventScroll:true});}
     });
     root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.matches('[data-cx-annual-year]')){event.preventDefault();applyAnnualInput(event.target);}});
-    $('#cx-partner-form').addEventListener('input',event=>{partner=null;$('#cx-synastry-output').innerHTML='<p class="cx-empty">Choose “Compare our skies” to use these details.</p>';if(event.target.id!=='cx-partner-fold')$('#cx-partner-fold').value='';});
+    $('#cx-partner-form').addEventListener('input',event=>{partner=null;$('#cx-synastry-output').innerHTML=`${restoredBanner(method)}<p class="cx-empty">Choose “Compare our skies” to use these details.</p>`;if(event.target.id!=='cx-partner-fold')$('#cx-partner-fold').value='';});
     $('#cx-partner-form').addEventListener('invalid',event=>{const detail=event.target.closest('details');if(detail)detail.open=true;},true);
     $('#cx-partner-form').addEventListener('submit',event=>{
       event.preventDefault();

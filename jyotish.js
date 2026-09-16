@@ -22,7 +22,7 @@ const Jyotish = (() => {
       <section id="jy-nakshatras" class="jy-view" aria-live="polite" hidden></section>
       <section id="jy-dashas" class="jy-view" aria-live="polite" hidden></section>
       <section id="jy-navamsa" class="jy-view" aria-live="polite" hidden></section>
-      <section id="jy-gochar" class="jy-view" aria-live="polite" hidden><p class="jy-gochar-intro">${esc(JyotishText.gochar.intro)}</p><div class="jy-date-controls"><button type="button" data-jy-day="-1" aria-label="Previous day">←</button><label for="jy-gochar-date" class="sr-only">Gochar date</label><input id="jy-gochar-date" type="date" value="${today()}" min="1901-01-01" max="2100-12-31"><button type="button" data-jy-day="1" aria-label="Next day">→</button><button type="button" data-jy-today>Today</button></div><div id="jy-gochar-output"></div></section>`;
+      <section id="jy-gochar" class="jy-view" aria-live="polite" hidden><div class="jy-gochar-banner"></div><p class="jy-gochar-intro">${esc(JyotishText.gochar.intro)}</p><div class="jy-date-controls"><button type="button" data-jy-day="-1" aria-label="Previous day">←</button><label for="jy-gochar-date" class="sr-only">Gochar date</label><input id="jy-gochar-date" type="date" value="${today()}" min="1901-01-01" max="2100-12-31"><button type="button" data-jy-day="1" aria-label="Next day">→</button><button type="button" data-jy-today>Today</button></div><div id="jy-gochar-output"></div></section>`;
 
     const $ = selector => root.querySelector(selector);
     let savedChart = null, chart = null, usingSample = false, tab = 'rashi', format = 'south', selectedMaha = null, selectedGraha = null, gocharDay = today();
@@ -43,7 +43,10 @@ const Jyotish = (() => {
 
     const restoredBanner = () => restored.active() ? ChartRooms.banner(`Saved chart · cast for ${ChartRooms.describe(restored.get().birth)}`, {live: 'jyotish'}) : '';
     const saveControl = () => usingSample ? '' : ChartRooms.saveControl('jyotish', ChartRooms.NOTES.one);
-    const framed = html => `${restoredBanner()}${html}${saveControl()}`;
+    // Gochar renders the banner into its own div above the intro and date controls, ahead
+    // of the output that framed() otherwise puts it at the top of, so {banner: false} leaves
+    // it out of framed()'s own markup there while the other four tabs keep the one code path.
+    const framed = (html, {banner = true} = {}) => `${banner ? restoredBanner() : ''}${html}${saveControl()}`;
 
     function chartArt(houses, lagnaSignIndex, model, title) {
       const abbreviations = Object.fromEntries(model.grahas.map(g => [g.name, g.abbreviation]));
@@ -135,6 +138,7 @@ const Jyotish = (() => {
 
     function renderGochar() {
       const out = $('#jy-gochar-output'), T = JyotishText.gochar;
+      $('.jy-gochar-banner').innerHTML = restoredBanner();
       try {
         const model = JyotishEngine.gochar(chart, gocharDay);
         if (model.status === 'missing') { out.innerHTML = missing(model.message); return; }
@@ -146,7 +150,7 @@ const Jyotish = (() => {
           <p class="jy-method-note">Positions for 12:00 UTC on ${esc(dateFmt(`${model.day}T12:00:00Z`))}.</p>
           ${model.sadeSati ? `<div class="jy-sade-sati"><p class="acg-small-label">Sade Sati · Saturn in the ${esc(ordinal(saturn.house))} sign from the natal Moon</p><p>${esc(T.sadeSati)}</p></div>` : ''}
           <div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Rashi</th><th scope="col">Degrees</th><th scope="col">From the Moon</th><th scope="col">Tradition</th></tr></thead><tbody>${rows}</tbody></table></div>
-          <details class="jy-conventions"><summary>Method &amp; conventions</summary><p>${esc(T.method).replace('Phaladeepika', '<em>Phaladeepika</em>')}</p><div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Supportive houses from the Moon</th></tr></thead><tbody>${scheme}</tbody></table></div></details>`);
+          <details class="jy-conventions"><summary>Method &amp; conventions</summary><p>${esc(T.method).replace('Phaladeepika', '<em>Phaladeepika</em>')}</p><div class="cx-table-wrap"><table><thead><tr><th scope="col">Graha</th><th scope="col">Supportive houses from the Moon</th></tr></thead><tbody>${scheme}</tbody></table></div></details>`, {banner: false});
       } catch (error) { out.innerHTML = `<p class="cx-error" role="alert">${esc(error.message)}</p>`; }
     }
 
@@ -168,7 +172,7 @@ const Jyotish = (() => {
       if (!payload) return false;
       const natal = ChartRooms.natalFrom(payload.birth);
       if (natal.status !== 'ready' || JyotishEngine.sidereal(natal).status !== 'ready') return false;
-      usingSample = false; chart = natal; selectedMaha = null; selectedGraha = null;
+      usingSample = false; chart = natal; selectedMaha = null; selectedGraha = null; format = 'south';
       restored.set({birth: payload.birth});
       gocharDay = payload.gochar; $('#jy-gochar-date').value = gocharDay;
       profileStatus(); selectTab(payload.tab);
@@ -197,9 +201,18 @@ const Jyotish = (() => {
         usingSample = !usingSample;
         chart = usingSample ? NatalEngine.calculate(sample) : savedChart;
         selectedMaha = null; selectedGraha = null;
+        // The Gochar tab may be hidden right now; its banner div only gets refreshed
+        // by renderGochar, so clear it here or it keeps showing a stale saved chart.
+        $('.jy-gochar-banner').innerHTML = restoredBanner();
         profileStatus(); renderActive();
       }
-      if ('chartLive' in data) { restored.clear(); chart = savedChart; selectedMaha = null; selectedGraha = null; profileStatus(); renderActive(); $(`#jy-${tab}`).querySelector('[data-save-reading]')?.focus({preventScroll:true}); }
+      if ('chartLive' in data) {
+        restored.clear(); chart = savedChart; selectedMaha = null; selectedGraha = null;
+        // The Gochar tab may be hidden right now; its banner div only gets refreshed
+        // by renderGochar, so clear it here or it keeps showing a stale saved chart.
+        $('.jy-gochar-banner').innerHTML = restoredBanner();
+        profileStatus(); renderActive(); $(`#jy-${tab}`).querySelector('[data-save-reading]')?.focus({preventScroll:true});
+      }
       if ('jyFormat' in data) { format = data.jyFormat; renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-format="${format}"]`)?.focus({preventScroll:true}); }
       if ('jyMaha' in data) { selectedMaha = Number(data.jyMaha); renderActive(); $(`#jy-${tab}`).querySelector(`[data-jy-maha="${selectedMaha}"]`)?.focus({preventScroll:true}); }
       if ('jyDay' in data) {
