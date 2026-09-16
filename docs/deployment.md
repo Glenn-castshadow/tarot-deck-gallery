@@ -1,5 +1,44 @@
 # VPS deployment
 
+## 2026-09-16 Numerology depth: karmic debt, lessons, passion and saving
+
+Deployed `fb1d616`. **Static only** — no backend change; the server already accepts the
+`numerology` kind.
+
+Released as `/opt/tarot-game/releases/20260916-numerology-depth-fb1d616`, a `cp -al` hardlink copy
+of `20260914-eastern-depth-3c225dd` with four files replaced: `numerology/index.html`,
+`numerology-engine.js`, `numerology.js` and `numerology.css`. Gated on `current` and on the sha256
+of all four. Previous release retained for rollback:
+`ln -sfn /opt/tarot-game/releases/20260914-eastern-depth-3c225dd /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+Change (C4a):
+- **Karmic debt:** 13, 14, 16 and 19 in a number's reduction chain, shown for Life Path and Birth
+  Day and for the three Pythagorean name numbers.
+- **Karmic lessons and hidden passion:** Pythagorean only, with Hans Decoz's World Numerology pages
+  cited.
+- **Saving:** numerology readings now save to the journal (`Rooms.register('numerology')`). The
+  name is saved only when a valid name reading is open, and the other person's birth date only
+  when compared. A note beside the save button says which is stored. The summary never contains
+  the name.
+
+Suite 518 to 529. Conventions: `docs/NUMEROLOGY.md`.
+
+Cache keys: `numerology-engine.js?v=3`, `numerology.js?v=5` and `numerology.css?v=3`, on
+`/numerology/` only. The engine key was missed by the plan and caught by the whole-branch review
+before deploy.
+
+Validation after the switch:
+- All eight pages and the three assets return 200 over HTTPS.
+- The keys are confirmed on `/numerology/`.
+- The served engine carries the karmic functions, and the served studio registers the room and
+  cites the karmic debt source.
+
+In a browser at ishtarinsights.com, a guest profile born 9 October 1989 shows Life Path 19/1 karmic
+debt. The numerology room is registered, the summary is "Life Path 1", the save button reads "Sign
+in to save this reading", and there were no console errors. A signed-in save was not exercised,
+since that needs an account login; the save and load paths were checked locally against the room
+API.
+
 ## 2026-09-14 Eastern depth: the Chinese year, the annual pillar and Gochar
 
 Deployed `3c225dd`. **Static only** — no backend change, no migration, no service restart.
