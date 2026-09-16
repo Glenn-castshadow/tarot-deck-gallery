@@ -1,5 +1,51 @@
 # VPS deployment
 
+## 2026-09-16 Chart saving, part B, and the hero line
+
+Deployed `ef6f6f5`. **Static only.** The `composite` and `davison` kinds shipped server-side with C5a.
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-chart-saving-b-ef6f6f5`, a `cp -al` hardlink copy of
+  `20260916-chart-saving-a57e863`.
+- Fourteen files were replaced (`chart-rooms.js`, `celestial-extras.js`, `jyotish.js`, `site-shell.js`,
+  `site-shell.css`, `deck-archive.js` and all eight pages' HTML); nothing was added.
+- The deploy was gated on `current`, on the sha256 of the fourteen replaced files (taken from `main`
+  before the merge; all matched the live release), and on the backend's `kinds.py` containing `davison`.
+  Two must-be-absent checks confirmed the served `site-shell.js` no longer contains "Visual research
+  library" and `deck-archive.js` no longer references `archive-total`.
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-chart-saving-a57e863 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (C5b).** Synastry, composite and Davison charts and a Four Pillars reading save from `/charts/`,
+and a Jyotish chart from `/eastern/`, and reopen from the journal as the chart they were. The Two skies
+save button follows the method in view; reopening a two-person chart fills the partner form with the saved
+second person, and "Use my chart" keeps that partner. Every kind in `readings/kinds.py` now has a
+registered room, which completes Part B (universal saving) of the site-expansion program. See
+`docs/ACCOUNTS.md` "Saved charts".
+
+**Also.** The "Visual research library · 32 decks" line is gone from the home page hero (Glenn's
+request), with its CSS rule and the guarded count update in `deck-archive.js`.
+
+**Final-review fixes worth noting.** The partner form's privacy line still said the second person's
+details "are not saved"; it now reads "saved only if you save the chart", pinned by a test. A partner
+swap on a reopened chart used to save the old partner; the submit handler now clears the saved partner
+from the restored gate.
+
+Suite 555 to 558.
+
+**Cache keys.** `chart-rooms.js?v=2` on charts and eastern; `celestial-extras.js?v=6`; `jyotish.js?v=3`;
+`site-shell.js?v=6` and `site-shell.css?v=4` on all eight pages; `deck-archive.js?v=4` on tarot.
+
+**Validation after the switch.**
+- All eight pages and the six changed assets return 200; every key and needle is confirmed on the
+  served files (each needle checked with `git show ef6f6f5:<file> | grep -cF` first).
+- In a browser at ishtarinsights.com: the hero renders without the eyebrow; `/charts/` registers nine
+  rooms, the Four Pillars summary reads "Day pillar 辛巳 · Xin Si", the partner privacy line reads
+  "saved only if you save the chart", and a reopened Davison chart shows both people in its banner;
+  `/eastern/` registers `jyotish`, shows the save control on the rashi tab, and a reopened chart lands
+  on its saved navamsa tab with its banner; the only console error is the signed-out session check.
+- Signed-in saving and reopening through the journal were not exercised (they need Glenn's login).
+
 ## 2026-09-16 Chart saving, part A
 
 Deployed `a57e863` in two stages, backend first. The frontend posts two new kinds, so the server
