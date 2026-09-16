@@ -43,13 +43,17 @@ const ChartInTime = (() => {
     const placePicker = BirthplaceSearch.attach({input:$('#cit-place'), list:$('#cit-place-list'), status:$('#cit-place-status')});
     let savedChart=null, chart=null, usingSample=false, tab='solar', manualLocation=null;
     const offsets = {solar:0, lunar:0};
+    const restored = ChartRooms.restoredGate();   // {birth, chart, place, reference} while a saved chart is open
+    const lastModel = {solar: null, lunar: null, progressed: null};
+    const KIND_OF = {solar: 'solar-return', lunar: 'lunar-return', progressed: 'progressed'};
+    const TAB_OF = {'solar-return': 'solar', 'lunar-return': 'lunar', progressed: 'progressed'};
     const missing = message => `<div class="cx-missing"><span aria-hidden="true">✧</span><p>${esc(message)}</p><button type="button" data-cit-birth>Add birth details ↑</button></div>`;
 
     // BirthplaceSearch sets input.value programmatically when a suggestion is
     // chosen, which fires no change event, so the selection is read on demand
     // rather than cached from an event. getSelection() self-invalidates when the
     // input text no longer matches the chosen city.
-    function place() { return manualLocation || placePicker.getSelection() || chart?.location || null; }
+    function place() { if (restored.active()) { const r = restored.get(); return r.place ? ChartRooms.locationFrom(r.place) : chart.location; } return manualLocation || placePicker.getSelection() || chart?.location || null; }
     function chosenPlace() { return manualLocation || placePicker.getSelection(); }
 
     // A target before the birth date would be a converse direction, which the engine
@@ -80,6 +84,7 @@ const ChartInTime = (() => {
     function profileStatus() {
       $('.cit-profile-status').textContent = usingSample
         ? 'Sample chart · illustrative birth details, not your personal chart.'
+        : restored.active() ? `Saved chart · ${chart.birthday} · ${chart.time} · ${chart.location.label || 'Selected place'}`
         : chart ? `Your birth sky · ${chart.birthday} · ${chart.time} · ${chart.location.label || 'Selected birthplace'}`
         : 'Use your birth details above to make these charts personal.';
       $('[data-cit-sample]').textContent = usingSample ? 'Use my profile' : 'Try a sample chart';
@@ -89,10 +94,11 @@ const ChartInTime = (() => {
       const output = $(`#cit-${kind}-output`);
       // Solar and lunar each carry their own label element.
       const label = $(`#cit-${kind}-label`);
-      const model = ChartInTimeEngine.returnChart({chart, kind, location:place(), index:offsets[kind], reference:new Date()});
+      const model = ChartInTimeEngine.returnChart({chart, kind, location:place(), index:offsets[kind], reference: restored.active() ? new Date(restored.get().reference + 'T12:00:00Z') : new Date()});
       // A previously chosen year must not linger beside an empty or failed state.
-      if (model.status === 'missing') { if (label) label.textContent = ''; output.innerHTML = missing(model.message); return; }
-      if (model.status === 'error') { if (label) label.textContent = ''; output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
+      if (model.status === 'missing') { if (label) label.textContent = ''; output.innerHTML = missing(model.message); lastModel[kind] = null; return; }
+      if (model.status === 'error') { if (label) label.textContent = ''; output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; lastModel[kind] = null; return; }
+      lastModel[kind] = model;
       const text = ChartInTimeText.method[kind];
       // The lunar return reads the Moon's house, and must use the Moon's own
       // text table — the solar wording is about a year and about identity.
@@ -101,20 +107,21 @@ const ChartInTime = (() => {
       const rising = ChartInTimeText.returnAscendant[model.chart.axes[0].sign];
       if (kind === 'solar') label.textContent = new Date(model.moment).getUTCFullYear();
       else label.textContent = new Date(model.moment).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
-      output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}Exact return: <strong>${esc(readable(model.moment))}</strong> · cast for ${esc(place().label || 'the selected place')}</p>
+      output.innerHTML = `${restoredBanner(KIND_OF[kind])}<p class="cit-moment">${usingSample?'Sample · ':''}Exact return: <strong>${esc(readable(model.moment))}</strong> · cast for ${esc(place().label || 'the selected place')}</p>
         <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:model.natalPoints, outer:model.chart.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Return chart'], centerSymbol:kind==='solar'?'☉':'☾', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Return chart</span></p></div>
         <div class="cit-reading"><p class="acg-small-label">Return ${esc(sun.name)} in house ${sun.house}</p><h5>${esc(house.title)}</h5><p>${esc(house.body)}</p><blockquote>${esc(house.prompt)}</blockquote>
         <p class="acg-small-label">Return Ascendant · ${esc(model.chart.axes[0].sign)}</p><h5>${esc(rising.title)}</h5><p>${esc(rising.body)}</p><blockquote>${esc(rising.prompt)}</blockquote></div></div>
         <details class="cx-placements"><summary>Return placements, houses &amp; angles</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Return sign</th><th>House</th><th>Birth sign</th></tr></thead><tbody>${model.chart.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${esc(point.symbol)} ${esc(point.name)}</th><td>${esc(point.sign)} ${esc(point.degrees)}</td><td>${point.house}</td><td>${esc(model.natalPoints[index].sign)} ${esc(model.natalPoints[index].degrees)}</td></tr>`).join('')}</tbody><tbody>${model.chart.axes.map(axis=>`<tr><th>${esc(axis.symbol)} ${esc(axis.name)}</th><td>${esc(axis.sign)} ${esc(axis.degrees)}</td><td colspan="2">—</td></tr>`).join('')}</tbody></table></div></details>
-        <details class="cx-method"><summary>About this ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
+        <details class="cx-method"><summary>About this ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>${saveControl(KIND_OF[kind])}`;
     }
 
     function renderProgressed() {
       const output = $('#cit-progressed-output');
       const method = $('#cit-method').value;
       const model = ChartInTimeEngine.progressedChart({chart, targetDate:$('#cit-target').value, method});
-      if (model.status === 'missing') { output.innerHTML = missing(model.message); return; }
-      if (model.status === 'error') { output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; return; }
+      if (model.status === 'missing') { output.innerHTML = missing(model.message); lastModel.progressed = null; return; }
+      if (model.status === 'error') { output.innerHTML = `<p class="cx-error" role="alert">${esc(model.message)}</p>`; lastModel.progressed = null; return; }
+      lastModel.progressed = model;
       const text = ChartInTimeText.method[method];
       const sun = model.points.find(point => point.name === 'Sun');
       const sunText = ChartInTimeText.progressedSunSign[sun.sign];
@@ -124,13 +131,64 @@ const ChartInTime = (() => {
       // pairing a planet-filtered array against chart.points would offset once the natal
       // chart carries a non-planet point before the last planet.
       const natalPlanets = chart.points.filter(point => point.kind === 'planet');
-      output.innerHTML = `<p class="cit-moment">${usingSample?'Sample · ':''}${esc(text.label)} for ${esc($('#cit-target').value)} · ephemeris instant <strong>${esc(readable(model.progressedInstant))}</strong>${model.arc===null?'':` · arc ${model.arc.toFixed(2)}°`}</p>
+      output.innerHTML = `${restoredBanner('progressed')}<p class="cit-moment">${usingSample?'Sample · ':''}${esc(text.label)} for ${esc($('#cit-target').value)} · ephemeris instant <strong>${esc(readable(model.progressedInstant))}</strong>${model.arc===null?'':` · arc ${model.arc.toFixed(2)}°`}</p>
         <div class="cx-comparison"><div class="cx-chart-art">${BiWheel.render({inner:chart.points.filter(p=>p.kind==='planet'), outer:model.points.filter(p=>p.kind==='planet'), contact:null, labels:['Birth sky','Progressed'], centerSymbol:'⟳', centerLabel:text.label.toUpperCase()})}<p class="cx-ring-key"><span>Birth sky</span><span>Progressed</span></p></div>
         <div class="cit-reading"><p class="acg-small-label">Progressed Sun · ${esc(sun.sign)} ${esc(sun.degrees)}</p><h5>${esc(sunText.title)}</h5><p>${esc(sunText.body)}</p><blockquote>${esc(sunText.prompt)}</blockquote>
         <p class="acg-small-label">Progressed lunation · ${esc(model.lunation.name)} · ${model.lunation.angle.toFixed(1)}°</p><h5>${esc(phase.title)}</h5><p>${esc(phase.body)}</p><blockquote>${esc(phase.prompt)}</blockquote></div></div>
         <div class="cit-contacts"><h5>Progressed contacts to the birth chart</h5>${contacts.length?`<ul>${contacts.map(item=>{const t=ChartInTimeText.contact[item.type];return `<li><strong>Progressed ${esc(item.a)} ${esc(item.symbol)} birth ${esc(item.b)}</strong> <span>${item.orb.toFixed(2)}° orb</span><p>This brings together symbolism around ${esc(ChartInTimeText.planetTheme[item.a])} and ${esc(ChartInTimeText.planetTheme[item.b])}. ${esc(t.body)}</p><blockquote>${esc(t.prompt)}</blockquote></li>`;}).join('')}</ul>`:'<p>No contacts within orb on this date. Try another date or method.</p>'}</div>
         <details class="cx-placements"><summary>Progressed placements</summary><div class="cx-table-wrap"><table><thead><tr><th>Point</th><th>Progressed</th><th>Birth</th></tr></thead><tbody>${model.points.filter(p=>p.kind==='planet').map((point,index)=>`<tr><th>${esc(point.symbol)} ${esc(point.name)}</th><td>${esc(point.sign)} ${esc(point.degrees)}</td><td>${esc(natalPlanets[index].sign)} ${esc(natalPlanets[index].degrees)}</td></tr>`).join('')}</tbody></table></div></details>
-        <details class="cx-method"><summary>About ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>`;
+        <details class="cx-method"><summary>About ${esc(text.label.toLowerCase())}</summary><p>${esc(text.summary)}</p><p>${esc(text.conventions)}</p><p>Symbolic interpretations support reflection and conversation, not predictions about events.</p></details>${saveControl('progressed')}`;
+    }
+
+    const restoredBanner = kind => restored.active() ? ChartRooms.banner(`Saved chart · cast for ${ChartRooms.describe(restored.get().birth)}`, {live: kind}) : '';
+    const saveControl = kind => usingSample ? '' : ChartRooms.saveControl(kind, ChartRooms.NOTES.one);
+    function selectTab(name) {
+      tab = name;
+      root.querySelectorAll('[data-cit-tab]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.citTab === tab)));
+      root.querySelectorAll('.cit-view').forEach(panel => panel.hidden = panel.id !== `cit-${tab}`);
+      renderActive();
+    }
+    function current(kind) {
+      const key = TAB_OF[kind];
+      if (!chart || usingSample || !lastModel[key]) return null;
+      const birth = restored.active() ? restored.get().birth : ChartRooms.birthFromChart(chart);
+      if (!birth) return null;
+      if (kind === 'progressed') {
+        const target = $('#cit-target').value, method = $('#cit-method').value;
+        return ChartRooms.reading(kind, {payload: {v: 1, birth, target, method}, summary: ChartRooms.summaries.progressed({target, method}), layout: method});
+      }
+      const r = restored.get();
+      const payload = {v: 1, birth, target: r ? r.reference : today(), offset: offsets[key], place: r ? r.place : (chosenPlace() ? ChartRooms.placeFrom(chosenPlace()) : null)};
+      const summary = kind === 'solar-return' ? ChartRooms.summaries.solarReturn(lastModel[key]) : ChartRooms.summaries.lunarReturn(lastModel[key]);
+      return ChartRooms.reading(kind, {payload, summary, layout: birth.houseSystem});
+    }
+    function load(kind, reading) {
+      const payload = ChartRooms.validate(kind, reading?.payload);
+      if (!payload) return false;
+      const natal = ChartRooms.natalFrom(payload.birth);
+      if (natal.status !== 'ready') return false;
+      const key = TAB_OF[kind];
+      // Snapshot everything this call is about to mutate, so a failed load (the
+      // engine refuses the restored chart) can put the page back exactly as it was.
+      const before = {usingSample, offset: offsets[key], chart, tab, target: $('#cit-target').value, method: $('#cit-method').value};
+      usingSample = false;
+      restored.set({birth: payload.birth, chart: natal, place: payload.place || null, reference: payload.target});
+      chart = natal;
+      if (kind === 'progressed') { $('#cit-target').value = payload.target; $('#cit-method').value = payload.method; }
+      else offsets[key] = payload.offset;
+      targetFloor(); profileStatus(); selectTab(key);
+      if (!lastModel[key]) {
+        usingSample = before.usingSample;
+        offsets[key] = before.offset;
+        chart = before.chart;
+        $('#cit-target').value = before.target;
+        $('#cit-method').value = before.method;
+        restored.clear();
+        targetFloor(); profileStatus(); selectTab(before.tab);
+        return false;
+      }
+      if (typeof MobileSections !== 'undefined') MobileSections.reveal(root);
+      return true;
     }
 
     function renderActive() {
@@ -141,14 +199,10 @@ const ChartInTime = (() => {
     root.addEventListener('click', event => {
       const button = event.target.closest('button'); if (!button) return;
       const data = button.dataset;
-      if ('citTab' in data) {
-        tab = data.citTab;
-        root.querySelectorAll('[data-cit-tab]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        root.querySelectorAll('.cit-view').forEach(panel => panel.hidden = panel.id !== `cit-${tab}`);
-        renderActive();
-      }
+      if ('citTab' in data) { selectTab(data.citTab); }
       if ('citBirth' in data) { document.querySelector('#birthday-input').focus(); document.querySelector('#birthday-form').scrollIntoView({block:'center'}); }
       if ('citSample' in data) {
+        restored.clear();
         usingSample = !usingSample;
         chart = usingSample ? NatalEngine.calculate(sample) : savedChart;
         offsets.solar = 0; offsets.lunar = 0;
@@ -157,7 +211,8 @@ const ChartInTime = (() => {
       if ('citStep' in data) { offsets[tab] += Number(data.citStep); renderActive(); }
       if ('citNow' in data) { offsets[tab] = 0; renderActive(); }
       if ('citToday' in data) { $('#cit-target').value = today(); renderProgressed(); }
-      if ('citPlaceReset' in data) { resetToBirthplace(); onLocationChange?.(); }
+      if ('citPlaceReset' in data) { if (restored.active()) restored.set({...restored.get(), place: null}); resetToBirthplace(); onLocationChange?.(); }
+      if ('chartLive' in data) { restored.clear(); chart = usingSample ? chart : savedChart; targetFloor(); profileStatus(); renderActive(); root.querySelector(`#cit-${tab}-output [data-save-reading]`)?.focus({preventScroll: true}); }
     });
 
     root.addEventListener('change', event => {
@@ -183,14 +238,21 @@ const ChartInTime = (() => {
       } else {
         manualLocation = null;
       }
+      if (restored.active()) restored.set({...restored.get(), place: chosenPlace() ? ChartRooms.placeFrom(chosenPlace()) : null});
       renderActive();
       onLocationChange?.();
     });
 
     targetFloor(); profileStatus(); renderActive();
+    if (typeof Rooms !== 'undefined' && typeof ChartRooms !== 'undefined') {
+      for (const [kind, label] of [['solar-return', 'Solar return'], ['lunar-return', 'Lunar return'], ['progressed', 'Progressed chart']]) {
+        Rooms.register(kind, {label, category: 'charts', current: () => current(kind), load: reading => load(kind, reading)});
+      }
+    }
     return {
       setBirthChart(value) {
         savedChart = value?.status === 'ready' ? value : null;
+        if (restored.active()) return;
         if (!usingSample) chart = savedChart;
         if (!chosenPlace() && chart?.location?.label) $('#cit-place').value = chart.location.label;
         targetFloor(); profileStatus(); renderActive();

@@ -105,7 +105,7 @@ first `ishtar-account-change` fires.
 **`/charts/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `newsletter.js` → `birthday-insights.js` →
 `birthplace-search.js` → `vendor/astronomy-engine/astronomy.browser.min.js` →
-`natal-engine.js` → `natal-chart.js` → `relationship-charts-engine.js` →
+`natal-engine.js` → `chart-rooms.js` → `natal-chart.js` → `relationship-charts-engine.js` →
 `relationship-charts.js` → `sky-chart.js` → `astrocartography-engine.js` →
 `astrocartography.js` → `bi-wheel.js` → `celestial-extras-engine.js` →
 `celestial-extras.js` → `chart-in-time-engine.js` → `chart-in-time-text.js` →
@@ -231,22 +231,26 @@ right place after replaying a saved reading:
 scrollTo: room => document.querySelector(`[data-room~="${room.kind}"]`)?.scrollIntoView(...)
 ```
 
-Only four elements in the whole site carry it today:
+Seven elements in the whole site carry it today:
 
 - `/tarot/`'s `.reading-room` — `data-room="tarot-daily tarot-spread"`.
 - `/divination/`'s `#divination-room` — `data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching cartomancy"`.
 - `/sky/`'s `#sky-calendar` — `data-room="transit-calendar"`.
 - `/numerology/`'s `.reading-room` — `data-room="numerology"`.
+- `/charts/`'s `#birthday-output` — `data-room="natal"`.
+- `/charts/`'s `#chart-in-time` — `data-room="solar-return lunar-return progressed"`.
+- `/charts/`'s `#horary` — `data-room="horary"`.
 
 `rooms.js`'s `PAGES` table also lists `natal`, `solar-return`, `lunar-return`,
-`progressed`, `synastry`, `horary`, `jyotish` and `bazi` as kinds with a home
-page, but **only `tarot.js`, `divination.js`, `sky-calendar.js` and `numerology.js`
-currently call `Rooms.register()`** (confirmed by grepping every `.js` file for
-`Rooms.register`). A saved reading of any of those other kinds would resolve to
-`'unknown'` in `Rooms.openFromQuery` today — the `PAGES`/`LABELS` entries are forward
-declarations for kinds a later sub-project adds `register()` calls (and, correspondingly,
-`data-room` markup) for, per the comment atop `rooms.js`: "Kinds added by later
-sub-projects join both lists."
+`progressed`, `synastry`, `composite`, `davison`, `horary`, `jyotish` and `bazi` as
+kinds with a home page, but **only `tarot.js`, `divination.js`, `sky-calendar.js`,
+`numerology.js`, `chart-in-time.js`, `horary.js` and `natal-room.js` currently call
+`Rooms.register()`** (confirmed by grepping every `.js` file for `Rooms.register`). A
+saved reading of `synastry`, `composite`, `davison`, `jyotish` or `bazi` would still
+resolve to `'unknown'` in `Rooms.openFromQuery` today — the `PAGES`/`LABELS` entries for
+those five are forward declarations for kinds a later sub-project adds `register()`
+calls (and, correspondingly, `data-room` markup) for, per the comment atop `rooms.js`:
+"Kinds added by later sub-projects join both lists."
 
 The sky project added `transit-calendar` to all three lists that have to agree —
 `server/ishtar/readings/kinds.py` (which the API validates against), and `rooms.js`'s `PAGES`
@@ -260,9 +264,13 @@ resolving to `'unknown'`. `cartomancy` was added to `kinds.py` and `rooms.js`'s
 `PAGES`/`LABELS` in the same migration, one release ahead of its own room. That room
 shipped in the C4c playing-cards project (2026-09-16): `cartomancy` is now registered in
 `divination.js` and carries `data-room` markup on `#divination-room` too, so all three C4
-kinds — `grand-tableau`, `geomancy-houses` and `cartomancy` — resolve correctly. The
-`natal`, `solar-return`, `lunar-return`, `progressed`, `synastry`, `horary`, `jyotish` and
-`bazi` entries listed above remain forward declarations, with no `register()` call yet.
+kinds — `grand-tableau`, `geomancy-houses` and `cartomancy` — resolve correctly.
+
+The C5a chart-saving project (2026-09-16) registered five more: `natal` in
+`natal-room.js`, `solar-return`/`lunar-return`/`progressed` in `chart-in-time.js`, and
+`horary` in `horary.js`, each with `data-room` markup on `/charts/` (see the `data-room`
+list above). `synastry`, `composite`, `davison`, `jyotish` and `bazi` entries remain
+forward declarations, with no `register()` call yet — C5b adds them.
 
 ## The `?reading=` opener
 

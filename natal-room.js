@@ -79,7 +79,8 @@
     if (natalPrintFocus) birthdayOutput.querySelector("[data-print-natal]")?.focus({preventScroll:true});
     natalPrintFocus = false;
   });
-  BirthProfile.subscribe(state => {
+  let restored = null;   // {birth, natal} while a saved chart is open
+  function renderPortrait(state, saved) {
     if (!birthdayOutput) return;
     const parts = birthdayParts(state?.profile?.birthday);
     natalModel = null;
@@ -88,10 +89,10 @@
       birthdayOutput.innerHTML = `<div class="birthday-empty"><strong>Set your birthday</strong> to open your sky portrait and natal chart, and the charts that build on them: your world map, the sky today, two skies, Four Pillars, chart in time and horary. Your Chinese zodiac portrait is on <a href="/eastern/">Eastern</a>, and your numbers on <a href="/numerology/">Numerology</a>. Your birthday details stay in this browser.</div>`;
       return;
     }
-    const { profile: saved, natal } = state;
+    const { profile, natal } = state;
     if(natal.status === "ready") natalModel = natal;
     // Keyed on the birth details alone: house system, orb and return-location edits keep the year.
-    const profileKey = [saved?.birthday, saved?.time, saved?.place].join("|");
+    const profileKey = [profile?.birthday, profile?.time, profile?.place].join("|");
     if (profileKey !== profectionProfileKey || profectionYear === null) {
       // Until the chart is ready the key stays unset, so the year is worked out again once it is.
       profectionProfileKey = natalModel ? profileKey : null;
@@ -110,8 +111,8 @@
     const birthCard = tarotBirthCardFor(parts);
     const chinese = BirthdayInsights.chineseProfile(parts);
     const dateLabel = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(parts.date);
-    const timeLabel = saved?.time ? ` · ${escapeHTML(saved.time)}` : "";
-    const placeLabel = saved?.place ? ` · ${escapeHTML(saved.place)}` : "";
+    const timeLabel = profile?.time ? ` · ${escapeHTML(profile.time)}` : "";
+    const placeLabel = profile?.place ? ` · ${escapeHTML(profile.place)}` : "";
     const elementMarks = {Fire:"△",Earth:"♁",Air:"≋",Water:"▽"};
     const planetMarks = {Mars:"♂",Venus:"♀",Mercury:"☿",Moon:"☾",Sun:"☉",Jupiter:"♃",Saturn:"♄"};
     const facts = [
@@ -123,6 +124,7 @@
       ["Tarot birth card", `${birthCard.number} · ${birthCard.name}`, birthCard.keywords, "✧"]
     ];
     birthdayOutput.innerHTML = `<div id="birthday-sky" class="birthday-view sky-summary">
+      ${saved ? ChartRooms.banner(`Saved chart · cast for ${ChartRooms.describe(saved.birth)}`, {live: 'natal'}) : ''}
       ${natalModel ? NatalChart.bigThree(natalModel) : `<div class="natal-notice" role="status"><strong>Your full natal chart</strong><p>${escapeHTML(natal.message)}</p></div>`}
       <div class="celestial-portrait">
         <div class="sky-chart-wrap"><button type="button" class="sky-chart-launch" ${natalModel ? 'data-open-natal="point" data-natal-key="Sun" aria-label="Explore your full natal chart"' : `data-open-sky="${sign.name}" aria-label="Explore your ${sign.name} sky chart"`}>${natalModel ? NatalChart.renderWheel(natalModel) : SkyChart.render(zodiacSigns,sign.name)}<span class="sky-chart-invitation"><span aria-hidden="true">⌕</span> ${natalModel ? "Explore your natal chart" : "Explore your zodiac guide"} <span aria-hidden="true">↗</span></span></button><p class="sky-chart-caption">${natalModel ? "Planets · houses · aspects · open to zoom & explore" : "Symbolic zodiac guide · birth time and location needed for a natal chart"}</p></div>
@@ -130,10 +132,11 @@
       </div>
       <dl class="sky-facts">${facts.map(([label, value, detail, mark]) => `<div class="sky-fact"><dt><span class="sky-fact-symbol" aria-hidden="true">${SkyChart.glyph(mark)}</span>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
       <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><span class="lens-ornament" aria-hidden="true">${["☌","✷","☾"][index]}</span><div><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></div></article>`).join("")}</div>
-      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor) + chartDepth() : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
+      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor) + chartDepth() + ChartRooms.saveControl('natal', ChartRooms.NOTES.one) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
     </div>
-    <p class="birthday-privacy">Your birthday details are saved in this browser.</p>`;
-  });
+    <p class="birthday-privacy">${saved ? "Showing a saved chart. Your birth profile is unchanged." : "Your birthday details are saved in this browser."}</p>`;
+  }
+  BirthProfile.subscribe(state => { if (restored) return; renderPortrait(state, null); });
 
   if (birthdayOutput) {
     birthdayOutput.addEventListener("click", event => {
@@ -159,6 +162,31 @@
         profectionYear=Number(event.target.value);
         depth.outerHTML=chartDepth();
         birthdayOutput.querySelector("[data-profection-year]")?.focus({preventScroll:true});
+      }
+    });
+
+    birthdayOutput.addEventListener("click", event => {
+      if (!event.target.closest("[data-chart-live]")) return;
+      restored = null;
+      renderPortrait(BirthProfile.current(), null);
+      birthdayOutput.querySelector("[data-save-reading]")?.focus({preventScroll: true});
+    });
+    if (typeof Rooms !== "undefined" && typeof ChartRooms !== "undefined") Rooms.register("natal", {
+      label: "Birth chart", category: "charts",
+      current: () => {
+        const birth = restored ? restored.birth : ChartRooms.birthFromChart(natalModel);
+        return natalModel && birth ? ChartRooms.reading("natal", {payload: {v: 1, birth}, summary: ChartRooms.summaries.natal(natalModel), layout: birth.houseSystem}) : null;
+      },
+      load: reading => {
+        const payload = ChartRooms.validate("natal", reading?.payload);
+        if (!payload) return false;
+        const natal = ChartRooms.natalFrom(payload.birth);
+        if (natal.status !== "ready") return false;
+        restored = {birth: payload.birth, natal};
+        const b = payload.birth;
+        renderPortrait({profile: {birthday: b.date, time: b.time, place: b.place.name, placeLocation: ChartRooms.locationFrom(b.place), houseSystem: b.houseSystem, fold: b.fold, orbScale: b.orbScale}, natal}, restored);
+        if (typeof MobileSections !== "undefined") MobileSections.reveal(birthdayOutput);
+        return true;
       }
     });
   }

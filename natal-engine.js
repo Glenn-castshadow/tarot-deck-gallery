@@ -151,7 +151,7 @@ const NatalEngine = (() => {
     const resolved=candidates[fold==='later'?candidates.length-1:0],date=resolved.utc;
     const chart=chartAtInstant(date,location,{houseSystem,orbScale});
     if(chart.status!=='ready') return chart;
-    return {...chart,birthday,time,offsetMinutes:resolved.offsetMinutes,ambiguousTime:candidates.length>1};
+    return {...chart,birthday,time,fold,offsetMinutes:resolved.offsetMinutes,ambiguousTime:candidates.length>1};
   }
   return {calculate,chartAtInstant,localTimeCandidates,anglesAt,houseCusps,houseFor,placement,aspectsFor,mod,delta,signNames,signGlyphs,aspectTypes,minorAspectTypes};
 })();

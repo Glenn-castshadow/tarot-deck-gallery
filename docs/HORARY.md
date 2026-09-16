@@ -20,8 +20,8 @@ actually theirs. No output states a yes/no answer, and the copy is checked
 (`tests/horary-text.test.cjs`) to contain none of "you will," "will happen," "is going to,"
 "the answer is," a bare "yes" or "no," "luck," or "fortune."
 
-The question text itself lives in page memory only (`horary.js`'s closure state); nothing new
-is stored or sent anywhere.
+The question text lives in page memory only (`horary.js`'s closure state) unless the reader
+saves the chart — the question field itself says so: "saved only if you save the chart."
 
 ## Included
 
@@ -217,6 +217,24 @@ ruler agreeing with the Ascendant's own ruler or its triplicity ruler (radicalit
 **The output never gives a verdict.** Perfection is reported as found or wanting, with the
 supporting evidence (the aspect, the reception, the translating or collecting planet), and the
 significators tab always closes with Lilly's-method-not-your-answer language.
+
+## Saving
+
+The question tab's output carries the site's standard save control: "Save this chart to
+my journal" (or "Sign in to save this chart" signed out), with the note "Saving stores
+the moment, the place and your question." beside it. The saved payload (`chart-rooms.js`)
+holds the cast moment (`date`, `time`, `place`), the chosen house of the matter and the
+question text, clipped to 240 characters — no `birth` field, since a horary chart is not
+cast from the birth profile at all.
+
+Reopening a saved reading (`?reading=ID`) re-casts the chart for that saved moment, fills
+the question tab's fields (including the question text) from the payload, and shows a
+"Saved question · …" banner above the output. Unlike the chart-in-time and natal rooms,
+horary keeps no gate object and no "Use my chart" button, because casting a new chart
+always replaces the result outright — there is nothing a gate would need to protect.
+While a reopened chart is on screen, `setBirthChart` skips only `refreshPlaceDefault()`,
+so the saved place name stays until the reader casts again (the date and time are
+unaffected regardless, since loading a saved reading already marks them touched).
 
 ## Validation
 

@@ -64,6 +64,23 @@ Stellium is defined by shared sign rather than by orb, because that is what the 
 
 The existing `arcana-birthday-profile-v1` localStorage record gains optional `placeLocation`, `houseSystem`, `orbScale` and `fold` fields. Old profiles remain readable.
 
+## Saving
+
+The natal report carries the site's standard save control, "Save this chart to my
+journal" (or "Sign in to save this chart" signed out), with the note "Saving stores the
+birth details this chart was cast from." beside it. The saved payload (`chart-rooms.js`)
+holds the birth date, time, place and the chart's own house system, fold and orb-scale
+settings — the whole `birth` object a chart is computed from, nothing else.
+
+Reopening a saved reading (`?reading=ID`) computes the chart from that payload with
+`ChartRooms.natalFrom`, never from the live birth profile, and shows a "Saved chart ·
+cast for …" banner above the sky portrait with a "Use my chart" button. While that
+banner is showing, `natal-room.js`'s `BirthProfile.subscribe` callback renders the saved
+chart in place of the live one and ignores further profile pushes; "Use my chart" clears
+the saved state and re-renders from the live profile. The privacy line under the report
+also changes, from "Your birthday details are saved in this browser." to "Showing a
+saved chart. Your birth profile is unchanged."
+
 ## Independent validation
 
 Run:

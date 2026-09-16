@@ -104,6 +104,13 @@ class ReadingApiTests(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['payload'], payload)
 
+    def test_two_person_chart_kinds_save(self):
+        birth = {'date': '1980-03-12', 'time': '06:30', 'place': {'name': 'London', 'lat': 51.5, 'lon': -0.12, 'tz': 'Europe/London'}, 'houseSystem': 'placidus', 'fold': '', 'orbScale': 1}
+        for kind in ('composite', 'davison'):
+            created = self.create({'kind': kind, 'layout': 'placidus', 'payload': {'v': 1, 'birth': birth, 'partner': birth}})
+            self.assertEqual(created.status_code, 201, kind)
+            self.assertEqual(created.json()['category'], 'charts')
+
     def test_grand_tableau_saves_and_reads_back(self):
         payload = {'ids': list(range(36)), 'significator': 'man', 'selected': 27}
         created = self.create({'kind': 'grand-tableau', 'payload': payload})
@@ -150,6 +157,13 @@ class KindsTests(TestCase):
         for kind in ('grand-tableau', 'geomancy-houses', 'cartomancy'):
             self.assertIn(kind, KINDS)
             self.assertEqual(KINDS[kind][1], 'divination')
+
+    def test_c5_kinds_are_charts(self):
+        for kind in ('composite', 'davison'):
+            self.assertIn(kind, KINDS)
+            self.assertEqual(KINDS[kind][1], 'charts')
+        self.assertEqual(KINDS['composite'][0], 'Composite chart')
+        self.assertEqual(KINDS['davison'][0], 'Davison chart')
 
 class SummaryCategoryTests(TestCase):
     def setUp(self):

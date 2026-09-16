@@ -120,7 +120,7 @@ const Horary = (() => {
       </div>
       <section id="ho-question" class="ho-view">
         <form id="ho-question-form" class="ho-question-form">
-          <label class="ho-question-field"><span>Your question <small>stays on this page only, never saved</small></span><textarea id="ho-question-text" rows="2" maxlength="400" placeholder="What is the question?"></textarea></label>
+          <label class="ho-question-field"><span>Your question <small>saved only if you save the chart</small></span><textarea id="ho-question-text" rows="2" maxlength="400" placeholder="What is the question?"></textarea></label>
           <label>House of the matter<select id="ho-house-matter">${houseOptions(7)}</select></label>
           <label>Date<input id="ho-date" type="date" min="1901-01-01" max="2100-12-31" required></label>
           <label>Time<input id="ho-time" type="time" required></label>
@@ -161,6 +161,7 @@ const Horary = (() => {
     const placePicker = BirthplaceSearch.attach({input:$('#ho-place'), list:$('#ho-place-list'), status:$('#ho-place-status')});
     let chart = null, manualLocation = null, result = null, electResult = null, tab = 'question';
     let dateTouched = false, electDateTouched = false;
+    let lastCast = null, restoredMoment = null;
 
     function placeholderLocation() { return chart?.location || LONDON; }
     function chosenPlace() { return manualLocation || placePicker.getSelection(); }
@@ -182,7 +183,7 @@ const Horary = (() => {
         if (!latText || !lonText || !Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) >= 90 || Math.abs(longitude) > 180 || !timeZone) {
           return {error:'Enter a latitude, a longitude and an IANA time zone.'};
         }
-        return {location:{latitude, longitude, timeZone, label: `Custom coordinates (${latitude}, ${longitude})`, source:'manual'}};
+        return {location:{latitude, longitude, timeZone, label: $('#ho-place').value.trim() || `Custom coordinates (${latitude}, ${longitude})`, source:'manual'}};
       }
       return {location: place()};
     }
@@ -198,8 +199,9 @@ const Horary = (() => {
       const hourLine = result.hour.status === 'ready'
         ? `${result.sect === 'day' ? 'Day' : 'Night'} chart · hour ${result.hour.current + 1} of 24, ruled by ${esc(result.hour.hours[result.hour.current]?.ruler || 'an hour outside the table')} · ${esc(result.hour.weekday)}, the day of ${esc(result.hour.dayRuler)}`
         : esc(result.hour.message);
-      const questionText = $('#ho-question-text').value.trim();
-      output.innerHTML = `<div class="ho-wheel-wrap">${HoraryChart.render({chart: result.chart, title:'The horary chart'})}</div>
+      const questionText = lastCast ? lastCast.question : $('#ho-question-text').value.trim();
+      output.innerHTML = `${restoredMoment ? ChartRooms.banner(`Saved question · ${ChartRooms.describeMoment(restoredMoment)}`) : ''}
+        <div class="ho-wheel-wrap">${HoraryChart.render({chart: result.chart, title:'The horary chart'})}</div>
         ${questionText ? `<p class="ho-question-echo">“${esc(questionText)}”</p>` : ''}
         <p class="ho-hour-line">${hourLine}</p>
         <p class="acg-small-label">House ${result.houseMatter} · ${esc(houseInfo.title)}</p>
@@ -210,7 +212,8 @@ const Horary = (() => {
           const body = c.present === null ? `Undetermined here: ${esc(c.detail)}.` : esc(c.present ? text.present : text.absent);
           return `<div class="ho-consideration${c.present ? ' is-present' : ''}"><h5>${esc(text.title)}</h5><p>${body}</p>${c.present === null ? '' : `<small>${esc(c.detail)}</small>`}</div>`;
         }).join('')}</div>
-        ${conventions()}`;
+        ${conventions()}
+        ${ChartRooms.saveControl('horary', ChartRooms.NOTES.horary)}`;
     }
 
     function renderSignificators() {
@@ -283,6 +286,16 @@ const Horary = (() => {
       renderActiveTab();
     }
 
+    function castNow({instant, location, houseMatter, dateValue, timeValue}) {
+      try {
+        const cast = HoraryEngine.cast({date: instant, location, houseMatter});
+        if (cast.status !== 'ready') { result = null; lastCast = null; $('#ho-cast-status').textContent = cast.message; return false; }
+        result = cast;
+        lastCast = {moment: {date: dateValue, time: timeValue, place: ChartRooms.placeFrom(location)}, house: houseMatter, question: $('#ho-question-text').value.trim().slice(0, 240)};
+        return true;
+      } catch (error) { result = null; lastCast = null; $('#ho-cast-status').textContent = error.message || 'Could not cast this chart.'; return false; }
+    }
+
     function castQuestion() {
       const resolved = resolvedLocation();
       if (resolved.error) { $('#ho-cast-status').textContent = resolved.error; return; }
@@ -298,13 +311,9 @@ const Horary = (() => {
       $('#ho-cast-status').textContent = 'Casting…';
       $('#ho-question-output').innerHTML = '<p class="ho-casting">Casting the chart…</p>';
       requestAnimationFrame(() => setTimeout(() => {
-        try {
-          const cast = HoraryEngine.cast({date: instant, location, houseMatter: houseMatterValue});
-          if (cast.status !== 'ready') { result = null; $('#ho-cast-status').textContent = cast.message; }
-          else { result = cast; $('#ho-cast-status').textContent = `Chart cast for ${location.label || 'the selected place'}.${dstNote}`; }
-        } catch (error) {
-          result = null; $('#ho-cast-status').textContent = error.message || 'Could not cast this chart.';
-        }
+        restoredMoment = null;
+        const ok = castNow({instant, location, houseMatter: houseMatterValue, dateValue, timeValue});
+        if (ok) $('#ho-cast-status').textContent = `Chart cast for ${location.label || 'the selected place'}.${dstNote}`;
         $('#ho-cast-btn').disabled = false;
         renderQuestionOutput();
         if (tab === 'significators') renderSignificators();
@@ -345,7 +354,10 @@ const Horary = (() => {
     });
 
     root.addEventListener('change', event => {
-      if (event.target.id === 'ho-manual') $('#ho-manual-fields').disabled = !event.target.checked;
+      if (event.target.id === 'ho-manual') {
+        $('#ho-manual-fields').disabled = !event.target.checked;
+        if (event.target.checked) $('#ho-place').value = '';
+      }
     });
     root.addEventListener('input', event => {
       if (event.target.id === 'ho-date' || event.target.id === 'ho-time') dateTouched = true;
@@ -361,10 +373,38 @@ const Horary = (() => {
     $('#ho-elect-date').value = initial.date; $('#ho-elect-time').value = initial.time;
     renderElectPlace();
 
+    function current() {
+      if (!result || !lastCast) return null;
+      return ChartRooms.reading('horary', {payload: {v: 1, moment: lastCast.moment, house: lastCast.house}, summary: ChartRooms.summaries.horary({result, house: lastCast.house, date: lastCast.moment.date}), layout: 'regiomontanus', question: lastCast.question});
+    }
+    function load(reading) {
+      const payload = ChartRooms.validate('horary', reading?.payload);
+      if (!payload) return false;
+      const location = ChartRooms.locationFrom(payload.moment.place);
+      let candidates;
+      try { candidates = NatalEngine.localTimeCandidates(payload.moment.date, payload.moment.time, location.timeZone); } catch { return false; }
+      if (!candidates.length) return false;
+      $('#ho-question-text').value = typeof reading.question === 'string' ? reading.question.slice(0, 240) : '';
+      $('#ho-house-matter').value = String(payload.house);
+      $('#ho-date').value = payload.moment.date; $('#ho-time').value = payload.moment.time; dateTouched = true;
+      $('#ho-place').value = payload.moment.place.name;
+      $('#ho-manual').checked = true; $('#ho-manual-fields').disabled = false; $('.ho-custom-place').open = true;
+      // Strings, as a real input would hold: resolvedLocation() trims them on the next cast.
+      $('#ho-lat').value = String(payload.moment.place.lat); $('#ho-lon').value = String(payload.moment.place.lon); $('#ho-zone').value = payload.moment.place.tz;
+      if (!castNow({instant: candidates[0].utc, location, houseMatter: payload.house, dateValue: payload.moment.date, timeValue: payload.moment.time})) return false;
+      restoredMoment = payload.moment;
+      $('#ho-cast-status').textContent = `Saved chart, cast for ${location.label || 'the saved place'}.`;
+      selectTab('question');
+      if (typeof MobileSections !== 'undefined') MobileSections.reveal(root);
+      return true;
+    }
+
+    if (typeof Rooms !== 'undefined' && typeof ChartRooms !== 'undefined') Rooms.register('horary', {label: 'Horary chart', category: 'charts', current, load});
+
     return {
       setBirthChart(value) {
         chart = value?.status === 'ready' ? value : null;
-        refreshPlaceDefault();
+        if (!restoredMoment) refreshPlaceDefault();
         if (!chosenPlace()) {
           const p = nowParts(placeholderLocation().timeZone);
           if (!dateTouched) { $('#ho-date').value = p.date; $('#ho-time').value = p.time; }

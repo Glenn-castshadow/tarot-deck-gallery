@@ -64,7 +64,7 @@ lat, lon, tz}, houseSystem, fold, orbScale}`, taken from the profile's `birthday
 | Kind | Extras | `layout` | `question` |
 |---|---|---|---|
 | `natal` | none | house system | — |
-| `solar-return`, `lunar-return` | `target: 'YYYY-MM-DD'` (the `#cit-target` value), `offset` (the return index), `place` override (same shape as `birth.place`) or `null` | house system | — |
+| `solar-return`, `lunar-return` | `target: 'YYYY-MM-DD'` (the date the reading was saved, the engine's reference), `offset` (the return index), `place` override (same shape as `birth.place`) or `null` | house system | — |
 | `progressed` | `target`, `method: 'secondary' \| 'tertiary' \| 'solar-arc'` | method | — |
 | `synastry`, `composite`, `davison` | `partner`: a second `birth` object built from the partner form (`#cx-partner-*`) | house system | — |
 | `horary` | `birth` is omitted; `moment: {date, time, place}` from `#ho-date`, `#ho-time` and the chosen place; `house: 1..12` from `#ho-house-matter` | the horary engine's house system | the question text, clipped to 240 |

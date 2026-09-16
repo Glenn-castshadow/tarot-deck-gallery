@@ -51,3 +51,6 @@
 .save-reading button { min-height: 44px; padding: 8px 18px; border: 1px solid var(--gold); border-radius: 24px; background: var(--cream); color: var(--plum); font-weight: 600; }
 .save-reading span { font-size: 13px; color: var(--ink-soft); }
 @media (max-width: 700px) { .account-bar { margin: 0 0 12px; } .account-room { padding: 20px; } .account-dialog { padding: 20px; } }
+.save-reading .save-note { flex-basis: 100%; font-size: 12px; line-height: 1.7; color: rgba(255,250,244,.7); }
+.restored-chart { margin: 0 0 16px; padding: 12px 16px; border: 1px solid var(--gold, #c9a86a); border-radius: 8px; font-size: 14px; line-height: 1.6; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.restored-chart button { min-height: 44px; padding: 8px 16px; border: 1px solid currentColor; border-radius: 22px; background: transparent; color: inherit; font-size: 13px; }

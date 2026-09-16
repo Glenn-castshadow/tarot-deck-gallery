@@ -85,8 +85,10 @@ const DEPENDENCIES = {
   // switch in Two skies: no throw, but without them the switch silently never appears.
   'celestial-extras.js': ['birthplace-search.js', 'celestial-extras-engine.js', 'bi-wheel.js', 'natal-engine.js',
     'relationship-charts-engine.js', 'relationship-charts.js', 'natal-chart.js'],
-  'chart-in-time.js': ['birthplace-search.js', 'chart-in-time-engine.js', 'chart-in-time-text.js', 'bi-wheel.js', 'natal-engine.js'],
-  'horary.js': ['birthplace-search.js', 'horary-engine.js', 'horary-text.js', 'horary-chart.js', 'classical-engine.js', 'natal-engine.js'],
+  // ChartRooms.restoredGate() at attach; Rooms.register behind a typeof guard, but without it saving silently disappears.
+  'chart-in-time.js': ['birthplace-search.js', 'chart-in-time-engine.js', 'chart-in-time-text.js', 'bi-wheel.js', 'natal-engine.js', 'chart-rooms.js', 'rooms.js'],
+  // ChartRooms.placeFrom in castNow; Rooms.register behind a typeof guard, without it saving silently disappears.
+  'horary.js': ['birthplace-search.js', 'horary-engine.js', 'horary-text.js', 'horary-chart.js', 'classical-engine.js', 'natal-engine.js', 'chart-rooms.js', 'rooms.js'],
   'jyotish.js': ['jyotish-engine.js', 'jyotish-text.js', 'jyotish-chart.js', 'natal-engine.js'],
   // `const E = SkyCalendarEngine, T = SkyCalendarText` at module top level; `NatalEngine.calculate`
   // for the sample chart and for a saved calendar's birth snapshot; `BirthProfile.subscribe` and
@@ -114,12 +116,15 @@ const DEPENDENCIES = {
     {when: 'sky-dialog', needs: ['sky-chart.js', 'birthday-insights.js']},
     // The sky-portrait render: NatalChart.bigThree/report, SkyChart.glyph,
     // BirthdayInsights.chineseProfile -- all inside `if (!birthdayOutput) return;`.
-    {when: 'birthday-output', needs: ['natal-chart.js', 'sky-chart.js', 'birthday-insights.js']},
+    // ChartRooms.banner/saveControl in renderPortrait and Rooms.register, all inside if (birthdayOutput).
+    {when: 'birthday-output', needs: ['natal-chart.js', 'sky-chart.js', 'birthday-insights.js', 'chart-rooms.js', 'rooms.js']},
     {when: 'astrocartography-room', needs: ['astrocartography.js']},
     {when: 'celestial-extras', needs: ['celestial-extras.js']},
     {when: 'jyotish', needs: ['jyotish.js']},
     {when: 'horary', needs: ['horary.js']},
-    {when: 'daily-horoscope', needs: ['daily-horoscope.js']}]
+    {when: 'daily-horoscope', needs: ['daily-horoscope.js']}],
+  // The UMD factory receives the bare NatalEngine.
+  'chart-rooms.js': ['natal-engine.js'],
   // birth-lore.js is deliberately absent. Its only cross-module bare read is
   // BirthdayInsights.parseDate() inside birthdayParts(), and /tarot/ loads birth-lore.js
   // without birthday-insights.js: tarot.js uses only majorArcana and localDateKey, so that

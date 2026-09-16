@@ -21,6 +21,77 @@ restores. Save failures are shown beside the birth form as well as in the accoun
 
 Passwordless accounts for ishtarinsights.com. Spec: docs/superpowers/specs/2026-09-09-accounts-design.md.
 
+## Saved charts (C5a, 2026-09-16)
+
+`chart-rooms.js` is the shared saving contract for the chart rooms; today it is loaded on
+`/charts/` after `natal-engine.js` (C5b adds it to `/eastern/` for Jyotish). Its exports,
+one line each:
+
+- `KINDS` — the ten chart kinds the module knows about (five wired to rooms so far:
+  `natal`, `solar-return`, `lunar-return`, `progressed`, `horary`).
+- `NOTES` — the three disclosure strings shown beside the save button (below).
+- `validate(kind, payload)` — sanitises a saved payload for a kind, or returns `null`.
+- `birthFromChart(chart)` — builds a `birth` object from a computed, ready natal chart.
+- `placeFrom(location)` — a profile location (`{latitude, longitude, timeZone, label}`)
+  to a payload `place`.
+- `locationFrom(where)` — the inverse of `placeFrom`.
+- `natalFrom(birth)` — `NatalEngine.calculate(...)` from a saved `birth` object, never
+  from the live profile.
+- `reading(kind, {payload, summary, layout, question})` — the object a room's
+  `current()` returns, with `deck`/`focus` empty and strings clipped to the server caps.
+- `describe(birth)` — "12 March 1980 at 06:30, London", for a restored banner.
+- `describeMoment` — the same function, used for horary's `moment`.
+- `summaries` — per-kind functions (`natal`, `solarReturn`, `lunarReturn`, `progressed`,
+  `horary`) computing the journal line from a rendered chart.
+- `saveControl(kind, note)` — the save-button/status/note markup.
+- `banner(text, {live})` — the restored-chart banner markup; passing `live` adds a
+  "Use my chart" button.
+- `restoredGate()` — `{set, clear, get, active}`, the reopened-chart gate a room keeps
+  while a saved chart is on screen.
+
+### Payload (C5a kinds)
+
+`payload.v` is `1`. `payload.birth` (all kinds but horary) is `{date, time, place:
+{name, lat, lon, tz}, houseSystem, fold, orbScale}`, taken from the profile.
+
+| Kind | Extras | `layout` | `question` |
+|---|---|---|---|
+| `natal` | none | house system | — |
+| `solar-return`, `lunar-return` | `target` (the date the reading was saved, the
+  engine's reference), `offset` (the return index), `place` override (same shape as
+  `birth.place`) or `null` | house system | — |
+| `progressed` | `target`, `method: 'secondary' \| 'tertiary' \| 'solar-arc'` | method | — |
+| `horary` | `birth` is omitted; `moment: {date, time, place}` from `#ho-date`,
+  `#ho-time` and the chosen place; `house: 1..12` | `'regiomontanus'` | the question
+  text, clipped to 240 |
+
+### Disclosure notes
+
+- One-person charts: "Saving stores the birth details this chart was cast from."
+- Two-person charts: "Saving stores both people’s birth details."
+- Horary: "Saving stores the moment, the place and your question."
+
+### Restored gate
+
+While a reopened chart is on screen, profile pushes are ignored by that room; a "Use my
+chart" button clears the gate and re-renders from the live profile. Horary keeps no gate
+object — a fresh "Cast the chart" click always replaces the result outright — but does
+skip refreshing its default place while a saved question is open.
+
+### Reopening
+
+`?reading=ID` reaches the page through the shared opener (`rooms.js`'s
+`Rooms.openFromQuery`), which calls `room.load(reading)` once sign-in resolves and
+scrolls to `[data-room~="KIND"]`.
+
+### Tests
+
+`tests/chart-rooms.test.cjs` (5 tests), `tests/chart-in-time-room.test.cjs` (2),
+`tests/horary-room.test.cjs` (1); Django: `test_c5_kinds_are_charts`,
+`test_two_person_chart_kinds_save`.
+
+C5b adds the two-person charts (`synastry`, `composite`, `davison`), BaZi and Jyotish.
+
 ## Service
 
 Django project in `server/ishtar`. On the VPS it lives at `/opt/ishtar-app/app` with a venv at

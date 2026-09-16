@@ -51,6 +51,23 @@ The progressed lunation phase is read from the angular separation of the progres
 
 All of this requires a birth time and a confirmed birthplace. Without them the section says so and offers a sample chart rather than inventing angles. Calculations support 1901–2100; uncertain birth records and approximate coordinates can matter far more than the numerical precision of the engine.
 
+## Saving
+
+Each view — solar return, lunar return, the progressed/directed chart — carries the
+site's standard save control below its output: "Save this chart to my journal" (or
+"Sign in to save this chart" signed out), with the note "Saving stores the birth
+details this chart was cast from." beside it. A sample chart carries no save control.
+
+The saved payload (`chart-rooms.js`) holds the birth details the chart was cast from,
+the return index or progressed target/method, and, for a relocated return, the chosen
+place. Reopening a saved reading (`?reading=ID`) computes the chart from that payload
+rather than the live profile — never the live birth details — shows a "Saved chart ·
+cast for …" banner with a "Use my chart" button above the output, and ignores profile
+pushes until that button is used, at which point the section re-renders from the live
+profile. A saved return stores the local date it was saved and reopens with a reference
+at noon UTC of that date, so a return whose exact moment falls between the real save
+time and that noon may reopen as the neighbouring return; rare, and accepted in the plan.
+
 ## Independent validation
 
 Run:

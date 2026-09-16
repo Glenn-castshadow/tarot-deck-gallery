@@ -20,6 +20,8 @@ KINDS = {
     'lunar-return': ('Lunar return', 'charts'),
     'progressed': ('Progressed chart', 'charts'),
     'synastry': ('Synastry', 'charts'),
+    'composite': ('Composite chart', 'charts'),
+    'davison': ('Davison chart', 'charts'),
     'horary': ('Horary chart', 'charts'),
     'jyotish': ('Jyotish chart', 'eastern'),
     'bazi': ('Four Pillars', 'eastern'),
