@@ -1,5 +1,64 @@
 # VPS deployment
 
+## 2026-09-16 Divination layouts: the Grand Tableau and the geomantic house chart
+
+Deployed `a6d39bf` in two stages, backend first. The frontend posts the new kinds, so the server
+had to know them before any page could send them.
+
+**Backend.**
+- `server/ishtar` went to `/tmp/ishtar-app-src.tar` by `git archive`. The fresh `deploy-app.sh`,
+  service unit, nginx snippet and backup script were uploaded alongside it.
+- The wrapper `/tmp/ishtar-backend-c4b.sh` first checked health. It then backed up the live
+  WAL-mode database through SQLite's backup API to
+  `/var/backups/ishtar-app/db-predeploy-20260916-140028.sqlite3` and ran `integrity_check` on the
+  copy.
+- It extracted and CR-stripped the archive, confirming the archive carried `grand-tableau` and
+  migration `0005`, then ran `deploy-app.sh`.
+- Migration `readings.0005_reading_kind_c4` applied. It changes `choices` only, so it is a no-op
+  in SQL.
+- The wrapper confirmed `0005` shows applied and that `ishtar-app` restarted after the deploy began
+  (14:00:31 UTC). `/api/health/` returns `{"ok": true}`. The restart matters: workers read `KINDS`
+  at import.
+- `deploy-app.sh`'s own first health probe hit the port before gunicorn was listening, then
+  succeeded on retry.
+
+**Frontend.**
+- Released as `/opt/tarot-game/releases/20260916-divination-layouts-a6d39bf`, a `cp -al` copy of
+  `20260916-numerology-depth-fb1d616` with thirteen files replaced: the four divination files,
+  `rooms.js`, and the eight pages that load `rooms.js`.
+- The script refused to run unless the deployed backend's `kinds.py` contained `grand-tableau`. It
+  was also gated on `current` and on the sha256 of all thirteen files.
+- Previous release retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-numerology-depth-fb1d616 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+  The backend change needs no rollback, because the old frontend never sends the new kinds.
+
+**Change (C4b).**
+- The Lenormand Grand Tableau, with 8×4+4 houses, an optional significator, one-ring nearness,
+  knighting, the corners and the closing row.
+- A geomantic house chart view, with quesited house, passage, perfection and aspects in the
+  historical voice.
+- New kinds: `grand-tableau`, `geomancy-houses`, and `cartomancy` (its room arrives with C4c).
+- The save button now takes its kind from the current draw.
+- Suites: node 529 to 538, Django readings 14 to 16. Conventions are in `docs/DIVINATION.md`.
+
+**Cache keys.**
+- `rooms.js?v=c4-kinds-1` on all eight pages.
+- `divination.js`, `divination-engine.js`, `divination-data.js` and `divination.css` at `?v=c4b-1`
+  on `/divination/`.
+
+**Validation after the switch.**
+- All eight pages and the five assets return 200.
+- Every key is confirmed on its pages.
+- The served scripts carry the new kinds, the tableau and house-chart code, and the copy tables.
+- In a browser at ishtarinsights.com: the tableau lays 36 cells and its save button carries
+  `grand-tableau`. The house view shows twelve houses, saves as `geomancy-houses` with summary
+  "House chart · house 7, Partners and Agreements: Fortuna Minor", and a signed-out save opens
+  sign-in. No console errors.
+
+**Not yet exercised:** a signed-in save and reopen of either new kind through the live API. That
+needs an account login. The server round-trip is covered by the Django test, and the client
+save/load by the Node test.
+
 ## 2026-09-16 Numerology depth: karmic debt, lessons, passion and saving
 
 Deployed `fb1d616`. **Static only** — no backend change; the server already accepts the
