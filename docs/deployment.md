@@ -1,5 +1,42 @@
 # VPS deployment
 
+## 2026-09-16 Chart-saving polish pass
+
+Deployed `007bae5`. **Static only.** No backend change.
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260916-chart-polish-007bae5`, a `cp -al` hardlink copy of
+  `20260916-chart-saving-b-ef6f6f5`.
+- Fifteen files were replaced (`horary.js`, `celestial-extras.js`, `jyotish.js`, `chart-in-time.js`,
+  `natal-room.js`, `account.css`, `account.js` and all eight pages' HTML); nothing was added.
+- The deploy was gated on `current`, on the sha256 of the fifteen replaced files (all matched the live
+  release), and on two must-be-absent checks (`typeof ChartRooms` gone from `chart-in-time.js`; the stale
+  "Three of the six category chips" comment gone from `account.js`).
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-chart-saving-b-ef6f6f5 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change.** The items the C5a and C5b reviews parked: horary restores the form and status line when a
+reopened cast fails; Two skies keeps the restored banner while the partner form is edited, and composite
+and Davison reopens check their own engine; Jyotish resets the chart format on reopen and shows the Gochar
+banner above the date controls, clearing it when the saved chart is dismissed from another tab; chart in
+time returns to today's defaults on "Use my chart" and invalidates cached models when the birth changes;
+three unreachable guards removed; the natal room's two click listeners folded into one; the save control
+and restored banner hidden in print; a stale journal comment corrected. Nine tests added, each shown to
+fail without its fix. Suite 558 to 567.
+
+**Cache keys.** `horary.js?v=3`, `celestial-extras.js?v=7`, `chart-in-time.js?v=3` on charts;
+`jyotish.js?v=4` on eastern; `natal-room.js?v=10` on charts, eastern and sky; `account.css?v=c5-2` and
+`account.js?v=pages-5` on all eight pages.
+
+**Validation after the switch.**
+- All eight pages and the seven changed assets return 200; every key and needle confirmed on the served
+  files (each checked with `git show 007bae5:<file> | grep -cF` first).
+- In a browser at ishtarinsights.com: on `/eastern/` a reopened chart on the Gochar tab shows its banner
+  as the section's first child, and "Use my chart" from the rashi tab clears it; on `/charts/` "Use my
+  chart" after a reopened lunar return returns the offset to 0; the only console error is the signed-out
+  session check.
+- Signed-in saving and reopening through the journal were not exercised (they need Glenn's login).
+
 ## 2026-09-16 Chart saving, part B, and the hero line
 
 Deployed `ef6f6f5`. **Static only.** The `composite` and `davison` kinds shipped server-side with C5a.
