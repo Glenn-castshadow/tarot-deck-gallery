@@ -36,6 +36,7 @@ function validate(text, sheet) {
   if (/\n/.test(t)) return 'more than one paragraph';
   const words = t.split(/\s+/).filter(Boolean).length;
   if (words < 60 || words > 120) return `${words} words`;
+  if (!/[.!?]$/.test(t)) return 'does not end in a full sentence';
   if (!/\bMoon\b/.test(t)) return 'does not mention the Moon';
   if (!t.includes(sheet.moonSector.name)) return `does not name ${sheet.moonSector.name}`;
   const lower = t.toLowerCase();
@@ -89,9 +90,12 @@ async function servedAlias(endpoint) {
 }
 
 async function complete(endpoint, model, messages) {
+  // max_tokens 1500: Glimmer's reasoning_content runs 300-400 tokens before it starts the paragraph;
+  // 700 was too tight and let reasoning alone exhaust the budget, leaving content empty or truncated
+  // mid-sentence (observed 2026-09-17). 1500 leaves headroom for reasoning plus a full 120-word paragraph.
   const res = await fetch(`${endpoint}/chat/completions`, {
     method: 'POST', headers: {'content-type': 'application/json'},
-    body: JSON.stringify({model, messages, temperature: 1.0, top_p: 0.95, top_k: 64, max_tokens: 700, stream: false})
+    body: JSON.stringify({model, messages, temperature: 1.0, top_p: 0.95, top_k: 64, max_tokens: 1500, stream: false})
   });
   if (!res.ok) throw new Error(`${res.status} from ${endpoint}/chat/completions`);
   const json = await res.json();

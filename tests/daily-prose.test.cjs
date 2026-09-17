@@ -117,6 +117,7 @@ test('validate accepts a paragraph in the brief shape', () => {
 test('validate rejects each rule breach with a reason', () => {
   const cases = [
     ['The Moon in your travel-and-belief sector trines Saturn in your sign. Go.', /words/],
+    [GOOD.slice(0, GOOD.lastIndexOf(',')), /full sentence/],
     [GOOD + '\n\nMore.', /paragraph/],
     [GOOD.replace('The Moon in', 'Your luminary in'), /Moon/],
     [GOOD.replace('travel-and-belief', 'ninth'), /travel-and-belief/],
@@ -157,7 +158,7 @@ test('parseArgs defaults and addDays', () => {
 test('a failed HTTP request counts as one attempt, not the whole run', async () => {
   const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'daily-prose-'));
   const originalFetch = globalThis.fetch;
-  let chatCount = 0, firstAttemptFailed = false;
+  let chatCount = 0, firstAttemptFailed = false, lastMaxTokens;
   try {
     globalThis.fetch = async (url, init) => {
       if (url.includes('/props')) {
@@ -172,6 +173,7 @@ test('a failed HTTP request counts as one attempt, not the whole run', async () 
           throw new Error('Network timeout');
         }
         const body = JSON.parse(init.body);
+        lastMaxTokens = body.max_tokens;
         const userMsg = body.messages.find(m => m.role === 'user').content;
         // Extract the sign from the user message
         const match = userMsg.match(/Fact sheet for (\w+)/);
@@ -196,6 +198,7 @@ test('a failed HTTP request counts as one attempt, not the whole run', async () 
     const content = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.ok(content.signs.aries, 'aries sign not in output');
     assert.ok(chatCount >= 2, `expected at least 2 chat attempts, got ${chatCount}`);
+    assert.equal(lastMaxTokens, 1500);
   } finally {
     globalThis.fetch = originalFetch;
     fs.rmSync(tmpdir, {recursive: true});
