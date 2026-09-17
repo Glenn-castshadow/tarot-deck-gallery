@@ -8,7 +8,7 @@
   'use strict';
 
   const NAV = [
-    {key: 'hub', href: '/', hash: '#', label: 'Hub', blurb: 'Your daily card, today’s sky, and every reading path'},
+    {key: 'hub', href: '/', hash: '#', label: 'Home', blurb: 'Your daily card, today’s sky, and every reading path'},
     {key: 'tarot', href: '/tarot/', hash: '#tarot-readings', label: 'Tarot', blurb: 'Daily card, full readings, deck chooser, and the archive'},
     {key: 'sky', href: '/sky/', hash: '#daily-horoscope', label: 'Sky', blurb: 'Your daily horoscope'},
     {key: 'charts', href: '/charts/', hash: '#birthday-room', label: 'Charts', blurb: 'Birth form, natal chart, transits, astrocartography, Four Pillars, and horary'},

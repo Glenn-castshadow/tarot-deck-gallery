@@ -58,7 +58,7 @@ and (via each entry's `href`) the hub's category cards. Its eight entries:
 
 | key | href | hash | label |
 |---|---|---|---|
-| hub | `/` | `#` | Hub |
+| hub | `/` | `#` | Home |
 | tarot | `/tarot/` | `#tarot-readings` | Tarot |
 | sky | `/sky/` | `#daily-horoscope` | Sky |
 | charts | `/charts/` | `#birthday-room` | Charts |
