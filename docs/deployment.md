@@ -1,5 +1,64 @@
 # VPS deployment
 
+## 2026-09-17 Daily prose horoscope
+
+Deployed `c71543f`. **Static plus one nginx location and a new directory.**
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260917-daily-prose-c71543f`, a `cp -al` hardlink copy of
+  `20260916-floating-nav-3928834`.
+- Four files were replaced (`daily-horoscope.js`, `daily-horoscope-engine.js`, `sky-calendar-engine.js`,
+  `sky/index.html`). Because the release is a hardlink copy, each file was `rm -f`'d before being written, or
+  the previous release would have changed too (memory: `tar --unlink-first` breaks the same way on
+  directories).
+- On Windows, `git archive` with the repo's default `core.autocrlf=true` rewrites LF to CRLF on the way into
+  the tar, so the first extraction failed all four sha256 checks (sizes and hashes both off). Re-running with
+  `git -c core.autocrlf=false archive ...` produced byte-identical files and all four checks passed.
+- The deploy was gated on `current`, on the sha256 of the four replaced files (all matched the live release),
+  and on the config gate below (`nginx -t` before any reload).
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260916-floating-nav-3928834 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Config change.** Before the release switch, one nginx `location` block was inserted into
+`/etc/nginx/sites-available/ishtarinsights.com`, ahead of the existing `location / {` (the file had exactly
+one such line, confirmed by grep before editing). The prior file is backed up at
+`/etc/nginx/sites-available/ishtarinsights.com.before-daily-prose`. `nginx -t` passed and `systemctl reload
+nginx` was run only after that. Verbatim:
+
+```
+    location ^~ /sky/daily/ {
+        alias /opt/tarot-game/daily/;
+        default_type application/json;
+        add_header Cache-Control "max-age=600";
+        add_header X-Content-Type-Options nosniff;
+    }
+```
+
+**Change.** `/opt/tarot-game/daily/` is a new directory on the VPS, served at `/sky/daily/<day>.json` by the
+block above. It holds one JSON file per day of model-written daily-horoscope prose (twelve signs each,
+written by the local Muse Glimmer model per `tools/write_daily_prose.cjs`, design at
+`docs/superpowers/specs/2026-09-17-daily-prose-design.md`). The directory is written only by
+`tools/write_daily_prose.cjs --push`, run from GLENNHOMEPC; nothing on the VPS or in the release writes to
+it. The `/sky/` page's client-side `daily-horoscope.js`/`-engine.js` fetch today's file and render the
+model's paragraph (`.dh-prose`) when it exists, falling back to the template reading when it does not; no
+lens cards are rendered on that path. Three day files were pushed this run: 2026-09-17 (generated fresh,
+11/12 signs — Aquarius omitted after three failed attempts, all "more than one paragraph" or truncated
+output; the page falls back to the template reading for that sign until it is retried), 2026-09-18 and
+2026-09-19 (already reviewed, pushed unchanged).
+
+**Cache keys.** `daily-horoscope-engine.js?v=2`, `daily-horoscope.js?v=2`, `sky-calendar-engine.js?v=4`.
+
+**Validation after the switch.**
+- All four replaced files return 200 and the served `/sky/` page carries the three cache keys above;
+  `daily-horoscope.js?v=2` contains `dh-prose`.
+- `https://ishtarinsights.com/sky/daily/1999-01-01.json` returns 404; `2026-09-18.json` returns 200 with
+  `Content-Type: application/json` and `Cache-Control: max-age=600`.
+- In the built-in browser at `https://ishtarinsights.com/sky/`: no console errors other than the usual
+  signed-out `/api/account/` 401; the default sign (Aries) shows the `dh-prose` paragraph for today
+  (2026-09-17, now that the file exists), no `.dh-lenses` cards, the Moon-phase line and the reflection
+  question both present. Changing the sign to Taurus produced a different paragraph. At 390px width,
+  `document.documentElement.scrollWidth <= window.innerWidth` (390 <= 390, no horizontal overflow).
+
 ## 2026-09-16 Floating nav bar with section links
 
 Deployed `3928834`. **Static only.**
