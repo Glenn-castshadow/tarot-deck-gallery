@@ -146,14 +146,14 @@ test('the rules name no sign and no planet but the Moon, and the model never see
   assert.ok(!/\d{4}-\d{2}-\d{2}|\d{2}:\d{2}/.test(user.content), 'a date or time leaks to the model');
 });
 
-test('buildMessages rotates the opening/consequence-subject hint by sign', () => {
+test('buildMessages rotates the opening/scene-setting hint by sign', () => {
   const moon = {sign: 'Pisces', phase: 'First quarter', illumination: 52};
   const hintOf = content => content.slice(content.indexOf('Write the paragraph:'));
   const ariesHint = hintOf(W.buildMessages({...SHEET, sign: 'Aries'}, moon)[1].content);
   const taurusHint = hintOf(W.buildMessages({...SHEET, sign: 'Taurus'}, moon)[1].content);
   assert.notEqual(ariesHint, taurusHint, 'Aries and Taurus got the same hint sentence');
-  assert.ok(ariesHint.includes("a statement about one thing in the reader's day"), ariesHint);
-  assert.ok(ariesHint.includes('an object'), ariesHint);
+  assert.ok(ariesHint.includes('how the day goes'), ariesHint);
+  assert.ok(ariesHint.includes("the area of life named by the Moon's sector"), ariesHint);
 });
 
 test('parseArgs defaults and addDays', () => {

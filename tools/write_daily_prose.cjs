@@ -15,10 +15,10 @@ const RULES = `You write one short daily horoscope paragraph for a website calle
 
 You are given a fact sheet: the phase of the Moon, the sector of the reader's chart the Moon is in today, the exact aspects the Moon makes today to other planets with the sector each planet is in, and any planet that changes sign or turns direct or retrograde today, again with its sector. Write only from these facts. Invent nothing.
 
-Shape, in this order, as one paragraph of 60 to 120 words in the second person:
-1. One short opening sentence that lands the mood. Make it a specific claim, not a weather report: a statement about one thing in the reader's day, a flat observation about the world, a noun phrase with no verb, or a statement about the reader. Do not open with "The day feels" or with any sentence whose only content is two adjectives.
-2. The mechanism, in plain words: the Moon in the given sector, the aspect verb, the planet, and the planet's sector, using the sector names exactly as given. Aspect verbs: is with (conjunction), sextiles, squares, trines, opposes. If there is no aspect, say where the Moon is and what the phase asks, and leave it at that. If the fact sheet marks a planet's rulerInvolved as true, call it "your ruling planet". If the ruler listed is the Moon itself, you may call the Moon your ruling planet. If an event is listed, weave it into the same paragraph in one sentence and name its sector. Name the phase only when there is no aspect to report. When an aspect is present the mechanism sentence ends once the aspect is stated.
-3. One concrete consequence: a small, specific scene from ordinary life. Let the thing, the person or the event be the subject of the sentence and act; do not report that the reader notices, hears, rereads or finds themselves doing something. Commit to one object and one person; never offer alternatives joined by "or". Do not use the device of something becoming clearer, smaller or easier by being said out loud.
+Shape, in this order, as one paragraph of 80 to 110 words in the second person:
+1. One short sentence naming the mood or theme of the reader's day in plain words: how the day goes, or what it asks of them. It is a judgement about the day, not a scene; do not describe a place, the weather, traffic or the light.
+2. The mechanism, in plain words, and in the same sentence its effect: the Moon in the given sector, the aspect verb, the planet in its sector, then "and" plus what that produces in the reader's day. Use the sector names exactly as given. Aspect verbs: is with (conjunction), sextiles, squares, trines, opposes. With two aspects, state both in one sentence or the second in the next. If there is no aspect, say where the Moon is and what the phase asks, and leave it at that; when an aspect is present do not name the phase. If the fact sheet marks a planet's rulerInvolved as true, call it "your ruling planet". If the ruler listed is the Moon itself, you may call the Moon your ruling planet. If an event is listed, weave it into the same paragraph in one sentence and name its sector.
+3. One concrete scene that shows that effect, set in the area of life the sectors name: work for the career or daily-work sectors, home for the home sector, a message or a call for the communication sector, a bill or a price for the money sectors, and so on. Let the thing, the person or the event act; do not report that the reader notices, hears, rereads or finds themselves doing something. Commit to one object and one person; never offer alternatives joined by "or". Do not give people names and do not assume relatives: say a friend, a colleague, someone at home, or a partner when the partnership sector is involved. Do not use the device of something becoming clearer, smaller or easier by being said out loud.
 4. One imperative sentence telling the reader what to do with the day.
 
 Rules: plain, warm, dry, specific. No clock times, no degrees, no dates. Do not name any zodiac sign except the reader's own. Do not name any planet, aspect or event that is not in the fact sheet. Never use the word "will". No predictions, promises or guarantees. No medical, legal or financial advice. No em dashes, no headings, no lists, no emoji, no quotation marks. Output the paragraph only, nothing before or after it.`;
@@ -52,10 +52,10 @@ function validate(text, sheet) {
 }
 
 // Each sign is a separate request with no view of the others, so variety across a day's twelve
-// paragraphs is rotated in by sign rather than asked for: the opening kind and the grammatical
-// subject of the consequence beat differ from sign to sign.
-const OPENINGS = ['a statement about one thing in the reader\'s day', 'a flat observation about the world outside the reader', 'a noun phrase with no verb', 'a statement about the reader'];
-const SUBJECTS = ['an object', 'a person', 'an event'];
+// paragraphs is rotated in by sign rather than asked for: the opening kind and where the
+// consequence scene is set differ from sign to sign.
+const OPENINGS = ['how the day goes', 'what the day asks of the reader', 'a noun phrase naming the day\'s theme', 'a plain verdict on one part of the day'];
+const SETTINGS = ['the area of life named by the Moon\'s sector', 'the area of life named by the other planet\'s sector, or the Moon\'s if there is no aspect'];
 
 // The Moon's sign is deliberately withheld: the rules ban every sign name but the reader's own.
 function buildMessages(sheet, moon) {
@@ -67,7 +67,7 @@ function buildMessages(sheet, moon) {
   const i = Math.max(0, engine.signNames.indexOf(sheet.sign));
   return [
     {role: 'system', content: `${RULES}\n\n${EXAMPLE}`},
-    {role: 'user', content: `Fact sheet for ${sheet.sign}:\n${JSON.stringify(facts, null, 1)}\n\nWrite the paragraph: mood, mechanism, consequence, imperative. Open with ${OPENINGS[i % OPENINGS.length]}. In the consequence, make ${SUBJECTS[i % SUBJECTS.length]} the subject of the sentence.`}
+    {role: 'user', content: `Fact sheet for ${sheet.sign}:\n${JSON.stringify(facts, null, 1)}\n\nWrite the paragraph: mood, mechanism, consequence, imperative. Open with ${OPENINGS[i % OPENINGS.length]}. Set the scene in ${SETTINGS[i % SETTINGS.length]}.`}
   ];
 }
 
