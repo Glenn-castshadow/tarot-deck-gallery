@@ -119,7 +119,9 @@ async function main(argv) {
     for (const sg of sheet.signs) {
       let text = null, reason = '';
       for (let attempt = 1; attempt <= 3 && !text; attempt++) {
-        const candidate = await complete(o.endpoint, o.model, buildMessages(sg, sheet.moon));
+        let candidate;
+        try { candidate = await complete(o.endpoint, o.model, buildMessages(sg, sheet.moon)); }
+        catch (error) { reason = `request failed: ${error.message}`; console.warn(`${day} ${sg.sign} attempt ${attempt}: ${reason}`); continue; }
         reason = validate(candidate, sg);
         if (reason) console.warn(`${day} ${sg.sign} attempt ${attempt}: ${reason}`); else text = candidate;
       }
@@ -131,5 +133,5 @@ async function main(argv) {
   }
 }
 
-module.exports = {RULES, EXAMPLE, validate, buildMessages, parseArgs, addDays};
+module.exports = {RULES, EXAMPLE, validate, buildMessages, parseArgs, addDays, main};
 if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error); process.exit(1); });

@@ -1,5 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
 const E = require('../sky-calendar-engine.js');
 const natal = require('../natal-engine.js');
 
@@ -149,4 +152,52 @@ test('parseArgs defaults and addDays', () => {
   assert.deepEqual(W.parseArgs(['--from', '2026-12-30', '--days', '3', '--push', '--force', '--out', 'x']), {...o, from: '2026-12-30', days: 3, push: true, force: true, out: 'x'});
   assert.equal(W.addDays('2026-12-30', 3), '2027-01-02');
   assert.equal(W.addDays('2024-02-28', 1), '2024-02-29');
+});
+
+test('a failed HTTP request counts as one attempt, not the whole run', async () => {
+  const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'daily-prose-'));
+  const originalFetch = globalThis.fetch;
+  let chatCount = 0, firstAttemptFailed = false;
+  try {
+    globalThis.fetch = async (url, init) => {
+      if (url.includes('/props')) {
+        return {ok: true, json: async () => ({model_alias: 'muse-glimmer-30b-local'})};
+      }
+      if (url.includes('/chat/completions')) {
+        chatCount++;
+        // On the very first chat attempt for Aries, throw an error; on the second, succeed.
+        // For other signs, always succeed on the first attempt.
+        if (chatCount === 1 && !firstAttemptFailed) {
+          firstAttemptFailed = true;
+          throw new Error('Network timeout');
+        }
+        const body = JSON.parse(init.body);
+        const userMsg = body.messages.find(m => m.role === 'user').content;
+        // Extract the sign from the user message
+        const match = userMsg.match(/Fact sheet for (\w+)/);
+        const sign = match ? match[1] : 'Aries';
+        // Return a paragraph that mentions the sector name from the request
+        const sectorMatch = userMsg.match(/"moonSector":\s*"([^"]+)"/);
+        const sector = sectorMatch ? sectorMatch[1] : 'your sign';
+        const text = `Discipline sits easily today. The Moon in ${sector} makes an easy contact with the planetary influence, and the rule you set yourself last week, the commitment to consistency, holds without any effort on your part, which is noteworthy. The course you keep meaning to pursue looks more affordable than you expected when you finally check. Pursue it before lunch, then take the long walk you promised yourself, the one you have been putting off.`;
+        return {
+          ok: true,
+          json: async () => ({
+            choices: [{message: {content: text}}]
+          })
+        };
+      }
+      throw new Error('Unexpected fetch: ' + url);
+    };
+    const defaultFrom = new Date().toISOString().slice(0, 10);
+    await W.main(['--from', defaultFrom, '--days', '1', '--out', tmpdir]);
+    const file = path.join(tmpdir, `${defaultFrom}.json`);
+    assert.ok(fs.existsSync(file), 'output file not created');
+    const content = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.ok(content.signs.aries, 'aries sign not in output');
+    assert.ok(chatCount >= 2, `expected at least 2 chat attempts, got ${chatCount}`);
+  } finally {
+    globalThis.fetch = originalFetch;
+    fs.rmSync(tmpdir, {recursive: true});
+  }
 });
