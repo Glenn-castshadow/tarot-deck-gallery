@@ -4,7 +4,7 @@ The `/sky/#daily-horoscope` section offers all twelve tropical signs without an 
 
 `daily-horoscope-engine.js` uses the vendored Astronomy Engine and NatalEngine placement helper. For each device-local calendar date it samples the geocentric tropical sky at **12:00 UTC**. One date’s sky is cached in memory. The selected sign is the first whole-sign solar house; the Moon supplies the headline and mood, Venus relationships, Mercury work, Sun growth, and Mars the action. Phase and illumination come from Astronomy Engine. All interpretation copy is original. The reflection question rotates by calendar day and sign. Slow-moving placements mean some themes intentionally repeat; these are general symbolic readings, not personal natal transit predictions.
 
-`daily-horoscope.js` follows the existing attach pattern and updates at local midnight, on returning to a visible tab, and at most once a minute for device clock/time-zone changes. Dates outside 1901–2100 show a retry state. Controls remain in place when readings refresh, preserving keyboard focus. The section participates in mobile disclosures and hash navigation. There are no new API calls, cookies, storage keys, or services.
+`daily-horoscope.js` follows the existing attach pattern and updates at local midnight, on returning to a visible tab, and at most once a minute for device clock/time-zone changes. Dates outside 1901–2100 show a retry state. Controls remain in place when readings refresh, preserving keyboard focus. The section participates in mobile disclosures and hash navigation. There are no cookies, storage keys, or services; the one network call is a same-origin GET for the day's prose paragraph, described in "The prose layer" below.
 
 Validation: `node --test tests/daily-horoscope.test.cjs` covers all signs, house wrapping, existing ephemeris agreement, deterministic readings, daily rollover, leap days and bounds, local date keys, and cache isolation. Run `node --test tests/*.test.cjs` for the JavaScript regression suite.
 
@@ -37,9 +37,9 @@ into `/opt/tarot-game/daily/`, which nginx serves at `/sky/daily/`. The nightly 
 GLENNHOMEPC (`Ishtar-Daily-Prose`, 03:30, wscript shim) writes seven days ahead, so a night the PC
 is off changes nothing.
 
-Timing measured on the RTX 5080: two days of twelve signs (24 requests, allowing for retries) took
-about 8.5 minutes, so the nightly seven-day run takes roughly 30 to 45 minutes, not the five
-minutes the design estimated before any run had been timed.
+Timing measured on the RTX 5080: two days of twelve signs (24 paragraphs; a retried sign adds more
+requests than that) took about 8.5 minutes, so the nightly seven-day run takes roughly 30 to 45
+minutes, not the five minutes the design estimated before any run had been timed.
 
 The first batch review (two days, 24 paragraphs) found no factual errors; `RULES` was tuned over
 three rounds against template tics before that review. One tic remains — a recurring kitchen-table
@@ -54,7 +54,7 @@ lens cards, title, overview and action are replaced by `<p class="dh-prose">`; t
 line and question stay. Without one (404, timeout, bad JSON, missing sign) the markup is byte for
 byte today's template reading. This is the page's only network request and it carries finished
 copy, not positions. The disclosure text in "How your daily reading is made" tells the reader the
-paragraph is written by a language model running on Glenn's own hardware, and that the shorter
+paragraph is written by a language model running on our own hardware, and that the shorter
 template reading appears on days none is available.
 
 Validation: `node --test tests/daily-prose.test.cjs tests/daily-horoscope.test.cjs`.
