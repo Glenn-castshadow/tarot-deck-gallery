@@ -83,3 +83,58 @@ test('open-page rollover, hidden-tab resume and profile clearing update the disp
   assert.match(output.innerHTML,/Today · Aries/);
   assert.equal(nodes.get('[data-dh-profile]').hidden,true);
 });
+
+function mount({fetch, setTimeout = () => 1, clock = new Date(2026, 8, 17, 12, 0, 0).getTime()} = {}) {
+  class ClockDate extends Date { constructor(...args) { super(...(args.length ? args : [clock])); } }
+  const nodes = new Map();
+  const root = {innerHTML: '', querySelector(selector) {
+    if (!nodes.has(selector)) nodes.set(selector, {innerHTML: '', textContent: '', hidden: false, value: '', listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; }});
+    return nodes.get(selector);
+  }};
+  const document = {hidden: false, listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; }};
+  const context = vm.createContext({Date: ClockDate, Intl, document, window: {addEventListener() {}}, clearTimeout() {}, setTimeout, AbortController, fetch,
+    DailyHoroscopeEngine: {...engine, localDateKey: () => engine.localDateKey(new Date(clock)), calculate: sign => engine.calculate(sign, engine.localDateKey(new Date(clock)))}});
+  vm.runInContext(fs.readFileSync(require.resolve('../daily-horoscope.js'), 'utf8') + '\nthis.attachHoroscope = DailyHoroscope.attach;', context);
+  const ui = context.attachHoroscope(root);
+  return {ui, output: nodes.get('[data-dh-reading]'), select: nodes.get('select')};
+}
+const settle = () => new Promise(resolve => setImmediate(resolve));
+
+test('a model-written paragraph replaces the lens cards and keeps the phase line and question', async () => {
+  const day = '2026-09-17';
+  const paragraph = 'Discipline sits easily today. The Moon in your travel-and-belief sector trines Saturn in your sign.';
+  let requested;
+  const page = mount({fetch: async url => { requested = url; return {ok: true, json: async () => ({day, signs: {aries: paragraph}})}; }});
+  assert.equal(page.output.innerHTML, '', 'drew before the fetch settled');
+  await settle();
+  assert.equal(requested, `/sky/daily/${day}.json`);
+  assert.ok(page.output.innerHTML.includes(`<p class="dh-prose">${paragraph}</p>`));
+  assert.ok(!page.output.innerHTML.includes('dh-lenses') && !page.output.innerHTML.includes('dh-action'));
+  assert.match(page.output.innerHTML, /dh-moon/);
+  assert.match(page.output.innerHTML, /<blockquote>/);
+  page.select.value = '3'; page.select.listeners.change();          // Cancer has no paragraph: template, synchronously
+  assert.match(page.output.innerHTML, /Today · Cancer/);
+  assert.match(page.output.innerHTML, /dh-lenses/);
+  assert.ok(!page.output.innerHTML.includes('dh-prose'));
+});
+
+test('no file, a timeout, or no fetch at all render the template reading byte for byte', async () => {
+  const none = mount({fetch: undefined});
+  assert.match(none.output.innerHTML, /dh-lenses/, 'no fetch: must draw synchronously');
+  const missing = mount({fetch: async () => ({ok: false, status: 404, json: async () => { throw new Error('no body'); }})});
+  const broken = mount({fetch: async () => ({ok: true, json: async () => ({day: '2026-09-17', signs: {aries: 7}})})});
+  const slow = mount({
+    fetch: (url, {signal}) => signal.aborted ? Promise.reject(new Error('aborted')) : new Promise((_, reject) => signal.addEventListener('abort', () => reject(new Error('aborted')))),
+    setTimeout: callback => { callback(); return 1; }                 // the two-second abort fires at once
+  });
+  await settle();
+  assert.equal(missing.output.innerHTML, none.output.innerHTML);
+  assert.equal(broken.output.innerHTML, none.output.innerHTML);
+  assert.equal(slow.output.innerHTML, none.output.innerHTML);
+});
+
+test('the disclosure says when the paragraph is model-written and what happens when it is not', () => {
+  const source = fs.readFileSync(require.resolve('../daily-horoscope.js'), 'utf8');
+  assert.match(source, /language model running on our own hardware/);
+  assert.match(source, /shorter template reading appears instead/);
+});
