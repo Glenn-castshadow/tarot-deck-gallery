@@ -103,8 +103,9 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
 test('a model-written paragraph replaces the lens cards and keeps the phase line and question', async () => {
   const day = '2026-09-17';
   const paragraph = 'Discipline sits easily today. The Moon in your travel-and-belief sector trines Saturn in your sign.';
+  const signs = {aries: paragraph};
   let requested;
-  const page = mount({fetch: async url => { requested = url; return {ok: true, json: async () => ({day, signs: {aries: paragraph}})}; }});
+  const page = mount({fetch: async url => { requested = url; return {ok: true, json: async () => ({day, signs})}; }});
   assert.equal(page.output.innerHTML, '', 'drew before the fetch settled');
   await settle();
   assert.equal(requested, `/sky/daily/${day}.json`);
@@ -112,6 +113,7 @@ test('a model-written paragraph replaces the lens cards and keeps the phase line
   assert.ok(!page.output.innerHTML.includes('dh-lenses') && !page.output.innerHTML.includes('dh-action'));
   assert.match(page.output.innerHTML, /dh-moon/);
   assert.match(page.output.innerHTML, /<blockquote>/);
+  assert.ok(!('cancer' in signs), 'fixture must lack a cancer key for this to exercise the fallback');
   page.select.value = '3'; page.select.listeners.change();          // Cancer has no paragraph: template, synchronously
   assert.match(page.output.innerHTML, /Today · Cancer/);
   assert.match(page.output.innerHTML, /dh-lenses/);
@@ -125,7 +127,7 @@ test('no file, a timeout, or no fetch at all render the template reading byte fo
   const broken = mount({fetch: async () => ({ok: true, json: async () => ({day: '2026-09-17', signs: {aries: 7}})})});
   const slow = mount({
     fetch: (url, {signal}) => signal.aborted ? Promise.reject(new Error('aborted')) : new Promise((_, reject) => signal.addEventListener('abort', () => reject(new Error('aborted')))),
-    setTimeout: callback => { callback(); return 1; }                 // the two-second abort fires at once
+    setTimeout: (callback, delay) => { if (delay === 2000) callback(); return 1; }  // only the two-second abort fires at once
   });
   await settle();
   assert.equal(missing.output.innerHTML, none.output.innerHTML);

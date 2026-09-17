@@ -22,7 +22,7 @@ const DailyHoroscope = (() => {
       if (mine.settled) return false;
       const controller = typeof AbortController === 'function' ? new AbortController() : null;
       const abort = setTimeout(() => controller && controller.abort(), 2000);
-      fetch(`/sky/daily/${day}.json`, controller ? {signal: controller.signal} : undefined)
+      Promise.resolve().then(() => fetch(`/sky/daily/${day}.json`, controller ? {signal: controller.signal} : undefined))
         .then(res => res.ok ? res.json() : null)
         .then(json => { if (json && json.day === day && json.signs && typeof json.signs === 'object') mine.signs = json.signs; })
         .catch(() => {})
@@ -62,16 +62,9 @@ const DailyHoroscope = (() => {
       // Recheck at least once a minute to handle clock/time-zone changes as well as midnight.
       timer = setTimeout(refresh, Math.min(60000, Math.max(1000,+midnight-+now+100)));
     }
-    let refreshing = false;
     function refresh() {
-      // Guards against a setTimeout that fires synchronously (real browsers never do this, but the
-      // slow-fetch test's abort timer does) recursing through schedule() forever.
-      if (refreshing) return;
-      refreshing = true;
-      try {
-        if (!document.hidden && renderedDay !== DailyHoroscopeEngine.localDateKey()) render();
-        schedule();
-      } finally { refreshing = false; }
+      if (!document.hidden && renderedDay !== DailyHoroscopeEngine.localDateKey()) render();
+      schedule();
     }
     select.addEventListener('change',()=>{selected=Number(select.value);manual=true;render();});
     profileButton.addEventListener('click',()=>{if(profileSign !== null){selected=profileSign;manual=false;render();}});
