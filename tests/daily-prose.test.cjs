@@ -6,7 +6,18 @@ const natal = require('../natal-engine.js');
 test('moonAspects lists every exact Moon aspect in a window, sorted, and agrees with voidPeriods', () => {
   const from = new Date('2026-03-01T00:00:00Z'), to = new Date('2026-03-08T00:00:00Z');
   const hits = E.moonAspects(from, to, E.CLASSICAL_PLANETS);
-  assert.ok(hits.length >= 10, `only ${hits.length} hits in a week`);
+  // Independent oracle: an hourly scan of the Moon-planet separation, counting every upward
+  // crossing of the eight separations that are Ptolemaic aspects. Must agree with the search.
+  let expected = 0;
+  for (const planet of E.CLASSICAL_PLANETS) for (const target of [0, 60, 90, 120, 180, 240, 270, 300]) {
+    let prev = null;
+    for (let t = +from; t < +to; t += 3600e3) {
+      const d = new Date(t), g = natal.delta(natal.mod(E.lonOf('Moon', d) - E.lonOf(planet, d)), target);
+      if (prev !== null && prev < 0 && g >= 0 && g - prev < 45) expected++;
+      prev = g;
+    }
+  }
+  assert.equal(hits.length, expected);
   for (let i = 1; i < hits.length; i++) assert.ok(hits[i].date >= hits[i - 1].date, 'not sorted');
   for (const h of hits) {
     const t = new Date(h.date);
