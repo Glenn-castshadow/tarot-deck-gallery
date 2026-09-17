@@ -302,6 +302,11 @@ Two mappings are index maps rather than title matches, deliberately:
 `tests/sky-calendar-text.test.cjs` asserts every table is complete, that no entry forecasts or
 promises, and that no copy was duplicated between entries.
 
+The daily horoscope's paragraph is the one piece of copy on `/sky/` that is not in a text module:
+it is written each night by a local language model from a computed fact sheet and validated
+before publishing (`docs/DAILY-HOROSCOPE.md`, "The prose layer"). The template reading it replaces
+still lives in `daily-horoscope-engine.js` and is what renders when no paragraph is available.
+
 ## Saving a transit calendar
 
 Only the personal transit calendar is a reading; the Moon, the month and the retrograde tracker
