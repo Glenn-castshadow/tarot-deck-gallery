@@ -37,6 +37,19 @@ const DailyHoroscopeEngine = (() => {
     'What is one thing you can appreciate as it is?',
     'What would you like to carry into tomorrow?'
   ];
+  // Plain-language names for the twelve whole-sign solar houses. Original to this site; the
+  // only house vocabulary the daily prose writer may use (tools/write_daily_prose.cjs).
+  const sectorNames = [
+    'your sign', 'your money-and-worth sector', 'your communication sector',
+    'your home sector at the base of your chart', 'your romance-and-creativity sector',
+    'your daily-work-and-health sector', 'your partnership sector',
+    'your shared-money-and-intimacy sector', 'your travel-and-belief sector',
+    'your career sector at the top of your chart', 'your friends-and-groups sector',
+    'your most private sector'
+  ];
+  const ASPECT_NAMES = {0: 'conjunction', 60: 'sextile', 90: 'square', 120: 'trine', 180: 'opposition'};
+  const ASPECT_PARTNERS = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+  const EVENT_BODIES = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
   let cachedSky;
   function localDateKey(date = new Date()) {
     if (!(date instanceof Date) || !Number.isFinite(+date)) throw new RangeError('A valid date is required.');
@@ -68,6 +81,36 @@ const DailyHoroscopeEngine = (() => {
       question:questions[natal.mod(Math.floor(Date.parse(sky.instant)/86400000)+signIndex,questions.length)]
     };
   }
-  return {calculate, localDateKey, signNames:natal.signNames, signGlyphs:natal.signGlyphs};
+  // The fact sheet the prose writer works from. Node-only (the page never calls it), so the
+  // sky and classical engines are required lazily and the browser dependency map is unchanged.
+  // The day is the UTC calendar day; sectors come from the same 12:00 UTC sample as calculate().
+  function factSheet(day) {
+    const sky = skyFor(day);
+    const cal = typeof SkyCalendarEngine !== 'undefined' ? SkyCalendarEngine : require('./sky-calendar-engine.js');
+    const classical = typeof ClassicalEngine !== 'undefined' ? ClassicalEngine : require('./classical-engine.js');
+    const from = new Date(`${day}T00:00:00Z`), to = new Date(+from + 86400000), noon = new Date(sky.instant);
+    const signIndexOf = body => natal.placement(cal.lonOf(body, noon)).index;
+    const moonIndex = sky.points.find(p => p.name === 'Moon').index;
+    const partnerSign = Object.fromEntries(ASPECT_PARTNERS.map(p => [p, signIndexOf(p)]));
+    const aspects = cal.moonAspects(from, to, ASPECT_PARTNERS).map(h => ({
+      planet: h.planet, aspect: h.aspect, name: ASPECT_NAMES[h.aspect], planetSign: natal.signNames[partnerSign[h.planet]], date: h.date
+    }));
+    const events = [
+      ...cal.ingresses(from, to, EVENT_BODIES).map(e => ({body: e.body, kind: 'ingress', detail: e.retrograde ? 'backs into the previous sign' : 'enters a new sign', sign: e.sign, signIndex: e.signIndex, date: e.date})),
+      ...cal.stations(from, to).map(e => ({body: e.body, kind: 'station', detail: `turns ${e.direction}`, sign: e.sign, signIndex: natal.signNames.indexOf(e.sign), date: e.date}))
+    ].sort((a, b) => a.date < b.date ? -1 : 1);
+    const sector = (bodyIndex, signIndex) => { const house = natal.mod(bodyIndex - signIndex, 12) + 1; return {house, name: sectorNames[house - 1]}; };
+    const signs = natal.signNames.map((sign, i) => {
+      const ruler = classical.rulers[i];
+      return {
+        sign, ruler, moonSector: sector(moonIndex, i),
+        aspects: aspects.map(a => ({planet: a.planet, name: a.name, planetSector: sector(partnerSign[a.planet], i), rulerInvolved: a.planet === ruler})),
+        events: events.map(e => ({body: e.body, kind: e.kind, detail: e.detail, sector: sector(e.signIndex, i), rulerInvolved: e.body === ruler}))
+      };
+    });
+    const phase = phases[Math.round(sky.phaseAngle / 45) % 8][0];
+    return {day, instant: sky.instant, moon: {sign: natal.signNames[moonIndex], phase, illumination: sky.illumination}, aspects, events, signs};
+  }
+  return {calculate, factSheet, localDateKey, sectorNames, signNames:natal.signNames, signGlyphs:natal.signGlyphs};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyHoroscopeEngine;
