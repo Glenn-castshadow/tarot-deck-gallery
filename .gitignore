@@ -54,6 +54,7 @@ output/imagegen/divination-v2/review/
 # Source art for the hero and logo stays local; `git add -A` has swept it in twice.
 output/imagegen/*.png
 tmp/imagegen/
+output/daily-prose/
 
 # Superpowers SDD scratch workspace (ledger, briefs, review packages)
 .superpowers/

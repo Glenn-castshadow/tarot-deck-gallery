@@ -101,3 +101,52 @@ test('factSheet lists the Sun ingress on the equinox day, seen from each sign', 
 test('factSheet refuses a bad day', () => {
   for (const day of ['2026-02-29', 'bad', '1900-12-31']) assert.throws(() => engine.factSheet(day), RangeError);
 });
+
+const W = require('../tools/write_daily_prose.cjs');
+const SHEET = {sign: 'Aries', ruler: 'Mars', moonSector: {house: 9, name: 'your travel-and-belief sector'},
+  aspects: [{planet: 'Saturn', name: 'trine', planetSector: {house: 1, name: 'your sign'}, rulerInvolved: false}], events: []};
+const GOOD = 'Discipline sits easily today. The Moon in your travel-and-belief sector trines Saturn in your sign, and the rule you set yourself last week, the early start or the no-phone hour, holds without any effort on your part, which is rare enough to notice. The course you keep meaning to book looks affordable when you finally open the page and read the price instead of guessing it. Book it before lunch, then go for the walk you said you would take, the long way round.';
+
+test('validate accepts a paragraph in the brief shape', () => {
+  assert.equal(W.validate(GOOD, SHEET), null);
+});
+
+test('validate rejects each rule breach with a reason', () => {
+  const cases = [
+    ['The Moon in your travel-and-belief sector trines Saturn in your sign. Go.', /words/],
+    [GOOD + '\n\nMore.', /paragraph/],
+    [GOOD.replace('The Moon in', 'Your luminary in'), /Moon/],
+    [GOOD.replace('travel-and-belief', 'ninth'), /travel-and-belief/],
+    [GOOD + ' Good luck.', /luck/],
+    [GOOD.replace('holds', 'will hold'), /will/],
+    [GOOD.replace('Saturn in your sign', 'Venus in your sign'), /Venus/],
+    [GOOD.replace('in your sign,', 'in Libra,'), /Libra/],
+    [GOOD.replace(', and', ' — and'), /em dash/],
+    [GOOD.replace('before lunch', 'at 14:02'), /clock time/],
+    [GOOD.replace('before lunch', 'at 12 degrees'), /degree/],
+    [42, /string/]
+  ];
+  for (const [text, reason] of cases) assert.match(String(W.validate(text, SHEET)), reason, String(text).slice(0, 40));
+});
+
+test('the rules name no sign and no planet but the Moon, and the model never sees another sign name', () => {
+  for (const s of engine.signNames) assert.ok(!W.RULES.includes(s), `RULES names ${s}`);
+  for (const p of ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']) assert.ok(!new RegExp(`\\b${p}\\b`).test(W.RULES), `RULES names ${p}`);
+  const [system, user] = W.buildMessages(SHEET, {sign: 'Pisces', phase: 'First quarter', illumination: 52});
+  assert.equal(system.role, 'system');
+  assert.ok(system.content.includes(W.RULES) && system.content.includes(W.EXAMPLE));
+  assert.equal(user.role, 'user');
+  assert.ok(user.content.includes('your travel-and-belief sector'));
+  assert.ok(user.content.includes('First quarter'));
+  assert.ok(!user.content.includes('Pisces'), 'the Moon sign leaks to the model');
+  assert.ok(!/\d{4}-\d{2}-\d{2}|\d{2}:\d{2}/.test(user.content), 'a date or time leaks to the model');
+});
+
+test('parseArgs defaults and addDays', () => {
+  const o = W.parseArgs([]);
+  assert.equal(o.days, 7); assert.equal(o.endpoint, 'http://127.0.0.1:8088/v1'); assert.equal(o.model, 'muse-glimmer-30b-local');
+  assert.equal(o.push, false); assert.equal(o.force, false); assert.match(o.from, /^\d{4}-\d{2}-\d{2}$/);
+  assert.deepEqual(W.parseArgs(['--from', '2026-12-30', '--days', '3', '--push', '--force', '--out', 'x']), {...o, from: '2026-12-30', days: 3, push: true, force: true, out: 'x'});
+  assert.equal(W.addDays('2026-12-30', 3), '2027-01-02');
+  assert.equal(W.addDays('2024-02-28', 1), '2024-02-29');
+});
