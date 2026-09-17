@@ -319,20 +319,28 @@
   // aspects the differential changes sign at every station, descending crossings become real,
   // and this function would silently miss half of them -- it would then need the sign-flip
   // idiom ingresses()/stations() use.
-  function lastAspectBefore(a, b, planets) {
-    let latest = null;
+  // Unguarded core shared by moonAspects (public, range-checked) and lastAspectBefore
+  // (private; its callers pad their windows and may step outside 1901-2100, see voidStateFor).
+  function moonAspectsCore(a, b, planets) {
+    const from = astro.MakeTime(a), to = astro.MakeTime(b);
+    const out = [];
     for (const planet of planets) for (const aspect of ASPECTS) for (const sign of (aspect === 0 || aspect === 180 ? [1] : [1, -1])) {
       const g = t => natal.delta(lonOf('Moon', t) - lonOf(planet, t), sign * aspect);
-      for (let s = a; s.ut < b.ut; s = s.AddDays(0.25)) {
-        const e = s.AddDays(0.25).ut < b.ut ? s.AddDays(0.25) : b;
+      for (let s = from; s.ut < to.ut; s = s.AddDays(0.25)) {
+        const e = s.AddDays(0.25).ut < to.ut ? s.AddDays(0.25) : to;
         const gs = g(s), ge = g(e);
         if (gs < 0 && ge >= 0 && ge - gs < 45) {
           const hit = astro.Search(g, s, e, {dt_tolerance_seconds: 1});
-          if (hit && (!latest || hit.ut > latest.time.ut)) latest = {time: hit, planet, aspect};
+          if (hit) out.push({time: hit, planet, aspect});
         }
       }
     }
-    return latest;
+    return out.sort((x, y) => x.time.ut - y.time.ut);
+  }
+
+  function lastAspectBefore(a, b, planets) {
+    const hits = moonAspectsCore(a, b, planets);
+    return hits.length ? hits[hits.length - 1] : null;
   }
 
   // Unguarded core: computes periods over [from, to] with no regard for the public 1901-2100
@@ -573,9 +581,17 @@
     };
   }
 
+  // Every exact Ptolemaic aspect the Moon makes to any listed planet inside [from, to),
+  // oldest first. Same search as the void-of-course code (see the comment above), exposed
+  // for the daily prose fact sheet (docs/DAILY-HOROSCOPE.md).
+  function moonAspects(from, to, planets) {
+    if (!inRange(from) || !inRange(to)) return [];
+    return moonAspectsCore(from, to, planets).map(h => ({planet: h.planet, aspect: h.aspect, date: h.time.date.toISOString()}));
+  }
+
   return {
     moonNow, lonOf, inRange, signOf, signNames, MIN_YEAR, MAX_YEAR,
-    CLASSICAL_PLANETS, MODERN_PLANETS, voidPeriods, voidBands,
+    CLASSICAL_PLANETS, MODERN_PLANETS, voidPeriods, voidBands, moonAspects,
     BODIES, speedAt, ingresses, monthEvents, stations, eclipses, retrogradeState, personalTransits
   };
 });
