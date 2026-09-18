@@ -331,3 +331,13 @@ test('the subject-line example rotates by week, and every set passes the validat
   assert.equal(shown('2026-10-12'), three[0]);                // and then round again
   for (const [i, s] of three.entries()) assert.ok(W.EXAMPLE_SUBJECTS_SETS.some(set => s.endsWith(set)), `week ${i} shows a whole set`);
 });
+
+test('the facts sent to the model say when a placement ends, and only then', () => {
+  const sheet = H.weekSheet('2026-09-21');   // the Sun changes sign on Wednesday; nothing else does
+  const user = W.signMessages(sheet.signs[0], sheet)[1].content;
+  const facts = JSON.parse(user.slice(user.indexOf('{'), user.lastIndexOf('}') + 1));
+  assert.deepEqual(facts.placements[0], {body: 'Sun', sector: 'your daily-work-and-health sector', ruler: false, until: 'Wednesday'});
+  for (const p of facts.placements.slice(1)) assert.equal('until' in p, false);
+  const shared = W.overviewMessages(sheet)[1].content;
+  assert.match(shared, /"until": "Wednesday"/);
+});

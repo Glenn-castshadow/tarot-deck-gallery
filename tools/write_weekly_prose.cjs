@@ -178,7 +178,7 @@ function validateSubjects(raw, sheet) {
 function signMessages(sg, sheet) {
   const facts = {
     sign: sg.sign, ruler: sg.ruler, moon: sg.backdrop.moon,
-    placements: sg.backdrop.placements.map(p => ({body: p.body, sector: p.sector.name, ruler: p.ruler})),
+    placements: sg.backdrop.placements.map(p => ({body: p.body, sector: p.sector.name, ruler: p.ruler, ...(p.until && {until: p.until})})),
     events: sg.events.map(e => ({weekday: e.weekday, body: e.body, what: e.detail, sector: e.sector.name, rulerInvolved: e.rulerInvolved}))
   };
   return [
