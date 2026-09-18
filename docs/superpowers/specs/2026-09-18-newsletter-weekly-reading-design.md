@@ -256,6 +256,37 @@ contract, the scheduled task, and how to re-run a weak week. Any reader-facing n
 is made (piece 3) must say that one model writes and a second proofreads. `docs/DAILY-HOROSCOPE.md` notes that `commonProblems` is
 shared.
 
+## Amendments after review and the first live probe (2026-09-18)
+
+These override the sections above where they differ. All are Claude's judgement, made while executing the
+plan, unless marked otherwise.
+
+1. **Placements can end mid-week.** A placement whose planet changes sign during the week carries
+   `until: <weekday of its first ingress>`; placements that hold all week have no `until` key. Both briefs say
+   so, the sign example shows one, and `overstays()` rejects a sentence that names such a planet and claims
+   the whole week. Reason: in the first live probe, 24 of 24 readings in the two weeks where the Sun changed
+   sign said "The Sun spends all seven days in ..." (a phrase copied from the example) and every one passed
+   the code validator.
+2. **A correction must leave every fact word in place.** Besides the validator and the 8% budget, the
+   proofreader applies a correction only if the count of every weekday, planet, zodiac sign, sector name,
+   phase and direction word, the word "until", and every number is the same before and after
+   (`factWords`). Corrections are computed, checked, and only then applied. Reason: the whole-branch review
+   showed four swapped facts fitting inside the 8% budget and being recorded as a current pass.
+3. **The future tense is caught however it is spelled.** `commonProblems` also rejects `shall`, `won't` and
+   any `...'ll` contraction (straight or curly apostrophe), and a spaced en dash. This also applies to the
+   nightly daily writer, whose rules already banned the future tense; its 14 tests are unchanged.
+4. **The overview counts an ingress only by planet plus weekday**, because every ingress shares the generic
+   wording "enters a new sign".
+5. **Fact-sheet wording is rejected.** The words "placement(s)" and "fact sheet" fail a sign reading or an
+   overview; the briefs tell the model the reader has never seen the fact sheet. Reason: the probe produced
+   "the placements stay steady" and "With no events to force a pivot".
+6. **A quiet week is said once**, and the rest of the paragraph goes to what a steady week is good for.
+7. **The subject-line example rotates** across three sets by week number. Reason: the model returned the
+   example's lines with the nouns swapped.
+
+Known and accepted: planet and sign names are matched with their capital letter only (a case-insensitive
+match would reject ordinary English such as "sit in the sun"); Qwen's fact check is the second net.
+
 ## Out of scope
 
 Email HTML, templates, Mailchimp campaigns and segments (piece 3); any site page or VPS push of the weekly
