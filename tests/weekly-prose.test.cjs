@@ -102,3 +102,68 @@ test('complete merges sampling overrides over its defaults', async () => {
     assert.equal(sent.temperature, 1.0);
   } finally { globalThis.fetch = original; }
 });
+
+const W = require('../tools/write_weekly_prose.cjs');
+
+test('each brief\'s example passes its own validator', () => {
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN, W.EXAMPLE_SIGN_SHEET), null);
+  assert.equal(W.validateOverview(W.EXAMPLE_OVERVIEW, W.EXAMPLE_SHEET), null);
+  assert.equal(W.validateSubjects(W.EXAMPLE_SUBJECTS, W.EXAMPLE_SHEET), null);
+});
+
+test('validateSign rejects each broken shape and fact', () => {
+  const sg = W.EXAMPLE_SIGN_SHEET, ok = W.EXAMPLE_SIGN, [p1, p2] = ok.split('\n\n');
+  assert.match(W.validateSign(p1, sg), /two paragraphs/);
+  assert.match(W.validateSign(`${p1}\n\n${p2}\n\n${p2}`, sg), /two paragraphs/);
+  assert.match(W.validateSign('Short.\n\nToo short.', sg), /words/);
+  assert.match(W.validateSign(`${ok} ${ok}`.replace('\n\n', ' '), sg), /words/);
+  assert.match(W.validateSign(ok.replace(/\.$/, ''), sg), /full sentence/);
+  assert.match(W.validateSign(ok.replaceAll(sg.backdrop.placements[0].sector.name, 'one corner').replaceAll(sg.events[0].sector.name, 'another corner'), sg), /no sector/);
+  assert.match(W.validateSign(ok.replaceAll('Thursday', 'one day').replaceAll('Sunday', 'another day'), sg), /no weekday/);
+  assert.match(W.validateSign(ok.replace('Two days matter most.', 'Jupiter matters most.'), sg), /names Jupiter/);
+  assert.match(W.validateSign(ok.replace('Keep Sunday small', 'Sunday will be small'), sg), /will/);
+});
+
+test('validateSign asks for no weekday when the sign has no events', () => {
+  const quiet = {...W.EXAMPLE_SIGN_SHEET, events: []};
+  const text = W.EXAMPLE_SIGN.replaceAll('Thursday', 'one day').replaceAll('Sunday', 'another day');
+  assert.equal(W.validateSign(text, quiet), null);
+});
+
+test('validateOverview needs two of the week\'s events, no sector name, and only the sheet\'s signs', () => {
+  const sheet = W.EXAMPLE_SHEET, ok = W.EXAMPLE_OVERVIEW;
+  // Venus's event is matched by its wording or by "Venus" plus "Thursday"; take both away.
+  assert.match(W.validateOverview(ok.replace('enters a new sign, moving into Libra', 'changes').replaceAll('Thursday', 'midweek'), sheet), /names 1 of the week's events/);
+  assert.match(W.validateOverview(ok.replace('in its drawer', 'in your partnership sector'), sheet), /names a sector/);
+  assert.match(W.validateOverview(ok.replace('in its drawer', 'in Gemini'), sheet), /names Gemini/);
+  assert.equal(W.validateOverview(ok.replace('On Thursday Venus enters a new sign, moving into Libra', 'Midweek the mood lifts').replace('the New moon arrives in Virgo', 'a fresh start arrives'), {...sheet, events: []}), null);
+});
+
+test('validateSubjects checks the JSON, the three lines and the preview', () => {
+  const sheet = W.EXAMPLE_SHEET, good = JSON.parse(W.EXAMPLE_SUBJECTS);
+  const v = o => W.validateSubjects(JSON.stringify(o), sheet);
+  const fence = '`'.repeat(3);   // models often wrap JSON in a code fence
+  assert.equal(W.validateSubjects(`${fence}json\n${W.EXAMPLE_SUBJECTS}\n${fence}`, sheet), null);
+  assert.equal(W.validateSubjects('not json', sheet), 'not JSON');
+  assert.match(v({...good, subjects: good.subjects.slice(0, 2)}), /subjects: \[3\]/);
+  assert.match(v({...good, subjects: ['Too short', good.subjects[1], good.subjects[2]]}), /characters/);
+  assert.match(v({...good, subjects: ['A steady week with one clear turning point!', good.subjects[1], good.subjects[2]]}), /exclamation/);
+  assert.match(v({...good, subjects: ['A STEADY week with one clear turning point', good.subjects[1], good.subjects[2]]}), /all-caps/);
+  assert.match(v({...good, subjects: ['A steady week for Taurus and everyone else', good.subjects[1], good.subjects[2]]}), /names Taurus/);
+  assert.match(v({...good, subjects: ['A steady week with one turning point 🌙', good.subjects[1], good.subjects[2]]}), /emoji/);
+  assert.match(v({...good, subjects: [good.subjects[0], good.subjects[0].toUpperCase().toLowerCase(), good.subjects[2]]}), /distinct/);
+  assert.match(v({...good, preview: 'Too short.'}), /preview is/);
+});
+
+test('the sign brief carries the facts as JSON and withholds zodiac signs', () => {
+  const sheet = H.weekSheet('2026-09-21'), sg = sheet.signs[0];
+  const [system, user] = W.signMessages(sg, sheet);
+  assert.equal(system.role, 'system');
+  assert.match(user.content, /^Fact sheet for Aries, week of 2026-09-21:/);
+  const facts = JSON.parse(user.content.slice(user.content.indexOf('{'), user.content.lastIndexOf('}') + 1));
+  assert.equal(facts.moon, 'waxing');
+  assert.equal(facts.placements[3].sector, 'your home sector at the base of your chart');
+  assert.equal(facts.placements[3].ruler, true);
+  assert.equal(facts.events[0].weekday, 'Saturday');
+  assert.doesNotMatch(user.content, /Virgo|Libra|Scorpio/);
+});
