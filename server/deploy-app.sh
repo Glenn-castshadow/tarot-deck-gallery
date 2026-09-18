@@ -92,6 +92,12 @@ install -o root -g root -m 755 /tmp/backup-ishtar-app.sh "$APP/backup-ishtar-app
 printf '17 3 * * * root %s/backup-ishtar-app.sh\n' "$APP" > /etc/cron.d/ishtar-app-backup
 chmod 644 /etc/cron.d/ishtar-app-backup
 
+# Mailchimp reconcile every 10 minutes (docs/NEWSLETTER.md). Written whole on
+# every run like the backup entry above, so re-deploying converges. The
+# command is a no-op until Glenn adds MAILCHIMP_API_KEY to /etc/ishtar-app.env.
+printf '*/10 * * * * root cd %s/app && set -a && . /etc/ishtar-app.env && set +a && DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3 sudo -u ishtar-app -E %s/venv/bin/python manage.py sync_mailchimp >/dev/null\n' "$APP" "$APP" > /etc/cron.d/ishtar-app-mailchimp
+chmod 644 /etc/cron.d/ishtar-app-mailchimp
+
 export DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3
 cd "$APP/app"
 sudo -u ishtar-app -E "$APP/venv/bin/python" manage.py migrate --noinput
