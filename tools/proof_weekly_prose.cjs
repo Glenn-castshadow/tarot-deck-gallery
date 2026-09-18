@@ -63,7 +63,7 @@ function blocks(file, sheet) {
   out.push({key: 'overview', text: file.overview || '', facts: shared, check: t => validateOverview(t, sheet),
     set: t => { file.overview = t; }, clear: () => { file.overview = ''; }});
   out.push({key: 'subjects', text: file.subjects?.length === 3 ? JSON.stringify({subjects: file.subjects, preview: file.preview}) : '', facts: shared,
-    check: t => validateSubjects(t, sheet), set: t => { Object.assign(file, parseSubjects(t)); }, clear: () => { file.subjects = []; file.preview = ''; }});
+    check: t => validateSubjects(t, sheet), set: t => { Object.assign(file, parseSubjects(t)); return JSON.stringify({subjects: file.subjects, preview: file.preview}); }, clear: () => { file.subjects = []; file.preview = ''; }});
   return out.filter(b => b.text);
 }
 
@@ -116,10 +116,14 @@ async function main(argv, options = {}) {
     let text = b.text, edited = false;
     const fixed = verdict.corrected.trim();
     if (fixed && fixed !== b.text.trim()) {
-      const problem = b.check(fixed), edits = wordEdits(b.text, fixed), limit = Math.ceil(b.text.trim().split(/\s+/).length * MAX_EDIT_SHARE);
+      const problem = b.check(fixed);
       if (problem) console.warn(`${o.week} ${b.key}: correction discarded, it fails the validator (${problem})`);
-      else if (edits > limit) console.warn(`${o.week} ${b.key}: correction discarded, ${edits} word edits is over the limit of ${limit}`);
-      else { week.originals = {...week.originals, [b.key]: b.text}; b.set(fixed); text = fixed; edited = true; }
+      else {
+        const canonical = b.set(fixed) || fixed;
+        const edits = wordEdits(b.text, canonical), limit = Math.ceil(b.text.trim().split(/\s+/).length * MAX_EDIT_SHARE);
+        if (edits > limit) { console.warn(`${o.week} ${b.key}: correction discarded, ${edits} word edits is over the limit of ${limit}`); b.set(b.text); }
+        else if (canonical !== b.text) { week.originals = {...week.originals, [b.key]: b.text}; text = canonical; edited = true; } else { b.set(b.text); }
+      }
     }
     if (week.rejected) delete week.rejected[b.key];
     week.proof.blocks[b.key] = {verdict: 'pass', reason: '', edited, sha: sha(text)};

@@ -149,6 +149,44 @@ test('exit codes: 2 for the wrong model, 1 for a missing file', async () => {
   await run(pass, {}, async dir => assert.equal(await P.main(['--week', '2026-09-14', '--out', dir], {sheet: SHEET}), 1));
 });
 
+test('a corrected subjects block is hashed in its canonical form and is not sent again', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-proof-')), original = globalThis.fetch;
+  try {
+    seed(dir);
+    // First run: Qwen corrects one word in subjects but pretty-prints the reply
+    const sub = JSON.parse(W.EXAMPLE_SUBJECTS);
+    const corrected = {subjects: [sub.subjects[0].replace('changes the mood', 'lifts the mood'), ...sub.subjects.slice(1)], preview: sub.preview};
+    const fence = '`'.repeat(3);
+    const correctedReply = key => key === 'subjects' ? JSON.stringify({verdict: 'pass', reason: '', corrected: `${fence}json\n${JSON.stringify(corrected, null, 2)}\n${fence}`}) : pass();
+    globalThis.fetch = fakeQwen(correctedReply);
+    await P.main(['--week', WEEK, '--out', dir], {sheet: SHEET});
+    let f = read(dir);
+    assert.equal(f.subjects[0], corrected.subjects[0]);
+    assert.equal(f.proof.blocks.subjects.edited, true);
+    assert.equal(f.proof.blocks.subjects.sha, P.sha(JSON.stringify({subjects: f.subjects, preview: f.preview})));
+    assert.equal(f.originals.subjects, W.EXAMPLE_SUBJECTS);
+    // Second run: verify subjects is not re-sent (no correction needed, sha now matches canonical)
+    const calls = [];
+    globalThis.fetch = fakeQwen(pass, {calls});
+    await P.main(['--week', WEEK, '--out', dir], {sheet: SHEET});
+    assert.deepEqual(calls.map(c => c.key), []);  // no subjects call
+    f = read(dir);
+    assert.equal(f.originals.subjects, W.EXAMPLE_SUBJECTS);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, {recursive: true}); }
+});
+
+test('a fenced, reformatted subjects reply with identical values leaves edited false', async () => {
+  const sub = JSON.parse(W.EXAMPLE_SUBJECTS);
+  const fence = '`'.repeat(3);
+  const correctedReply = key => key === 'subjects' ? JSON.stringify({verdict: 'pass', reason: '', corrected: `${fence}json\n${JSON.stringify(sub, null, 2)}\n${fence}`}) : pass();
+  await run(correctedReply, {}, async dir => {
+    await P.main(['--week', WEEK, '--out', dir], {sheet: SHEET});
+    const f = read(dir);
+    assert.equal(f.proof.blocks.subjects.edited, false);
+    assert.equal(f.originals?.subjects, undefined);
+  });
+});
+
 test('ten passed signs and a passed overview return 0', async () => {
   const names = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn'];
   const sheet = {...W.EXAMPLE_SHEET, signs: names.map(n => ({...W.EXAMPLE_SIGN_SHEET, sign: n[0].toUpperCase() + n.slice(1)}))};
