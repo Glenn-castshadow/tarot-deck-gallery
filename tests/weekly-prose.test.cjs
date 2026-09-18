@@ -75,3 +75,30 @@ test('weekSheet still returns a usable sheet for a week with no events', () => {
   assert.equal(s.backdrop.placements.length, 4);
   for (const sg of s.signs) { assert.deepEqual(sg.events, []); assert.ok(sg.backdrop.placements.length >= 4); }
 });
+
+const D = require('../tools/write_daily_prose.cjs');
+
+test('commonProblems reports each shared rule and passes clean text', () => {
+  const bodies = new Set(['Sun', 'Moon']), signs = new Set(['Aries']);
+  assert.equal(D.commonProblems('The Sun warms Aries all week.', bodies, signs), null);
+  assert.match(D.commonProblems('Good luck arrives.', bodies, signs), /forbidden phrase: luck/);
+  assert.match(D.commonProblems('It will pass.', bodies, signs), /will/);
+  assert.match(D.commonProblems('Venus smiles.', bodies, signs), /names Venus/);
+  assert.match(D.commonProblems('The Sun enters Libra.', bodies, signs), /names Libra/);
+  assert.equal(D.commonProblems('A pause — then go.', bodies, signs), 'em dash');
+  assert.equal(D.commonProblems('Meet at 9:30.', bodies, signs), 'clock time');
+  assert.equal(D.commonProblems('The Sun at 12 degrees.', bodies, signs), 'degree');
+});
+
+test('complete merges sampling overrides over its defaults', async () => {
+  const original = globalThis.fetch;
+  let sent;
+  try {
+    globalThis.fetch = async (url, init) => { sent = JSON.parse(init.body); return {ok: true, json: async () => ({choices: [{message: {content: ' ok '}}]})}; };
+    assert.equal(await D.complete('http://x/v1', 'm', [{role: 'user', content: 'hi'}], {temperature: 0.2}), 'ok');
+    assert.equal(sent.temperature, 0.2);
+    assert.equal(sent.max_tokens, 2500);
+    await D.complete('http://x/v1', 'm', []);
+    assert.equal(sent.temperature, 1.0);
+  } finally { globalThis.fetch = original; }
+});

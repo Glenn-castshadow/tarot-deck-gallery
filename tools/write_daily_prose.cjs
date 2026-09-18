@@ -42,6 +42,19 @@ The Moon is a waxing crescent, which suits adding to something that has already 
 const PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Chiron'];
 const FORBIDDEN = ['you will', 'will happen', 'is going to', 'the answer is', 'luck', 'fortune'];
 
+// The rules every published block shares, daily or weekly. null when clean, otherwise the reason.
+function commonProblems(t, allowedBodies, allowedSigns) {
+  const lower = t.toLowerCase();
+  for (const f of FORBIDDEN) if (lower.includes(f)) return `forbidden phrase: ${f}`;
+  if (/\bwill\b/i.test(t)) return 'uses "will"';
+  for (const p of PLANETS) if (!allowedBodies.has(p) && new RegExp(`\\b${p}\\b`).test(t)) return `names ${p}, which is not in the sheet`;
+  for (const s of engine.signNames) if (!allowedSigns.has(s) && new RegExp(`\\b${s}\\b`).test(t)) return `names ${s}`;
+  if (t.includes('—')) return 'em dash';
+  if (/\b\d{1,2}:\d{2}\b/.test(t)) return 'clock time';
+  if (/\d\s*°|\b\d+\s*degrees?\b/i.test(t)) return 'degree';
+  return null;
+}
+
 // null when the paragraph may be published, otherwise the reason it may not.
 function validate(text, sheet) {
   if (typeof text !== 'string') return 'not a string';
@@ -55,16 +68,8 @@ function validate(text, sheet) {
   if (!/[.!?]$/.test(t)) return 'does not end in a full sentence';
   if (!/\bMoon\b/.test(t)) return 'does not mention the Moon';
   if (!t.includes(sheet.moonSector.name)) return `does not name ${sheet.moonSector.name}`;
-  const lower = t.toLowerCase();
-  for (const f of FORBIDDEN) if (lower.includes(f)) return `forbidden phrase: ${f}`;
-  if (/\bwill\b/i.test(t)) return 'uses "will"';
   const allowed = new Set(['Moon', ...sheet.aspects.map(a => a.planet), ...sheet.events.map(e => e.body)]);
-  for (const p of PLANETS) if (!allowed.has(p) && new RegExp(`\\b${p}\\b`).test(t)) return `names ${p}, which is not in the sheet`;
-  for (const s of engine.signNames) if (s !== sheet.sign && new RegExp(`\\b${s}\\b`).test(t)) return `names ${s}`;
-  if (t.includes('—')) return 'em dash';
-  if (/\b\d{1,2}:\d{2}\b/.test(t)) return 'clock time';
-  if (/\d\s*°|\b\d+\s*degrees?\b/i.test(t)) return 'degree';
-  return null;
+  return commonProblems(t, allowed, new Set([sheet.sign]));
 }
 
 // Each sign is a separate request with no view of the others, so variety across a day's twelve
@@ -117,13 +122,13 @@ async function servedAlias(endpoint) {
   return (await res.json()).model_alias || '';
 }
 
-async function complete(endpoint, model, messages) {
+async function complete(endpoint, model, messages, overrides = {}) {
   // max_tokens 2500: Glimmer's reasoning_content runs 300-400 tokens before it starts writing;
   // 700 was too tight and let reasoning alone exhaust the budget, leaving content empty or truncated
   // mid-sentence (observed 2026-09-17). 2500 leaves headroom for reasoning plus a full 350-word reading.
   const res = await fetch(`${endpoint}/chat/completions`, {
     method: 'POST', headers: {'content-type': 'application/json'},
-    body: JSON.stringify({model, messages, temperature: 1.0, top_p: 0.95, top_k: 64, max_tokens: 2500, stream: false})
+    body: JSON.stringify({model, messages, temperature: 1.0, top_p: 0.95, top_k: 64, max_tokens: 2500, stream: false, ...overrides})
   });
   if (!res.ok) throw new Error(`${res.status} from ${endpoint}/chat/completions`);
   const json = await res.json();
@@ -170,5 +175,5 @@ async function main(argv) {
   }
 }
 
-module.exports = {RULES, EXAMPLE, PLACES, validate, buildMessages, parseArgs, addDays, main};
+module.exports = {RULES, EXAMPLE, PLACES, validate, commonProblems, buildMessages, parseArgs, addDays, servedAlias, complete, main};
 if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error); process.exit(1); });
