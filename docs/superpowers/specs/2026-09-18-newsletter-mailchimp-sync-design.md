@@ -59,8 +59,8 @@ There is no sync-state column. The reconcile is a set diff, so it needs none.
 The only module that imports the Mailchimp SDK. Three functions:
 
 - `push(subscriber)` — `PUT /lists/{id}/members/{md5(lowercase email)}` with
-  `status_if_new: "pending"`, `merge_fields: {SIGN, UNSUB}`. `SIGN` is the sun sign or an empty
-  string. `UNSUB` is the subscriber's VPS unsubscribe URL
+  `status_if_new: "pending"`, `merge_fields: {SIGN, SITEUNSUB}`. `SIGN` is the sun sign or an empty
+  string. `SITEUNSUB` is the subscriber's VPS unsubscribe URL
   (`https://ishtarinsights.com/unsubscribe.html#<token>`), so piece 3's template can link it.
   It never sets `status`, so a member who unsubscribed in Mailchimp is not resubscribed by a push.
 - `remove(email)` — `PATCH` the member to `status: "unsubscribed"`; a 404 is success.
@@ -174,7 +174,7 @@ site, see `unsubscribed` in Mailchimp.
 ## What Glenn does by hand
 
 1. Create the Mailchimp account and one audience; turn on double opt-in for the audience.
-2. Add the merge fields `SIGN` (text) and `UNSUB` (website).
+2. Add the merge fields `SIGN` (text) and `SITEUNSUB` (website).
 3. Authenticate `ishtarinsights.com` as the sending domain (DKIM and DMARC records).
 4. Put the API key, server prefix and audience ID in `/etc/ishtar-app.env` on the VPS.
 

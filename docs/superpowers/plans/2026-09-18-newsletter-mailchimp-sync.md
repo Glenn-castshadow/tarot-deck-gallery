@@ -138,7 +138,7 @@ class ConfiguredTests(TestCase):
             mailchimp.push(row)
         self.assertEqual(lists.calls, [('set', 'aud1', HASH, {
             'email_address': 'reader@example.com', 'status_if_new': 'pending',
-            'merge_fields': {'SIGN': 'leo', 'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}})])
+            'merge_fields': {'SIGN': 'leo', 'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}})])
 
     def test_push_never_sends_status_so_an_unsubscribed_member_stays_out(self):
         lists = FakeLists(status='unsubscribed')
@@ -247,7 +247,7 @@ def push(subscriber, resubscribe=False):
         # status_if_new only: a push must never resubscribe someone who left inside Mailchimp.
         'status_if_new': 'pending',
         'merge_fields': {'SIGN': subscriber.sun_sign,
-                         'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + subscriber.unsubscribe_token},
+                         'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + subscriber.unsubscribe_token},
     })
     # A fresh signup on the site is fresh consent; pending makes Mailchimp send a new confirmation.
     if resubscribe and member.get('status') == 'unsubscribed':
@@ -883,8 +883,8 @@ Design: `docs/superpowers/specs/2026-09-18-newsletter-mailchimp-sync-design.md`.
   inside Mailchimp. It prints counts only.
 - New members enter Mailchimp as `pending`; Mailchimp's confirmation email is the double opt-in.
   Rows recorded under consent v1 are pushed the same way, so the confirmation is their fresh opt-in.
-- Merge fields: `SIGN` (the chosen sun sign or empty) and `UNSUB` (the VPS unsubscribe URL).
-  Every campaign template must link `*|UNSUB|*` or Mailchimp's own unsubscribe tag.
+- Merge fields: `SIGN` (the chosen sun sign or empty) and `SITEUNSUB` (the VPS unsubscribe URL).
+  Every campaign template must link `*|SITEUNSUB|*` or Mailchimp's own unsubscribe tag.
 - Consent version `2026-09-18-v2` names Mailchimp. `Subscriber.sun_sign` is the only new stored field.
 - Glenn's manual setup: audience with double opt-in on, the two merge fields, sending-domain
   authentication, and the three `MAILCHIMP_*` lines in `/etc/ishtar-app.env`.

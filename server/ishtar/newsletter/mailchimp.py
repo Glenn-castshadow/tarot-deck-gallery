@@ -44,7 +44,7 @@ def push(subscriber, resubscribe=False):
         # status_if_new only: a push must never resubscribe someone who left inside Mailchimp.
         'status_if_new': 'pending',
         'merge_fields': {'SIGN': subscriber.sun_sign,
-                         'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + subscriber.unsubscribe_token},
+                         'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + subscriber.unsubscribe_token},
     })
     # A fresh signup on the site is fresh consent; pending makes Mailchimp send a new confirmation.
     if resubscribe and member.get('status') == 'unsubscribed':

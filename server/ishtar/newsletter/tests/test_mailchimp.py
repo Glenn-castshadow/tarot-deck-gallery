@@ -50,7 +50,7 @@ class ConfiguredTests(TestCase):
             mailchimp.push(row)
         self.assertEqual(fake.calls, [('PUT', PATH, {
             'email_address': 'reader@example.com', 'status_if_new': 'pending',
-            'merge_fields': {'SIGN': 'leo', 'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}}, None)])
+            'merge_fields': {'SIGN': 'leo', 'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}}, None)])
 
     def test_push_never_sends_status_so_an_unsubscribed_member_stays_out(self):
         fake = FakeRequest(results=[{'status': 'unsubscribed'}])
