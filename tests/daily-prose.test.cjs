@@ -133,6 +133,14 @@ test('validate rejects each rule breach with a reason', () => {
   for (const [text, reason] of cases) assert.match(String(W.validate(text, SHEET)), reason, String(text).slice(0, 40));
 });
 
+test('validate allows a long paragraph up to 300 words and refuses a runaway one', () => {
+  const pad = n => GOOD.replace(/\.$/, '') + ' and on'.repeat(n) + '.';
+  const count = t => t.split(/\s+/).length;
+  assert.equal(count(pad(108)), 300);
+  assert.equal(W.validate(pad(108), SHEET), null);
+  assert.match(W.validate(pad(109), SHEET), /^302 words$/);
+});
+
 test('the rules name no sign and no planet but the Moon, and the model never sees another sign name', () => {
   for (const s of engine.signNames) assert.ok(!W.RULES.includes(s), `RULES names ${s}`);
   for (const p of ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']) assert.ok(!new RegExp(`\\b${p}\\b`).test(W.RULES), `RULES names ${p}`);

@@ -26,7 +26,9 @@ for one paragraph per sign per day, 80 to 110 words, with `max_tokens` set to 15
 observed to leave the paragraph empty or truncated mid-sentence. Each sign is a separate request
 with no view of the other eleven, so `buildMessages` appends a rotating hint by sign (four opening
 kinds by two scene settings) rather than asking the model for variety it cannot see. `validate`
-keeps 60 to 120 words as the hard bounds it will publish, checks the paragraph is one block of text
+keeps 60 to 300 words as the hard bounds it will publish (the ceiling was 120 until 2026-09-18,
+when a sheet with two aspects, an event and long sector names left Taurus out of 2026-09-23 after
+three attempts; 300 is a runaway guard, and the brief still asks for 80 to 110), checks the paragraph is one block of text
 ending in `.`, `!` or `?` (a truncation guard), names the Moon and its sector, uses no forbidden
 phrase or "will", names no planet or sign outside the sheet, and uses no em dash, clock time or
 degree. A request or network error counts as one failed attempt, the same as a validation failure,

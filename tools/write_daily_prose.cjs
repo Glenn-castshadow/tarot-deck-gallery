@@ -35,7 +35,10 @@ function validate(text, sheet) {
   const t = text.trim();
   if (/\n/.test(t)) return 'more than one paragraph';
   const words = t.split(/\s+/).filter(Boolean).length;
-  if (words < 60 || words > 120) return `${words} words`;
+  // The ceiling is a runaway guard, not the target (RULES asks for 80 to 110): naming two aspects
+  // and an event with long sector names spends about 50 words before the scene, and a 120 cap
+  // dropped Taurus from 2026-09-23 after three attempts.
+  if (words < 60 || words > 300) return `${words} words`;
   if (!/[.!?]$/.test(t)) return 'does not end in a full sentence';
   if (!/\bMoon\b/.test(t)) return 'does not mention the Moon';
   if (!t.includes(sheet.moonSector.name)) return `does not name ${sheet.moonSector.name}`;
