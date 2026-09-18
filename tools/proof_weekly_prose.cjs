@@ -10,10 +10,23 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const engine = require('../daily-horoscope-engine.js');
-const {servedAlias, complete} = require('./write_daily_prose.cjs');
+const {servedAlias, complete, PLANETS} = require('./write_daily_prose.cjs');
 const {validateSign, validateOverview, validateSubjects, parseSubjects, nextMonday} = require('./write_weekly_prose.cjs');
 
 const MAX_EDIT_SHARE = 0.08;   // of the original's word count
+
+// The words a spelling or grammar fix never needs to touch. A correction must leave every one of
+// them in place, in the same number; otherwise it changed a fact, and Glimmer's text stands.
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const SKY_WORDS = ['new moon', 'first quarter', 'full moon', 'third quarter', 'waxing', 'waning', 'direct', 'retrograde', 'eclipse', 'until'];
+function factWords(text) {
+  const lower = text.toLowerCase(), found = [];
+  for (const term of [...WEEKDAYS, ...PLANETS, ...engine.signNames, ...engine.sectorNames, ...SKY_WORDS]) {
+    const hits = lower.split(term.toLowerCase()).length - 1;
+    if (hits) found.push(`${term.toLowerCase()} x${hits}`);
+  }
+  return [...found, ...(text.match(/\d+/g) || []).map(d => `#${d}`)].sort().join('|');
+}
 
 const JUDGE = `You are the proofreader for a weekly astrology newsletter. Another writer produced the TEXT from the FACTS. Reply with one JSON object and nothing else:
 {"verdict": "pass" or "fail", "reason": string, "corrected": string}
@@ -58,12 +71,13 @@ function blocks(file, sheet) {
   for (const sg of sheet.signs) {
     const key = sg.sign.toLowerCase();
     out.push({key, text: file.signs?.[key] || '', facts: {sign: sg.sign, ruler: sg.ruler, backdrop: sg.backdrop, events: sg.events},
-      check: t => validateSign(t, sg), set: t => { file.signs[key] = t; }, clear: () => { delete file.signs[key]; }});
+      check: t => validateSign(t, sg), canonical: t => t, set: t => { file.signs[key] = t; }, clear: () => { delete file.signs[key]; }});
   }
   out.push({key: 'overview', text: file.overview || '', facts: shared, check: t => validateOverview(t, sheet),
-    set: t => { file.overview = t; }, clear: () => { file.overview = ''; }});
+    canonical: t => t, set: t => { file.overview = t; }, clear: () => { file.overview = ''; }});
   out.push({key: 'subjects', text: file.subjects?.length === 3 ? JSON.stringify({subjects: file.subjects, preview: file.preview}) : '', facts: shared,
-    check: t => validateSubjects(t, sheet), set: t => { Object.assign(file, parseSubjects(t)); return JSON.stringify({subjects: file.subjects, preview: file.preview}); }, clear: () => { file.subjects = []; file.preview = ''; }});
+    check: t => validateSubjects(t, sheet), canonical: t => JSON.stringify(parseSubjects(t)),
+    set: t => { Object.assign(file, parseSubjects(t)); }, clear: () => { file.subjects = []; file.preview = ''; }});
   return out.filter(b => b.text);
 }
 
@@ -116,13 +130,16 @@ async function main(argv, options = {}) {
     let text = b.text, edited = false;
     const fixed = verdict.corrected.trim();
     if (fixed && fixed !== b.text.trim()) {
-      const problem = b.check(fixed);
-      if (problem) console.warn(`${o.week} ${b.key}: correction discarded, it fails the validator (${problem})`);
-      else {
-        const canonical = b.set(fixed) || fixed;
-        const edits = wordEdits(b.text, canonical), limit = Math.ceil(b.text.trim().split(/\s+/).length * MAX_EDIT_SHARE);
-        if (edits > limit) { console.warn(`${o.week} ${b.key}: correction discarded, ${edits} word edits is over the limit of ${limit}`); b.set(b.text); }
-        else if (canonical !== b.text) { week.originals = {...week.originals, [b.key]: b.text}; text = canonical; edited = true; } else { b.set(b.text); }
+      const canonical = b.canonical(fixed);
+      if (canonical !== b.text) {
+        const problem = b.check(canonical);
+        if (problem) console.warn(`${o.week} ${b.key}: correction discarded, it fails the validator (${problem})`);
+        else if (factWords(canonical) !== factWords(b.text)) console.warn(`${o.week} ${b.key}: correction discarded, it changes a fact word`);
+        else {
+          const edits = wordEdits(b.text, canonical), limit = Math.ceil(b.text.trim().split(/\s+/).length * MAX_EDIT_SHARE);
+          if (edits > limit) console.warn(`${o.week} ${b.key}: correction discarded, ${edits} word edits is over the limit of ${limit}`);
+          else { b.set(canonical); week.originals = {...week.originals, [b.key]: b.text}; text = canonical; edited = true; }
+        }
       }
     }
     if (week.rejected) delete week.rejected[b.key];
@@ -137,5 +154,5 @@ async function main(argv, options = {}) {
   return signsPassed >= 10 && current.includes('overview') ? 0 : 3;
 }
 
-module.exports = {JUDGE, MAX_EDIT_SHARE, wordEdits, parseVerdict, sha, parseArgs, main};
+module.exports = {JUDGE, MAX_EDIT_SHARE, WEEKDAYS, SKY_WORDS, factWords, wordEdits, parseVerdict, sha, parseArgs, main};
 if (require.main === module) main(process.argv.slice(2)).then(code => process.exit(code), error => { console.error(error); process.exit(1); });

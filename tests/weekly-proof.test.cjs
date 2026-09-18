@@ -5,6 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const P = require('../tools/proof_weekly_prose.cjs');
 const W = require('../tools/write_weekly_prose.cjs');
+const {fakeGlimmer} = require('./helpers/weekly-fakes.cjs');
 
 test('wordEdits counts deleted plus inserted words', () => {
   assert.equal(P.wordEdits('a b c d', 'a b c d'), 0);
@@ -19,6 +20,15 @@ test('parseVerdict accepts fenced or chatty JSON and rejects anything else', () 
   assert.deepEqual(P.parseVerdict(`Here you go:\n${fence}json\n{"verdict":"fail","reason":"wrong weekday"}\n${fence}`), {verdict: 'fail', reason: 'wrong weekday', corrected: ''});
   assert.equal(P.parseVerdict('{"verdict":"maybe"}'), null);
   assert.equal(P.parseVerdict('no json here'), null);
+});
+
+test('factWords finds the same facts regardless of harmless rewording, and differs when a fact changes', () => {
+  const text = 'The week keeps a good order. On Thursday Venus enters your sign, and 3 days later the mood is waning under a New moon.';
+  assert.equal(P.factWords(text), P.factWords(text.replace('good order', 'better order')));
+  assert.notEqual(P.factWords(text), P.factWords(text.replace('Thursday', 'Friday')));
+  assert.notEqual(P.factWords(text), P.factWords(text.replace('waning', 'waxing')));
+  assert.notEqual(P.factWords(text), P.factWords(text.replace('3 days', '4 days')));
+  assert.equal(P.factWords(text.replace('New moon', 'New Moon')), P.factWords(text));
 });
 
 // A valid week file built from the writer's own examples, so every block passes its validator.
@@ -102,6 +112,27 @@ test('a correction that rewrites too much, or breaks the validator, is discarded
       assert.deepEqual([f.proof.blocks.taurus.verdict, f.proof.blocks.taurus.edited], ['pass', false]);
     });
   }
+});
+
+test('a correction that changes a fact word is discarded', async () => {
+  // Swap only the weekdays and the phase name that appear once each in the second paragraph,
+  // leaving the other mentions of Thursday and Sunday in place: the validator's own weekday
+  // check is a bare substring test and does not catch this, only factWords does.
+  const tampered = W.EXAMPLE_SIGN
+    .replace('On Thursday Venus', 'On Friday Venus')
+    .replace('On Sunday the New moon falls', 'On Monday the Full moon falls');
+  assert.equal(W.validateSign(tampered, W.EXAMPLE_SIGN_SHEET), null, 'precondition: tampered text must still pass validateSign');
+  const limit = Math.ceil(W.EXAMPLE_SIGN.trim().split(/\s+/).length * P.MAX_EDIT_SHARE);
+  assert.ok(P.wordEdits(W.EXAMPLE_SIGN, tampered) <= limit, 'precondition: the tamper must be within the edit-share limit');
+
+  const reply = key => key === 'taurus' ? JSON.stringify({verdict: 'pass', reason: '', corrected: tampered}) : pass();
+  await run(reply, {}, async dir => {
+    await P.main(['--week', WEEK, '--out', dir], {sheet: SHEET});
+    const f = read(dir);
+    assert.equal(f.signs.taurus, W.EXAMPLE_SIGN);
+    assert.equal(f.originals?.taurus, undefined);
+    assert.deepEqual(f.proof.blocks.taurus, {verdict: 'pass', reason: '', edited: false, sha: P.sha(W.EXAMPLE_SIGN)});
+  });
 });
 
 test('a block with a current pass is not sent again; a block whose text changed is', async () => {
@@ -193,4 +224,45 @@ test('ten passed signs and a passed overview return 0', async () => {
   await run(pass, {}, async dir => {
     assert.equal(await P.main(['--week', WEEK, '--out', dir], {sheet}), 0);
   }, {signs: Object.fromEntries(names.map(n => [n, W.EXAMPLE_SIGN]))});
+});
+
+test('the writer and the proofreader converge over two rounds', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-e2e-')), original = globalThis.fetch, week2 = '2026-09-21';
+  const load = () => JSON.parse(fs.readFileSync(path.join(dir, `${week2}.json`), 'utf8'));
+  try {
+    // Round 1: the writer, for real, against the real sheet for this week.
+    globalThis.fetch = fakeGlimmer();
+    assert.equal(await W.main(['--week', week2, '--out', dir]), 0);
+    let f = load();
+    assert.equal(Object.keys(f.signs).length, 12);
+
+    // Round 2: the proofreader, with no sheet override, fails Gemini and passes the rest untouched.
+    globalThis.fetch = fakeQwen(key => key === 'gemini' ? JSON.stringify({verdict: 'fail', reason: 'wrong weekday'}) : pass());
+    assert.equal(await P.main(['--week', week2, '--out', dir]), 0);   // 11 signs and the overview pass
+    f = load();
+    assert.equal('gemini' in f.signs, false);
+    assert.equal(f.rejected.gemini.reason, 'wrong weekday');
+    assert.equal(f.proof.blocks.gemini.verdict, 'fail');
+    const others = {...f.signs};
+
+    // Round 3: the writer again fills only the gap the proofreader opened. seed: 1 gives Gemini's
+    // regenerated text a different opening from its rejected one, the way a real re-sample would.
+    const calls = [];
+    globalThis.fetch = fakeGlimmer({calls, seed: 1});
+    assert.equal(await W.main(['--week', week2, '--out', dir]), 0);
+    f = load();
+    assert.deepEqual(calls, ['Gemini']);
+    assert.ok(f.signs.gemini);
+    for (const key of Object.keys(others)) assert.equal(f.signs[key], others[key]);
+
+    // Round 4: the proofreader again, only the refilled block still needs judging.
+    const calls2 = [];
+    globalThis.fetch = fakeQwen(pass, {calls: calls2});
+    assert.equal(await P.main(['--week', week2, '--out', dir]), 0);
+    f = load();
+    assert.deepEqual(calls2.map(c => c.key), ['gemini']);
+    assert.equal(f.proof.blocks.gemini.verdict, 'pass');
+    assert.equal(f.proof.blocks.gemini.sha, P.sha(f.signs.gemini));
+    assert.equal(f.rejected?.gemini, undefined);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, {recursive: true}); }
 });

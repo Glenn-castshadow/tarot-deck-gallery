@@ -177,5 +177,5 @@ async function main(argv) {
   }
 }
 
-module.exports = {RULES, EXAMPLE, PLACES, validate, commonProblems, buildMessages, parseArgs, addDays, servedAlias, complete, main};
+module.exports = {RULES, EXAMPLE, PLACES, PLANETS, validate, commonProblems, buildMessages, parseArgs, addDays, servedAlias, complete, main};
 if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error); process.exit(1); });
