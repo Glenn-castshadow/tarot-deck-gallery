@@ -156,8 +156,12 @@ else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 NEWSLETTER_ORIGINS = set(o for o in os.environ.get('NEWSLETTER_ORIGINS', 'https://ishtarinsights.com,https://www.ishtarinsights.com,http://localhost:8000,http://127.0.0.1:8000').split(',') if o)
-NEWSLETTER_CONSENT_VERSION = '2026-09-09-v1'
-NEWSLETTER_CONSENT_TEXT = 'Yes, email me the Ishtar Insights newsletter and occasional updates about new readings and features.'
+NEWSLETTER_CONSENT_VERSION = '2026-09-18-v2'
+NEWSLETTER_CONSENT_TEXT = 'Yes, email me the Ishtar Insights newsletter and occasional updates about new readings and features. Emails are sent through Mailchimp.'
+# Empty key = every newsletter.mailchimp call is a no-op, so dev and tests stay offline.
+MAILCHIMP_API_KEY = os.environ.get('MAILCHIMP_API_KEY', '')
+MAILCHIMP_SERVER = os.environ.get('MAILCHIMP_SERVER', '')
+MAILCHIMP_AUDIENCE_ID = os.environ.get('MAILCHIMP_AUDIENCE_ID', '')
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
