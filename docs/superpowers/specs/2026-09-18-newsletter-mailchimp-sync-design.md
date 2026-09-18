@@ -151,7 +151,7 @@ Mailchimp and present in the database indefinitely. Mailchimp does not send camp
 ## Error handling
 
 - Inline push or remove fails: signup or unsubscribe still succeeds; the reconcile repairs it.
-- The inline call is bounded by the SDK timeout (5 s). Nginx already limits the endpoint to
+- The inline call is bounded by the urllib timeout (5 s). Nginx already limits the endpoint to
   10 requests a minute per IP, which bounds how many workers a Mailchimp outage can hold.
 - Reconcile fails midway: every action is idempotent, so the next run finishes the job.
 - Mailchimp marks an address `cleaned` (hard bounce): the reconcile deletes the row, which

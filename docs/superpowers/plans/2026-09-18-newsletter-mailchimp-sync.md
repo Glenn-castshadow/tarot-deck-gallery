@@ -6,7 +6,7 @@ Amended during execution: the SDK was replaced by stdlib urllib (licence not ope
 
 **Goal:** Keep a Mailchimp audience in step with the VPS `newsletter_subscriber` table, with an optional sun sign per subscriber and Mailchimp's confirmation email as double opt-in.
 
-**Architecture:** The Django database stays the source of truth. Views make a best-effort inline Mailchimp call after each change; a `sync_mailchimp` management command on a 10-minute cron does a full two-way set diff as the safety net and the only route for Mailchimp-side unsubscribes. One module, `newsletter/mailchimp.py`, is the only code that touches the SDK, and it does nothing when no API key is configured.
+**Architecture:** The Django database stays the source of truth. Views make a best-effort inline Mailchimp call after each change; a `sync_mailchimp` management command on a 10-minute cron does a full two-way set diff as the safety net and the only route for Mailchimp-side unsubscribes. One module, `newsletter/mailchimp.py`, is the only code that calls the Mailchimp API (stdlib `urllib`), and it does nothing when no API key is configured.
 
 **Tech Stack:** Django 5.2 (server/ishtar), stdlib `urllib` calling the Mailchimp Marketing REST API directly (the official `mailchimp-marketing` SDK was dropped: its licence is not open source), classic-script browser JS, `node --test`, Django `TestCase`.
 
@@ -441,7 +441,7 @@ def safely(call, *args, **kwargs):
     try:
         call(*args, **kwargs)
     except Exception as error:
-        # The exception type only: SDK messages can carry the address.
+        # The exception type only: the error message can carry the address.
         logger.warning('mailchimp %s failed: %s', getattr(call, '__name__', 'call'), type(error).__name__)
 
 
@@ -667,7 +667,7 @@ class Command(BaseCommand):
         self.stdout.write(f'pushed={pushed} removed={removed} deleted={len(left)}')
 ```
 
-Errors are deliberately not caught: an exception makes `manage.py` exit non-zero and cron mails the traceback. Confirm by reading the SDK's `ApiClientError.__str__` that its message does not include the member address for the three calls used; if it does, wrap the loop body in `try/except` and re-raise `RuntimeError(type(error).__name__)`.
+Errors are deliberately not caught: an exception makes `manage.py` exit non-zero and cron mails the traceback. Confirm by reading how `urllib.error.HTTPError`'s message is formed that it does not include the member address for the three calls used; if it does, wrap the loop body in `try/except` and re-raise `RuntimeError(type(error).__name__)`.
 
 - [ ] **Step 4: Run and see them pass**
 
