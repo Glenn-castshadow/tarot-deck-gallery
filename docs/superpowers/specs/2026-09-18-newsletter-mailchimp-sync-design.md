@@ -1,6 +1,6 @@
 # Newsletter audience sync to Mailchimp
 
-**Date:** 2026-09-18. **Status:** design approved in chat, awaiting Glenn's review of this spec.
+**Date:** 2026-09-18. **Status:** approved by Glenn 2026-09-18; implemented on branch newsletter-mailchimp, not deployed.
 
 ## Purpose
 
@@ -56,13 +56,16 @@ There is no sync-state column. The reconcile is a set diff, so it needs none.
 
 ### `newsletter/mailchimp.py` (new)
 
-The only module that imports the Mailchimp SDK. Three functions:
+The only module that calls the Mailchimp Marketing API. Three functions:
 
 - `push(subscriber)` — `PUT /lists/{id}/members/{md5(lowercase email)}` with
   `status_if_new: "pending"`, `merge_fields: {SIGN, SITEUNSUB}`. `SIGN` is the sun sign or an empty
   string. `SITEUNSUB` is the subscriber's VPS unsubscribe URL
   (`https://ishtarinsights.com/unsubscribe.html#<token>`), so piece 3's template can link it.
-  It never sets `status`, so a member who unsubscribed in Mailchimp is not resubscribed by a push.
+  It never sets `status`, so a reconcile push cannot resubscribe a member who left inside
+  Mailchimp. The inline signup path calls `push(subscriber, resubscribe=True)`, which moves an
+  `unsubscribed` member back to `pending` so a person who signs up again on the site gets a new
+  confirmation email instead of being deleted by the next reconcile.
 - `remove(email)` — `PATCH` the member to `status: "unsubscribed"`; a 404 is success.
 - `members()` — iterate the audience (paged, `count=1000`) yielding `(email, status)`.
 
@@ -71,9 +74,12 @@ test suite run offline. Configuration is three settings read from the environmen
 `MAILCHIMP_API_KEY`, `MAILCHIMP_SERVER` (the `usNN` prefix) and `MAILCHIMP_AUDIENCE_ID`, added
 to `ishtar-app.env.example` with empty values.
 
-Library: `mailchimp-marketing`, Mailchimp's official Python SDK (Apache 2.0), pinned in
-`requirements.txt`. The existing `django-anymail[resend]` stays for account email; Anymail
-covers Mailchimp Transactional (Mandrill) but not the Marketing API used here.
+Library: none. `mailchimp-marketing`, Mailchimp's official Python SDK, was tried first, but its
+licence (Mailchimp's own "Client Library License Agreement") is not open source, so it was
+dropped. `newsletter/mailchimp.py` calls the Mailchimp Marketing REST API directly with stdlib
+`urllib` (HTTP Basic auth, 5 second timeout). The existing `django-anymail[resend]` stays for
+account email; Anymail covers Mailchimp Transactional (Mandrill) but not the Marketing API used
+here.
 
 ### `Subscriber.sun_sign` (model change)
 
@@ -122,8 +128,8 @@ Mailchimp and present in the database indefinitely. Mailchimp does not send camp
 
 - `index.html` gains an optional `<select id="newsletter-sign">` ("Your sign (optional)") in the
   newsletter fieldset. `newsletter.js` includes `sunSign` in the payload only when one is chosen.
-- When the visitor has a birth profile, the select is preset from the same Sun sign the daily
-  horoscope uses; the visitor can change or clear it.
+- When the visitor has a full natal chart, a blank select is preset from its Sun sign; a
+  birthday-only profile is not used.
 - `account-core.js` `setNewsletter(subscribed, sunSign)` passes the sign through.
 - The success message changes to say a confirmation email is on its way.
 - The new control must not block the birth-chart submission, the same rule the email field

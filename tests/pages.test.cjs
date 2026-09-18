@@ -198,3 +198,10 @@ for (const file of pages()) {
     }
   });
 }
+
+test('newsletter privacy names the delivery provider and what is shared', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'newsletter-privacy.html'), 'utf8');
+  assert.match(html, /Mailchimp/);
+  assert.match(html, /confirmation email/i);
+  assert.doesNotMatch(html, /no delivery provider|not shared with any/i);
+});

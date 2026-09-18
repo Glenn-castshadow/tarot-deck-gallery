@@ -2,11 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+Amended during execution: the SDK was replaced by stdlib urllib (licence not open source); Task 1's code blocks below show the original SDK version.
+
 **Goal:** Keep a Mailchimp audience in step with the VPS `newsletter_subscriber` table, with an optional sun sign per subscriber and Mailchimp's confirmation email as double opt-in.
 
 **Architecture:** The Django database stays the source of truth. Views make a best-effort inline Mailchimp call after each change; a `sync_mailchimp` management command on a 10-minute cron does a full two-way set diff as the safety net and the only route for Mailchimp-side unsubscribes. One module, `newsletter/mailchimp.py`, is the only code that touches the SDK, and it does nothing when no API key is configured.
 
-**Tech Stack:** Django 5.2 (server/ishtar), `mailchimp-marketing` (official SDK, Apache 2.0), classic-script browser JS, `node --test`, Django `TestCase`.
+**Tech Stack:** Django 5.2 (server/ishtar), stdlib `urllib` calling the Mailchimp Marketing REST API directly (the official `mailchimp-marketing` SDK was dropped: its licence is not open source), classic-script browser JS, `node --test`, Django `TestCase`.
 
 **Spec:** `docs/superpowers/specs/2026-09-18-newsletter-mailchimp-sync-design.md`
 
@@ -36,7 +38,7 @@
 
 | File | Responsibility |
 |---|---|
-| `server/ishtar/newsletter/mailchimp.py` (new) | The only SDK importer: `SIGNS`, `configured()`, `push`, `remove`, `members` |
+| `server/ishtar/newsletter/mailchimp.py` (new) | The only module that calls Mailchimp (stdlib `urllib`): `SIGNS`, `configured()`, `push`, `remove`, `members` |
 | `server/ishtar/newsletter/models.py` | `Subscriber.sun_sign` |
 | `server/ishtar/newsletter/views.py` | Optional `sunSign`, inline push/remove through `safely()` |
 | `server/ishtar/accounts/views.py` | Account toggle passes the sign and removes on off |

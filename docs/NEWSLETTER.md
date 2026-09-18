@@ -1,5 +1,27 @@
 # Newsletter signup operations
 
+## Mailchimp audience sync (2026-09-18)
+
+Design: `docs/superpowers/specs/2026-09-18-newsletter-mailchimp-sync-design.md`.
+
+- The VPS table stays the source of truth. `newsletter/mailchimp.py` is the only code that talks
+  to Mailchimp and does nothing while `MAILCHIMP_API_KEY` is unset.
+- Signup, sign change and unsubscribe push inline (5 s timeout, failures swallowed and logged
+  without the address). `manage.py sync_mailchimp` runs from `/etc/cron.d/ishtar-app-mailchimp`
+  every 10 minutes and repairs any difference, including unsubscribes and bounces that happened
+  inside Mailchimp. It prints counts only.
+- New members enter Mailchimp as `pending`; Mailchimp's confirmation email is the double opt-in.
+  Rows recorded under consent v1 are pushed the same way, so the confirmation is their fresh opt-in.
+- Merge fields: `SIGN` (the chosen sun sign or empty) and `SITEUNSUB` (the VPS unsubscribe URL).
+  Every campaign template must link `*|SITEUNSUB|*` or Mailchimp's own unsubscribe tag.
+- Consent version `2026-09-18-v2` names Mailchimp. `Subscriber.sun_sign` is the only new stored field.
+- `newsletter/mailchimp.py` calls the Mailchimp Marketing REST API directly with stdlib `urllib`
+  (HTTP Basic auth, 5 s timeout). `mailchimp-marketing`, Mailchimp's official SDK, was tried and
+  dropped: its licence (Mailchimp's own "Client Library License Agreement") is not open source.
+- Glenn's manual setup: audience with double opt-in on, the two merge fields, sending-domain
+  authentication, and the three `MAILCHIMP_*` lines in `/etc/ishtar-app.env`.
+- Not deployed yet.
+
 Deployed 2026-09-09 as a stdlib service; moved into the Django account service on 2026-09-10
 (server/ishtar, `newsletter` app) with the same public contract. Glenn chose private VPS storage
 for export later.
@@ -23,7 +45,7 @@ Original notes (2026-09-09):
 - Validated same-site Origin, explicit consent and fixed consent text version required.
 - Only email, consent timestamp/version/text and unsubscribe token are retained. No birth details.
 - Subscriber DB and export are never served as website files. No public list endpoint.
-- No email is sent. Address ownership is NOT verified: this is single opt-in capture.
+- Until 2026-09-18: No email is sent. Address ownership is NOT verified: this is single opt-in capture.
 - Before importing/sending, select a delivery provider, update newsletter privacy with that provider,
   and configure sender identity, sending-domain authentication and unsubscribe handling.
 - `unsubscribe.html` removes by address or by per-subscriber token in URL fragment.
