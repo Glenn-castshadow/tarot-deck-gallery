@@ -29,6 +29,13 @@ home page carries `#newsletter-sign`. First `sync_mailchimp` by hand: `pushed=1 
 failed=0`; afterwards the database held 2 rows and the audience 2 members (1 `subscribed`, 1 `pending`).
 Both sending domains showed Authenticated in Mailchimp before the key went in.
 
+**Follow-up the same afternoon.** `8e682e9`, backend only. Glenn's live signup reached Mailchimp with
+`SIGN` and `SITEUNSUB` empty: Mailchimp answers 200 and drops the whole `merge_fields` update when the
+member's other merge data fails its validation, and the account owner's contact carries a malformed
+`ADDRESS` from account signup. `push` now sends `skip_merge_validation=true` (both values are generated
+here). Checked live afterwards: `subscribed`, `SIGN` `sagittarius`, `SITEUNSUB` ending in the row's token.
+The reconcile only pushes absent members, so it would not have repaired this; the row was pushed by hand.
+
 ## 2026-09-18 Daily reading at 250 to 300 words, in three paragraphs
 
 Deployed `17b7bb7`. **Static only.**
