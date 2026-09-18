@@ -1,5 +1,8 @@
+import base64
 import hashlib
 from unittest import mock
+from urllib.error import HTTPError
+from urllib.parse import urlparse
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -9,6 +12,7 @@ from newsletter.models import Subscriber
 
 CONFIG = dict(MAILCHIMP_API_KEY='k-us1', MAILCHIMP_SERVER='us1', MAILCHIMP_AUDIENCE_ID='aud1')
 HASH = hashlib.md5(b'reader@example.com').hexdigest()
+PATH = f'/lists/aud1/members/{HASH}'
 
 
 def subscriber(sign='leo'):
@@ -16,90 +20,92 @@ def subscriber(sign='leo'):
                                      consent_version='v', consent_text='t', sun_sign=sign)
 
 
-class FakeLists:
-    def __init__(self, status='pending', pages=None):
-        self.status, self.pages, self.calls = status, pages or [], []
+class FakeRequest:
+    """Records every call and returns the next queued result (or {})."""
+    def __init__(self, results=None):
+        self.calls = []
+        self._results = list(results or [])
 
-    def set_list_member(self, list_id, member_hash, body):
-        self.calls.append(('set', list_id, member_hash, body))
-        return {'status': self.status}
-
-    def update_list_member(self, list_id, member_hash, body):
-        self.calls.append(('update', list_id, member_hash, body))
-        return {}
-
-    def get_list_members_info(self, list_id, count, offset, fields):
-        self.calls.append(('list', offset))
-        return self.pages[offset // count]
-
-
-def fake_client(lists):
-    return mock.patch('newsletter.mailchimp._client', return_value=mock.Mock(lists=lists))
+    def __call__(self, method, path, body=None, params=None):
+        self.calls.append((method, path, body, params))
+        return self._results.pop(0) if self._results else {}
 
 
 class UnconfiguredTests(TestCase):
-    def test_no_key_means_no_client_and_no_calls(self):
-        with mock.patch('mailchimp_marketing.Client') as sdk:
+    def test_no_key_means_no_request_and_no_calls(self):
+        with mock.patch('newsletter.mailchimp._request') as request:
             self.assertFalse(mailchimp.configured())
             mailchimp.push(subscriber())
             mailchimp.remove('reader@example.com')
             self.assertEqual(list(mailchimp.members()), [])
-            sdk.assert_not_called()
+            request.assert_not_called()
 
 
 @override_settings(**CONFIG)
 class ConfiguredTests(TestCase):
     def test_push_puts_pending_with_sign_and_unsubscribe_url(self):
-        lists, row = FakeLists(), subscriber()
-        with fake_client(lists):
+        row = subscriber()
+        fake = FakeRequest()
+        with mock.patch('newsletter.mailchimp._request', fake):
             mailchimp.push(row)
-        self.assertEqual(lists.calls, [('set', 'aud1', HASH, {
+        self.assertEqual(fake.calls, [('PUT', PATH, {
             'email_address': 'reader@example.com', 'status_if_new': 'pending',
-            'merge_fields': {'SIGN': 'leo', 'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}})])
+            'merge_fields': {'SIGN': 'leo', 'UNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}}, None)])
 
     def test_push_never_sends_status_so_an_unsubscribed_member_stays_out(self):
-        lists = FakeLists(status='unsubscribed')
-        with fake_client(lists):
+        fake = FakeRequest(results=[{'status': 'unsubscribed'}])
+        with mock.patch('newsletter.mailchimp._request', fake):
             mailchimp.push(subscriber())
-        self.assertEqual([c[0] for c in lists.calls], ['set'])
-        self.assertNotIn('status', lists.calls[0][3])
+        self.assertEqual([c[0] for c in fake.calls], ['PUT'])
+        self.assertNotIn('status', fake.calls[0][2])
 
     def test_resubscribe_moves_an_unsubscribed_member_back_to_pending(self):
-        lists = FakeLists(status='unsubscribed')
-        with fake_client(lists):
+        fake = FakeRequest(results=[{'status': 'unsubscribed'}])
+        with mock.patch('newsletter.mailchimp._request', fake):
             mailchimp.push(subscriber(), resubscribe=True)
-        self.assertEqual(lists.calls[1], ('update', 'aud1', HASH, {'status': 'pending'}))
+        self.assertEqual(fake.calls[1], ('PATCH', PATH, {'status': 'pending'}, None))
 
     def test_resubscribe_leaves_a_subscribed_member_alone(self):
-        lists = FakeLists(status='subscribed')
-        with fake_client(lists):
+        fake = FakeRequest(results=[{'status': 'subscribed'}])
+        with mock.patch('newsletter.mailchimp._request', fake):
             mailchimp.push(subscriber(), resubscribe=True)
-        self.assertEqual([c[0] for c in lists.calls], ['set'])
+        self.assertEqual([c[0] for c in fake.calls], ['PUT'])
 
     def test_remove_unsubscribes_and_treats_404_as_done(self):
-        lists = FakeLists()
-        with fake_client(lists):
+        fake = FakeRequest()
+        with mock.patch('newsletter.mailchimp._request', fake):
             mailchimp.remove('Reader@Example.com')
-        self.assertEqual(lists.calls, [('update', 'aud1', HASH, {'status': 'unsubscribed'})])
+        self.assertEqual(fake.calls, [('PATCH', PATH, {'status': 'unsubscribed'}, None)])
 
-        from mailchimp_marketing.api_client import ApiClientError
-        gone = mock.Mock()
-        gone.update_list_member.side_effect = ApiClientError('missing', 404)
-        with fake_client(gone):
+        gone = mock.Mock(side_effect=HTTPError('url', 404, 'missing', None, None))
+        with mock.patch('newsletter.mailchimp._request', gone):
             mailchimp.remove('reader@example.com')
-        broken = mock.Mock()
-        broken.update_list_member.side_effect = ApiClientError('boom', 500)
-        with fake_client(broken), self.assertRaises(ApiClientError):
+
+        broken = mock.Mock(side_effect=HTTPError('url', 500, 'boom', None, None))
+        with mock.patch('newsletter.mailchimp._request', broken), self.assertRaises(HTTPError):
             mailchimp.remove('reader@example.com')
 
     def test_members_pages_until_total_and_lowercases(self):
         page = lambda n, total: {'total_items': total, 'members': [{'email_address': f'P{n}@Example.com', 'status': 'subscribed'}]}
-        lists = FakeLists(pages=[page(0, 1001), page(1, 1001)])
-        with fake_client(lists):
+        fake = FakeRequest(results=[page(0, 1001), page(1, 1001)])
+        with mock.patch('newsletter.mailchimp._request', fake):
             self.assertEqual(list(mailchimp.members()), [('p0@example.com', 'subscribed'), ('p1@example.com', 'subscribed')])
-        self.assertEqual(lists.calls, [('list', 0), ('list', 1000)])
+        self.assertEqual(fake.calls, [
+            ('GET', '/lists/aud1/members', None, {'count': 1000, 'offset': 0, 'fields': 'members.email_address,members.status,total_items'}),
+            ('GET', '/lists/aud1/members', None, {'count': 1000, 'offset': 1000, 'fields': 'members.email_address,members.status,total_items'}),
+        ])
 
-    def test_client_is_built_with_a_five_second_timeout(self):
-        with mock.patch('mailchimp_marketing.Client') as sdk:
-            mailchimp._client()
-        sdk.return_value.set_config.assert_called_once_with({'api_key': 'k-us1', 'server': 'us1', 'timeout': 5})
+    def test_request_hits_the_configured_server_with_basic_auth_and_a_five_second_timeout(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value = response
+        response.read.return_value = b'{}'
+        with mock.patch('urllib.request.urlopen', return_value=response) as urlopen:
+            mailchimp._request('GET', '/ping')
+        request = urlopen.call_args.args[0]
+        self.assertEqual(urlopen.call_args.kwargs.get('timeout'), 5)
+        parsed = urlparse(request.full_url)
+        self.assertEqual(parsed.hostname, 'us1.api.mailchimp.com')
+        self.assertTrue(parsed.path.startswith('/3.0/ping'))
+        auth_header = request.get_header('Authorization')
+        self.assertTrue(auth_header.startswith('Basic '))
+        self.assertEqual(base64.b64decode(auth_header.split(' ', 1)[1]).decode(), 'anystring:k-us1')

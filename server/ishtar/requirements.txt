@@ -3,4 +3,3 @@ django-allauth[headless]==65.19.2
 django-anymail[resend]==13.1
 whitenoise==6.9.0
 gunicorn==23.0.0
-mailchimp-marketing==3.0.80
