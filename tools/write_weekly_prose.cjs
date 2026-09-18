@@ -25,9 +25,9 @@ Length and layout: 170 to 200 words in the second person and the present tense, 
 
 Paragraph one, the shape of the week, 85 to 100 words: open with one plain sentence on what the week is for. Then say where the Sun opens the week for this reader, using the sector name exactly as given, and what that puts first; use one other placement if it helps, and call a planet marked ruler "your ruling planet". If a placement you mention is marked until, say until which weekday it holds. Say whether the Moon is waxing or waning and what that suits: a waxing Moon suits building and adding, a waning Moon suits finishing and clearing. Close on one concrete thing to do early in the week.
 
-Paragraph two, the days that matter, 85 to 100 words: take the one or two most important events, name the weekday and the sector exactly as given, and say in practical terms what each day is good for. An event marked rulerInvolved matters most. If there are no events, say the week has no sharp turns and give the second paragraph to how to use a steady week. End with one short imperative sentence.
+Paragraph two, the days that matter, 85 to 100 words: take the one or two most important events, name the weekday and the sector exactly as given, and say in practical terms what each day is good for. An event marked rulerInvolved matters most. If there are no events, say once, in your own words, that the week is a steady one, and give the rest of the paragraph to what a steady week is good for in the areas of life the planets are in. End with one short imperative sentence.
 
-Rules: plain, warm, dry, specific. Short and medium sentences. Present tense throughout, with no future tense anywhere. Use each sector name exactly as given, once; after that say the area of life in ordinary words. Name no zodiac sign except the reader's own. Name no planet or event that is not in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
+Rules: plain, warm, dry, specific. Short and medium sentences. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. Use each sector name exactly as given, once; after that say the area of life in ordinary words. Name no zodiac sign except the reader's own. Name no planet or event that is not in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
 
 const EXAMPLE_SIGN_SHEET = {
   sign: 'Taurus', ruler: 'Venus',
@@ -51,7 +51,7 @@ Length and layout: 140 to 170 words, second person, present tense, exactly two p
 
 Paragraph one: one plain sentence on the character of the week, then the Sun's sign and the Moon's direction and what the early days suit. Paragraph two: the week's events in order, each with its weekday, said the way the fact sheet says it, and what that day is good for. With fewer than two events, say the week is steady and how to use that. End with one short imperative sentence.
 
-Rules: plain, warm, dry, specific. Present tense throughout, with no future tense anywhere. This section is for every sign, so say nothing about houses or sectors of a chart. Name only the zodiac signs and planets in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
+Rules: plain, warm, dry, specific. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. This section is for every sign, so say nothing about houses or sectors of a chart. Name only the zodiac signs and planets in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
 
 const EXAMPLE_SHEET = {
   from: '2026-09-07', to: '2026-09-14',
@@ -73,10 +73,17 @@ Each subject is one line of 30 to 55 characters that says what the week is like 
 
 Rules: sentence case. Present tense, with no future tense. The email goes to readers of every sign, so name no zodiac sign in a subject; the preview may name a sign from the fact sheet. Name only planets from the fact sheet. No exclamation marks, no words in capitals, no emoji, no quotation marks inside the strings, no dashes used as punctuation, no promises.`;
 
-const EXAMPLE_SUBJECTS = JSON.stringify({
-  subjects: ['A quiet start, then Venus changes the mood', "Clear the desk before Sunday's New moon", 'This week: finish first, begin on Sunday'],
-  preview: 'The Sun in Virgo, a waning Moon, and one good day to ask a favour.'
-});
+// The model copies the example's phrasing (probe, 2026-09-18: two of three lines were the example
+// with the nouns swapped), so the example rotates by week and no two weeks running copy the same one.
+const EXAMPLE_SUBJECTS_SETS = [
+  {subjects: ['A quiet start, then Venus changes the mood', "Clear the desk before Sunday's New moon", 'This week: finish first, begin on Sunday'],
+   preview: 'The Sun in Virgo, a waning Moon, and one good day to ask a favour.'},
+  {subjects: ['What Thursday changes, and what it leaves alone', 'Small completions count for more than big plans', 'Tidy up now, the fresh page arrives on Sunday'],
+   preview: 'Venus moves on Thursday, and the New moon closes the week in Virgo.'},
+  {subjects: ['Two days worth planning your week around', 'Less starting and more finishing, until Sunday', 'The mood between people softens after midweek'],
+   preview: 'A waning Moon for most of the week, then a New moon on Sunday to begin again.'}
+].map(set => JSON.stringify(set));
+const EXAMPLE_SUBJECTS = EXAMPLE_SUBJECTS_SETS[0];
 
 function twoParagraphs(text, min, max) {
   if (typeof text !== 'string') return 'not a string';
@@ -87,6 +94,10 @@ function twoParagraphs(text, min, max) {
   if (!/[.!?]$/.test(t)) return 'does not end in a full sentence';
   return null;
 }
+
+// Words that belong to the fact sheet, not to the reader (probe: "the placements stay steady").
+const SHEET_WORDING = /\bplacements?\b|\bfact sheet\b/i;
+const SHEET_WORDING_REASON = 'fact-sheet wording: the reader has never seen the fact sheet';
 
 // A placement marked `until` ends mid-week. Catch a sentence that names that planet and claims the week.
 function overstays(t, placements) {
@@ -109,6 +120,7 @@ function validateSign(text, sg) {
   if (!sectors.some(n => t.includes(n))) return 'names no sector from the sheet';
   if (sg.events.length && !sg.events.some(e => t.includes(e.weekday))) return 'names no weekday from the sheet';
   const bodies = new Set(['Moon', ...sg.backdrop.placements.map(p => p.body), ...sg.events.map(e => e.body)]);
+  if (SHEET_WORDING.test(t)) return SHEET_WORDING_REASON;
   const overstay = overstays(t, sg.backdrop.placements);
   if (overstay) return overstay;
   return commonProblems(t, bodies, new Set([sg.sign]));
@@ -126,6 +138,7 @@ function validateOverview(text, sheet) {
   if (named < need) return `names ${named} of the week's events, needs ${need}`;
   // sectorNames[0] is "your sign", which an overview may say.
   for (const n of SN.slice(1)) if (t.includes(n)) return `names a sector: ${n}`;
+  if (SHEET_WORDING.test(t)) return SHEET_WORDING_REASON;
   const overstay = overstays(t, sheet.backdrop.placements);
   if (overstay) return overstay;
   return commonProblems(t, sheetBodies(sheet), sheetSigns(sheet));
@@ -185,8 +198,9 @@ function overviewMessages(sheet) {
 }
 
 function subjectsMessages(sheet, overview) {
+  const example = EXAMPLE_SUBJECTS_SETS[Math.round(Date.parse(sheet.from) / 6048e5) % EXAMPLE_SUBJECTS_SETS.length];   // 6048e5 ms is one week
   return [
-    {role: 'system', content: `${RULES_SUBJECTS}\n\nExample of the shape, written for a different week:\n${EXAMPLE_SUBJECTS}`},
+    {role: 'system', content: `${RULES_SUBJECTS}\n\nExample of the shape, written for a different week:\n${example}`},
     {role: 'user', content: `Subject lines, week of ${sheet.from}:\n${JSON.stringify(sharedFacts(sheet), null, 1)}\n\nOpening section:\n${overview || '(not written yet)'}\n\nReply with the JSON object.`}
   ];
 }
@@ -263,6 +277,6 @@ async function main(argv) {
   return Object.keys(signs).length >= 10 && overview ? 0 : 3;
 }
 
-module.exports = {RULES_SIGN, RULES_OVERVIEW, RULES_SUBJECTS, EXAMPLE_SIGN, EXAMPLE_OVERVIEW, EXAMPLE_SUBJECTS, EXAMPLE_SHEET, EXAMPLE_SIGN_SHEET,
+module.exports = {RULES_SIGN, RULES_OVERVIEW, RULES_SUBJECTS, EXAMPLE_SIGN, EXAMPLE_OVERVIEW, EXAMPLE_SUBJECTS, EXAMPLE_SUBJECTS_SETS, EXAMPLE_SHEET, EXAMPLE_SIGN_SHEET,
   validateSign, validateOverview, validateSubjects, parseSubjects, signMessages, overviewMessages, subjectsMessages, nextMonday, parseArgs, main};
 if (require.main === module) main(process.argv.slice(2)).then(code => process.exit(code), error => { console.error(error); process.exit(1); });

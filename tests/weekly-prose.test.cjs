@@ -310,3 +310,24 @@ test('exit codes: 1 for a non-Monday, 2 for the wrong model, 3 for a weak week',
   });
   await withFake({fail: ['Aries', 'Taurus', 'Gemini']}, async dir => assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 3));
 });
+
+test('a reading that talks about the fact sheet instead of the sky is rejected', () => {
+  const sg = W.EXAMPLE_SIGN_SHEET;
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'The placements stay steady.'), sg), /fact-sheet wording/);
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'The fact sheet shows two days.'), sg), /fact-sheet wording/);
+  assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('The week turns on its weekend.', 'The placements hold.'), W.EXAMPLE_SHEET), /fact-sheet wording/);
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'Two events matter most.'), sg), null);   // "events" is ordinary English
+});
+
+test('the subject-line example rotates by week, and every set passes the validator', () => {
+  assert.equal(W.EXAMPLE_SUBJECTS_SETS.length, 3);
+  assert.equal(W.EXAMPLE_SUBJECTS_SETS[0], W.EXAMPLE_SUBJECTS);
+  for (const set of W.EXAMPLE_SUBJECTS_SETS) assert.equal(W.validateSubjects(set, W.EXAMPLE_SHEET), null);
+  const lines = W.EXAMPLE_SUBJECTS_SETS.flatMap(s => JSON.parse(s).subjects);
+  assert.equal(new Set(lines).size, 9);
+  const shown = week => W.subjectsMessages({...W.EXAMPLE_SHEET, from: week}, 'x')[0].content;
+  const three = ['2026-09-21', '2026-09-28', '2026-10-05'].map(shown);
+  assert.equal(new Set(three).size, 3);                       // three consecutive weeks, three different examples
+  assert.equal(shown('2026-10-12'), three[0]);                // and then round again
+  for (const [i, s] of three.entries()) assert.ok(W.EXAMPLE_SUBJECTS_SETS.some(set => s.endsWith(set)), `week ${i} shows a whole set`);
+});
