@@ -15,3 +15,63 @@ test('quarters returns nothing for a week that holds no quarter', () => {
   // Published: Third quarter 2026-11-01, New moon 2026-11-09 07:02 UTC. Nothing between.
   assert.deepEqual(E.quarters(new Date('2026-11-02T00:00:00Z'), new Date('2026-11-09T00:00:00Z')), []);
 });
+
+const H = require('../daily-horoscope-engine.js');
+
+test('weekSheet refuses a day that is not a Monday and throws on a malformed one', () => {
+  assert.deepEqual(H.weekSheet('2026-09-22'), {status: 'not-monday'});
+  assert.throws(() => H.weekSheet('2026-9-21'), RangeError);
+});
+
+test('weekSheet lists the week\'s headline events with weekday and sign', () => {
+  const s = H.weekSheet('2026-09-21');
+  assert.equal(s.from, '2026-09-21');
+  assert.equal(s.to, '2026-09-28');
+  // Published: Sun enters Libra Wed 2026-09-23; Full moon Sat 2026-09-26 in Aries. No Moon ingresses.
+  assert.deepEqual(s.events, [
+    {weekday: 'Wednesday', kind: 'ingress', body: 'Sun', detail: 'enters a new sign', sign: 'Libra'},
+    {weekday: 'Saturday', kind: 'phase', body: 'Moon', detail: 'Full moon', sign: 'Aries'}
+  ]);
+});
+
+test('weekSheet backdrop gives the Monday placements and the Moon\'s direction', () => {
+  const s = H.weekSheet('2026-09-21');
+  assert.equal(s.backdrop.moon, 'waxing');   // first quarter was 2026-09-18, full moon is 2026-09-26
+  assert.deepEqual(s.backdrop.placements, [
+    {body: 'Sun', sign: 'Virgo'}, {body: 'Mercury', sign: 'Libra'}, {body: 'Venus', sign: 'Scorpio'}, {body: 'Mars', sign: 'Cancer'}
+  ]);
+});
+
+test('weekSheet gives each sign whole-sign houses, its ruler first, and no zodiac signs', () => {
+  const s = H.weekSheet('2026-09-21');
+  assert.equal(s.signs.length, 12);
+  const by = name => s.signs.find(x => x.sign === name);
+  // Aries: Virgo is its 6th, Libra its 7th, Scorpio its 8th, Cancer its 4th. Mars rules Aries.
+  assert.deepEqual(by('Aries').backdrop.placements, [
+    {body: 'Sun', sector: {house: 6, name: 'your daily-work-and-health sector'}, ruler: false},
+    {body: 'Mercury', sector: {house: 7, name: 'your partnership sector'}, ruler: false},
+    {body: 'Venus', sector: {house: 8, name: 'your shared-money-and-intimacy sector'}, ruler: false},
+    {body: 'Mars', sector: {house: 4, name: 'your home sector at the base of your chart'}, ruler: true}
+  ]);
+  // Neither event involves Mars, so the phase outranks the ingress.
+  assert.deepEqual(by('Aries').events.map(e => [e.weekday, e.sector.house, e.rulerInvolved]), [['Saturday', 1, false], ['Wednesday', 7, false]]);
+  // Leo is ruled by the Sun: the Sun's ingress comes first. Libra is Leo's 3rd, Aries its 9th.
+  assert.deepEqual(by('Leo').events.map(e => [e.body, e.sector.house, e.rulerInvolved]), [['Sun', 3, true], ['Moon', 9, false]]);
+  // Cancer is ruled by the Moon: the Full moon comes first.
+  assert.equal(by('Cancer').events[0].body, 'Moon');
+  assert.equal(by('Cancer').events[0].rulerInvolved, true);
+  // Jupiter rules Sagittarius and is in Leo, its 9th; Saturn rules Capricorn and is in Aries, its 4th.
+  assert.deepEqual(by('Sagittarius').backdrop.placements.at(-1), {body: 'Jupiter', sector: {house: 9, name: 'your travel-and-belief sector'}, ruler: true});
+  assert.deepEqual(by('Capricorn').backdrop.placements.at(-1), {body: 'Saturn', sector: {house: 4, name: 'your home sector at the base of your chart'}, ruler: true});
+  for (const sg of s.signs) {
+    for (const e of sg.events) assert.equal('sign' in e, false);
+    for (const p of sg.backdrop.placements) assert.equal('sign' in p, false);
+  }
+});
+
+test('weekSheet still returns a usable sheet for a week with no events', () => {
+  const s = H.weekSheet('2026-11-02');
+  assert.deepEqual(s.events, []);
+  assert.equal(s.backdrop.placements.length, 4);
+  for (const sg of s.signs) { assert.deepEqual(sg.events, []); assert.ok(sg.backdrop.placements.length >= 4); }
+});

@@ -81,6 +81,10 @@ const DailyHoroscopeEngine = (() => {
       question:questions[natal.mod(Math.floor(Date.parse(sky.instant)/86400000)+signIndex,questions.length)]
     };
   }
+  const sector = (bodyIndex, signIndex) => { const house = natal.mod(bodyIndex - signIndex, 12) + 1; return {house, name: sectorNames[house - 1]}; };
+  const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const KIND_RANK = {eclipse: 0, phase: 1, station: 2, ingress: 3};
+  const PLACED = ['Sun', 'Mercury', 'Venus', 'Mars'];
   // The fact sheet the prose writer works from. Node-only (the page never calls it), so the
   // sky and classical engines are required lazily and the browser dependency map is unchanged.
   // The day is the UTC calendar day; sectors come from the same 12:00 UTC sample as calculate().
@@ -99,7 +103,6 @@ const DailyHoroscopeEngine = (() => {
       ...cal.ingresses(from, to, EVENT_BODIES).map(e => ({body: e.body, kind: 'ingress', detail: e.retrograde ? 'backs into the previous sign' : 'enters a new sign', sign: e.sign, signIndex: e.signIndex, date: e.date})),
       ...cal.stations(from, to).map(e => ({body: e.body, kind: 'station', detail: `turns ${e.direction}`, sign: e.sign, signIndex: natal.signNames.indexOf(e.sign), date: e.date}))
     ].sort((a, b) => a.date < b.date ? -1 : 1);
-    const sector = (bodyIndex, signIndex) => { const house = natal.mod(bodyIndex - signIndex, 12) + 1; return {house, name: sectorNames[house - 1]}; };
     const signs = natal.signNames.map((sign, i) => {
       const ruler = classical.rulers[i];
       return {
@@ -111,6 +114,40 @@ const DailyHoroscopeEngine = (() => {
     const phase = phases[Math.round(sky.phaseAngle / 45) % 8][0];
     return {day, instant: sky.instant, moon: {sign: natal.signNames[moonIndex], phase, illumination: sky.illumination}, aspects, events, signs};
   }
-  return {calculate, factSheet, localDateKey, sectorNames, signNames:natal.signNames, signGlyphs:natal.signGlyphs};
+  // The weekly fact sheet for the newsletter (tools/write_weekly_prose.cjs). Monday 00:00 UTC to
+  // the next Monday. Headline events only: at this scale the Moon's aspects and sign changes are
+  // noise. The backdrop is always present, because a quarter of all weeks hold one event or none.
+  function weekSheet(monday) {
+    skyFor(monday);   // validates the format and the 1901 to 2100 range, throws RangeError
+    const from = new Date(`${monday}T00:00:00Z`);
+    if (from.getUTCDay() !== 1) return {status: 'not-monday'};
+    const to = new Date(+from + 7 * 86400000);
+    const cal = typeof SkyCalendarEngine !== 'undefined' ? SkyCalendarEngine : require('./sky-calendar-engine.js');
+    const classical = typeof ClassicalEngine !== 'undefined' ? ClassicalEngine : require('./classical-engine.js');
+    const signIndexAt = (body, when) => natal.placement(cal.lonOf(body, new Date(when))).index;
+    const raw = [
+      ...cal.quarters(from, to).map(e => ({kind: 'phase', body: 'Moon', detail: e.name, signIndex: signIndexAt('Moon', e.date), date: e.date})),
+      ...cal.ingresses(from, to, EVENT_BODIES).map(e => ({kind: 'ingress', body: e.body, detail: e.retrograde ? 'backs into the previous sign' : 'enters a new sign', signIndex: e.signIndex, date: e.date})),
+      ...cal.stations(from, to).map(e => ({kind: 'station', body: e.body, detail: `turns ${e.direction}`, signIndex: natal.signNames.indexOf(e.sign), date: e.date})),
+      ...cal.eclipses(from, to).map(e => ({kind: 'eclipse', body: e.body, detail: `${e.kind} ${e.body === 'Sun' ? 'solar' : 'lunar'} eclipse`, signIndex: signIndexAt(e.body, e.date), date: e.date}))
+    ].sort((a, b) => a.date < b.date ? -1 : 1).map(e => ({...e, weekday: WEEKDAYS[new Date(e.date).getUTCDay()]}));
+    const moon = astro.MoonPhase(from) < 180 ? 'waxing' : 'waning';
+    const placedIndex = Object.fromEntries([...PLACED, 'Jupiter', 'Saturn'].map(b => [b, signIndexAt(b, from)]));
+    const signs = natal.signNames.map((sign, i) => {
+      const ruler = classical.rulers[i];
+      const bodies = ruler === 'Jupiter' || ruler === 'Saturn' ? [...PLACED, ruler] : PLACED;
+      const ranked = raw.map(e => ({weekday: e.weekday, kind: e.kind, body: e.body, detail: e.detail, sector: sector(e.signIndex, i), rulerInvolved: e.body === ruler, date: e.date}))
+        .sort((a, b) => (b.rulerInvolved - a.rulerInvolved) || (KIND_RANK[a.kind] - KIND_RANK[b.kind]) || (a.date < b.date ? -1 : 1))
+        .map(({date, ...e}) => e);
+      return {sign, ruler, backdrop: {moon, placements: bodies.map(b => ({body: b, sector: sector(placedIndex[b], i), ruler: b === ruler}))}, events: ranked};
+    });
+    return {
+      from: monday, to: to.toISOString().slice(0, 10),
+      backdrop: {moon, placements: PLACED.map(b => ({body: b, sign: natal.signNames[placedIndex[b]]}))},
+      events: raw.map(e => ({weekday: e.weekday, kind: e.kind, body: e.body, detail: e.detail, sign: natal.signNames[e.signIndex]})),
+      signs
+    };
+  }
+  return {calculate, factSheet, weekSheet, localDateKey, sectorNames, signNames:natal.signNames, signGlyphs:natal.signGlyphs};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyHoroscopeEngine;
