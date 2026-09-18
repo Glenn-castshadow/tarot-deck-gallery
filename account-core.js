@@ -94,8 +94,8 @@
       return status === 200 ? {ok: true, reading: data} : {ok: false, message: firstError(data, 'The note could not be saved.')};
     }
     async function deleteReading(id) { const {status, data} = await call('DELETE', `${API}/readings/${id}/`); return {ok: status === 200, message: status === 200 ? '' : firstError(data, 'Could not delete that reading.')}; }
-    async function setNewsletter(subscribed) {
-      const {status, data} = await call('POST', `${API}/account/newsletter/`, {subscribed: Boolean(subscribed)});
+    async function setNewsletter(subscribed, sunSign) {
+      const {status, data} = await call('POST', `${API}/account/newsletter/`, {subscribed: Boolean(subscribed), ...(sunSign && {sunSign})});
       if (status === 200) { state.newsletter = data.newsletter; emit(); return {ok: true, message: ''}; }
       return {ok: false, message: firstError(data, 'Your newsletter preference was not saved.')};
     }

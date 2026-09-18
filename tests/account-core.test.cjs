@@ -133,6 +133,10 @@ test('readings, newsletter, sign out and delete account call the right endpoints
   assert.equal((await account.deleteReading(7)).ok, true);
   assert.equal((await account.setNewsletter(false)).ok, true);
   assert.equal(account.state().newsletter, false);
+  await account.setNewsletter(true, 'leo');
+  assert.deepEqual(calls.at(-1).body, {subscribed: true, sunSign: 'leo'});
+  await account.setNewsletter(true);
+  assert.deepEqual(calls.at(-1).body, {subscribed: true});
   await account.signOut();
   assert.equal(account.state().signedIn, false);
   await account.refresh();

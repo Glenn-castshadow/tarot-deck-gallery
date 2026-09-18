@@ -4,6 +4,13 @@
   const button = document.querySelector('#newsletter-join');
   const status = document.querySelector('#newsletter-status');
   const signup = document.querySelector('.newsletter-signup');
+  const sign = document.querySelector('#newsletter-sign');
+  const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+  // birth-profile.js loads after this file; a full chart presets a blank select, never a chosen one.
+  window.addEventListener('load', () => window.BirthProfile?.subscribe(state => {
+    const index = state?.natal?.status === 'ready' ? state.natal.points[0].index : null;
+    if (sign && !sign.value && signs[index]) sign.value = signs[index];
+  }));
   const account = window.IshtarAccount;
   const storageKey = 'arcana-newsletter-subscribed-v1';
   let guestSubscribed = window.IshtarStorage?.getItem(storageKey) === '1';
@@ -48,14 +55,15 @@
     message('Saving your signup…');
     const submittedFor = identity(account?.state());
     const submittedEmail = email.value.trim();
+    const sunSign = sign?.value || undefined;
     try {
       if (submittedFor && submittedFor.toLowerCase() === submittedEmail.toLowerCase()) {
-        const result = await account.setNewsletter(true);
+        const result = await account.setNewsletter(true, sunSign);
         if (!result.ok) throw new Error(result.message);
       } else {
         const response = await fetch('/api/newsletter/subscribe', {
           method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({email: submittedEmail, consent: true, consentVersion: '2026-09-09-v1'}),
+          body: JSON.stringify({email: submittedEmail, consent: true, consentVersion: '2026-09-18-v2', ...(sunSign && {sunSign})}),
           signal: AbortSignal.timeout(15000)
         });
         if (!response.ok) throw new Error(response.status === 429 ? 'Please wait a minute before trying again.' : 'We could not save your signup. Please try again.');
@@ -64,8 +72,8 @@
         guestSubscribed = true;
         window.IshtarStorage?.setItem(storageKey, '1');
       } else if (identity(account?.state()) === submittedFor) completedFor = submittedFor;
-      message('Thank you! Your newsletter signup is recorded.');
-      email.value = ''; consent.checked = false;
+      message('Thank you! Check your inbox for an email to confirm your signup.');
+      email.value = ''; consent.checked = false; if (sign) sign.value = '';
       update();
     } catch (error) {
       message(error.name === 'TimeoutError' ? 'Signup timed out. Please try again.' : (error.message === 'Failed to fetch' ? 'Could not connect. Please try again.' : error.message));

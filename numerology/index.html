@@ -57,8 +57,10 @@
               <legend>Stay in the circle <small>optional</small></legend>
               <label for="newsletter-email">Email address</label>
               <input id="newsletter-email" form="newsletter-form" type="email" required autocomplete="email" maxlength="254" placeholder="you@example.com" aria-describedby="newsletter-help">
-              <label class="newsletter-consent"><input id="newsletter-consent" form="newsletter-form" type="checkbox"><span>Yes, email me the Ishtar Insights newsletter and occasional updates about new readings and features.</span></label>
-              <p id="newsletter-help">Your reading is available without signing up. Only your email and signup permission are sent to us; your birth details stay in this browser. You can unsubscribe at any time. <a href="/newsletter-privacy.html">Newsletter privacy</a></p>
+              <label for="newsletter-sign">Your sign <small>optional</small></label>
+              <select id="newsletter-sign" form="newsletter-form"><option value="">No sign, general edition only</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select>
+              <label class="newsletter-consent"><input id="newsletter-consent" form="newsletter-form" type="checkbox"><span>Yes, email me the Ishtar Insights newsletter and occasional updates about new readings and features. Emails are sent through Mailchimp.</span></label>
+              <p id="newsletter-help">Your reading is available without signing up. Only your email, your sign if you choose one, and signup permission are sent to us; your birth details stay in this browser. You can unsubscribe at any time. <a href="/newsletter-privacy.html">Newsletter privacy</a></p>
               <button id="newsletter-join" form="newsletter-form" type="submit">Join the newsletter</button>
             </fieldset>
             <p id="newsletter-status" role="status" aria-live="polite" hidden></p>
@@ -86,9 +88,9 @@
     <script>SiteShell.mount('numerology');</script>
     <script src="/rooms.js?v=c5-kinds-1"></script>
     <script src="/storage-preferences.js?v=birth-saving-1"></script>
-    <script src="/account-core.js?v=journal-filters-1"></script>
+    <script src="/account-core.js?v=newsletter-sign-1"></script>
     <script src="/account.js?v=pages-5"></script>
-    <script src="/newsletter.js?v=2"></script>
+    <script src="/newsletter.js?v=3"></script>
     <script src="/birthday-insights.js?v=celestial-atlas-1"></script>
     <script src="/birthplace-search.js?v=atlas-3"></script>
     <script src="/vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
