@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import json
 from unittest import mock
 from urllib.error import HTTPError
 from urllib.parse import urlparse
@@ -33,6 +34,17 @@ class FakeRequest:
 
 class UnconfiguredTests(TestCase):
     def test_no_key_means_no_request_and_no_calls(self):
+        with mock.patch('newsletter.mailchimp._request') as request:
+            self.assertFalse(mailchimp.configured())
+            mailchimp.push(subscriber())
+            mailchimp.remove('reader@example.com')
+            self.assertEqual(list(mailchimp.members()), [])
+            request.assert_not_called()
+
+
+@override_settings(MAILCHIMP_API_KEY='k-us1', MAILCHIMP_SERVER='', MAILCHIMP_AUDIENCE_ID='')
+class PartiallyConfiguredTests(TestCase):
+    def test_key_alone_is_not_configured(self):
         with mock.patch('newsletter.mailchimp._request') as request:
             self.assertFalse(mailchimp.configured())
             mailchimp.push(subscriber())
@@ -109,3 +121,15 @@ class ConfiguredTests(TestCase):
         auth_header = request.get_header('Authorization')
         self.assertTrue(auth_header.startswith('Basic '))
         self.assertEqual(base64.b64decode(auth_header.split(' ', 1)[1]).decode(), 'anystring:k-us1')
+
+    def test_request_with_a_body_sends_json_and_returns_the_parsed_response(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value = response
+        response.read.return_value = b'{"status": "pending"}'
+        with mock.patch('urllib.request.urlopen', return_value=response) as urlopen:
+            result = mailchimp._request('PUT', '/ping', {'email_address': 'reader@example.com'})
+        request = urlopen.call_args.args[0]
+        self.assertEqual(request.get_method(), 'PUT')
+        self.assertEqual(request.data, json.dumps({'email_address': 'reader@example.com'}).encode())
+        self.assertEqual(request.get_header('Content-type'), 'application/json')
+        self.assertEqual(result, {'status': 'pending'})

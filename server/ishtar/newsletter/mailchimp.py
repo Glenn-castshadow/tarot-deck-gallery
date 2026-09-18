@@ -14,7 +14,7 @@ PAGE = 1000
 
 
 def configured():
-    return bool(settings.MAILCHIMP_API_KEY)
+    return bool(settings.MAILCHIMP_API_KEY and settings.MAILCHIMP_SERVER and settings.MAILCHIMP_AUDIENCE_ID)
 
 
 def _request(method, path, body=None, params=None):

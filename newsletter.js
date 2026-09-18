@@ -6,10 +6,14 @@
   const signup = document.querySelector('.newsletter-signup');
   const sign = document.querySelector('#newsletter-sign');
   const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
-  // birth-profile.js loads after this file; a full chart presets a blank select, never a chosen one.
+  let signTouched = false;
+  sign?.addEventListener('change', () => { signTouched = true; });
+  // birth-profile.js loads after this file; a full chart presets a blank, untouched select, never
+  // a chosen one -- and never again once the visitor has touched the select themselves, including
+  // deliberately picking "No sign".
   window.addEventListener('load', () => window.BirthProfile?.subscribe(state => {
-    const index = state?.natal?.status === 'ready' ? state.natal.points[0].index : null;
-    if (sign && !sign.value && signs[index]) sign.value = signs[index];
+    const index = state?.natal?.status === 'ready' ? state.natal.points?.[0]?.index : null;
+    if (sign && !signTouched && !sign.value && signs[index]) sign.value = signs[index];
   }));
   const account = window.IshtarAccount;
   const storageKey = 'arcana-newsletter-subscribed-v1';

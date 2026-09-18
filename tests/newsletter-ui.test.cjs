@@ -7,15 +7,15 @@ function boot({state={signedIn:false,email:null,newsletter:false}, saved=null, o
   const nodes=new Map(), memory=new Map(saved ? [['arcana-newsletter-subscribed-v1',saved]] : []);
   let listener, calls=0, signArg;
   function node(selector) {
-    if (!nodes.has(selector)) nodes.set(selector,{hidden:false,disabled:false,value:'reader@example.com',checked:true,textContent:'',handlers:{},addEventListener(type,fn){this.handlers[type]=fn;},checkValidity(){return true;},setCustomValidity(){},focus(){document.activeElement=this;},contains(el){return el===node('#newsletter-join');}});
+    if (!nodes.has(selector)) nodes.set(selector,{hidden:false,disabled:false,value:selector==='#newsletter-sign'?'':'reader@example.com',checked:true,textContent:'',handlers:{},addEventListener(type,fn){this.handlers[type]=fn;},checkValidity(){return true;},setCustomValidity(){},focus(){document.activeElement=this;},contains(el){return el===node('#newsletter-join');}});
     return nodes.get(selector);
   }
   const document={querySelector:node,activeElement:node('#newsletter-join')};
   const account={state:()=>({...state}),onChange(fn){listener=fn;},async setNewsletter(value,sign){calls++;signArg=sign;if(!ok)return {ok:false,message:'Try again.'};state={...state,newsletter:value};listener(state);return {ok:true};}};
-  const bodies=[]; let loaded;
-  const win={IshtarAccount:account,IshtarStorage:{getItem:key=>memory.get(key),setItem:(key,value)=>memory.set(key,value)},addEventListener:(type,fn)=>{if(type==='load')loaded=fn;},BirthProfile:profile?{subscribe(fn){fn(profile);}}:undefined};
+  const bodies=[]; let loaded, profileCb;
+  const win={IshtarAccount:account,IshtarStorage:{getItem:key=>memory.get(key),setItem:(key,value)=>memory.set(key,value)},addEventListener:(type,fn)=>{if(type==='load')loaded=fn;},BirthProfile:profile?{subscribe(fn){profileCb=fn;fn(profile);}}:undefined};
   vm.runInNewContext(fs.readFileSync(require.resolve('../newsletter.js'),'utf8'),{window:win,document,AbortSignal,fetch:async(url,init)=>{calls++;bodies.push(JSON.parse(init.body));return {ok,status:ok?200:500};}});
-  return {nodes,memory,document,bodies,load:()=>loaded&&loaded(),get calls(){return calls;},get signArg(){return signArg;},submit:()=>node('#newsletter-form').handlers.submit({preventDefault(){}}),change(next){state=next;listener(state);}};
+  return {nodes,memory,document,bodies,load:()=>loaded&&loaded(),fireProfile:next=>profileCb&&profileCb(next===undefined?profile:next),get calls(){return calls;},get signArg(){return signArg;},submit:()=>node('#newsletter-form').handlers.submit({preventDefault(){}}),change(next){state=next;listener(state);}};
 }
 
 test('existing subscribed account hides and disables signup without a write',()=>{
@@ -61,7 +61,7 @@ test('an unsubscribed account overrides and clears an old guest flag',()=>{
   assert.equal(b.nodes.get('.newsletter-signup').hidden,false);
 });
 test('a blank sign is left out of the payload and consent version is v2',async()=>{
-  const b=boot(); b.document.querySelector('#newsletter-sign').value='';
+  const b=boot();
   await b.submit();
   assert.deepEqual(b.bodies[0],{email:'reader@example.com',consent:true,consentVersion:'2026-09-18-v2'});
 });
@@ -75,16 +75,30 @@ test('a signed-in member subscribing passes the sign to the account call',async(
   await b.submit();
   assert.equal(b.signArg,'pisces');
 });
-test('a ready natal chart presets a blank select on load and never overwrites a choice',()=>{
+test('a ready natal chart presets a blank untouched select on load and never overwrites a choice',()=>{
   const profile={natal:{status:'ready',points:[{index:4}]}};
-  const blank=boot({profile}); blank.document.querySelector('#newsletter-sign').value=''; blank.load();
+  const blank=boot({profile}); blank.load();
   assert.equal(blank.document.querySelector('#newsletter-sign').value,'leo');
   const chosen=boot({profile}); chosen.document.querySelector('#newsletter-sign').value='aries'; chosen.load();
   assert.equal(chosen.document.querySelector('#newsletter-sign').value,'aries');
-  const none=boot(); none.document.querySelector('#newsletter-sign').value=''; none.load();
+  const none=boot(); none.load();
   assert.equal(none.document.querySelector('#newsletter-sign').value,'');
 });
+test('deliberately choosing no sign after the preset blocks a later profile callback from refilling it',()=>{
+  const profile={natal:{status:'ready',points:[{index:4}]}};
+  const b=boot({profile}); b.load();
+  const signEl=b.document.querySelector('#newsletter-sign');
+  assert.equal(signEl.value,'leo');
+  signEl.value='';
+  signEl.handlers.change();
+  b.fireProfile(profile);
+  assert.equal(signEl.value,'');
+});
+test('a ready natal chart with no points does not throw',()=>{
+  const profile={natal:{status:'ready'}};
+  assert.doesNotThrow(()=>{ const b=boot({profile}); b.load(); });
+});
 test('success tells the reader a confirmation email is coming',async()=>{
-  const b=boot(); b.document.querySelector('#newsletter-sign').value=''; await b.submit();
+  const b=boot(); await b.submit();
   assert.match(b.nodes.get('#newsletter-status').textContent,/confirm/i);
 });

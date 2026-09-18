@@ -21,6 +21,19 @@ Design: `docs/superpowers/specs/2026-09-18-newsletter-mailchimp-sync-design.md`.
 - Glenn's manual setup: audience with double opt-in on, the two merge fields, sending-domain
   authentication, and the three `MAILCHIMP_*` lines in `/etc/ishtar-app.env`.
 - Not deployed yet.
+- Order: finish Glenn's four manual steps above before the site release that carries the new
+  signup copy, because that copy promises a confirmation email that is only sent once the key is
+  set. Do sending-domain authentication before the key goes into `/etc/ishtar-app.env`: the first
+  configured reconcile pushes every existing subscriber as `pending`, and Mailchimp sends them all
+  a confirmation email at once.
+- Reconcile errors append to `/var/log/ishtar-mailchimp.err` on the VPS; the file holds counts and
+  tracebacks with md5 member hashes, never addresses.
+- In Mailchimp, unsubscribe contacts, do not archive them. Archived contacts are invisible to the
+  reconcile, which would push them again as `pending`.
+- Known and accepted: someone who unsubscribes inside Mailchimp and signs up again on the site
+  within the same ten-minute window is removed once more by the next run and has to sign up again.
+- The reconcile refuses to run when the database has no subscribers but the audience does, and it
+  keeps going past individual rejected addresses, reporting `failed=N`.
 
 Deployed 2026-09-09 as a stdlib service; moved into the Django account service on 2026-09-10
 (server/ishtar, `newsletter` app) with the same public contract. Glenn chose private VPS storage
