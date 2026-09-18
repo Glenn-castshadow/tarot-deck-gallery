@@ -1,5 +1,55 @@
 # VPS deployment
 
+## 2026-09-18 Daily reading at 250 to 300 words, in three paragraphs
+
+Deployed `17b7bb7`. **Static only.**
+
+**Release.**
+- Released as `/opt/tarot-game/releases/20260918-prose-length-17b7bb7`, a `cp -al` hardlink copy of
+  `20260917-home-label-3a57392`, by `/tmp/ishtar-prose-length.sh`.
+- Three files were replaced (`daily-horoscope.css`, `daily-horoscope.js`, `sky/index.html`), each `rm -f`'d
+  before extraction. The tar was built with `git -c core.autocrlf=false archive`.
+- The deploy was gated on `current`, on the sha256 of the three extracted files against the commit's blobs,
+  and on the previous release's `daily-horoscope.css` still lacking `pre-line` after the extraction (a
+  hardlink that had been written through would have changed it).
+- The previous release is retained for rollback:
+  `ln -sfn /opt/tarot-game/releases/20260917-home-label-3a57392 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+  A rollback leaves the long day files in place; the older CSS shows them as one block of text.
+
+**Change.** Glenn asked for the model-written reading to run 250 to 300 words. The writer's brief now asks
+for three paragraphs (the sky, a scene, the advice) separated by a blank line, and `.dh-prose` renders the
+breaks with `white-space: pre-line`; `.dh-main:has(.dh-prose)` top-aligns the sign glyph beside the taller
+text. The disclosure says "the reading", not "the paragraph". Details and measurements are in
+`docs/DAILY-HOROSCOPE.md`.
+
+**Follow-up release the same morning.** `dd29b65`, released as
+`/opt/tarot-game/releases/20260918-prose-phone-dd29b65` (a hardlink copy of the release above, two files
+replaced: `daily-horoscope.css`, `sky/index.html`; same gates, by `/tmp/ishtar-prose-phone.sh`). Measured on
+the live page at 390px, the reading sat in a 219px column beside the sign glyph and ran 1259px tall; the
+follow-up stacks the glyph above a model-written reading on screens up to 700px, which gives it 274px and
+1033px. Rollback to the first release of the day:
+`ln -sfn /opt/tarot-game/releases/20260918-prose-length-17b7bb7 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `daily-horoscope.css?v=3` (`v=2` in the first release), `daily-horoscope.js?v=3`.
+
+**Day files.** 2026-09-18 to 2026-09-24 were regenerated at the new length with
+`node tools/write_daily_prose.cjs --from 2026-09-18 --days 7 --force --push`, after the static release so
+that no three-paragraph file was served to the older CSS. A day of twelve signs takes about eight minutes.
+The 2026-09-23 Taurus paragraph that had been written by hand earlier the same morning (Glimmer had omitted
+it under the old 120-word ceiling) was replaced by this run along with the rest of that day. The run
+wrote 83 of 84 readings (2026-09-20 Aquarius omitted after three "will" rejections); a second run over the
+same window without `--force`, using the gap-filling added the same morning, asked for that one sign only
+and pushed the completed day. Served files afterwards: 12 of 12 signs on all seven days, every reading in
+three paragraphs, daily medians 269 to 284 words, extremes 221 and 338. The local server was returned to the
+Qwen profile afterwards.
+
+**Validation after the switch.** The served `/sky/` carries both cache keys; the CSS contains `pre-line`
+and, after the follow-up, the stacked-glyph rule; `daily-horoscope.js?v=3` contains the new disclosure
+sentence; `/`, `/tarot/`, `/charts/` and `/sky/` return 200. In the built-in browser on the live page:
+Aries for 2026-09-18 shows 278 words in three paragraphs with `white-space: pre-line` computed, no
+`.dh-lenses`; at 1400px the reading is 943px wide and 327px tall with the glyph top-aligned; at 390px it is
+274px wide, `flex-direction: column`, and `scrollWidth <= innerWidth` at both sizes.
+
 ## 2026-09-17 Daily prose horoscope
 
 Deployed `c71543f`. **Static plus one nginx location and a new directory.**

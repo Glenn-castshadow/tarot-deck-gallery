@@ -145,10 +145,15 @@ async function main(argv) {
   fs.mkdirSync(o.out, {recursive: true});
   for (let i = 0; i < o.days; i++) {
     const day = addDays(o.from, i), file = path.join(o.out, `${day}.json`);
-    if (fs.existsSync(file) && !o.force) { console.log(`${day}: exists, skipped`); if (o.push) push(day, file); continue; }
+    // A sign omitted after three attempts is a gap, not a verdict: the next run over the same window
+    // keeps what the file has and writes only the signs it lacks.
+    let kept = {};
+    if (fs.existsSync(file) && !o.force) { try { kept = JSON.parse(fs.readFileSync(file, 'utf8')).signs || {}; } catch { kept = {}; } }
+    if (Object.keys(kept).length === 12) { console.log(`${day}: exists, skipped`); if (o.push) push(day, file); continue; }
     const sheet = engine.factSheet(day);
     const signs = {};
     for (const sg of sheet.signs) {
+      if (typeof kept[sg.sign.toLowerCase()] === 'string') { signs[sg.sign.toLowerCase()] = kept[sg.sign.toLowerCase()]; continue; }
       let text = null, reason = '';
       for (let attempt = 1; attempt <= 3 && !text; attempt++) {
         let candidate;

@@ -238,3 +238,35 @@ test('a failed HTTP request counts as one attempt, not the whole run', async () 
     fs.rmSync(tmpdir, {recursive: true});
   }
 });
+
+test('a second run over an existing day writes only the signs the file lacks', async () => {
+  const tmpdir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'daily-prose-fill-'));
+  const originalFetch = globalThis.fetch;
+  const asked = [];
+  try {
+    globalThis.fetch = async (url, init) => {
+      if (url.includes('/props')) return {ok: true, json: async () => ({model_alias: 'muse-glimmer-30b-local'})};
+      const user = JSON.parse(init.body).messages.find(m => m.role === 'user').content;
+      asked.push(user.match(/Fact sheet for (\w+)/)[1]);
+      const sector = user.match(/"moonSector":\s*"([^"]+)"/)[1];
+      const para = `Discipline sits easily today. The Moon in ${sector} steadies the hours, and the rule you set yourself last week holds without any effort on your part, which is rare enough to notice and worth using while it lasts. The course you keep meaning to book looks affordable when the page finally opens on the price. Book it before lunch, then take the long way round on the walk home, the one past the river.`;
+      return {ok: true, json: async () => ({choices: [{message: {content: [para, para, para].join('\n\n')}}]})};
+    };
+    const day = '2026-09-20', file = path.join(tmpdir, `${day}.json`);
+    const kept = {};
+    for (const s of engine.signNames) if (s !== 'Aquarius') kept[s.toLowerCase()] = `kept ${s}`;
+    fs.writeFileSync(file, JSON.stringify({day, signs: kept}));
+    await W.main(['--from', day, '--days', '1', '--out', tmpdir]);
+    assert.deepEqual(asked, ['Aquarius']);
+    const after = JSON.parse(fs.readFileSync(file, 'utf8')).signs;
+    assert.deepEqual(Object.keys(after), engine.signNames.map(s => s.toLowerCase()));
+    assert.equal(after.aries, 'kept Aries');
+    assert.match(after.aquarius, /^Discipline/);
+    asked.length = 0;
+    await W.main(['--from', day, '--days', '1', '--out', tmpdir]);
+    assert.deepEqual(asked, [], 'a complete day was asked for again');
+  } finally {
+    globalThis.fetch = originalFetch;
+    fs.rmSync(tmpdir, {recursive: true});
+  }
+});

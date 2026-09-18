@@ -37,7 +37,9 @@ ending in `.`, `!` or `?` (a truncation guard), names the Moon and its sector, u
 phrase or "will", names no planet or sign outside the sheet, and uses no em dash, clock time or
 degree. A request or network error counts as one failed attempt, the same as a validation failure,
 not an abort of the run; each sign gets up to three attempts and is omitted from the day's file if
-all three fail. Output is `output/daily-prose/<day>.json` (gitignored):
+all three fail. An omission is a gap, not a verdict: a later run over the same day (the nightly
+task revisits its whole seven-day window) keeps the signs the file has and asks only for the ones it
+lacks; `--force` rewrites the whole day. Output is `output/daily-prose/<day>.json` (gitignored):
 `{day, generated, model, signs: {aries: "...", ...}}`. `--push` streams each file over `ssh vps`
 into `/opt/tarot-game/daily/`, which nginx serves at `/sky/daily/`. The nightly task on
 GLENNHOMEPC (`Ishtar-Daily-Prose`, 03:30, wscript shim) writes seven days ahead, so a night the PC
