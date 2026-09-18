@@ -1,5 +1,34 @@
 # VPS deployment
 
+## 2026-09-18 Newsletter audience sync to Mailchimp
+
+Deployed `8a638d9`. **Backend and static**, in that order and within minutes of each other: the consent
+version moves to `2026-09-18-v2` on both sides and the backend rejects a mismatched version.
+
+**Backend.** The documented `git archive` path and `sh /tmp/deploy-app.sh` (see "Accounts service").
+Migration `newsletter.0002_subscriber_sun_sign` applied; health check `{"ok": true}`. The deploy wrote
+`/etc/cron.d/ishtar-app-mailchimp` (reconcile every ten minutes, errors to `/var/log/ishtar-mailchimp.err`).
+
+**Key.** Glenn pasted the API key himself through `/root/set-mailchimp-key.sh` on the VPS, which reads it
+without echo, checks the format, asks Mailchimp for the audience with it (HTTP 200 required) and only then
+rewrites the three `MAILCHIMP_*` lines in `/etc/ishtar-app.env`, keeping mode 600. Re-run it to rotate the key.
+
+**Static release.** `/opt/tarot-game/releases/20260918-newsletter-mailchimp-8a638d9`, a `cp -al` hardlink
+copy of `20260918-prose-phone-dd29b65`, by `/tmp/ishtar-newsletter-mailchimp.sh`. Eleven files replaced
+(`index.html`, `newsletter.js`, `account-core.js`, `newsletter-privacy.html`, `account/index.html` and the
+six topic pages for the `account-core.js?v=newsletter-sign-1` cache key), each `rm -f`'d before extraction.
+Gated on `current`, on the sha256 of all eleven files against the commit's blobs, and on the previous
+release's `newsletter.js` still lacking `sunSign`. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-prose-phone-dd29b65 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+A static rollback alone breaks signups (the old page sends consent v1); roll the backend back with it, or
+empty `MAILCHIMP_API_KEY` to stop only the Mailchimp calls.
+
+**Validation.** `/`, `/tarot/`, `/charts/`, `/sky/`, `/account/`, `/newsletter-privacy.html` and
+`/api/health/` return 200; the served `newsletter.js` carries `sunSign` and the v2 consent version; the
+home page carries `#newsletter-sign`. First `sync_mailchimp` by hand: `pushed=1 removed=0 deleted=0
+failed=0`; afterwards the database held 2 rows and the audience 2 members (1 `subscribed`, 1 `pending`).
+Both sending domains showed Authenticated in Mailchimp before the key went in.
+
 ## 2026-09-18 Daily reading at 250 to 300 words, in three paragraphs
 
 Deployed `17b7bb7`. **Static only.**

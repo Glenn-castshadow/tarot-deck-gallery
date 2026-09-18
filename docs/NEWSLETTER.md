@@ -20,7 +20,10 @@ Design: `docs/superpowers/specs/2026-09-18-newsletter-mailchimp-sync-design.md`.
   dropped: its licence (Mailchimp's own "Client Library License Agreement") is not open source.
 - Glenn's manual setup: audience with double opt-in on, the two merge fields, sending-domain
   authentication, and the three `MAILCHIMP_*` lines in `/etc/ishtar-app.env`.
-- Not deployed yet.
+- Deployed 2026-09-18 at `8a638d9` (docs/deployment.md). Account: Mailchimp data centre `us12`, audience
+  "Ishtar Insights" `4b20600701`, from-address `newsletter@ishtarinsights.com`. Mail to the domain is
+  forwarded by ImprovMX (catch-all to Glenn's inbox); the MX, SPF and DKIM records are in the Bluehost
+  portal under Domains, Advanced DNS.
 - Order: finish Glenn's four manual steps above before the site release that carries the new
   signup copy, because that copy promises a confirmation email that is only sent once the key is
   set. Do sending-domain authentication before the key goes into `/etc/ishtar-app.env`: the first
