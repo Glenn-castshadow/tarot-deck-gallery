@@ -7,7 +7,8 @@ this file.
 
 Piece 2 of 3 in the newsletter project. Piece 1 (deployed 2026-09-18) copies subscribers and their chosen
 sun sign to a Mailchimp audience. This piece writes the text of a weekly issue: a reading for each of the
-twelve signs, one overview of the week's sky for everyone, and candidate subject lines. Piece 3 (its own
+twelve signs, one overview of the week's sky for everyone, and candidate subject lines, and then has a
+second local model proofread and pass or fail each block. Piece 3 (its own
 spec) turns that text into a draft Mailchimp campaign with per-sign segments. Nothing here sends email,
 calls Mailchimp, or changes the site.
 
@@ -21,6 +22,8 @@ calls Mailchimp, or changes the site.
 | A week runs Monday 00:00 UTC to the next Monday 00:00 UTC; the issue is sent Monday morning | Glenn, 2026-09-18 |
 | A sign reading is two paragraphs, 150 to 200 words | Glenn, 2026-09-18 |
 | The model is given a curated list of the week's headline events, not Moon aspects or the daily readings | Claude's recommendation, accepted |
+| Qwen (the other local model) proofreads every block and passes or fails it | Glenn, 2026-09-18 |
+| Qwen may correct small errors (spelling, grammar, punctuation) in place; it fails a block only for factual or tone problems | Glenn, 2026-09-18 |
 
 ## Constraints
 
@@ -31,16 +34,21 @@ calls Mailchimp, or changes the site.
 | The writer refuses to run unless the loaded llama.cpp model is Muse Glimmer | Existing daily writer's `/props` gate, reused |
 | Event cap of six per sign, the word and character limits below, three attempts per block | Claude's judgement |
 | Expected astronomical values in tests come from a source other than `sky-calendar-engine.js` | Project memory ("test oracle from code under test") |
+| A Qwen correction is kept only if the corrected text still passes the block's code validator and changes at most 8% of the words; otherwise Glimmer's text stands | Claude's judgement, to stop the checker introducing unchecked errors |
+| Glimmer's original text is kept in the file beside any corrected text | Claude's judgement |
+| A failed block is not rewritten automatically; re-running the writer fills it | Follows from Glenn choosing in-place fixes over the automatic repair round |
 | Subscriber data is not involved; the output contains no personal data | Follows from the design |
 
 ## Architecture
 
-Three units, each usable without the others.
+Four units, each usable without the others.
 
 1. **`weekSheet(monday)`**, facts. Pure computation in `daily-horoscope-engine.js`, beside `factSheet`.
 2. **`tools/write_weekly_prose.cjs`**, the writer. Builds prompts from the sheet, calls the local model,
    validates, retries, writes one JSON file. The only unit that touches the network (127.0.0.1:8088).
-3. **`output/weekly-prose/<monday>.json`**, the contract piece 3 reads.
+3. **`tools/proof_weekly_prose.cjs`**, the proofreader. Sends each block and its facts to Qwen, records a
+   verdict, applies small corrections.
+4. **`output/weekly-prose/<monday>.json`**, the contract piece 3 reads.
 
 ### 1. `weekSheet(monday)`
 
@@ -50,7 +58,7 @@ window is `[monday 00:00 UTC, +7 days)`.
 `sky-calendar-engine.js` gains one exported function, `quarters(from, to)`, lifted out of `monthEvents`
 (which then calls it, so the month view is unchanged). `weekSheet` collects, for the window:
 
-- lunar phases from `quarters` (New Moon, First Quarter, Full Moon, Last Quarter);
+- lunar phases from `quarters` (the engine's names: New moon, First quarter, Full moon, Third quarter);
 - planet ingresses from `ingresses` with the Moon excluded (the Moon changes sign about three times a week,
   which is noise at this scale);
 - stations from `stations`;
@@ -63,11 +71,18 @@ Output:
 
 ```json
 { "from": "2026-09-21", "to": "2026-09-28",
-  "events": [ { "weekday": "Tuesday", "kind": "phase", "body": "Moon", "detail": "New Moon", "sign": "Virgo" } ],
-  "signs": { "aries": { "ruler": "Mars",
-                        "events": [ { "weekday": "Tuesday", "kind": "phase", "body": "Moon", "detail": "New Moon",
-                                      "sector": { "house": 6, "name": "work and health" }, "rulerInvolved": false } ] } } }
+  "backdrop": { "sunSign": "Virgo", "moon": "waxing" },
+  "events": [ { "weekday": "Wednesday", "kind": "ingress", "body": "Sun", "detail": "enters a new sign", "sign": "Libra" },
+              { "weekday": "Saturday", "kind": "phase", "body": "Moon", "detail": "Full moon", "sign": "Aries" } ],
+  "signs": [ { "sign": "Aries", "ruler": "Mars",
+               "backdrop": { "sunSector": { "house": 6, "name": "your daily-work-and-health sector" }, "moon": "waxing" },
+               "events": [ { "weekday": "Saturday", "kind": "phase", "body": "Moon", "detail": "Full moon",
+                             "sector": { "house": 1, "name": "your sign" }, "rulerInvolved": false } ] } ] }
 ```
+
+The values above are the real ones for that week (Sun into Libra 2026-09-23 00:05 UTC, Full moon
+2026-09-26 16:49 UTC in Aries), confirmed against a published almanac. `signs` is an array in zodiac order
+with capitalised names, as `factSheet` returns it; the Aries entry is abridged to one event.
 
 Per sign, `sector` is the whole-sign house of the event's sign counted from the reader's sign, using the
 same `sectorNames` the daily sheet uses; `rulerInvolved` is true when `body` is the sign's classical ruler.
@@ -80,7 +95,8 @@ A quiet week is possible: lunar quarters fall 6.6 to 8.2 days apart, so a seven-
 and a week can pass with no ingress or station either. So the sheet always carries a `backdrop` that needs
 no event: the Sun's sign on the Monday and, per sign, the Sun's whole-sign house, plus whether the Moon is
 waxing or waning as the week opens. The shared sheet has `backdrop: {sunSign, moon: "waxing"|"waning"}` and
-each sign has `backdrop: {sunSector: {house, name}, moon}`. The per-sign backdrop withholds the Sun's sign
+each sign has `backdrop: {sunSector: {house, name}, moon}`. The week of 2026-11-02 is such a week: no
+quarter, ingress, station or eclipse falls in it. The per-sign backdrop withholds the Sun's sign
 for the same reason events withhold theirs. An empty `events` list is therefore valid, and the validators
 below are written to allow it.
 
@@ -93,7 +109,9 @@ same machine and the site never serves this file.
 It reuses the daily writer by `require('./write_daily_prose.cjs')`. The daily writer's entity, forbidden-
 phrase and typography checks are lifted out of its `validate` into an exported `commonProblems(text,
 allowedBodies, allowedSigns)`; the daily `validate` calls it, so daily behaviour and its 14 tests are
-unchanged. No shared base module: two writers do not justify one.
+unchanged. The daily writer also exports `servedAlias` and `complete`, and `complete` takes an optional
+fourth argument of sampling overrides (the proofreader judges at temperature 0.2). No shared base module:
+three tools do not justify one.
 
 Three kinds of block, each with its own brief (`RULES` + `EXAMPLE` constants, exported, read fresh each
 run) and its own validator:
@@ -118,18 +136,55 @@ Re-running for the same week fills only what is missing (absent signs, empty ove
 `--force` rewrites everything. The `/props` model gate runs first and exits 2 on a mismatch, as the daily
 writer does.
 
-### 3. Output contract
+### 3. `tools/proof_weekly_prose.cjs`
+
+CLI: `--week`, `--endpoint`, `--model` (default `qwen3.8-27b-local`), `--out`. It refuses to run (exit 2)
+unless the served alias equals `--model`, so Glimmer can never mark its own work.
+
+For every block in the week's file that has no verdict, or whose text no longer matches the recorded `sha`,
+it sends Qwen the facts that block was written from (the sign's sheet, or the shared sheet) and the text,
+and asks for one JSON object: `{"verdict": "pass" | "fail", "reason": "…", "corrected": "…"}`.
+
+- **Fail** is for: a statement about the sky that is absent from or contradicts the facts (wrong weekday,
+  wrong sector, wrong planet, wrong direction); a prediction or promise; medical, legal or financial advice;
+  a fearful or fatalistic tone. `reason` names the sentence.
+- **`corrected`** is the full text with spelling, grammar and punctuation fixed and nothing else changed, or
+  the text unchanged.
+
+A correction is applied only when the verdict is pass, the corrected text differs, it passes the same code
+validator the writer used for that block, and the word-level edit distance is at most 8% of the original's
+word count. Then the block's text is replaced, Glimmer's text goes to `originals[key]`, and `edited` is
+true. A correction that fails either guard is discarded and logged; the verdict stands.
+
+A failed block's text moves to `rejected[key]` with the reason and leaves `signs` / `overview` / `subjects`,
+so the writer's gap-filling rewrites it on its next run and the changed `sha` sends the new text back
+through proof. Nothing is rewritten automatically.
+
+Three attempts per block; an unparsable reply or a network error counts as one. A block with no verdict
+after three attempts is left as it is with no `proof` entry, which piece 3 treats as unpassed. Exit 0 when at
+least ten signs and the overview hold a current pass, otherwise 3.
+
+### 4. Output contract
 
 `output/weekly-prose/<monday>.json`:
 
 ```json
 { "week": "2026-09-21", "generated": "2026-09-20T11:31:07Z", "model": "muse-glimmer-30b-local",
   "overview": "…", "signs": { "aries": "…" },
-  "subjects": ["…", "…", "…"], "preview": "…" }
+  "subjects": ["…", "…", "…"], "preview": "…",
+  "proof": { "model": "qwen3.8-27b-local", "checked": "2026-09-20T11:40:12Z",
+             "blocks": { "aries": { "verdict": "pass", "reason": "", "edited": true, "sha": "…" },
+                         "overview": { "verdict": "pass", "reason": "", "edited": false, "sha": "…" },
+                         "subjects": { "verdict": "fail", "reason": "…", "edited": false, "sha": "…" } } },
+  "originals": { "aries": "Glimmer's text before Qwen's correction" },
+  "rejected": { "subjects": { "text": "…", "reason": "…" } } }
 ```
 
-Piece 3 must tolerate a missing sign (that segment gets the overview only), an empty `overview` (no issue is
-drafted) and empty `subjects` (a plain dated subject). `.gitignore` gains `output/weekly-prose/` beside the existing
+Keys in `signs` are lowercase, as in the daily files. A block is fit to send only when
+`proof.blocks[key].verdict` is `"pass"` and its `sha` equals the sha256 of the block's current text (for
+`subjects`, of `JSON.stringify({subjects, preview})`). Piece 3 must tolerate a missing or unpassed sign
+(that segment gets the overview only), a missing or unpassed `overview` (no issue is drafted) and missing or
+unpassed `subjects` (a plain dated subject). `.gitignore` gains `output/weekly-prose/` beside the existing
 `output/daily-prose/` line; `output/` as a whole is not ignored.
 
 ## Scheduling
@@ -137,8 +192,12 @@ drafted) and empty `subjects` (a plain dated subject). `.gitignore` gains `outpu
 A scheduled task `Ishtar-Weekly-Prose` on GLENNHOMEPC, Sundays at 04:30 local, after the nightly
 `Ishtar-Daily-Prose` run at 03:30, launched through a wscript + VBS shim with `bWaitOnReturn=True` like the
 daily task (a console flag cannot hide a task window on this machine). It writes the week beginning the next
-day. Thirteen sign-sized calls and one small one take about five minutes at the measured 21 seconds per
-reading. Glenn reads the file on Sunday; piece 3 drafts the campaign; Glenn sends on Monday morning.
+day. `Scripts\weekly-prose.ps1` follows `Scripts\daily-prose.ps1`: check `N:` and `V:`, load Glimmer
+(`start.ps1 -Quant glimmer -Force -WaitForReady`), run the writer, load Qwen (`-Quant iq3s -Force
+-WaitForReady`), run the proofreader, and in `finally` make sure Qwen is the loaded profile. Writing takes
+about five minutes at the measured 21 seconds per reading, each model load about a minute, and proofing
+fourteen blocks a few minutes more. Glenn reads the file on Sunday; piece 3 drafts the campaign; Glenn sends
+on Monday morning.
 
 ## Error handling
 
@@ -162,10 +221,15 @@ swapping `globalThis.fetch` for a fake that answers `/props` and `/chat/completi
    first; the cap holds at six; per-sign events carry no `sign`; a week chosen to have no lunar quarter
    still returns a backdrop and a valid sheet.
 3. Validators: one failing input per rule in the table above, plus one passing input per block.
-4. Writer, with the fake model: writes the contract shape; omits a sign that fails three times; fills only
+4. Writer, with the fake model (`main` returns its exit code instead of calling `process.exit`, so tests can
+   assert it): writes the contract shape; omits a sign that fails three times; fills only
    the gaps on re-run; `--force` rewrites; subjects failure still writes the file with `subjects: []`; exit
    codes 0, 2 and 3.
 5. `commonProblems` extraction: the 14 daily tests pass unmodified.
+6. Proofreader, with a fake Qwen: a pass records verdict and sha; a fail moves the text to `rejected`; a
+   small valid correction is applied and the original kept; a correction that changes too much, or that
+   breaks the validator, is discarded; an unchanged, already-passed block is not sent again; a block whose
+   text changed is sent again; the wrong served model exits 2; unparsable replies use up the three attempts.
 
 Each new test is shown failing before the code that satisfies it, and any test added in a fix round is shown
 failing with the fix removed (project memory, "fix-round tests need RED evidence").
@@ -175,14 +239,22 @@ per-block first-attempt pass rates and the rejection reasons, reported as number
 re-probed if any block passes less than two times in three on the first attempt. A strong-model read of one
 full week for factual errors against the sheet, as was done for the daily readings.
 
+The proofreader gets its own probe, because a judge that passes everything is worthless: six readings with
+one seeded error each (a wrong weekday, a wrong sector, a planet moved to another event, a promise, a piece
+of medical advice, a doom-laden sentence) and the clean readings from the writer probe. Report the catch
+rate on the seeded errors and the false-fail rate on the clean ones. The judge's brief is revised if it
+catches fewer than five of six or fails more than one clean reading in ten.
+
 ## Documentation
 
-`docs/NEWSLETTER.md` gains a "Weekly reading" section: what the writer produces, the contract, the
-scheduled task, and how to re-run a weak week. `docs/DAILY-HOROSCOPE.md` notes that `commonProblems` is
+`docs/NEWSLETTER.md` gains a "Weekly reading" section: what the writer and proofreader produce, the
+contract, the scheduled task, and how to re-run a weak week. Any reader-facing note about how the newsletter
+is made (piece 3) must say that one model writes and a second proofreads. `docs/DAILY-HOROSCOPE.md` notes that `commonProblems` is
 shared.
 
 ## Out of scope
 
 Email HTML, templates, Mailchimp campaigns and segments (piece 3); any site page or VPS push of the weekly
-file; per-user readings; Moon aspects and void periods in the weekly sheet; a shared base module for the two
-writers; model switching (the gate reports a wrong model, it does not load the right one).
+file; per-user readings; Moon aspects and void periods in the weekly sheet; a shared base module for the
+tools; an automatic rewrite of failed blocks; model switching inside the Node tools (each gate reports a
+wrong model; only the scheduled PowerShell script loads one).
