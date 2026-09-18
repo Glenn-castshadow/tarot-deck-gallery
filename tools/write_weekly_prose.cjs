@@ -19,11 +19,11 @@ const SN = engine.sectorNames;
 // the figure it is given (measured on the daily writer, 2026-09-18).
 const RULES_SIGN = `You write one sign's weekly reading for an email newsletter called Ishtar Insights. Reasoning strength: low.
 
-You are given a fact sheet for the coming week, Monday to Sunday: whether the Moon is waxing or waning as the week opens; the sector of the reader's chart that the Sun, Mercury, Venus and Mars occupy all week (and the reader's ruling planet, marked ruler); and the week's events, each with its weekday and the sector it falls in. Write only from these facts. Invent nothing about the sky.
+You are given a fact sheet for the coming week, Monday to Sunday: whether the Moon is waxing or waning as the week opens; the sector of the reader's chart that the Sun, Mercury, Venus and Mars are in as the week opens (and the reader's ruling planet, marked ruler), where a placement marked until holds only until that weekday, when the matching event moves the planet on, and every other placement holds all week; and the week's events, each with its weekday and the sector it falls in. Write only from these facts. Invent nothing about the sky.
 
 Length and layout: 170 to 200 words in the second person and the present tense, as exactly two paragraphs separated by one blank line. No line breaks inside a paragraph.
 
-Paragraph one, the shape of the week, 85 to 100 words: open with one plain sentence on what the week is for. Then say where the Sun is for this reader, using the sector name exactly as given, and what that puts first; use one other placement if it helps, and call a planet marked ruler "your ruling planet". Say whether the Moon is waxing or waning and what that suits: a waxing Moon suits building and adding, a waning Moon suits finishing and clearing. Close on one concrete thing to do early in the week.
+Paragraph one, the shape of the week, 85 to 100 words: open with one plain sentence on what the week is for. Then say where the Sun opens the week for this reader, using the sector name exactly as given, and what that puts first; use one other placement if it helps, and call a planet marked ruler "your ruling planet". If a placement you mention is marked until, say until which weekday it holds. Say whether the Moon is waxing or waning and what that suits: a waxing Moon suits building and adding, a waning Moon suits finishing and clearing. Close on one concrete thing to do early in the week.
 
 Paragraph two, the days that matter, 85 to 100 words: take the one or two most important events, name the weekday and the sector exactly as given, and say in practical terms what each day is good for. An event marked rulerInvolved matters most. If there are no events, say the week has no sharp turns and give the second paragraph to how to use a steady week. End with one short imperative sentence.
 
@@ -33,19 +33,19 @@ const EXAMPLE_SIGN_SHEET = {
   sign: 'Taurus', ruler: 'Venus',
   backdrop: {moon: 'waning', placements: [
     {body: 'Sun', sector: {house: 5, name: SN[4]}, ruler: false}, {body: 'Mercury', sector: {house: 6, name: SN[5]}, ruler: false},
-    {body: 'Venus', sector: {house: 5, name: SN[4]}, ruler: true}, {body: 'Mars', sector: {house: 3, name: SN[2]}, ruler: false}]},
+    {body: 'Venus', sector: {house: 5, name: SN[4]}, ruler: true, until: 'Thursday'}, {body: 'Mars', sector: {house: 3, name: SN[2]}, ruler: false}]},
   events: [
     {weekday: 'Thursday', kind: 'ingress', body: 'Venus', detail: 'enters a new sign', sector: {house: 6, name: SN[5]}, rulerInvolved: true},
     {weekday: 'Sunday', kind: 'phase', body: 'Moon', detail: 'New moon', sector: {house: 5, name: SN[4]}, rulerInvolved: false}]
 };
 
-const EXAMPLE_SIGN = `This is a week for finishing the enjoyable thing you started and then putting your days in better order. The Sun spends all seven days in ${SN[4]}, so what you make for pleasure counts for more than what you owe, and the Moon is waning as the week opens, which suits completing over beginning. Pick the half-done project that still makes you smile, the song, the garden bed, the letter to someone you like, and give it the first three evenings. It is lighter on Monday than it is by the weekend.
+const EXAMPLE_SIGN = `This is a week for finishing the enjoyable thing you started and then putting your days in better order. The Sun opens the week in ${SN[4]}, and Venus, your ruling planet, keeps it company there until Thursday, so what you make for pleasure counts for more than what you owe. The Moon is waning as the week opens, which suits completing over beginning. Pick the half-done project that still makes you smile, the song, the garden bed, the letter to someone you like, and give it the first three evenings. It is lighter on Monday than it is by the weekend.
 
 Two days matter most. On Thursday Venus, your ruling planet, enters ${SN[5]}, and the ordinary machinery of the week starts to feel kinder: a colleague is easier to ask, a routine is easier to change, and the body answers well to small, regular care. On Sunday the New moon falls in ${SN[4]}, a clean line under what you finished and a quiet place to begin the next thing. Keep Thursday for one practical change to how your days run. Keep Sunday small, and start something only because you want to.`;
 
 const RULES_OVERVIEW = `You write the opening section of a weekly email newsletter called Ishtar Insights, read by people of every zodiac sign. Reasoning strength: low.
 
-You are given the coming week's facts, Monday to Sunday: whether the Moon is waxing or waning as the week opens, the zodiac sign the Sun, Mercury, Venus and Mars are in, and the week's events, each with its weekday and zodiac sign. Write only from these facts. Invent nothing about the sky.
+You are given the coming week's facts, Monday to Sunday: whether the Moon is waxing or waning as the week opens, the zodiac sign the Sun, Mercury, Venus and Mars are in as the week opens (a placement marked until changes on that weekday), and the week's events, each with its weekday and zodiac sign. Write only from these facts. Invent nothing about the sky.
 
 Length and layout: 140 to 170 words, second person, present tense, exactly two paragraphs separated by one blank line. No line breaks inside a paragraph.
 
@@ -55,7 +55,7 @@ Rules: plain, warm, dry, specific. Present tense throughout, with no future tens
 
 const EXAMPLE_SHEET = {
   from: '2026-09-07', to: '2026-09-14',
-  backdrop: {moon: 'waning', placements: [{body: 'Sun', sign: 'Virgo'}, {body: 'Mercury', sign: 'Virgo'}, {body: 'Venus', sign: 'Virgo'}, {body: 'Mars', sign: 'Cancer'}]},
+  backdrop: {moon: 'waning', placements: [{body: 'Sun', sign: 'Virgo'}, {body: 'Mercury', sign: 'Virgo'}, {body: 'Venus', sign: 'Virgo', until: 'Thursday'}, {body: 'Mars', sign: 'Cancer'}]},
   events: [
     {weekday: 'Thursday', kind: 'ingress', body: 'Venus', detail: 'enters a new sign', sign: 'Libra'},
     {weekday: 'Sunday', kind: 'phase', body: 'Moon', detail: 'New moon', sign: 'Virgo'}]
@@ -88,6 +88,18 @@ function twoParagraphs(text, min, max) {
   return null;
 }
 
+// A placement marked `until` ends mid-week. Catch a sentence that names that planet and claims the week.
+function overstays(t, placements) {
+  const ending = placements.filter(p => p.until);
+  if (!ending.length) return null;
+  for (const sentence of t.split(/(?<=[.!?])\s+/)) {
+    if (!/\ball (seven days|week)\b|\bwhole week\b|\bthroughout the week\b|\bthe entire week\b/i.test(sentence)) continue;
+    const p = ending.find(p => new RegExp(`\\b${p.body}\\b`).test(sentence));
+    if (p) return `says ${p.body} stays all week, but its placement ends on ${p.until}`;
+  }
+  return null;
+}
+
 // Each validator returns null when the block may be published, otherwise the reason it may not.
 function validateSign(text, sg) {
   const shape = twoParagraphs(text, 120, 230);
@@ -97,6 +109,8 @@ function validateSign(text, sg) {
   if (!sectors.some(n => t.includes(n))) return 'names no sector from the sheet';
   if (sg.events.length && !sg.events.some(e => t.includes(e.weekday))) return 'names no weekday from the sheet';
   const bodies = new Set(['Moon', ...sg.backdrop.placements.map(p => p.body), ...sg.events.map(e => e.body)]);
+  const overstay = overstays(t, sg.backdrop.placements);
+  if (overstay) return overstay;
   return commonProblems(t, bodies, new Set([sg.sign]));
 }
 
@@ -107,11 +121,13 @@ function validateOverview(text, sheet) {
   const shape = twoParagraphs(text, 120, 200);
   if (shape) return shape;
   const t = text.trim(), lower = t.toLowerCase();
-  const named = sheet.events.filter(e => lower.includes(e.detail.toLowerCase()) || (t.includes(e.body) && t.includes(e.weekday))).length;
+  const named = sheet.events.filter(e => (e.kind !== 'ingress' && lower.includes(e.detail.toLowerCase())) || (t.includes(e.body) && t.includes(e.weekday))).length;
   const need = Math.min(2, sheet.events.length);
   if (named < need) return `names ${named} of the week's events, needs ${need}`;
   // sectorNames[0] is "your sign", which an overview may say.
   for (const n of SN.slice(1)) if (t.includes(n)) return `names a sector: ${n}`;
+  const overstay = overstays(t, sheet.backdrop.placements);
+  if (overstay) return overstay;
   return commonProblems(t, sheetBodies(sheet), sheetSigns(sheet));
 }
 

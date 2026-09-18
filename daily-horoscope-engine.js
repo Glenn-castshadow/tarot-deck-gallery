@@ -133,17 +133,21 @@ const DailyHoroscopeEngine = (() => {
     ].sort((a, b) => a.date < b.date ? -1 : 1).map(e => ({...e, weekday: WEEKDAYS[new Date(e.date).getUTCDay()]}));
     const moon = astro.MoonPhase(from) < 180 ? 'waxing' : 'waning';
     const placedIndex = Object.fromEntries([...PLACED, 'Jupiter', 'Saturn'].map(b => [b, signIndexAt(b, from)]));
+    // A placement whose body has an ingress this week ends when that ingress lands: the first
+    // ingress weekday per body, from the already date-sorted raw list.
+    const until = new Map();
+    for (const e of raw) if (e.kind === 'ingress' && !until.has(e.body)) until.set(e.body, e.weekday);
     const signs = natal.signNames.map((sign, i) => {
       const ruler = classical.rulers[i];
       const bodies = ruler === 'Jupiter' || ruler === 'Saturn' ? [...PLACED, ruler] : PLACED;
       const ranked = raw.map(e => ({weekday: e.weekday, kind: e.kind, body: e.body, detail: e.detail, sector: sector(e.signIndex, i), rulerInvolved: e.body === ruler, date: e.date}))
         .sort((a, b) => (b.rulerInvolved - a.rulerInvolved) || (KIND_RANK[a.kind] - KIND_RANK[b.kind]) || (a.date < b.date ? -1 : 1))
         .map(({date, ...e}) => e);
-      return {sign, ruler, backdrop: {moon, placements: bodies.map(b => ({body: b, sector: sector(placedIndex[b], i), ruler: b === ruler}))}, events: ranked};
+      return {sign, ruler, backdrop: {moon, placements: bodies.map(b => ({body: b, sector: sector(placedIndex[b], i), ruler: b === ruler, ...(until.has(b) && {until: until.get(b)})}))}, events: ranked};
     });
     return {
       from: monday, to: to.toISOString().slice(0, 10),
-      backdrop: {moon, placements: PLACED.map(b => ({body: b, sign: natal.signNames[placedIndex[b]]}))},
+      backdrop: {moon, placements: PLACED.map(b => ({body: b, sign: natal.signNames[placedIndex[b]], ...(until.has(b) && {until: until.get(b)})}))},
       events: raw.map(e => ({weekday: e.weekday, kind: e.kind, body: e.body, detail: e.detail, sign: natal.signNames[e.signIndex]})),
       signs
     };

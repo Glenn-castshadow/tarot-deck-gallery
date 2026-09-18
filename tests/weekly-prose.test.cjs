@@ -37,8 +37,9 @@ test('weekSheet lists the week\'s headline events with weekday and sign', () => 
 test('weekSheet backdrop gives the Monday placements and the Moon\'s direction', () => {
   const s = H.weekSheet('2026-09-21');
   assert.equal(s.backdrop.moon, 'waxing');   // first quarter was 2026-09-18, full moon is 2026-09-26
+  // The Sun enters Libra on Wednesday, so its placement carries until: 'Wednesday'; the rest hold all week.
   assert.deepEqual(s.backdrop.placements, [
-    {body: 'Sun', sign: 'Virgo'}, {body: 'Mercury', sign: 'Libra'}, {body: 'Venus', sign: 'Scorpio'}, {body: 'Mars', sign: 'Cancer'}
+    {body: 'Sun', sign: 'Virgo', until: 'Wednesday'}, {body: 'Mercury', sign: 'Libra'}, {body: 'Venus', sign: 'Scorpio'}, {body: 'Mars', sign: 'Cancer'}
   ]);
 });
 
@@ -47,8 +48,9 @@ test('weekSheet gives each sign whole-sign houses, its ruler first, and no zodia
   assert.equal(s.signs.length, 12);
   const by = name => s.signs.find(x => x.sign === name);
   // Aries: Virgo is its 6th, Libra its 7th, Scorpio its 8th, Cancer its 4th. Mars rules Aries.
+  // The Sun's placement ends Wednesday, when it enters Libra; the other three hold all week.
   assert.deepEqual(by('Aries').backdrop.placements, [
-    {body: 'Sun', sector: {house: 6, name: 'your daily-work-and-health sector'}, ruler: false},
+    {body: 'Sun', sector: {house: 6, name: 'your daily-work-and-health sector'}, ruler: false, until: 'Wednesday'},
     {body: 'Mercury', sector: {house: 7, name: 'your partnership sector'}, ruler: false},
     {body: 'Venus', sector: {house: 8, name: 'your shared-money-and-intimacy sector'}, ruler: false},
     {body: 'Mars', sector: {house: 4, name: 'your home sector at the base of your chart'}, ruler: true}
@@ -73,7 +75,12 @@ test('weekSheet still returns a usable sheet for a week with no events', () => {
   const s = H.weekSheet('2026-11-02');
   assert.deepEqual(s.events, []);
   assert.equal(s.backdrop.placements.length, 4);
-  for (const sg of s.signs) { assert.deepEqual(sg.events, []); assert.ok(sg.backdrop.placements.length >= 4); }
+  for (const p of s.backdrop.placements) assert.equal('until' in p, false);
+  for (const sg of s.signs) {
+    assert.deepEqual(sg.events, []);
+    assert.ok(sg.backdrop.placements.length >= 4);
+    for (const p of sg.backdrop.placements) assert.equal('until' in p, false);
+  }
 });
 
 const D = require('../tools/write_daily_prose.cjs');
@@ -150,6 +157,36 @@ test('validateOverview needs two of the week\'s events, no sector name, and only
   assert.match(W.validateOverview(ok.replace('in its drawer', 'in your partnership sector'), sheet), /names a sector/);
   assert.match(W.validateOverview(ok.replace('in its drawer', 'in Gemini'), sheet), /names Gemini/);
   assert.equal(W.validateOverview(ok.replace('On Thursday Venus enters a new sign, moving into Libra', 'Midweek the mood lifts').replace('the New moon arrives in Virgo', 'a fresh start arrives'), {...sheet, events: []}), null);
+});
+
+test('validateOverview counts an ingress only by planet and weekday, two generic phrases are not two events', () => {
+  const sheet = {...W.EXAMPLE_SHEET, events: [
+    {weekday: 'Thursday', kind: 'ingress', body: 'Venus', detail: 'enters a new sign', sign: 'Libra'},
+    {weekday: 'Friday', kind: 'ingress', body: 'Mercury', detail: 'enters a new sign', sign: 'Virgo'}
+  ]};
+  const text = W.EXAMPLE_OVERVIEW
+    .replace('On Thursday Venus enters a new sign, moving into Libra', 'Midweek a planet enters a new sign')
+    .replace('Then on Sunday the New moon arrives in Virgo', 'Then the week turns')
+    .replaceAll('Thursday', 'midweek');
+  assert.ok(text.split(/\s+/).filter(Boolean).length >= 120, `fixture is too short: ${text.split(/\s+/).filter(Boolean).length} words`);
+  assert.match(W.validateOverview(text, sheet), /names 0 of the week's events/);
+});
+
+test('validateSign and validateOverview catch a placement that claims the whole week after its until', () => {
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN, W.EXAMPLE_SIGN_SHEET), null);
+  const claimsAllWeek = W.EXAMPLE_SIGN.replace('keeps it company there until Thursday', 'keeps it company there all week');
+  assert.match(W.validateSign(claimsAllWeek, W.EXAMPLE_SIGN_SHEET), /Venus stays all week/);
+  const marsAllWeek = W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'Mars holds that mood all week, low and steady.');
+  assert.equal(W.validateSign(marsAllWeek, W.EXAMPLE_SIGN_SHEET), null);
+  const noUntilSheet = {...W.EXAMPLE_SIGN_SHEET, backdrop: {...W.EXAMPLE_SIGN_SHEET.backdrop,
+    placements: W.EXAMPLE_SIGN_SHEET.backdrop.placements.map(({until, ...rest}) => rest)}};
+  const oldStyle = W.EXAMPLE_SIGN.replace(
+    `The Sun opens the week in ${H.sectorNames[4]}, and Venus, your ruling planet, keeps it company there until Thursday, so what you make for pleasure counts for more than what you owe. The Moon is waning as the week opens, which suits completing over beginning.`,
+    `The Sun spends all seven days in ${H.sectorNames[4]}, so what you make for pleasure counts for more than what you owe, and the Moon is waning as the week opens, which suits completing over beginning.`);
+  assert.equal(W.validateSign(oldStyle, noUntilSheet), null);
+
+  const overviewOverstay = W.EXAMPLE_OVERVIEW.replace('On Thursday Venus enters a new sign, moving into Libra', 'Venus is in Virgo all week');
+  assert.match(W.validateOverview(overviewOverstay, W.EXAMPLE_SHEET), /Venus stays all week/);
 });
 
 test('validateSubjects checks the JSON, the three lines and the preview', () => {
