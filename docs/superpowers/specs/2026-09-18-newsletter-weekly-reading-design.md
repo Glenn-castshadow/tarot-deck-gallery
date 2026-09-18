@@ -32,7 +32,7 @@ calls Mailchimp, or changes the site.
 | Dependencies are open source | Glenn's global instructions |
 | No "will", no fortune-telling phrases, no planet or sign the fact sheet did not supply, no em dash, clock time or degree | Existing daily writer (`tools/write_daily_prose.cjs`), reused unchanged |
 | The writer refuses to run unless the loaded llama.cpp model is Muse Glimmer | Existing daily writer's `/props` gate, reused |
-| Event cap of six per sign, the word and character limits below, three attempts per block | Claude's judgement |
+| The word and character limits below, three attempts per block, and the standing placements in the backdrop | Claude's judgement |
 | Expected astronomical values in tests come from a source other than `sky-calendar-engine.js` | Project memory ("test oracle from code under test") |
 | A Qwen correction is kept only if the corrected text still passes the block's code validator and changes at most 8% of the words; otherwise Glimmer's text stands | Claude's judgement, to stop the checker introducing unchecked errors |
 | Glimmer's original text is kept in the file beside any corrected text | Claude's judgement |
@@ -71,33 +71,37 @@ Output:
 
 ```json
 { "from": "2026-09-21", "to": "2026-09-28",
-  "backdrop": { "sunSign": "Virgo", "moon": "waxing" },
+  "backdrop": { "moon": "waxing", "placements": [ { "body": "Sun", "sign": "Virgo" }, { "body": "Mercury", "sign": "Libra" } ] },
   "events": [ { "weekday": "Wednesday", "kind": "ingress", "body": "Sun", "detail": "enters a new sign", "sign": "Libra" },
               { "weekday": "Saturday", "kind": "phase", "body": "Moon", "detail": "Full moon", "sign": "Aries" } ],
   "signs": [ { "sign": "Aries", "ruler": "Mars",
-               "backdrop": { "sunSector": { "house": 6, "name": "your daily-work-and-health sector" }, "moon": "waxing" },
+               "backdrop": { "moon": "waxing", "placements": [ { "body": "Sun", "sector": { "house": 6, "name": "your daily-work-and-health sector" }, "ruler": false } ] },
                "events": [ { "weekday": "Saturday", "kind": "phase", "body": "Moon", "detail": "Full moon",
                              "sector": { "house": 1, "name": "your sign" }, "rulerInvolved": false } ] } ] }
 ```
 
 The values above are the real ones for that week (Sun into Libra 2026-09-23 00:05 UTC, Full moon
 2026-09-26 16:49 UTC in Aries), confirmed against a published almanac. `signs` is an array in zodiac order
-with capitalised names, as `factSheet` returns it; the Aries entry is abridged to one event.
+with capitalised names, as `factSheet` returns it; the Aries entry and both placement lists are abridged,
+and the Mercury placement is illustrative.
 
 Per sign, `sector` is the whole-sign house of the event's sign counted from the reader's sign, using the
 same `sectorNames` the daily sheet uses; `rulerInvolved` is true when `body` is the sign's classical ruler.
-Per-sign events are ordered ruler-involved first, then eclipses, phases, stations, ingresses, then by date,
-and cut to six. The per-sign list omits `sign`, as the daily sheet withholds the Moon's sign, so the model
-writes about the house and not the zodiac position. The shared `events` list keeps `sign` and has no houses;
-it is not capped.
+Per-sign events are ordered ruler-involved first, then eclipses, phases, stations, ingresses, then by date.
+There is no cap: across every Monday week from 2026 to 2035 the most events in one week is six, and that
+happens once. The per-sign list omits `sign`, as the daily sheet withholds the Moon's sign, so the model
+writes about the house and not the zodiac position. The shared `events` list keeps `sign` and has no houses.
 
-A quiet week is possible: lunar quarters fall 6.6 to 8.2 days apart, so a seven-day window can hold none,
-and a week can pass with no ingress or station either. So the sheet always carries a `backdrop` that needs
-no event: the Sun's sign on the Monday and, per sign, the Sun's whole-sign house, plus whether the Moon is
-waxing or waning as the week opens. The shared sheet has `backdrop: {sunSign, moon: "waxing"|"waning"}` and
-each sign has `backdrop: {sunSector: {house, name}, moon}`. The week of 2026-11-02 is such a week: no
-quarter, ingress, station or eclipse falls in it. The per-sign backdrop withholds the Sun's sign
-for the same reason events withhold theirs. An empty `events` list is therefore valid, and the validators
+Quiet weeks are common. Lunar quarters fall 6.6 to 8.2 days apart, so a seven-day window can hold none, and
+across 2026 to 2035 about a quarter of all weeks hold exactly one headline event and five hold none. So the
+sheet always carries a `backdrop` that needs no event: whether the Moon is waxing or waning as the week
+opens, and the standing `placements` at Monday 00:00 UTC of the Sun, Mercury, Venus and Mars, plus the
+sign's ruler when that is Jupiter or Saturn (the Moon moves too fast to have a weekly placement). The
+shared sheet has `backdrop: {moon: "waxing"|"waning", placements: [{body, sign}]}` and each sign has
+`backdrop: {moon, placements: [{body, sector: {house, name}, ruler}]}`, where `ruler` marks the sign's
+ruling planet. A body that changes sign during the week keeps its Monday placement here and also appears
+as an ingress event. The week of 2026-11-02 is such a week: no
+quarter, ingress, station or eclipse falls in it. The per-sign backdrop withholds zodiac signs for the same reason events do. An empty `events` list is therefore valid, and the validators
 below are written to allow it.
 
 ### 2. `tools/write_weekly_prose.cjs`
@@ -118,7 +122,7 @@ run) and its own validator:
 
 | Block | Calls | Brief asks | Validator accepts |
 |---|---|---|---|
-| Sign reading | 12 | two paragraphs, 170 to 200 words: the shape of the week for this sign, then the one or two days that matter and what to do with them | exactly two blocks separated by a blank line, no newline inside a block; 120 to 230 words; ends `.`, `!` or `?`; names at least one sector name present in that sign's sheet (an event's or the backdrop's), and at least one weekday from the sheet when the sign has any events; `commonProblems` clean |
+| Sign reading | 12 | two paragraphs, 170 to 200 words: the shape of the week for this sign, then the one or two days that matter and what to do with them | exactly two blocks separated by a blank line, no newline inside a block; 120 to 230 words; ends `.`, `!` or `?`; names at least one sector name present in that sign's sheet (an event's or a placement's), and at least one weekday from the sheet when the sign has any events; `commonProblems` clean |
 | Overview | 1 | two paragraphs, 140 to 170 words, for readers of any sign | same shape; 120 to 200 words; names at least two events from the shared list, or every event when there are fewer than two (matched on `detail`, or on `body` plus weekday); contains no sector name; `commonProblems` clean |
 | Subjects | 1 | three subject lines and one preview text, as JSON | JSON object `{subjects: [3 strings], preview: string}`; each subject 25 to 60 characters, one line, no emoji, no `!`, no all-caps word, no sign name, no "will"; the three differ after lowercasing; preview 40 to 110 characters; `commonProblems` clean on all four |
 
@@ -218,8 +222,8 @@ swapping `globalThis.fetch` for a fake that answers `/props` and `/chat/completi
    fixed month is unchanged by the refactor (snapshot of the existing behaviour taken before the change).
 2. `weekSheet`: rejects a non-Monday; window is exactly seven days; Moon ingresses excluded; per-sign houses
    are whole-sign from the reader's sign (one hand-worked case as a literal); ruler-involved events sort
-   first; the cap holds at six; per-sign events carry no `sign`; a week chosen to have no lunar quarter
-   still returns a backdrop and a valid sheet.
+   first; per-sign events and placements carry no `sign`; the week of 2026-11-02, which has no event at
+   all, still returns a backdrop with placements and a valid sheet.
 3. Validators: one failing input per rule in the table above, plus one passing input per block.
 4. Writer, with the fake model (`main` returns its exit code instead of calling `process.exit`, so tests can
    assert it): writes the contract shape; omits a sign that fails three times; fills only
