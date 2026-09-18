@@ -45,7 +45,9 @@ def push(subscriber, resubscribe=False):
         'status_if_new': 'pending',
         'merge_fields': {'SIGN': subscriber.sun_sign,
                          'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + subscriber.unsubscribe_token},
-    })
+    # Both values are ours (one of SIGNS, a URL built here). With validation on, Mailchimp answers
+    # 200 and drops them whenever the member's other merge data is invalid, e.g. a malformed ADDRESS.
+    }, params={'skip_merge_validation': 'true'})
     # A fresh signup on the site is fresh consent; pending makes Mailchimp send a new confirmation.
     if resubscribe and member.get('status') == 'unsubscribed':
         _request('PATCH', path, {'status': 'pending'})

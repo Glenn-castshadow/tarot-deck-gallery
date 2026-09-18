@@ -62,7 +62,10 @@ class ConfiguredTests(TestCase):
             mailchimp.push(row)
         self.assertEqual(fake.calls, [('PUT', PATH, {
             'email_address': 'reader@example.com', 'status_if_new': 'pending',
-            'merge_fields': {'SIGN': 'leo', 'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}}, None)])
+            'merge_fields': {'SIGN': 'leo', 'SITEUNSUB': 'https://ishtarinsights.com/unsubscribe.html#' + row.unsubscribe_token}},
+            # Without this Mailchimp answers 200 and drops SIGN and SITEUNSUB for any member whose
+            # other merge data fails its validation (seen live on the account owner's ADDRESS).
+            {'skip_merge_validation': 'true'})])
 
     def test_push_never_sends_status_so_an_unsubscribed_member_stays_out(self):
         fake = FakeRequest(results=[{'status': 'unsubscribed'}])
