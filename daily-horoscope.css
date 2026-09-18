@@ -43,6 +43,8 @@
   .dh-emblem { display: none; }
   .dh-main { align-items: start; gap: 14px; }
   .dh-sign { font-size: 42px; padding-top: 8px; }
+  /* Beside the glyph a 280-word reading gets a 219px column at 390px; stacked, it gets the full width. */
+  .dh-main:has(.dh-prose) { flex-direction: column; gap: 4px; }
   .dh-controls { align-items: start; }
   .dh-controls > p { flex-basis: 100%; margin: 0; }
 }
