@@ -90,6 +90,19 @@ test('commonProblems reports each shared rule and passes clean text', () => {
   assert.equal(D.commonProblems('The Sun at 12 degrees.', bodies, signs), 'degree');
 });
 
+test('commonProblems catches the future tense however it is spelled', () => {
+  const bodies = new Set(['Sun', 'Moon']), signs = new Set(['Aries']);
+  for (const t of ["You'll find the money you need.", "It'll pass and they'll agree.", "It won't last.",
+    'Thursday shall bring news.', 'You’ll see.']) {
+    assert.match(D.commonProblems(t, bodies, signs), /future tense/, t);
+  }
+  assert.equal(D.commonProblems('It will pass.', bodies, signs), 'uses "will"');
+  assert.equal(D.commonProblems('A quiet start – then the mood lifts.', bodies, signs), 'dash used as punctuation');
+  for (const t of ['The shallow end is warm.', 'A well-worn path.', 'Pages 3–5 are dull.', 'Goodwill goes a long way.']) {
+    assert.equal(D.commonProblems(t, bodies, signs), null, t);
+  }
+});
+
 test('complete merges sampling overrides over its defaults', async () => {
   const original = globalThis.fetch;
   let sent;

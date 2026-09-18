@@ -47,9 +47,11 @@ function commonProblems(t, allowedBodies, allowedSigns) {
   const lower = t.toLowerCase();
   for (const f of FORBIDDEN) if (lower.includes(f)) return `forbidden phrase: ${f}`;
   if (/\bwill\b/i.test(t)) return 'uses "will"';
+  if (/\b(shall|won['’]t)\b|\b\w+['’]ll\b/i.test(t)) return 'uses the future tense';
   for (const p of PLANETS) if (!allowedBodies.has(p) && new RegExp(`\\b${p}\\b`).test(t)) return `names ${p}, which is not in the sheet`;
   for (const s of engine.signNames) if (!allowedSigns.has(s) && new RegExp(`\\b${s}\\b`).test(t)) return `names ${s}`;
   if (t.includes('—')) return 'em dash';
+  if (/\s–\s/.test(t)) return 'dash used as punctuation';
   if (/\b\d{1,2}:\d{2}\b/.test(t)) return 'clock time';
   if (/\d\s*°|\b\d+\s*degrees?\b/i.test(t)) return 'degree';
   return null;
