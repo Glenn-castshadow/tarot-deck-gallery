@@ -258,6 +258,18 @@
       });
   }
 
+  // Every lunar quarter with from <= time < to. No range guard of its own: monthEvents validates
+  // its year and month first, and its `to` for December 2100 lies just past inRange's bound.
+  function quarters(from, to) {
+    const out = [], end = astro.MakeTime(to);
+    let mq = astro.SearchMoonQuarter(from);
+    while (mq.time.ut < end.ut) {
+      out.push({type: 'quarter', quarter: mq.quarter, name: QUARTER_NAMES[mq.quarter], date: mq.time.date.toISOString()});
+      mq = astro.NextMoonQuarter(mq);
+    }
+    return out;
+  }
+
   function monthEvents(year, month) {
     // Same guard as personalTransits: both halves have to be real integers in range, or
     // month 0 quietly returns last December, 13 next January and 5.5 rounds to May.
@@ -266,12 +278,7 @@
     const from = new Date(Date.UTC(year, month - 1, 1));
     const to = new Date(Date.UTC(year, month, 1));
 
-    const events = [];
-    let mq = astro.SearchMoonQuarter(from);
-    while (mq.time.ut < astro.MakeTime(to).ut) {
-      events.push({type: 'quarter', quarter: mq.quarter, name: QUARTER_NAMES[mq.quarter], date: mq.time.date.toISOString()});
-      mq = astro.NextMoonQuarter(mq);
-    }
+    const events = quarters(from, to);
 
     events.push(...ingresses(from, to), ...stations(from, to), ...eclipses(from, to));
     events.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -592,6 +599,6 @@
   return {
     moonNow, lonOf, inRange, signOf, signNames, MIN_YEAR, MAX_YEAR,
     CLASSICAL_PLANETS, MODERN_PLANETS, voidPeriods, voidBands, moonAspects,
-    BODIES, speedAt, ingresses, monthEvents, stations, eclipses, retrogradeState, personalTransits
+    BODIES, speedAt, ingresses, quarters, monthEvents, stations, eclipses, retrogradeState, personalTransits
   };
 });
