@@ -108,9 +108,13 @@ test('factSheet refuses a bad day', () => {
 const W = require('../tools/write_daily_prose.cjs');
 const SHEET = {sign: 'Aries', ruler: 'Mars', moonSector: {house: 9, name: 'your travel-and-belief sector'},
   aspects: [{planet: 'Saturn', name: 'trine', planetSector: {house: 1, name: 'your sign'}, rulerInvolved: false}], events: []};
-const GOOD = 'Discipline sits easily today. The Moon in your travel-and-belief sector trines Saturn in your sign, and the rule you set yourself last week, the early start or the no-phone hour, holds without any effort on your part, which is rare enough to notice. The course you keep meaning to book looks affordable when you finally open the page and read the price instead of guessing it. Book it before lunch, then go for the walk you said you would take, the long way round.';
+const GOOD = [
+  'Discipline sits easily today. The Moon in your travel-and-belief sector trines Saturn in your sign, and the rule you set yourself last week holds without any effort on your part, which is rare enough to notice. Nothing else in the sky leans on you, so the day is as plain as it looks. Of the two, the steadiness is the stronger pull, and the wish to be somewhere else is only what it steadies.',
+  'A course you have meant to book since the spring sends its last reminder. The page opens on the price, which is lower than the figure you had been carrying around, and on a start date that falls in a week you already have free. A colleague who took the same course two years ago leans over, reads the syllabus off your screen and says the second half is the useful part. Then the colleague goes back to their own desk and leaves the tab open in front of you. The form has four fields, and the reminder says the list closes tonight.',
+  'The phase is a first quarter, which suits adding to something that has already begun. A plan you have carried for six months counts as begun. Treat the booking as the work of the day and do it with the same care you would give a task set by someone else. Do not reopen the question of whether you deserve it. Book it before lunch, then take the long way round on your walk home.'
+].join('\n\n');
 
-test('validate accepts a paragraph in the brief shape', () => {
+test('validate accepts a three-paragraph reading in the brief shape', () => {
   assert.equal(W.validate(GOOD, SHEET), null);
 });
 
@@ -119,6 +123,8 @@ test('validate rejects each rule breach with a reason', () => {
     ['The Moon in your travel-and-belief sector trines Saturn in your sign. Go.', /words/],
     [GOOD.slice(0, GOOD.lastIndexOf(',')), /full sentence/],
     [GOOD + '\n\nMore.', /paragraph/],
+    [GOOD.replace('. Nothing else', '.\nNothing else'), /paragraph/],
+    [GOOD.split('\n\n')[0], /^\d+ words$/],
     [GOOD.replace('The Moon in', 'Your luminary in'), /Moon/],
     [GOOD.replace('travel-and-belief', 'ninth'), /travel-and-belief/],
     [GOOD + ' Good luck.', /luck/],
@@ -133,12 +139,13 @@ test('validate rejects each rule breach with a reason', () => {
   for (const [text, reason] of cases) assert.match(String(W.validate(text, SHEET)), reason, String(text).slice(0, 40));
 });
 
-test('validate allows a long paragraph up to 300 words and refuses a runaway one', () => {
+test('validate publishes 150 to 350 words and refuses a runaway reading', () => {
   const pad = n => GOOD.replace(/\.$/, '') + ' and on'.repeat(n) + '.';
   const count = t => t.split(/\s+/).length;
-  assert.equal(count(pad(108)), 300);
-  assert.equal(W.validate(pad(108), SHEET), null);
-  assert.match(W.validate(pad(109), SHEET), /^302 words$/);
+  const n = (350 - count(GOOD)) / 2;
+  assert.ok(Number.isInteger(n) && n > 0, `fixture is ${count(GOOD)} words`);
+  assert.equal(W.validate(pad(n), SHEET), null);
+  assert.match(W.validate(pad(n + 1), SHEET), /^352 words$/);
 });
 
 test('the rules name no sign and no planet but the Moon, and the model never sees another sign name', () => {
@@ -156,12 +163,21 @@ test('the rules name no sign and no planet but the Moon, and the model never see
 
 test('buildMessages rotates the opening/scene-setting hint by sign', () => {
   const moon = {sign: 'Pisces', phase: 'First quarter', illumination: 52};
-  const hintOf = content => content.slice(content.indexOf('Write the paragraph:'));
+  const hintOf = content => { const at = content.indexOf('Write the three paragraphs:'); assert.ok(at > 0); return content.slice(at); };
   const ariesHint = hintOf(W.buildMessages({...SHEET, sign: 'Aries'}, moon)[1].content);
   const taurusHint = hintOf(W.buildMessages({...SHEET, sign: 'Taurus'}, moon)[1].content);
   assert.notEqual(ariesHint, taurusHint, 'Aries and Taurus got the same hint sentence');
   assert.ok(ariesHint.includes('how the day goes'), ariesHint);
   assert.ok(ariesHint.includes("the area of life named by the Moon's sector"), ariesHint);
+});
+
+test('buildMessages rotates the place of the scene by sign and by day', () => {
+  const moon = {sign: 'Pisces', phase: 'First quarter', illumination: 52};
+  const placeOf = (sign, day) => W.buildMessages({...SHEET, sign}, moon, day)[1].content.match(/have it happen (.+)\.$/)[1];
+  assert.ok(W.PLACES.includes(placeOf('Aries', '2026-09-19')));
+  assert.notEqual(placeOf('Aries', '2026-09-19'), placeOf('Taurus', '2026-09-19'));
+  assert.notEqual(placeOf('Aries', '2026-09-19'), placeOf('Aries', '2026-09-20'));
+  assert.equal(new Set(engine.signNames.map(s => placeOf(s, '2026-09-19'))).size, 12, 'a place repeats within one day');
 });
 
 test('parseArgs defaults and addDays', () => {
@@ -199,7 +215,7 @@ test('a failed HTTP request counts as one attempt, not the whole run', async () 
         // Return a paragraph that mentions the sector name from the request
         const sectorMatch = userMsg.match(/"moonSector":\s*"([^"]+)"/);
         const sector = sectorMatch ? sectorMatch[1] : 'your sign';
-        const text = `Discipline sits easily today. The Moon in ${sector} makes an easy contact with the planetary influence, and the rule you set yourself last week, the commitment to consistency, holds without any effort on your part, which is noteworthy. The course you keep meaning to pursue looks more affordable than you expected when you finally check. Pursue it before lunch, then take the long walk you promised yourself, the one you have been putting off.`;
+        const text = `Discipline sits easily today. The Moon in ${sector} makes an easy contact with the planetary influence, and the rule you set yourself last week, the commitment to consistency, holds without any effort on your part, which is noteworthy. The course you keep meaning to pursue looks more affordable than you expected when you finally check. Pursue it before lunch, then take the long walk you promised yourself, the one you have been putting off.`.replace(/^(.*)$/s, '$1\n\n$1\n\n$1');  // three paragraphs, 228 words
         return {
           ok: true,
           json: async () => ({
@@ -216,7 +232,7 @@ test('a failed HTTP request counts as one attempt, not the whole run', async () 
     const content = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.ok(content.signs.aries, 'aries sign not in output');
     assert.ok(chatCount >= 2, `expected at least 2 chat attempts, got ${chatCount}`);
-    assert.equal(lastMaxTokens, 1500);
+    assert.equal(lastMaxTokens, 2500);
   } finally {
     globalThis.fetch = originalFetch;
     fs.rmSync(tmpdir, {recursive: true});

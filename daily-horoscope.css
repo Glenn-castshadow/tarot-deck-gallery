@@ -21,6 +21,9 @@
 .dh-sign { color: #ddc389; font: 72px/1 serif; }
 .dh-main h4 { font: 500 clamp(25px,3vw,36px)/1.25 "Playfair Display", serif; margin: 7px 0 12px; }
 .dh-main p:last-child, .dh-lenses p, .dh-action > p:last-child { color: #c5d2cc; font-size: 14px; line-height: 1.8; }
+/* The model-written reading is up to three paragraphs separated by a blank line in the JSON. */
+.dh-prose { white-space: pre-line; }
+.dh-main:has(.dh-prose) { align-items: flex-start; }
 .dh-moon { display: flex; gap: 14px; background: #cad9cb0b; padding: 16px 18px; color: #d7d6b9; }
 .dh-moon > span { font: 30px serif; }
 .dh-moon strong { font-size: 13px; font-weight: 500; }

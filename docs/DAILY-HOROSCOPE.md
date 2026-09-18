@@ -21,14 +21,18 @@ and Chiron excluded) with their sectors, the classical ruler and whether it is i
 sign is withheld from the model because the brief bans every sign name but the reader's own.
 
 `tools/write_daily_prose.cjs` refuses to run unless `/props` reports the Glimmer alias, then asks
-for one paragraph per sign per day, 80 to 110 words, with `max_tokens` set to 1500 — Glimmer's
-`reasoning_content` runs 300 to 400 tokens before it starts the paragraph, so a tighter budget was
-observed to leave the paragraph empty or truncated mid-sentence. Each sign is a separate request
+for one reading per sign per day: three paragraphs (the sky, a scene, the advice) separated by a
+blank line, 250 to 300 words in all. The length was 80 to 110 words in one paragraph until
+2026-09-18, when Glenn asked for the longer reading. The brief itself asks for 280 to 320 because
+Glimmer lands about a tenth under the figure it is given. `max_tokens` is 2500 — Glimmer's
+`reasoning_content` runs 300 to 400 tokens before it starts writing, so a tighter budget was
+observed to leave the text empty or truncated mid-sentence. Each sign is a separate request
 with no view of the other eleven, so `buildMessages` appends a rotating hint by sign (four opening
-kinds by two scene settings) rather than asking the model for variety it cannot see. `validate`
-keeps 60 to 300 words as the hard bounds it will publish (the ceiling was 120 until 2026-09-18,
-when a sheet with two aspects, an event and long sector names left Taurus out of 2026-09-23 after
-three attempts; 300 is a runaway guard, and the brief still asks for 80 to 110), checks the paragraph is one block of text
+kinds by two scene settings, and one of thirteen places for the scene rotated by sign and day)
+rather than asking the model for variety it cannot see. `validate`
+keeps 150 to 350 words as the hard bounds it will publish (wider than the brief on purpose: a short
+reading is still better than the template fallback, and a 120-word ceiling left Taurus out of
+2026-09-23 after three attempts), checks the text is at most three blocks separated by a blank line,
 ending in `.`, `!` or `?` (a truncation guard), names the Moon and its sector, uses no forbidden
 phrase or "will", names no planet or sign outside the sheet, and uses no em dash, clock time or
 degree. A request or network error counts as one failed attempt, the same as a validation failure,
@@ -51,8 +55,9 @@ live output rather than tuned against two days of samples. `RULES` lives in
 writer runs on Glenn's PC, not on the VPS or in a build step.
 
 `daily-horoscope.js` fetches `/sky/daily/<day>.json` once per calendar day with a two-second
-timeout and draws once after it settles; sign changes read the cached result. With a paragraph the
-lens cards, title, overview and action are replaced by `<p class="dh-prose">`; the dateline, phase
+timeout and draws once after it settles; sign changes read the cached result. With a reading the
+lens cards, title, overview and action are replaced by `<p class="dh-prose">`, whose
+`white-space: pre-line` turns the blank lines into paragraph breaks; the dateline, phase
 line and question stay. Without one (404, timeout, bad JSON, missing sign) the markup is byte for
 byte today's template reading. This is the page's only network request and it carries finished
 copy, not positions. The disclosure text in "How your daily reading is made" tells the reader the
