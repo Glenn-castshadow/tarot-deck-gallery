@@ -175,5 +175,78 @@ function subjectsMessages(sheet, overview) {
   ];
 }
 
+function nextMonday(today) {
+  const day = new Date(`${today}T00:00:00Z`).getUTCDay();   // 0 Sunday, 1 Monday
+  return addDays(today, (8 - day) % 7);
+}
+
+function parseArgs(argv, today = new Date().toISOString().slice(0, 10)) {
+  const o = {week: null, force: false, endpoint: 'http://127.0.0.1:8088/v1', model: 'muse-glimmer-30b-local', out: 'output/weekly-prose'};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--force') o.force = true;
+    else if (['--week', '--endpoint', '--model', '--out'].includes(a)) o[a.slice(2)] = argv[++i];
+    else throw new Error(`unknown argument ${a}`);
+  }
+  o.week = o.week || nextMonday(today);
+  return o;
+}
+
+// Three attempts at one block. A request that throws counts as an attempt, not an abort.
+async function attempt(o, label, messages, check) {
+  let reason = '';
+  for (let n = 1; n <= 3; n++) {
+    let candidate;
+    try { candidate = await complete(o.endpoint, o.model, messages); }
+    catch (error) { reason = `request failed: ${error.message}`; console.warn(`${o.week} ${label} attempt ${n}: ${reason}`); continue; }
+    reason = check(candidate);
+    if (!reason) return candidate;
+    console.warn(`${o.week} ${label} attempt ${n}: ${reason}`);
+  }
+  console.error(`${o.week} ${label}: omitted after 3 attempts (${reason})`);
+  return null;
+}
+
+async function main(argv) {
+  const o = parseArgs(argv);
+  const sheet = engine.weekSheet(o.week);
+  if (sheet.status === 'not-monday') {
+    const next = nextMonday(o.week);
+    console.error(`${o.week} is not a Monday. Nearest: ${addDays(next, -7)} or ${next}.`);
+    return 1;
+  }
+  const alias = await servedAlias(o.endpoint);
+  if (alias !== o.model) { console.error(`Served model is "${alias}", not "${o.model}"; refusing to write.`); return 2; }
+  fs.mkdirSync(o.out, {recursive: true});
+  const file = path.join(o.out, `${o.week}.json`);
+  // A block omitted after three attempts, or rejected by the proofreader, is a gap: a later run
+  // keeps what the file has and writes only what it lacks.
+  let kept = {};
+  if (fs.existsSync(file) && !o.force) { try { kept = JSON.parse(fs.readFileSync(file, 'utf8')) || {}; } catch { kept = {}; } }
+
+  const signs = {};
+  for (const sg of sheet.signs) {
+    const key = sg.sign.toLowerCase();
+    if (typeof kept.signs?.[key] === 'string' && kept.signs[key]) { signs[key] = kept.signs[key]; continue; }
+    const text = await attempt(o, sg.sign, signMessages(sg, sheet), c => validateSign(c, sg));
+    if (text) signs[key] = text;
+  }
+  let overview = typeof kept.overview === 'string' ? kept.overview : '';
+  if (!overview) overview = await attempt(o, 'overview', overviewMessages(sheet), c => validateOverview(c, sheet)) || '';
+  let subjects = Array.isArray(kept.subjects) && kept.subjects.length === 3 ? kept.subjects : [], preview = subjects.length ? kept.preview : '';
+  if (!subjects.length) {
+    const parsed = parseSubjects(await attempt(o, 'subjects', subjectsMessages(sheet, overview), c => validateSubjects(c, sheet)) || '');
+    if (parsed) ({subjects, preview} = parsed);
+  }
+
+  const {proof, originals, rejected} = kept;
+  const out = {week: o.week, generated: new Date().toISOString(), model: o.model, overview, signs, subjects, preview,
+    ...(proof && {proof}), ...(originals && {originals}), ...(rejected && {rejected})};
+  fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n');
+  console.log(`${o.week}: ${Object.keys(signs).length}/12 signs, overview ${overview ? 'written' : 'missing'}, ${subjects.length} subjects`);
+  return Object.keys(signs).length >= 10 && overview ? 0 : 3;
+}
+
 module.exports = {RULES_SIGN, RULES_OVERVIEW, RULES_SUBJECTS, EXAMPLE_SIGN, EXAMPLE_OVERVIEW, EXAMPLE_SUBJECTS, EXAMPLE_SHEET, EXAMPLE_SIGN_SHEET,
-  validateSign, validateOverview, validateSubjects, parseSubjects, signMessages, overviewMessages, subjectsMessages};
+  validateSign, validateOverview, validateSubjects, parseSubjects, signMessages, overviewMessages, subjectsMessages, nextMonday, parseArgs, main};
+if (require.main === module) main(process.argv.slice(2)).then(code => process.exit(code), error => { console.error(error); process.exit(1); });

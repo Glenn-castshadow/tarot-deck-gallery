@@ -167,3 +167,121 @@ test('the sign brief carries the facts as JSON and withholds zodiac signs', () =
   assert.equal(facts.events[0].weekday, 'Saturday');
   assert.doesNotMatch(user.content, /Virgo|Libra|Scorpio/);
 });
+
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+
+test('nextMonday and parseArgs', () => {
+  assert.equal(W.nextMonday('2026-09-21'), '2026-09-21');   // a Monday
+  assert.equal(W.nextMonday('2026-09-20'), '2026-09-21');   // a Sunday
+  assert.equal(W.nextMonday('2026-09-22'), '2026-09-28');   // a Tuesday
+  assert.equal(W.parseArgs([], '2026-09-19').week, '2026-09-21');
+  const o = W.parseArgs(['--week', '2026-11-02', '--force', '--out', 'x'], '2026-09-19');
+  assert.deepEqual([o.week, o.force, o.out, o.model], ['2026-11-02', true, 'x', 'muse-glimmer-30b-local']);
+  assert.throws(() => W.parseArgs(['--push']), /unknown argument/);
+});
+
+// A stand-in for Glimmer: reads the facts out of the request and answers with a block that the
+// validators accept. `fail` names blocks to answer badly ('Aries', 'overview', 'subjects').
+const FILLER = 'Keep the pace even, finish one thing before starting the next, and let the small jobs stay small. ';
+function fakeGlimmer({alias = 'muse-glimmer-30b-local', fail = [], calls = []} = {}) {
+  return async (url, init) => {
+    if (url.includes('/props')) return {ok: true, json: async () => ({model_alias: alias})};
+    const user = JSON.parse(init.body).messages.find(m => m.role === 'user').content;
+    const facts = JSON.parse(user.slice(user.indexOf('{'), user.lastIndexOf('}') + 1));
+    let label, content;
+    if (user.startsWith('Fact sheet for')) {
+      label = user.match(/^Fact sheet for (\w+)/)[1];
+      const day = facts.events[0] ? `On ${facts.events[0].weekday} the sky marks a turn. ` : '';
+      content = `The week asks for steady hands. The Sun spends the week in ${facts.placements[0].sector}, and the Moon is ${facts.moon} as it opens. ${FILLER.repeat(3)}\n\n${day}${FILLER.repeat(3)}Rest when the work is done.`;
+    } else if (user.startsWith('Week sheet')) {
+      label = 'overview';
+      content = `The week keeps an even keel. The Moon is ${facts.moon} as it opens. ${FILLER.repeat(3)}\n\n${facts.events.map(e => `On ${e.weekday} the ${e.body} ${e.what}.`).join(' ')} ${FILLER.repeat(3)}Rest when the work is done.`;
+    } else {
+      label = 'subjects';
+      content = JSON.stringify({subjects: ['A steady week with one clear turning point', 'Finish first, then begin: the week ahead', 'Your week: even pace and a weekend shift'],
+        preview: 'An even start, a turn at the weekend, and one thing worth finishing.'});
+    }
+    calls.push(label);
+    if (fail.includes(label)) content = 'It will be fine.';
+    return {ok: true, json: async () => ({choices: [{message: {content}}]})};
+  };
+}
+
+async function withFake(options, run) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-prose-')), original = globalThis.fetch;
+  try { globalThis.fetch = fakeGlimmer(options); return await run(dir); }
+  finally { globalThis.fetch = original; fs.rmSync(dir, {recursive: true}); }
+}
+const read = (dir, week) => JSON.parse(fs.readFileSync(path.join(dir, `${week}.json`), 'utf8'));
+
+test('the writer writes the contract file and returns 0', async () => {
+  await withFake({}, async dir => {
+    assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 0);
+    const f = read(dir, '2026-09-21');
+    assert.deepEqual([f.week, f.model], ['2026-09-21', 'muse-glimmer-30b-local']);
+    assert.equal(Object.keys(f.signs).length, 12);
+    assert.ok(f.signs.aries.includes('your daily-work-and-health sector'));
+    assert.ok(f.overview.includes('Full moon'));
+    assert.equal(f.subjects.length, 3);
+    assert.ok(f.preview.length >= 40);
+  });
+});
+
+test('a week with no events still writes twelve signs', async () => {
+  await withFake({}, async dir => {
+    assert.equal(await W.main(['--week', '2026-11-02', '--out', dir]), 0);
+    assert.equal(Object.keys(read(dir, '2026-11-02').signs).length, 12);
+  });
+});
+
+test('a block that fails three times is left out, and a re-run fills only the gaps', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-prose-')), original = globalThis.fetch;
+  try {
+    const first = [];
+    globalThis.fetch = fakeGlimmer({fail: ['Aries', 'subjects'], calls: first});
+    assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 0);   // 11 signs and the overview
+    let f = read(dir, '2026-09-21');
+    assert.equal('aries' in f.signs, false);
+    assert.deepEqual([f.subjects, f.preview], [[], '']);
+    assert.equal(first.filter(l => l === 'Aries').length, 3);
+    assert.equal(first.filter(l => l === 'subjects').length, 3);
+    const taurus = f.signs.taurus;
+
+    const second = [];
+    globalThis.fetch = fakeGlimmer({calls: second});
+    assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 0);
+    f = read(dir, '2026-09-21');
+    assert.deepEqual(second, ['Aries', 'subjects']);
+    assert.equal(f.signs.taurus, taurus);
+    assert.ok(f.signs.aries);
+    assert.equal(f.subjects.length, 3);
+  } finally { globalThis.fetch = original; fs.rmSync(dir, {recursive: true}); }
+});
+
+test('--force rewrites every block and drops the proof fields; a plain re-run keeps them', async () => {
+  await withFake({}, async dir => {
+    await W.main(['--week', '2026-09-21', '--out', dir]);
+    const file = path.join(dir, '2026-09-21.json');
+    fs.writeFileSync(file, JSON.stringify({...read(dir, '2026-09-21'), proof: {blocks: {}}, originals: {aries: 'x'}, rejected: {}}));
+    await W.main(['--week', '2026-09-21', '--out', dir]);
+    assert.deepEqual(read(dir, '2026-09-21').originals, {aries: 'x'});
+    await W.main(['--week', '2026-09-21', '--out', dir, '--force']);
+    assert.equal('proof' in read(dir, '2026-09-21'), false);
+    assert.equal('originals' in read(dir, '2026-09-21'), false);
+  });
+});
+
+test('exit codes: 1 for a non-Monday, 2 for the wrong model, 3 for a weak week', async () => {
+  await withFake({}, async dir => assert.equal(await W.main(['--week', '2026-09-22', '--out', dir]), 1));
+  await withFake({alias: 'qwen3.8-27b-local'}, async dir => {
+    assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 2);
+    assert.equal(fs.existsSync(path.join(dir, '2026-09-21.json')), false);
+  });
+  await withFake({fail: ['overview']}, async dir => {
+    assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 3);
+    assert.equal(read(dir, '2026-09-21').overview, '');
+  });
+  await withFake({fail: ['Aries', 'Taurus', 'Gemini']}, async dir => assert.equal(await W.main(['--week', '2026-09-21', '--out', dir]), 3));
+});

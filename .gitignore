@@ -55,6 +55,7 @@ output/imagegen/divination-v2/review/
 output/imagegen/*.png
 tmp/imagegen/
 output/daily-prose/
+output/weekly-prose/
 
 # Superpowers SDD scratch workspace (ledger, briefs, review packages)
 .superpowers/
