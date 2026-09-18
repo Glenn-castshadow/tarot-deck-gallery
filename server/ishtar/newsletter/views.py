@@ -1,5 +1,6 @@
 """Public newsletter endpoints preserving the contract of the retired server/newsletter.py."""
 import json
+import logging
 import re
 
 from django.conf import settings
@@ -9,7 +10,10 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from . import mailchimp
 from .models import Subscriber
+
+logger = logging.getLogger('newsletter')
 
 EMAIL = re.compile(r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)+\Z")
 TOKEN = re.compile(r'[A-Za-z0-9_-]{43}')
@@ -25,32 +29,59 @@ def clean_email(value):
     return value
 
 
-def subscribe_email(email):
+def safely(call, *args, **kwargs):
+    """Mailchimp must never fail a signup; sync_mailchimp repairs whatever this drops."""
+    try:
+        call(*args, **kwargs)
+    except Exception as error:
+        # The exception type only: SDK messages can carry the address.
+        logger.warning('mailchimp %s failed: %s', getattr(call, '__name__', 'call'), type(error).__name__)
+
+
+def clean_sign(value):
+    if value not in mailchimp.SIGNS:
+        raise ValueError('Choose one of the twelve signs.')
+    return value
+
+
+def subscribe_email(email, sun_sign=''):
     """Idempotent insert used by both the public endpoint and the account toggle."""
-    Subscriber.objects.get_or_create(email=email, defaults={
+    row, created = Subscriber.objects.get_or_create(email=email, defaults={
         'consent_at': timezone.now(),
         'consent_version': settings.NEWSLETTER_CONSENT_VERSION,
         'consent_text': settings.NEWSLETTER_CONSENT_TEXT,
+        'sun_sign': sun_sign,
     })
+    if not created and sun_sign and row.sun_sign != sun_sign:
+        row.sun_sign = sun_sign
+        row.save(update_fields=['sun_sign'])
+    safely(mailchimp.push, row, resubscribe=True)
+
+
+def unsubscribe_email(email):
+    if Subscriber.objects.filter(email=email).delete()[0]:
+        safely(mailchimp.remove, email)
 
 
 def subscribe(data):
-    if not isinstance(data, dict) or set(data) != {'email', 'consent', 'consentVersion'}:
-        raise ValueError('Please submit only an email and signup permission.')
+    if not isinstance(data, dict) or not {'email', 'consent', 'consentVersion'} <= set(data) <= {'email', 'consent', 'consentVersion', 'sunSign'}:
+        raise ValueError('Please submit only an email, signup permission and an optional sign.')
     email = clean_email(data['email'])
     if data['consent'] is not True or data['consentVersion'] != settings.NEWSLETTER_CONSENT_VERSION:
         raise ValueError('Please check the newsletter permission box.')
-    subscribe_email(email)
+    subscribe_email(email, clean_sign(data['sunSign']) if 'sunSign' in data else '')
     return {'ok': True}
 
 
 def unsubscribe(data):
     if isinstance(data, dict) and set(data) == {'email'}:
-        Subscriber.objects.filter(email=clean_email(data['email'])).delete()
+        unsubscribe_email(clean_email(data['email']))
         return {'ok': True}
     if not isinstance(data, dict) or set(data) != {'token'} or not isinstance(data['token'], str) or not TOKEN.fullmatch(data['token']):
         raise ValueError('Use the full unsubscribe link provided with your email.')
-    Subscriber.objects.filter(unsubscribe_token=data['token']).delete()
+    row = Subscriber.objects.filter(unsubscribe_token=data['token']).first()
+    if row:
+        unsubscribe_email(row.email)
     return {'ok': True}
 
 

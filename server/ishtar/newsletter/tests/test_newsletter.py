@@ -2,6 +2,7 @@ import io
 import sqlite3
 import tempfile
 from pathlib import Path
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
@@ -11,7 +12,7 @@ from newsletter.models import Subscriber
 from newsletter.views import MAX_BODY
 
 ORIGIN = 'https://ishtarinsights.com'
-PAYLOAD = {'email': 'Test@example.com', 'consent': True, 'consentVersion': '2026-09-09-v1'}
+PAYLOAD = {'email': 'Test@example.com', 'consent': True, 'consentVersion': '2026-09-18-v2'}
 
 
 @override_settings(NEWSLETTER_ORIGINS={ORIGIN})
@@ -27,7 +28,7 @@ class PublicNewsletterTests(TestCase):
         rows = list(Subscriber.objects.all())
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0].email, 'test@example.com')
-        self.assertEqual(rows[0].consent_version, '2026-09-09-v1')
+        self.assertEqual(rows[0].consent_version, '2026-09-18-v2')
         self.assertEqual(len(rows[0].unsubscribe_token), 43)
 
     def test_validation_matches_old_service(self):
@@ -114,3 +115,76 @@ class ImportExportTests(TestCase):
         call_command('export_subscribers', stdout=csv_out)
         self.assertIn('old@example.com', csv_out.getvalue())
         self.assertIn('https://ishtarinsights.com/unsubscribe.html#' + 'A' * 43, csv_out.getvalue())
+
+
+@override_settings(NEWSLETTER_ORIGINS={ORIGIN})
+class MailchimpHookTests(TestCase):
+    def post(self, path, body):
+        return self.client.post(path, body, content_type='application/json', HTTP_ORIGIN=ORIGIN)
+
+    def test_subscribe_stores_the_sign_and_pushes_with_resubscribe(self):
+        with mock.patch('newsletter.mailchimp.push') as push:
+            self.assertEqual(self.post('/api/newsletter/subscribe', dict(PAYLOAD, sunSign='leo')).status_code, 200)
+        row = Subscriber.objects.get(email='test@example.com')
+        self.assertEqual(row.sun_sign, 'leo')
+        push.assert_called_once_with(row, resubscribe=True)
+
+    def test_repeat_signup_updates_the_sign_but_a_blank_one_keeps_it(self):
+        with mock.patch('newsletter.mailchimp.push'):
+            self.post('/api/newsletter/subscribe', dict(PAYLOAD, sunSign='leo'))
+            self.post('/api/newsletter/subscribe', dict(PAYLOAD, sunSign='virgo'))
+            self.assertEqual(Subscriber.objects.get().sun_sign, 'virgo')
+            self.post('/api/newsletter/subscribe', PAYLOAD)
+            self.assertEqual(Subscriber.objects.get().sun_sign, 'virgo')
+
+    def test_a_sign_outside_the_twelve_is_rejected_and_nothing_is_stored(self):
+        with mock.patch('newsletter.mailchimp.push') as push:
+            for bad in ['Leo', 'ophiuchus', '', 5, None]:
+                self.assertEqual(self.post('/api/newsletter/subscribe', dict(PAYLOAD, sunSign=bad)).status_code, 400)
+        self.assertEqual(Subscriber.objects.count(), 0)
+        push.assert_not_called()
+
+    def test_signup_survives_a_mailchimp_failure_and_logs_no_address(self):
+        with mock.patch('newsletter.mailchimp.push', side_effect=RuntimeError('test@example.com down')), \
+                self.assertLogs('newsletter', level='WARNING') as logs:
+            self.assertEqual(self.post('/api/newsletter/subscribe', PAYLOAD).json(), {'ok': True})
+        self.assertTrue(Subscriber.objects.filter(email='test@example.com').exists())
+        self.assertNotIn('test@example.com', ''.join(logs.output))
+
+    def test_unsubscribe_by_email_and_by_token_both_remove_the_address(self):
+        for key in ('email', 'token'):
+            with mock.patch('newsletter.mailchimp.push'):
+                self.post('/api/newsletter/subscribe', PAYLOAD)
+            row = Subscriber.objects.get()
+            body = {'email': 'Test@example.com'} if key == 'email' else {'token': row.unsubscribe_token}
+            with mock.patch('newsletter.mailchimp.remove') as remove:
+                self.assertEqual(self.post('/api/newsletter/unsubscribe', body).status_code, 200)
+            remove.assert_called_once_with('test@example.com')
+            self.assertEqual(Subscriber.objects.count(), 0)
+
+    def test_unsubscribe_survives_a_mailchimp_failure(self):
+        with mock.patch('newsletter.mailchimp.push'):
+            self.post('/api/newsletter/subscribe', PAYLOAD)
+        with mock.patch('newsletter.mailchimp.remove', side_effect=RuntimeError('down')):
+            self.assertEqual(self.post('/api/newsletter/unsubscribe', {'email': 'test@example.com'}).json(), {'ok': True})
+        self.assertEqual(Subscriber.objects.count(), 0)
+
+    def test_an_unknown_token_makes_no_mailchimp_call(self):
+        with mock.patch('newsletter.mailchimp.remove') as remove:
+            self.assertEqual(self.post('/api/newsletter/unsubscribe', {'token': 'a' * 43}).status_code, 200)
+        remove.assert_not_called()
+
+    def test_account_toggle_passes_the_sign_and_removes_when_turned_off(self):
+        user = get_user_model().objects.create_user('reader@example.com')
+        self.client.force_login(user)
+        with mock.patch('newsletter.mailchimp.push') as push:
+            on = self.client.post('/api/account/newsletter/', {'subscribed': True, 'sunSign': 'pisces'}, content_type='application/json')
+        self.assertEqual(on.json(), {'ok': True, 'newsletter': True})
+        self.assertEqual(Subscriber.objects.get().sun_sign, 'pisces')
+        push.assert_called_once()
+        bad = self.client.post('/api/account/newsletter/', {'subscribed': True, 'sunSign': 'x'}, content_type='application/json')
+        self.assertEqual(bad.status_code, 400)
+        with mock.patch('newsletter.mailchimp.remove') as remove:
+            self.client.post('/api/account/newsletter/', {'subscribed': False}, content_type='application/json')
+        remove.assert_called_once_with('reader@example.com')
+        self.assertEqual(Subscriber.objects.count(), 0)

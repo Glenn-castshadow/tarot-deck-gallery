@@ -183,18 +183,22 @@ def birth_storage(request):
 
 
 from newsletter.models import Subscriber
-from newsletter.views import subscribe_email
+from newsletter.views import clean_sign, subscribe_email, unsubscribe_email
 
 
 @json_view(methods=('POST',))
 @auth_required
 def newsletter(request):
-    if set(request.json) != {'subscribed'} or not isinstance(request.json['subscribed'], bool):
-        return error('Send {"subscribed": true or false}.')
+    if not {'subscribed'} <= set(request.json) <= {'subscribed', 'sunSign'} or not isinstance(request.json['subscribed'], bool):
+        return error('Send {"subscribed": true or false} and an optional sunSign.')
+    try:
+        sign = clean_sign(request.json['sunSign']) if 'sunSign' in request.json else ''
+    except ValueError as problem:
+        return error(str(problem))
     if request.json['subscribed']:
-        subscribe_email(request.user.email)
+        subscribe_email(request.user.email, sign)
     else:
-        Subscriber.objects.filter(email=request.user.email).delete()
+        unsubscribe_email(request.user.email)
     return JsonResponse({'ok': True, 'newsletter': request.json['subscribed']})
 
 
