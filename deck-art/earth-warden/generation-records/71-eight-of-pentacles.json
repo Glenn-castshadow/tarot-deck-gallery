@@ -1,0 +1,22 @@
+{
+ "index": 71,
+ "name": "Eight of Pentacles",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 408,
+  "input_tokens_details": {
+   "image_tokens": 0,
+   "text_tokens": 408
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 1780
+ },
+ "made_at": "2026-09-19T08:16:03.157Z",
+ "prompt": "Use case: illustration-story. Asset: finished full-bleed portrait illustration for one card of the Earth Warden tarot deck. Style: luminous mythic fantasy painting, richly detailed and painterly, collectible quality. Ancient wild places lit from within: glowing moss and fungi, drifting fireflies and motes of light, shafts of light through old trees, soft aurora over stone. Palette: moss and fern green, deep loam brown, lichen grey, warm amber and antique gold, with pale luminous green-gold and moon-white accents; dark, rich and glowing overall. Every human figure is a woman: wardens of the land, of varied ages, builds and skin tones, dignified and capable, fully clothed in practical layered garments of wool, linen, leather and woven grasses with gold and stone ornaments. Faces are natural and expressive; hands are well formed with five fingers. Composition: one clear scene, the main figure or object large and central, readable at small size, the whole subject inside the frame with a little quiet space at every edge. When the scene gives an exact number of objects, show exactly that many, each one separate and easy to count. This is the complete artwork seen straight on, not a photograph of a card and not a mockup. No text, no letters, no numbers, no Roman numerals, no runes or writing of any kind, no labels, no watermark, no signature, no border, no frame, no card outline. In this deck a pentacle is a round disc of gold and carved stone, about the size of a plate, bearing a five-petalled flower carved in its face.\nCard: EIGHT OF PENTACLES.\nScene: A craftswoman sits at a workbench carving a round disc with hammer and chisel. Exactly six finished discs hang on a post beside her, one is on the bench being worked and one lies at her feet, eight in all. Diligence and mastery."
+}

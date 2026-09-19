@@ -70,3 +70,9 @@ server/ishtar/staticfiles/
 server/ishtar/*.sqlite3
 server/ishtar/*.sqlite3-*
 server/ishtar/.dev-secret-key
+deck-art/earth-warden/raw-fronts/
+deck-art/earth-warden/raw-backs/
+deck-art/earth-warden/print-ready/
+deck-art/earth-warden/contact-sheets/
+deck-art/ishtar-insights/raw-fronts/rejected/
+deck-art/earth-warden/raw-fronts/rejected/

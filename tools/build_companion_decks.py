@@ -16,9 +16,10 @@ PPI = 600
 W, H = round(76 / 25.4 * PPI), round(126 / 25.4 * PPI)
 BLEED = round(3 / 25.4 * PPI)
 FONT = "C:/Windows/Fonts/georgia.ttf"
-DECKS = {"light-minimal": ("Moebius-inspired", "light-minimal-deck", "#fff9eb", "#394e5a"),
-         "arts-and-crafts": ("Arts & Crafts", "arts-and-crafts-deck", "#e6d2a6", "#203c30"),
-         "expressive-figures": ("Francis Bacon-inspired", "expressive-figures-deck", "#080709", "#bbaa8b")}
+# The two decks named after artists were taken off the site on 2026-09-19; their sources stay under
+# deck-art/ but are no longer built, so a rebuild cannot put their web files back.
+DECKS = {"arts-and-crafts": ("Arts & Crafts", "arts-and-crafts-deck", "#e6d2a6", "#203c30"),
+         "earth-warden": ("Earth Warden", "earth-warden-deck", "#0e140d", "#d9c48a")}
 
 
 def layout(source, entry, background, ink):

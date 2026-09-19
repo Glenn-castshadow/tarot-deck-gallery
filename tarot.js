@@ -46,6 +46,7 @@
   const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
   const readingDecks = {
     ishtar: { name: "Ishtar Insights", assets: "/assets/ishtar-deck", description: "A luminous world of lotus symbolism, deep violet and holographic reflections.", back: "The shared mirrored lotus back for all 78 cards." },
+    "earth-warden": { name: "Earth Warden", assets: "/assets/earth-warden-deck", description: "Women who keep the wild places: spirit-lit forests, springs, high rock and harvest ground, painted in moss green, loam and antique gold.", back: "A great tree whose roots mirror its branches, ringed with ferns and antlers, made to read the same either way up." },
     "arts-and-crafts": { name: "Arts & Crafts", assets: "/assets/arts-and-crafts-deck", description: "Botanical woodcut scenes in forest green, madder red and ochre, with quiet references to craft, initiation and Masonic geometry.", back: "A botanical repeat with acacia, oak, drawing compasses and measured geometry, designed for both orientations." },
   };
   let activeReadingDeck = "ishtar";

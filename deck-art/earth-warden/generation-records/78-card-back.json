@@ -1,0 +1,22 @@
+{
+ "index": 78,
+ "name": "Card back",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 174,
+  "input_tokens_details": {
+   "image_tokens": 0,
+   "text_tokens": 174
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 1546
+ },
+ "made_at": "2026-09-19T08:00:42.036Z",
+ "prompt": "Use case: illustration-story. Asset: the ornamental card back for the Earth Warden tarot deck, a full-bleed portrait design seen straight on. Luminous mythic fantasy ornament, richly detailed, collectible quality. No text, no letters, no numbers, no runes or writing, no watermark, no signature, no human figures.\nDesign: A perfectly symmetrical, reversible design that reads the same upside down: at the centre a great tree whose spreading roots exactly mirror its spreading branches, enclosed in a ring of woven vines, ferns, antlers and small round seed-discs, with repeating fern and leaf ornament filling the whole field edge to edge. Fine luminous moss-green and antique-gold line work on a deep forest-black ground, scattered with tiny firefly lights. Mirror symmetry both left to right and top to bottom."
+}

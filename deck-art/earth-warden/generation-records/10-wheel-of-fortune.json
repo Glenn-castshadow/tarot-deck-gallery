@@ -1,0 +1,22 @@
+{
+ "index": 10,
+ "name": "Wheel of Fortune",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 373,
+  "input_tokens_details": {
+   "image_tokens": 0,
+   "text_tokens": 373
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 1745
+ },
+ "made_at": "2026-09-19T08:03:39.999Z",
+ "prompt": "Use case: illustration-story. Asset: finished full-bleed portrait illustration for one card of the Earth Warden tarot deck. Style: luminous mythic fantasy painting, richly detailed and painterly, collectible quality. Ancient wild places lit from within: glowing moss and fungi, drifting fireflies and motes of light, shafts of light through old trees, soft aurora over stone. Palette: moss and fern green, deep loam brown, lichen grey, warm amber and antique gold, with pale luminous green-gold and moon-white accents; dark, rich and glowing overall. Every human figure is a woman: wardens of the land, of varied ages, builds and skin tones, dignified and capable, fully clothed in practical layered garments of wool, linen, leather and woven grasses with gold and stone ornaments. Faces are natural and expressive; hands are well formed with five fingers. Composition: one clear scene, the main figure or object large and central, readable at small size, the whole subject inside the frame with a little quiet space at every edge. When the scene gives an exact number of objects, show exactly that many, each one separate and easy to count. This is the complete artwork seen straight on, not a photograph of a card and not a mockup. No text, no letters, no numbers, no Roman numerals, no runes or writing of any kind, no labels, no watermark, no signature, no border, no frame, no card outline.\nCard: WHEEL OF FORTUNE.\nScene: A great eight-spoked wheel of woven roots and stone stands upright and turning in a forest clearing. A hare climbs one side of the wheel, a serpent descends the other side, and an owl sits calmly on top. No human figures. Cycles and turning fortune."
+}
