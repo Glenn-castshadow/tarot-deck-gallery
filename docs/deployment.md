@@ -1,5 +1,48 @@
 # VPS deployment
 
+## 2026-09-18 Reference pages: 78 cards, 64 hexagrams, 12 signs, and a full sitemap
+
+Deployed `dbe3640`. **Static only.** How the pages are built and when to rebuild them: `docs/REFERENCE-PAGES.md`.
+
+**Release.** `/opt/tarot-game/releases/20260918-reference-pages-dbe3640`, a `cp -al` hardlink copy of
+`20260918-critique-fixes-2b2969b`, by `/tmp/ishtar-reference-pages.sh`. 169 files: 11 replaced (the eight
+pages' HTML, `site-shell.js`, `site-shell.css`, `sitemap.xml`), each `rm -f`'d before extraction, and 158 new
+(`reference-pages.css` and 157 `index.html` files under `tarot/cards/`, `divination/i-ching/`, `sky/signs/`).
+The file list came from `git diff --name-status 2b2969b HEAD`, excluding `docs`, `tools` and `tests`, which the
+release does not serve. The tar was built with `git -c core.autocrlf=false archive`, extracted locally and all
+169 files hashed against the commit's blobs before shipping; the 11 live files were confirmed byte-identical
+to `2b2969b` and the needle `masthead-title` absent from the live shell. Gated on `current`, on the previous
+release having no `tarot/cards`, on the sha256 of all 169 files, on a link count of 1 for the 11 replaced
+files, on the previous release still lacking `tarot/cards`, `reference-pages.css` and the needle afterwards,
+and on the new `sitemap.xml` holding 164 `<loc>` entries. Passed first time. Script written locally, shipped
+and run as three separate commands. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-critique-fixes-2b2969b /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (from the competitive brief: all content sat inside 8 pages and the sitemap listed 7 URLs).**
+`tools/build_reference_pages.cjs` generates one static page per tarot card, I Ching hexagram and zodiac sign,
+three indexes and the sitemap, from the site's own data modules; the output is committed and a drift test
+fails when it is stale. Each page has its own `<h1>` (the shared header's title is demoted through the new
+`SiteShell.render({heading: 'p'})`), canonical, Open Graph and Twitter tags, and `WebPage` + `BreadcrumbList`
+JSON-LD. The footer on every page links the three indexes. No new interpretive prose was written. Built by
+subagent-driven development from `docs/superpowers/plans/2026-09-18-reference-pages.md`; the whole-branch
+review changed a false "in a sentence" heading on the sign pages, shortened the sign and hexagram titles
+(longest 64 characters before the site name), and added a sweep for "undefined" in generated output and a
+check of `src` as well as `href`.
+
+**Cache keys.** `site-shell.js?v=10` and `site-shell.css?v=7` on all eight pages; `reference-pages.css?v=1`.
+
+**Validation.** All eight pages, `/api/health/`, the three indexes, five sample pages, `/sitemap.xml` (164
+`<loc>`), the three assets, one sign banner and one card image return 200; `/tarot/cards` without the slash
+returns 301 to the slashed URL. In a browser at ishtarinsights.com: The Star has one `<h1>`, its image, a
+working sign-in dialog, `twitter:card` `summary` and both JSON-LD types; hexagram 11 draws three broken lines
+over three solid, labelled "Hexagram 11: Earth over Heaven"; Aries shows "Aries in brief", its banner, and the
+button to `/sky/?sign=aries#daily-horoscope`. Suite 691 of 691. Not done: the schema.org validator, and
+submitting the sitemap in Google Search Console (needs Glenn's Google account).
+
+**Open.** The hexagram pages state 64 times that the line texts are original reflections and not a
+translation; Glenn to confirm `iching-lines.js` had an originality review. Sign pages carry about 100 words
+each until per-sign copy is written.
+
 ## 2026-09-18 First-visit critique fixes
 
 Deployed `2b2969b`. **Static only.**
