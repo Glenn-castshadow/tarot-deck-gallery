@@ -112,6 +112,63 @@ Mailchimp; piece 3 reads the file this produces.
   every check while wrong in 24 readings; read the probe file before loosening one.
 - **What the reader should be told** (piece 3): one model writes the newsletter and a second proofreads it.
 
+## Building and drafting an issue (piece 3, 2026-09-18)
+
+Spec: `docs/superpowers/specs/2026-09-18-newsletter-issue-and-campaign-design.md`. One campaign goes to the whole
+audience; it carries every sign's section inside Mailchimp's `*|IF:SIGN=aries|* … *|ELSEIF:…|* … *|ELSE:|* … *|END:IF|*`
+chain, so each reader sees their own, and a reader with no sign sees an invitation to choose one. **Nothing in
+this repo can send or schedule a campaign. Glenn sends, in Mailchimp.**
+
+The weekly routine, after the Sunday job has written and proofread `output/weekly-prose/<monday>.json`:
+
+1. `node tools/review_weekly_prose.cjs` lists any correction Qwen offered and the guards refused, as a
+   word-level before and after. Decide each: `--accept <key>` or `--reject <key>` (a key is a lowercase sign,
+   `overview` or `subjects`). An accepted text must still pass the block's validator (exit 7 if not); Glimmer's
+   text is kept under `originals`.
+2. `node tools/build_newsletter.cjs [--week YYYY-MM-DD] [--subject 1|2|3] [--allow-missing] [--push]` writes
+   `output/newsletter/<monday>/issue.html` (the campaign), `issue.json` (title, subject, preview, size, which
+   signs are in, the HTML's sha256) and `preview.html`. Open the preview: it shows every reader's version at
+   desktop and phone width, with the fallback fonts Gmail uses or the web fonts Apple Mail uses. Exit codes:
+   0 built; 1 no file, not a Monday, or the file is for another week; 4 the overview is not fit to send (no
+   issue); 5 a sign is not fit to send (repair the week, or pass `--allow-missing` and that sign's readers get
+   a short "no reading this week" panel, never the invitation); 6 the HTML is over 90 KB (Gmail clips at about
+   102 KB; a normal issue is about 40 KB). A block is fit only with a current `pass` whose `sha` matches its
+   text. `--push` copies the two files to `/var/lib/ishtar-app/newsletter/<monday>/` on the VPS.
+3. On the VPS, with the environment loaded as the `sync_mailchimp` cron line does:
+   `manage.py draft_campaign <monday> [--test you@example.com] [--replace]`. It checks the pushed HTML against
+   the manifest's sha256 before it calls Mailchimp; creates the draft titled `Ishtar Insights <monday>`, or
+   updates it with `--replace` (a campaign already sent is never touched); prints every problem in Mailchimp's
+   send checklist; prints the audience size against the free plan; with `--test` sends one test. If Mailchimp
+   rejects something it prints Mailchimp's own words; if that happens after the draft was created, run again
+   with `--replace`.
+4. In Mailchimp, preview the draft **with live merge data** as a real subscriber of each sign you care about,
+   then send.
+
+What a test send can and cannot show: Mailchimp does not fill merge fields in a test, so **every test shows the
+no-sign version**, whoever receives it. A test proves layout, images, dark mode and delivery. The sign branches
+are proved by the in-app preview with live merge data, and by the send itself. Each test also costs one of the
+month's sends (12 tests per campaign and 24 a day on the free plan).
+
+Before a real send, check in Mailchimp that every member who chose a sign has `SIGN` filled in: a blank `SIGN`
+shows the "Tell us your sign" invitation. Members the site synced always have it (the push skips Mailchimp's
+merge validation for exactly this reason); a member added by hand in Mailchimp will not.
+
+The free plan is 250 contacts and **500 sends a month**. A weekly issue is about 4.35 sends per subscriber per
+month, so the free plan carries this newsletter to about **115 subscribers**; `draft_campaign` warns from 100.
+
+The untrusted-text rule: everything Glimmer writes is escaped for HTML **and** for Mailchimp's template language
+(`|` becomes `&#124;` in the email and is removed from the plain-text subject and preview), because a reading
+containing `*|END:IF|*` would otherwise close the chain and show every reader every sign.
+
+Images live under `assets/newsletter/` on the site and the email hot-links them: `masthead.jpg`,
+`moon-arc.jpg`, `signs/<sign>.jpg` (1200×520, shown at 600×260) and `glyphs/<sign>.png`. They are JPG and PNG
+because Outlook on Windows shows neither WebP nor CSS background images. To re-roll a banner:
+`node tools/make_sign_art.cjs <sign> --force` (needs `OPENAI_API_KEY`; about one image's cost), then
+`node tools/compose_sign_banners.cjs <sign>`, look at it, commit, and make a static release. Each banner carries
+its sign's **true constellation**, drawn from `tools/data/zodiac-figures.json` (derived from d3-celestial,
+BSD-3-Clause; rebuild with `tools/build_zodiac_figures.cjs` from the two source files kept, untracked, in
+`output/imagegen/newsletter/`). Masters stay local; `prompts.json` is tracked.
+
 ## Private export
 
 From an authorized shell, stream CSV over SSH to a private local destination:
