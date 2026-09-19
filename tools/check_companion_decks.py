@@ -27,7 +27,8 @@ def main():
             with Image.open(raw) as im:
                 im.load()
                 assert im.width >= 950 and im.height >= 1500, f"Low source resolution: {raw}"
-                assert .58 <= im.width / im.height <= .62, f"Unexpected source proportions: {raw}"
+                # Older decks came from the built-in tool at about 0.60; API decks are 1024x1536, 0.667.
+                assert .58 <= im.width / im.height <= .68, f"Unexpected source proportions: {raw}"
                 assert (im.width, im.height) == (int(row["native_width"]), int(row["native_height"]))
             assert row["name"] == entry["name"]
             with Image.open(base / row["print_file"]) as im:
