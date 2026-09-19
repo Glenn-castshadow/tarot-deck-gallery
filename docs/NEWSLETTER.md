@@ -69,6 +69,49 @@ Original notes (2026-09-09):
   importing a list so previous removals are respected; after migration sync removals with provider.
 - Do not create public exports or put subscriber data in Git/Honcho/logs.
 
+## Weekly reading (piece 2, 2026-09-18)
+
+Spec: `docs/superpowers/specs/2026-09-18-newsletter-weekly-reading-design.md`. Measurements:
+`docs/superpowers/plans/2026-09-18-newsletter-weekly-reading-probe.md`. Nothing here sends email or calls
+Mailchimp; piece 3 reads the file this produces.
+
+- **Facts.** `weekSheet(monday)` in `daily-horoscope-engine.js`: Monday 00:00 UTC to the next Monday. Headline
+  events only (lunar quarters, planets changing sign, stations, eclipses) plus an always-present backdrop: the
+  Moon waxing or waning, and where the Sun, Mercury, Venus, Mars and a Jupiter or Saturn ruler are as the week
+  opens. A placement whose planet changes sign that week carries `until: <weekday>`.
+- **Writer.** `node tools/write_weekly_prose.cjs [--week YYYY-MM-DD] [--force]`, only while llama.cpp serves
+  `muse-glimmer-30b-local`. Twelve sign readings (two paragraphs, 150 to 200 words), one overview, three
+  subject lines and a preview. Three attempts a block; a block that fails is left out; a re-run fills only what
+  is missing; `--force` rewrites everything and drops the proof. Exit 0 = ten or more signs and the overview,
+  1 = not a Monday, 2 = wrong model loaded, 3 = a weak week.
+- **Proofreader.** `node tools/proof_weekly_prose.cjs [--week YYYY-MM-DD]`, only while llama.cpp serves
+  `qwen3.8-27b-local`. Judges each block against the facts it was written from. A fail moves the text to
+  `rejected` and out of the issue. A pass may come with a correction, which is kept only if it passes the
+  block's validator, leaves every fact word (weekdays, planets, signs, sectors, phase and direction words,
+  numbers) in place and in order, and changes at most 8% of the words; the writer's text is then kept under
+  `originals`. Same exit codes, counting blocks that hold a current pass.
+- **Both default `--week` to the next Monday on or after today (UTC)**, so on a Sunday they agree.
+- **File.** `output/weekly-prose/<monday>.json` (git-ignored):
+  `{week, generated, model, overview, signs: {aries: ...}, subjects: [3], preview, proof: {model, checked,
+  blocks: {<key>: {verdict, reason, edited, sha}}}, originals, rejected}`. Keys are the lowercase signs,
+  `overview` and `subjects`. **A block is fit to send only when its verdict is `pass` and its `sha` equals the
+  sha256 of the block's current text** (for `subjects`: of `JSON.stringify({subjects, preview})`). Piece 3 must
+  treat anything else as missing: a missing sign gets the overview only, a missing overview means no issue is
+  drafted, missing subjects mean a plain dated subject.
+- **Schedule.** Task `Ishtar-Weekly-Prose`, Sundays 04:30 local, after the nightly daily run. `wscript.exe`
+  runs `C:\Users\glenn\Scripts\weekly-prose-hidden.vbs`, which runs `weekly-prose.ps1` hidden: check `N:` and
+  `V:`, load Glimmer, write, load Qwen, proofread, and leave Qwen loaded whatever happened. Log:
+  `C:\Users\glenn\Scripts\weekly-prose.log`. The task's result is the proofreader's exit code.
+- **Repairing a weak week by hand.** Load Glimmer
+  (`& "$env:LOCALAPPDATA\hermes\llama-server\start.ps1" -Quant glimmer -Force -WaitForReady`), run the writer
+  (it fills only the gaps, including blocks the proofreader rejected), load Qwen (`-Quant iq3s`), run the
+  proofreader (it judges only text it has not judged). Read `rejected` first: the reason names the sentence.
+- **Measured 2026-09-18.** Writer: 39 of 42 blocks pass the code checks first time, 42 of 42 written, five to
+  eight minutes a week. Proofreader: 6 of 6 seeded errors caught, 12 of 12 readings with a real error caught,
+  0 of 49 clean blocks failed, six to eight minutes a week. The code checks exist because the first run passed
+  every check while wrong in 24 readings; read the probe file before loosening one.
+- **What the reader should be told** (piece 3): one model writes the newsletter and a second proofreads it.
+
 ## Private export
 
 From an authorized shell, stream CSV over SSH to a private local destination:

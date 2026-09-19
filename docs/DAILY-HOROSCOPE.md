@@ -66,4 +66,6 @@ copy, not positions. The disclosure text in "How your daily reading is made" tel
 paragraph is written by a language model running on our own hardware, and that the shorter
 template reading appears on days none is available.
 
+The forbidden-phrase, future-tense, entity and typography checks live in `commonProblems`, which the weekly newsletter tools share (docs/NEWSLETTER.md, "Weekly reading"); since 2026-09-18 it also rejects `shall`, `won't`, any `...'ll` contraction and a spaced en dash.
+
 Validation: `node --test tests/daily-prose.test.cjs tests/daily-horoscope.test.cjs`.

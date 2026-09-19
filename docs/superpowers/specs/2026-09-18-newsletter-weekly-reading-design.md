@@ -283,6 +283,15 @@ plan, unless marked otherwise.
 6. **A quiet week is said once**, and the rest of the paragraph goes to what a steady week is good for.
 7. **The subject-line example rotates** across three sets by week number. Reason: the model returned the
    example's lines with the nouns swapped.
+8. **The fact-word guard compares order, not counts** (supersedes the wording of amendment 2). Swapping
+   Thursday with Sunday keeps every count and moves an event two days; the ordered sequence of fact words
+   must be identical before and after a correction.
+9. **Only Monday and the sheet's own weekdays may be named**, in a sign reading, the overview, a subject line
+   or the preview (`strayWeekday`): an event's day, the day a placement ends, or Monday. Reason: three probe
+   readings set a deadline "before Wednesday" in weeks where nothing happens on a Wednesday, and Qwen passed
+   them.
+10. **The sign example states no count of days.** Its second paragraph opened "Two days matter most.", and five
+    readings copied that into a week with three marked days.
 
 Known and accepted: planet and sign names are matched with their capital letter only (a case-insensitive
 match would reject ordinary English such as "sit in the sun"); Qwen's fact check is the second net.
