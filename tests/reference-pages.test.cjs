@@ -25,7 +25,9 @@ test('a rendered page is complete, static and carries one h1', () => {
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1, 'exactly one h1');
   assert.match(html, /<link rel="canonical" href="https:\/\/ishtarinsights\.com\/tarot\/cards\/the-star\/">/);
   assert.match(html, /<meta name="description" content="A &quot;quoted&quot; description &amp; more">/);
-  assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
+  assert.match(html, /<meta name="twitter:card" content="summary">/);
+  assert.match(html, /<meta property="og:site_name" content="Ishtar Insights">/);
+  assert.match(html, /<meta property="og:image:width" content="360">/);
   assert.match(html, /<p class="masthead-title">Tarot<\/p>/);
   assert.match(html, /aria-current="page"/, 'the section is marked in the nav');
   assert.match(html, /<dialog id="account-dialog"/);
@@ -38,6 +40,12 @@ test('a rendered page is complete, static and carries one h1', () => {
   assert.equal(ld['@graph'][1]['@type'], 'BreadcrumbList');
   assert.equal(ld['@graph'][1].itemListElement.length, 3);
   assert.doesNotMatch(html, /gtag|googletagmanager|plausible|adsbygoogle/);
+
+  const noImage = B.renderPage({url: '/divination/i-ching/', section: 'divination', title: 'I Ching hexagrams',
+    description: 'All 64 I Ching hexagrams.', image: null,
+    crumbs: [{name: 'Divination', url: '/divination/'}, {name: 'I Ching hexagrams', url: '/divination/i-ching/'}],
+    body: '<h1>I Ching hexagrams</h1>'});
+  assert.match(noImage, /<meta name="twitter:card" content="summary_large_image">/);
 });
 
 test('78 card pages and their index, each with the site\'s own text', () => {
@@ -84,6 +92,7 @@ test('64 hexagram pages and their index, lines drawn bottom first', () => {
   const figure = tai.html.match(/<div class="ref-hexagram"[^>]*>([\s\S]*?)<\/div>/)[1];
   assert.deepEqual(figure.match(/<i[^>]*>/g).map(tag => tag.includes('is-broken')), [true, true, true, false, false, false]);
   assert.match(tai.html, /Heaven below, Earth above/);
+  assert.match(tai.html, /aria-label="Hexagram 11: Earth over Heaven"/);
   assert.match(pages[0].html, /href="\/divination\/i-ching\/hexagram-64\/"/);
 });
 
@@ -96,6 +105,14 @@ test('every hexagram page has one h1 and a unique title', () => {
   }
 });
 
+test('every page title fits a search result once the site suffix is removed', () => {
+  for (const {file, html} of B.allFiles()) {
+    if (file === 'sitemap.xml') continue;
+    const title = html.match(/<title>(.*?)<\/title>/)[1].replace(/ · Ishtar Insights$/, '');
+    assert.ok(title.length <= 65, `${file}: ${title.length} (${title})`);
+  }
+});
+
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -105,6 +122,8 @@ test('12 sign pages with date ranges that meet end to end', () => {
   const aries = pages.find(p => p.url === '/sky/signs/aries/');
   assert.match(aries.html, /<h1><span aria-hidden="true">♈<\/span> Aries<\/h1>/);
   assert.match(aries.html, /March 21 to April 19/);
+  assert.match(aries.html, /<h2>Aries in brief<\/h2>/);
+  assert.doesNotMatch(aries.html, /in a sentence/);
   assert.match(aries.html, /href="\/sky\/\?sign=aries#daily-horoscope"/);
   assert.match(aries.html, /href="\/tarot\/cards\/the-emperor\/"/, 'Aries is the Emperor in the Golden Dawn attributions');
   const capricorn = pages.find(p => p.url === '/sky/signs/capricorn/');
@@ -124,7 +143,8 @@ test('every internal link on a generated page resolves to a file in the repo', (
   const generated = new Set(B.allFiles().map(f => f.file));
   for (const {file, html} of B.allFiles()) {
     if (file === 'sitemap.xml') continue;
-    for (const match of html.matchAll(/href="(\/[^"#?]*)/g)) {
+    assert.doesNotMatch(html, /undefined|NaN|\[object Object\]/, file);
+    for (const match of html.matchAll(/(?:href|src)="(\/[^"#?]*)/g)) {
       const target = match[1].endsWith('/') ? match[1].slice(1) + 'index.html' : match[1].slice(1);
       assert.ok(generated.has(target) || fs.existsSync(path.join(B.ROOT, target)), `${file} links to missing ${match[1]}`);
     }

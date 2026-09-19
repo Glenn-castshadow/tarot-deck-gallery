@@ -41,8 +41,18 @@ function clip(text, max = 155) {
 // way tests/tarot-reference.test.cjs and tests/tarot-readings.test.cjs already do.
 function catalogue() {
   const source = read('tarot.js');
+  if (source.indexOf('const suitProfiles') === -1) {
+    throw new Error("tarot.js no longer declares 'const suitProfiles'; catalogue() cuts the card list out from there");
+  }
+  if (!source.includes('const readingDecks =')) {
+    throw new Error("tarot.js no longer declares 'const readingDecks ='; catalogue() cuts the card list out up to there");
+  }
   const slice = source.slice(source.indexOf('const suitProfiles')).split('const readingDecks =')[0];
-  return vm.runInNewContext(slice + '\ntarotCards', {TarotReadings, majorArcana: BirthLore.majorArcana});
+  const cards = vm.runInNewContext(slice + '\ntarotCards', {TarotReadings, majorArcana: BirthLore.majorArcana});
+  if (!Array.isArray(cards) || cards.length !== 78) {
+    throw new Error(`catalogue() evaluated to ${Array.isArray(cards) ? cards.length + ' cards' : typeof cards}, expected an array of 78`);
+  }
+  return cards;
 }
 
 // The account dialog and its four scripts, lifted from a hand-written page so the cache keys
@@ -84,6 +94,7 @@ function renderPage({url, section, title, description, image, crumbs, body}) {
   const chrome = accountChrome();
   const fullTitle = `${title} · Ishtar Insights`;
   const ogImage = SITE + (image ? image.src : '/assets/celestial-hero.webp');
+  const twitterCard = image && image.height > image.width ? 'summary' : 'summary_large_image';
   const trail = crumbs.map((crumb, i) => i === crumbs.length - 1
     ? `<span aria-current="page">${esc(crumb.name)}</span>`
     : `<a href="${crumb.url}">${esc(crumb.name)}</a>`).join(' <span aria-hidden="true">›</span> ');
@@ -96,11 +107,14 @@ function renderPage({url, section, title, description, image, crumbs, body}) {
     <title>${esc(fullTitle)}</title>
     <meta name="description" content="${esc(description)}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ishtar Insights">
     <meta property="og:title" content="${esc(fullTitle)}">
     <meta property="og:description" content="${esc(description)}">
-    <meta property="og:image" content="${ogImage}">
+    <meta property="og:image" content="${ogImage}">${image ? `
+    <meta property="og:image:width" content="${image.width}">
+    <meta property="og:image:height" content="${image.height}">` : ''}
     <meta property="og:url" content="${SITE + url}">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="${twitterCard}">
     <link rel="canonical" href="${SITE + url}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -191,7 +205,7 @@ function hexagramPages() {
       `<h3>Line ${k + 1} · ${esc(linePositions[k].title)}</h3><p>${esc(text)}</p>`).join('');
     const body = `<header><p class="ref-kicker">I Ching · ${esc(hex.keyword)}</p><h1>Hexagram ${hex.number}: ${esc(hex.name)} <span lang="zh">${esc(hex.character)}</span></h1><p class="ref-keywords">${esc(hex.gloss)}</p></header>
         <div class="ref-layout">
-          <figure><div class="ref-hexagram" role="img" aria-label="${esc(hex.gloss)}">${drawn}</div></figure>
+          <figure><div class="ref-hexagram" role="img" aria-label="${esc(`Hexagram ${hex.number}: ${upper.image} over ${lower.image}`)}">${drawn}</div></figure>
           <div>
             <dl class="ref-facts"><div><dt>Trigrams</dt><dd>${esc(lower.image)} below, ${esc(upper.image)} above</dd></div><div><dt>Keyword</dt><dd>${esc(hex.keyword)}</dd></div></dl>
             <section><h2>What hexagram ${hex.number} means</h2><p>${esc(hex.meaning)}</p></section>
@@ -202,7 +216,7 @@ function hexagramPages() {
         <p class="ref-cta"><a class="ref-button" href="/divination/">Cast a hexagram</a></p>
         ${pager(near(i - 1), near(i + 1))}`;
     return {file: `divination/i-ching/hexagram-${hex.number}/index.html`, url: hexagramUrl(hex.number), html: renderPage({
-      url: hexagramUrl(hex.number), section: 'divination', title: `I Ching hexagram ${hex.number}, ${hex.name} (${hex.keyword}): meaning and lines`,
+      url: hexagramUrl(hex.number), section: 'divination', title: `Hexagram ${hex.number} ${hex.name} (${hex.keyword}): I Ching meaning and lines`,
       description: clip(hex.meaning), image: null, crumbs: [...crumbsBase, {name: label(hex), url: hexagramUrl(hex.number)}], body})};
   });
   const indexBody = `<header><p class="ref-kicker">64 hexagrams</p><h1>I Ching hexagrams</h1><p class="ref-keywords">Each hexagram on its own page, with its trigrams and a reflection on every line.</p></header>
@@ -237,12 +251,12 @@ function signPages() {
     const body = `<header><p class="ref-kicker">${esc(sign.element)} · ${esc(sign.modality)}</p><h1><span aria-hidden="true">${sign.symbol}</span> ${esc(sign.name)}</h1><p class="ref-keywords">${esc(range(i))}</p></header>
         <figure class="ref-banner"><img src="/assets/newsletter/signs/${slug}.jpg" width="1200" height="520" alt="${esc(sign.name)}, illustrated"></figure>
         <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
-        <section><h2>${esc(sign.name)} in a sentence</h2><p>${esc(sign.horoscope)}</p></section>
+        <section><h2>${esc(sign.name)} in brief</h2><p>${esc(sign.horoscope)}</p></section>
         ${card >= 0 ? `<section><h2>${esc(sign.name)} in the tarot</h2><p>In the Golden Dawn attributions ${esc(sign.name)} belongs to <a href="${cardUrl(card)}">${esc(TarotReference.name(card))}</a>.</p></section>` : ''}
         <p class="ref-cta"><a class="ref-button" href="/sky/?sign=${slug}#daily-horoscope">Read today's ${esc(sign.name)} horoscope</a><a href="/charts/#birthday-room">Find your rising sign with a birth chart</a></p>
         ${pager(near(i - 1), near(i + 1))}`;
     return {file: `sky/signs/${slug}/index.html`, url: url(sign), html: renderPage({url: url(sign), section: 'sky',
-      title: `${sign.name} (${range(i)}): dates, element, ruler and today's horoscope`,
+      title: `${sign.name} zodiac sign: dates, element and ruler`,
       description: clip(`${sign.name}, ${range(i)}. ${sign.element} sign, ${sign.modality.toLowerCase()}, ruled by ${sign.ruler}. ${sign.horoscope}`),
       image: {src: `/assets/newsletter/signs/${slug}.jpg`, width: 1200, height: 520}, crumbs: [...crumbsBase, {name: sign.name, url: url(sign)}], body})};
   });

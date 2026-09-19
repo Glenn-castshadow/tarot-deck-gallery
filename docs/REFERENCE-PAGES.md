@@ -49,6 +49,8 @@ and commit the result:
   this page (`accountChrome()` and `stylesheetLinks()` in the tool), so its cache keys
   cannot drift from what the rest of the site serves. Bumping any of those three `?v=`
   keys needs a rebuild too.
+- `reference-pages.css`: editing it means bumping the hard-coded `?v=1` in
+  `stylesheetLinks()` and rebuilding all 157 pages.
 
 ## `LASTMOD`
 
@@ -63,8 +65,14 @@ Every card page carries "Attributions follow the Golden Dawn with Waite's number
 hexagram page carries "A changing line is read on its own. These are original
 reflections written for this site, not a translation." (written once in
 `hexagramPages()`, ahead of the six lines). Both are literal strings in the tool, not
-data pulled from a module. The tool writes no other interpretive prose itself; every
-other sentence on every page comes from the data modules listed above.
+data pulled from a module.
+
+Beyond those two sentences, the only other fixed, templated text the tool writes is:
+the sign pages' sentence "In the Golden Dawn attributions \<Sign\> belongs to
+\<Card\>." (a templated fact from `TarotReference.attribution`), the three index
+pages' ledes and descriptions, and the fixed section labels (e.g. "Upright",
+"Reversed", "\<Sign\> in brief"). None of it interprets a card, hexagram or sign;
+every interpretive sentence on every page comes from the data modules listed above.
 
 ## Known limit: sign pages are thin
 
