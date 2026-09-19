@@ -174,5 +174,45 @@ function cardPages() {
   return [index, ...pages];
 }
 
+const hexagramUrl = number => `/divination/i-ching/hexagram-${number}/`;
+
+function hexagramPages() {
+  const {hexagrams, trigrams, linePositions} = DivinationData;
+  const byNumber = [...hexagrams].sort((a, b) => a.number - b.number);
+  const trigram = symbol => trigrams.find(t => t.symbol === symbol);
+  const crumbsBase = [{name: 'Divination', url: '/divination/'}, {name: 'I Ching hexagrams', url: '/divination/i-ching/'}];
+  const label = hex => `Hexagram ${hex.number}: ${hex.name}`;
+  const pages = byNumber.map((hex, i) => {
+    // symbol is bottom line first; a figure is read, and so drawn, from the top down.
+    const drawn = [...hex.symbol].reverse().map(bit => `<i${bit === '1' ? '' : ' class="is-broken"'}></i>`).join('');
+    const lower = trigram(hex.symbol.slice(0, 3)), upper = trigram(hex.symbol.slice(3));
+    const near = j => (byNumber[j] ? {url: hexagramUrl(byNumber[j].number), name: label(byNumber[j])} : null);
+    const lines = IChingLines.lines[hex.number].map((text, k) =>
+      `<h3>Line ${k + 1} · ${esc(linePositions[k].title)}</h3><p>${esc(text)}</p>`).join('');
+    const body = `<header><p class="ref-kicker">I Ching · ${esc(hex.keyword)}</p><h1>Hexagram ${hex.number}: ${esc(hex.name)} <span lang="zh">${esc(hex.character)}</span></h1><p class="ref-keywords">${esc(hex.gloss)}</p></header>
+        <div class="ref-layout">
+          <figure><div class="ref-hexagram" role="img" aria-label="${esc(hex.gloss)}">${drawn}</div></figure>
+          <div>
+            <dl class="ref-facts"><div><dt>Trigrams</dt><dd>${esc(lower.image)} below, ${esc(upper.image)} above</dd></div><div><dt>Keyword</dt><dd>${esc(hex.keyword)}</dd></div></dl>
+            <section><h2>What hexagram ${hex.number} means</h2><p>${esc(hex.meaning)}</p></section>
+            <section><h2>A question to sit with</h2><p>${esc(hex.prompt)}</p></section>
+            <section><h2>The six lines, bottom to top</h2><p>A changing line is read on its own. These are original reflections written for this site, not a translation.</p>${lines}</section>
+          </div>
+        </div>
+        <p class="ref-cta"><a class="ref-button" href="/divination/">Cast a hexagram</a></p>
+        ${pager(near(i - 1), near(i + 1))}`;
+    return {file: `divination/i-ching/hexagram-${hex.number}/index.html`, url: hexagramUrl(hex.number), html: renderPage({
+      url: hexagramUrl(hex.number), section: 'divination', title: `I Ching hexagram ${hex.number}, ${hex.name} (${hex.keyword}): meaning and lines`,
+      description: clip(hex.meaning), image: null, crumbs: [...crumbsBase, {name: label(hex), url: hexagramUrl(hex.number)}], body})};
+  });
+  const indexBody = `<header><p class="ref-kicker">64 hexagrams</p><h1>I Ching hexagrams</h1><p class="ref-keywords">Each hexagram on its own page, with its trigrams and a reflection on every line.</p></header>
+        <ul class="ref-index">${byNumber.map(hex => `<li><a href="${hexagramUrl(hex.number)}">${hex.number}. ${esc(hex.name)} <span lang="zh">${esc(hex.character)}</span></a><small>${esc(hex.keyword)}</small></li>`).join('')}</ul>
+        <p class="ref-cta"><a class="ref-button" href="/divination/">Cast a hexagram</a></p>`;
+  const index = {file: 'divination/i-ching/index.html', url: '/divination/i-ching/', html: renderPage({url: '/divination/i-ching/', section: 'divination',
+    title: 'I Ching hexagrams: all 64, with every line', description: 'All 64 I Ching hexagrams, each on its own page with its trigrams, a plain-language meaning and an original reflection on each of the six lines.',
+    image: null, crumbs: crumbsBase, body: indexBody})};
+  return [index, ...pages];
+}
+
 module.exports = {SITE, LASTMOD, ROOT, esc, clip, read, catalogue, renderPage,
-  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages};
+  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages, hexagramUrl, hexagramPages};

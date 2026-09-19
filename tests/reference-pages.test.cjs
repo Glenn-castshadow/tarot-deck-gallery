@@ -71,3 +71,27 @@ test('every card page has one h1, a unique title and a description of sane lengt
     assert.ok(description.length >= 50 && description.length <= 170, `${page.file}: ${description.length}`);
   }
 });
+
+test('64 hexagram pages and their index, lines drawn bottom first', () => {
+  const pages = B.hexagramPages();
+  assert.equal(pages.length, 65);
+  const tai = pages.find(p => p.url === '/divination/i-ching/hexagram-11/');
+  const hex = B.DivinationData.hexagrams.find(h => h.number === 11);
+  assert.match(tai.html, /<h1>Hexagram 11: Tài <span lang="zh">泰<\/span><\/h1>/);
+  assert.ok(tai.html.includes(B.esc(hex.meaning)));
+  for (const line of B.IChingLines.lines[11]) assert.ok(tai.html.includes(B.esc(line)), 'a line text is missing');
+  // 111000 is Heaven below Earth. The figure is drawn top line first, so the three broken lines come first.
+  const figure = tai.html.match(/<div class="ref-hexagram"[^>]*>([\s\S]*?)<\/div>/)[1];
+  assert.deepEqual(figure.match(/<i[^>]*>/g).map(tag => tag.includes('is-broken')), [true, true, true, false, false, false]);
+  assert.match(tai.html, /Heaven below, Earth above/);
+  assert.match(pages[0].html, /href="\/divination\/i-ching\/hexagram-64\/"/);
+});
+
+test('every hexagram page has one h1 and a unique title', () => {
+  const titles = new Set();
+  for (const page of B.hexagramPages()) {
+    assert.equal((page.html.match(/<h1[ >]/g) || []).length, 1, page.file);
+    const title = page.html.match(/<title>(.*?)<\/title>/)[1];
+    assert.ok(!titles.has(title), title); titles.add(title);
+  }
+});
