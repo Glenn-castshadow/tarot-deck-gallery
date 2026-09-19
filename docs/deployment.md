@@ -1,5 +1,56 @@
 # VPS deployment
 
+## 2026-09-19 About and privacy pages, footer links, and three corrections
+
+Deployed `f02a27e`. **Static only.**
+
+**Release.** `/opt/tarot-game/releases/20260919-trust-pages-f02a27e`, a `cp -al` hardlink copy of
+`20260918-reference-pages-dbe3640`, by `/tmp/ishtar-trust-pages.sh`. 174 files: 172 replaced (the 157
+generated reference pages, whose static footer changed; the eight pages' HTML; `site-shell.js`,
+`storage-preferences.js`, `styles.css`, `sitemap.xml`; `cookie-policy.html`, `newsletter-privacy.html`,
+`unsubscribe.html`), each `rm -f`'d before extraction, and 2 new (`about.html`, `privacy.html`). File list from
+`git diff --name-status dbe3640 HEAD` without `docs`, `tools`, `tests`. Tar built with
+`git -c core.autocrlf=false archive`, extracted locally and all 174 files hashed against the commit's blobs;
+the 172 live files confirmed byte-identical to `dbe3640`; needles `about.html` (in `site-shell.js`) and
+`ishtar-sun-sign-v1` (in `storage-preferences.js`) confirmed absent from the live release. Gated on `current`,
+on the previous release having no `about.html`, on the sha256 of all 174 files, on a link count of 1 for every
+shipped file, on the previous release still lacking both new files and both needles, and on the sitemap
+holding 166 `<loc>` entries. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-reference-pages-dbe3640 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (competitive brief, finding 3: no about page, no named person, no general privacy policy).**
+- `about.html`, in Genevieve's first person (Glenn: "gen is ishtar"): what the site is, how it is calculated,
+  written and drawn, what it is for, contact. Candid that the daily horoscope and newsletter are model-written
+  on our own hardware and that the reading decks and divination art are AI-made (Glenn chose "fully candid").
+- `privacy.html`, written from an inventory of the backend with every claim traced to code: what the server
+  stores and only when asked, Resend / Mailchimp / Google Fonts as the whole third-party list, IPs in rate
+  limits only, Bluehost VPS in the United States, nightly backups with fourteen kept, deletion routes. Claude
+  added three commitments Glenn accepted by proceeding: not directed to children under 13, data requests
+  honoured wherever the visitor lives, and notice on the site before a change affecting saved data. Not
+  reviewed by a lawyer.
+- Footer on every page: About · Contact · Privacy. Both pages are in the sitemap (166 URLs).
+- Declining browser storage now also clears `ishtar-sun-sign-v1` (added 2026-09-18 and missed by
+  `clearSaved()`); test written first and seen to fail.
+- `cookie-policy.html` said birth details and names are never sent to the server, untrue since account chart
+  saving; corrected, Sun sign listed, linked to the privacy page.
+- Policy-page headings were white with a shadow on the paper background (the global hero `h1` style), live on
+  the cookie and newsletter-privacy pages since they were written; fixed in `styles.css`.
+
+**Cache keys.** `site-shell.js?v=11` and `storage-preferences.js?v=sun-sign-1` on all eight pages and, through
+the generator, on the 157 reference pages; `styles.css?v=policy-2` on the five policy pages only, since no
+other page uses `.policy-page`.
+
+**Validation.** All eight pages, `/api/health/`, the five policy pages, three reference pages, the sitemap
+(166 `<loc>`, `about.html` present) and the three assets return 200; six needles confirmed on served files. In
+a browser at ishtarinsights.com: the About heading is dark with no shadow, its mail link is
+`hello@ishtarinsights.com`, the cookie page's heading is dark, and the home footer reads "About · Contact ·
+Privacy · Cookies & browser storage · Cookie settings". Suite 692 of 692.
+
+**Open.** Genevieve has not read the About page's words; "Genevieve" versus "Gen", and whether the operator
+line should name Glenn, were left at Claude's defaults. `hello@` relies on the ImprovMX catch-all recorded in
+`docs/NEWSLETTER.md`; not tested with a real message. How the card, hexagram and rune texts were written is
+stated only as "written for this site".
+
 ## 2026-09-18 Reference pages: 78 cards, 64 hexagrams, 12 signs, and a full sitemap
 
 Deployed `dbe3640`. **Static only.** How the pages are built and when to rebuild them: `docs/REFERENCE-PAGES.md`.
