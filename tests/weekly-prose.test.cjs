@@ -140,7 +140,7 @@ test('validateSign rejects each broken shape and fact', () => {
   assert.match(W.validateSign(ok.replace(/\.$/, ''), sg), /full sentence/);
   assert.match(W.validateSign(ok.replaceAll(sg.backdrop.placements[0].sector.name, 'one corner').replaceAll(sg.events[0].sector.name, 'another corner'), sg), /no sector/);
   assert.match(W.validateSign(ok.replaceAll('Thursday', 'one day').replaceAll('Sunday', 'another day'), sg), /no weekday/);
-  assert.match(W.validateSign(ok.replace('Two days matter most.', 'Jupiter matters most.'), sg), /names Jupiter/);
+  assert.match(W.validateSign(ok.replace('It is lighter on Monday than it is by the weekend.', 'Jupiter matters most.'), sg), /names Jupiter/);
   assert.match(W.validateSign(ok.replace('Keep Sunday small', 'Sunday will be small'), sg), /will/);
 });
 
@@ -156,7 +156,8 @@ test('validateOverview needs two of the week\'s events, no sector name, and only
   assert.match(W.validateOverview(ok.replace('enters a new sign, moving into Libra', 'changes').replaceAll('Thursday', 'midweek'), sheet), /names 1 of the week's events/);
   assert.match(W.validateOverview(ok.replace('in its drawer', 'in your partnership sector'), sheet), /names a sector/);
   assert.match(W.validateOverview(ok.replace('in its drawer', 'in Gemini'), sheet), /names Gemini/);
-  assert.equal(W.validateOverview(ok.replace('On Thursday Venus enters a new sign, moving into Libra', 'Midweek the mood lifts').replace('the New moon arrives in Virgo', 'a fresh start arrives'), {...sheet, events: []}), null);
+  // With no events, Sunday is no longer a day the sheet gives, so the text must not name it.
+  assert.equal(W.validateOverview(ok.replace('On Thursday Venus enters a new sign, moving into Libra', 'Midweek the mood lifts').replace('Then on Sunday the New moon arrives in Virgo', 'Then at the weekend a fresh start arrives'), {...sheet, events: []}), null);
 });
 
 test('validateOverview counts an ingress only by planet and weekday, two generic phrases are not two events', () => {
@@ -313,10 +314,10 @@ test('exit codes: 1 for a non-Monday, 2 for the wrong model, 3 for a weak week',
 
 test('a reading that talks about the fact sheet instead of the sky is rejected', () => {
   const sg = W.EXAMPLE_SIGN_SHEET;
-  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'The placements stay steady.'), sg), /fact-sheet wording/);
-  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'The fact sheet shows two days.'), sg), /fact-sheet wording/);
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'The placements stay steady.'), sg), /fact-sheet wording/);
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'The fact sheet shows two days.'), sg), /fact-sheet wording/);
   assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('The week turns on its weekend.', 'The placements hold.'), W.EXAMPLE_SHEET), /fact-sheet wording/);
-  assert.equal(W.validateSign(W.EXAMPLE_SIGN.replace('Two days matter most.', 'Two events matter most.'), sg), null);   // "events" is ordinary English
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'Two events matter most.'), sg), null);   // "events" is ordinary English
 });
 
 test('the subject-line example rotates by week, and every set passes the validator', () => {
@@ -340,4 +341,22 @@ test('the facts sent to the model say when a placement ends, and only then', () 
   for (const p of facts.placements.slice(1)) assert.equal('until' in p, false);
   const shared = W.overviewMessages(sheet)[1].content;
   assert.match(shared, /"until": "Wednesday"/);
+});
+
+test('the sign example states no count of days, which the model would copy into other weeks', () => {
+  assert.doesNotMatch(W.EXAMPLE_SIGN, /Two days/);
+  assert.match(W.EXAMPLE_SIGN.split(/\n\n/)[1], /^On Thursday Venus/);
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN, W.EXAMPLE_SIGN_SHEET), null);
+});
+
+test('a reading may name only Monday and the weekdays in its sheet', () => {
+  const sg = W.EXAMPLE_SIGN_SHEET, anchor = 'It is lighter on Monday than it is by the weekend.';   // sheet days: Thursday (event and until), Sunday
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace(anchor, 'Close one account before Wednesday.'), sg), /names Wednesday, which is not a day in the sheet/);
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN.replace(anchor, 'Close one account before Thursday.'), sg), null);
+  assert.equal(W.validateSign(W.EXAMPLE_SIGN, sg), null);                                         // Monday is always allowed
+  const quiet = {...sg, events: [], backdrop: {...sg.backdrop, placements: sg.backdrop.placements.map(({until, ...p}) => p)}};
+  const quietText = W.EXAMPLE_SIGN.replaceAll('Thursday', 'one day').replaceAll('Sunday', 'another day');
+  assert.equal(W.validateSign(quietText, quiet), null);
+  assert.match(W.validateSign(quietText.replace(anchor, 'Finish one room before Wednesday.'), quiet), /names Wednesday/);
+  assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('for now', 'until Tuesday'), W.EXAMPLE_SHEET), /names Tuesday, which is not a day in the sheet/);
 });

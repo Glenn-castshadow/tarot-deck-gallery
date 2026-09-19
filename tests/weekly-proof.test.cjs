@@ -115,12 +115,12 @@ test('a correction that rewrites too much, or breaks the validator, is discarded
 });
 
 test('a correction that changes a fact word is discarded', async () => {
-  // Swap only the weekdays and the phase name that appear once each in the second paragraph,
-  // leaving the other mentions of Thursday and Sunday in place: the validator's own weekday
-  // check is a bare substring test and does not catch this, only factWords does.
+  // Swap the two event days with each other and rename the phase. Every weekday in the text is
+  // still one the sheet allows, so the validator passes it, and a transposition leaves every
+  // COUNT of fact words unchanged: only the ORDER of the fact words gives it away.
   const tampered = W.EXAMPLE_SIGN
-    .replace('On Thursday Venus', 'On Friday Venus')
-    .replace('On Sunday the New moon falls', 'On Monday the Full moon falls');
+    .replace('On Thursday Venus', 'On Sunday Venus')
+    .replace('On Sunday the New moon falls', 'On Thursday the New moon falls');
   assert.equal(W.validateSign(tampered, W.EXAMPLE_SIGN_SHEET), null, 'precondition: tampered text must still pass validateSign');
   const limit = Math.ceil(W.EXAMPLE_SIGN.trim().split(/\s+/).length * P.MAX_EDIT_SHARE);
   assert.ok(P.wordEdits(W.EXAMPLE_SIGN, tampered) <= limit, 'precondition: the tamper must be within the edit-share limit');
@@ -265,4 +265,15 @@ test('the writer and the proofreader converge over two rounds', async () => {
     assert.equal(f.proof.blocks.gemini.sha, P.sha(f.signs.gemini));
     assert.equal(f.rejected?.gemini, undefined);
   } finally { globalThis.fetch = original; fs.rmSync(dir, {recursive: true}); }
+});
+
+test('factWords is an ordered sequence, so swapping two fact words changes it', () => {
+  const text = 'On Thursday Venus enters your partnership sector. On Sunday the New moon falls in your sign.';
+  const swapped = 'On Sunday Venus enters your partnership sector. On Thursday the New moon falls in your sign.';
+  assert.notEqual(P.factWords(text), P.factWords(swapped));
+  assert.notEqual(P.factWords(text), P.factWords(text.replace('your partnership sector', 'your sign').replace(/your sign\.$/, 'your partnership sector.')));
+  assert.equal(P.factWords(text), P.factWords(text.replace('enters', 'moves into').replace('falls', 'lands')));
+  // "Sunday" is one fact word, not "Sun" plus "day".
+  assert.equal(P.factWords('On Sunday rest.'), P.factWords('on sunday, rest'));
+  assert.notEqual(P.factWords('The Sun rests on Sunday.'), P.factWords('On Sunday the Sun rests.'));
 });

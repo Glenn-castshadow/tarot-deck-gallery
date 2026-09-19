@@ -27,7 +27,7 @@ Paragraph one, the shape of the week, 85 to 100 words: open with one plain sente
 
 Paragraph two, the days that matter, 85 to 100 words: take the one or two most important events, name the weekday and the sector exactly as given, and say in practical terms what each day is good for. An event marked rulerInvolved matters most. If there are no events, say once, in your own words, that the week is a steady one, and give the rest of the paragraph to what a steady week is good for in the areas of life the planets are in. End with one short imperative sentence.
 
-Rules: plain, warm, dry, specific. Short and medium sentences. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. Use each sector name exactly as given, once; after that say the area of life in ordinary words. Name no zodiac sign except the reader's own. Name no planet or event that is not in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
+Rules: plain, warm, dry, specific. Short and medium sentences. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. Use each sector name exactly as given, once; after that say the area of life in ordinary words. Name no zodiac sign except the reader's own. Name no planet or event that is not in the fact sheet. No clock times, degrees or dates; weekdays only, and the only weekdays you name are Monday and the ones in the fact sheet. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
 
 const EXAMPLE_SIGN_SHEET = {
   sign: 'Taurus', ruler: 'Venus',
@@ -41,7 +41,7 @@ const EXAMPLE_SIGN_SHEET = {
 
 const EXAMPLE_SIGN = `This is a week for finishing the enjoyable thing you started and then putting your days in better order. The Sun opens the week in ${SN[4]}, and Venus, your ruling planet, keeps it company there until Thursday, so what you make for pleasure counts for more than what you owe. The Moon is waning as the week opens, which suits completing over beginning. Pick the half-done project that still makes you smile, the song, the garden bed, the letter to someone you like, and give it the first three evenings. It is lighter on Monday than it is by the weekend.
 
-Two days matter most. On Thursday Venus, your ruling planet, enters ${SN[5]}, and the ordinary machinery of the week starts to feel kinder: a colleague is easier to ask, a routine is easier to change, and the body answers well to small, regular care. On Sunday the New moon falls in ${SN[4]}, a clean line under what you finished and a quiet place to begin the next thing. Keep Thursday for one practical change to how your days run. Keep Sunday small, and start something only because you want to.`;
+On Thursday Venus, your ruling planet, enters ${SN[5]}, and the ordinary machinery of the week starts to feel kinder: a colleague is easier to ask, a routine is easier to change, and the body answers well to small, regular care. On Sunday the New moon falls in ${SN[4]}, a clean line under what you finished and a quiet place to begin the next thing. Keep Thursday for one practical change to how your days run. Keep Sunday small, and start something only because you want to.`;
 
 const RULES_OVERVIEW = `You write the opening section of a weekly email newsletter called Ishtar Insights, read by people of every zodiac sign. Reasoning strength: low.
 
@@ -51,7 +51,7 @@ Length and layout: 140 to 170 words, second person, present tense, exactly two p
 
 Paragraph one: one plain sentence on the character of the week, then the Sun's sign and the Moon's direction and what the early days suit. Paragraph two: the week's events in order, each with its weekday, said the way the fact sheet says it, and what that day is good for. With fewer than two events, say the week is steady and how to use that. End with one short imperative sentence.
 
-Rules: plain, warm, dry, specific. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. This section is for every sign, so say nothing about houses or sectors of a chart. Name only the zodiac signs and planets in the fact sheet. No clock times, degrees or dates; weekdays only. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
+Rules: plain, warm, dry, specific. Present tense throughout, with no future tense anywhere. The reader has never seen the fact sheet: speak of the Sun, the Moon, the planets and the days of the week, in a reader's words. This section is for every sign, so say nothing about houses or sectors of a chart. Name only the zodiac signs and planets in the fact sheet. No clock times, degrees or dates; weekdays only, and the only weekdays you name are Monday and the ones in the fact sheet. No predictions, promises or guarantees. No medical, legal or financial advice. No dashes used as punctuation, no headings, lists, emoji or quotation marks. Output the two paragraphs only.`;
 
 const EXAMPLE_SHEET = {
   from: '2026-09-07', to: '2026-09-14',
@@ -71,7 +71,7 @@ You are given the coming week's facts and the newsletter's opening section. Repl
 
 Each subject is one line of 30 to 55 characters that says what the week is like or what to do with it, in plain words, the way a friend would title an email. The three take different angles. The preview is one sentence of 50 to 100 characters that adds to the subject instead of repeating it.
 
-Rules: sentence case. Present tense, with no future tense. The email goes to readers of every sign, so name no zodiac sign in a subject; the preview may name a sign from the fact sheet. Name only planets from the fact sheet. No exclamation marks, no words in capitals, no emoji, no quotation marks inside the strings, no dashes used as punctuation, no promises.`;
+Rules: sentence case. Present tense, with no future tense. The email goes to readers of every sign, so name no zodiac sign in a subject; the preview may name a sign from the fact sheet. Name only planets from the fact sheet. No exclamation marks, no words in capitals, no emoji, no quotation marks inside the strings, no dashes used as punctuation, no promises. The only weekdays you name are Monday and the ones in the fact sheet.`;
 
 // The model copies the example's phrasing (probe, 2026-09-18: two of three lines were the example
 // with the nouns swapped), so the example rotates by week and no two weeks running copy the same one.
@@ -99,6 +99,16 @@ function twoParagraphs(text, min, max) {
 const SHEET_WORDING = /\bplacements?\b|\bfact sheet\b/i;
 const SHEET_WORDING_REASON = 'fact-sheet wording: the reader has never seen the fact sheet';
 
+// A weekday in the text tells the reader that day matters, so it must be one the sheet gives: an
+// event's day, the day a placement ends, or Monday, when the week opens. Probe, 2026-09-18: three
+// readings set a deadline "before Wednesday" in weeks where nothing happens on a Wednesday.
+const WEEKDAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+function strayWeekday(t, events, placements) {
+  const allowed = new Set(['Monday', ...events.map(e => e.weekday), ...placements.filter(p => p.until).map(p => p.until)]);
+  const stray = WEEKDAY_NAMES.find(day => !allowed.has(day) && new RegExp(`\\b${day}s?\\b`).test(t));
+  return stray ? `names ${stray}, which is not a day in the sheet` : null;
+}
+
 // A placement marked `until` ends mid-week. Catch a sentence that names that planet and claims the week.
 function overstays(t, placements) {
   const ending = placements.filter(p => p.until);
@@ -121,6 +131,8 @@ function validateSign(text, sg) {
   if (sg.events.length && !sg.events.some(e => t.includes(e.weekday))) return 'names no weekday from the sheet';
   const bodies = new Set(['Moon', ...sg.backdrop.placements.map(p => p.body), ...sg.events.map(e => e.body)]);
   if (SHEET_WORDING.test(t)) return SHEET_WORDING_REASON;
+  const stray = strayWeekday(t, sg.events, sg.backdrop.placements);
+  if (stray) return stray;
   const overstay = overstays(t, sg.backdrop.placements);
   if (overstay) return overstay;
   return commonProblems(t, bodies, new Set([sg.sign]));
@@ -139,6 +151,8 @@ function validateOverview(text, sheet) {
   // sectorNames[0] is "your sign", which an overview may say.
   for (const n of SN.slice(1)) if (t.includes(n)) return `names a sector: ${n}`;
   if (SHEET_WORDING.test(t)) return SHEET_WORDING_REASON;
+  const stray = strayWeekday(t, sheet.events, sheet.backdrop.placements);
+  if (stray) return stray;
   const overstay = overstays(t, sheet.backdrop.placements);
   if (overstay) return overstay;
   return commonProblems(t, sheetBodies(sheet), sheetSigns(sheet));
@@ -165,12 +179,12 @@ function validateSubjects(raw, sheet) {
     if (/\p{Extended_Pictographic}/u.test(s)) return 'emoji in subject';
     if (s.includes('!')) return 'exclamation mark in subject';
     if (/\b[A-Z]{3,}\b/.test(s)) return 'all-caps word in subject';
-    const problem = commonProblems(s, bodies, new Set());
+    const problem = strayWeekday(s, sheet.events, sheet.backdrop.placements) || commonProblems(s, bodies, new Set());
     if (problem) return `subject: ${problem}`;
   }
   if (new Set(o.subjects.map(s => s.toLowerCase())).size !== 3) return 'subjects are not distinct';
   if (/\n/.test(o.preview) || o.preview.length < 40 || o.preview.length > 110) return `preview is ${o.preview.length} characters`;
-  const problem = commonProblems(o.preview, bodies, sheetSigns(sheet));
+  const problem = strayWeekday(o.preview, sheet.events, sheet.backdrop.placements) || commonProblems(o.preview, bodies, sheetSigns(sheet));
   return problem ? `preview: ${problem}` : null;
 }
 

@@ -16,16 +16,15 @@ const {validateSign, validateOverview, validateSubjects, parseSubjects, nextMond
 const MAX_EDIT_SHARE = 0.08;   // of the original's word count
 
 // The words a spelling or grammar fix never needs to touch. A correction must leave every one of
-// them in place, in the same number; otherwise it changed a fact, and Glimmer's text stands.
+// them in place and in the same ORDER; otherwise it changed a fact, and Glimmer's text stands.
+// Order, not count: swapping Thursday with Sunday keeps every count and moves an event two days.
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const SKY_WORDS = ['new moon', 'first quarter', 'full moon', 'third quarter', 'waxing', 'waning', 'direct', 'retrograde', 'eclipse', 'until'];
+// Longest first, so "sunday" is matched whole and never as "sun".
+const FACT_WORD = new RegExp([...WEEKDAYS, ...PLANETS, ...engine.signNames, ...engine.sectorNames, ...SKY_WORDS]
+  .sort((a, b) => b.length - a.length).map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + '|\\d+', 'gi');
 function factWords(text) {
-  const lower = text.toLowerCase(), found = [];
-  for (const term of [...WEEKDAYS, ...PLANETS, ...engine.signNames, ...engine.sectorNames, ...SKY_WORDS]) {
-    const hits = lower.split(term.toLowerCase()).length - 1;
-    if (hits) found.push(`${term.toLowerCase()} x${hits}`);
-  }
-  return [...found, ...(text.match(/\d+/g) || []).map(d => `#${d}`)].sort().join('|');
+  return (text.match(FACT_WORD) || []).map(word => word.toLowerCase()).join('|');
 }
 
 const JUDGE = `You are the proofreader for a weekly astrology newsletter. Another writer produced the TEXT from the FACTS. Reply with one JSON object and nothing else:
