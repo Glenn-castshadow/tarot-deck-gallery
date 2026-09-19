@@ -201,9 +201,11 @@
     const cardIndex = tarotCards.indexOf(card);
     const revealed = slot === "daily" ? dailyRevealed() : revealedSpread.has(slot);
     const positionLabel = slot === "daily" ? "your daily card" : `${slot + 1}: ${TarotReadings.spreads[currentSpread.id].positions[slot].name}`;
+    // The Ishtar back has its lotus dead centre; an eye opens in its heart now and then. Spread cards are staggered.
+    const lotusEye = activeReadingDeck === "ishtar" ? `<svg class="lotus-eye" style="--eye-delay:-${6 + (slot === "daily" ? 0 : slot) * 5}s" viewBox="0 0 120 60"><path d="M4 30Q60-12 116 30Q60 72 4 30Z"/><g><circle cx="60" cy="30" r="17"/><circle cx="60" cy="30" r="11"/><circle cx="60" cy="30" r="6"/><circle cx="55" cy="25" r="2"/></g></svg>` : "";
     return `<button type="button" class="drawn-card drawn-card-button flip-card${revealed ? " is-revealed" : ""}" data-card-view="${cardIndex}" data-card-orientation="${orientation}" data-reveal-slot="${slot}" aria-label="${revealed ? `View ${card.name}, ${orientation}, large` : `Reveal ${positionLabel}`}">
       <span class="flip-card-rotor">
-        <span class="flip-card-side flip-card-back" aria-hidden="true"><img src="${readingArt(tarotCards.length)}" alt=""></span>
+        <span class="flip-card-side flip-card-back" aria-hidden="true"><img src="${readingArt(tarotCards.length)}" alt="">${lotusEye}</span>
         <span class="flip-card-side flip-card-front${orientation === "reversed" ? " is-reversed" : ""}" aria-hidden="true"><img src="${readingArt(cardIndex)}" alt=""></span>
       </span>
     </button>`;

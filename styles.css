@@ -387,6 +387,21 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .revealed-copy[hidden], .reveal-invitation[hidden] { display: none; }
 .revealed-copy:not([hidden]) { animation: reading-copy-reveal 900ms ease both; }
 @keyframes reading-copy-reveal { 0%, 45% { opacity: 0; } 100% { opacity: 1; } }
+/* Ishtar card back: an eye opens in the lotus heart once per cycle, glances, blinks and closes. */
+.lotus-eye { position: absolute; left: 50%; top: 49.6%; width: 27%; overflow: visible; opacity: 0; transform: translate(-50%, -50%) scaleY(0); filter: drop-shadow(0 0 5px #f3d08aaa); animation: lotus-eye-open 16s var(--eye-delay, 0s) infinite; pointer-events: none; }
+.lotus-eye path { fill: #0d0716; stroke: #e9c987; stroke-width: 2; }
+.lotus-eye g { animation: lotus-eye-glance 16s var(--eye-delay, 0s) infinite; }
+.lotus-eye circle { fill: #2f9aa0; stroke: #e9c987; stroke-width: 1; }
+.lotus-eye circle:nth-child(2) { fill: #6a3fa0; stroke: none; }
+.lotus-eye circle:nth-child(3) { fill: #0d0716; stroke: none; }
+.lotus-eye circle:nth-child(4) { fill: #fff6e0; stroke: none; }
+@keyframes lotus-eye-open {
+  0%, 62%, 97%, 100% { opacity: 0; transform: translate(-50%, -50%) scaleY(0); }
+  67%, 79%, 82%, 92% { opacity: 1; transform: translate(-50%, -50%) scaleY(1); }
+  80.5% { opacity: 1; transform: translate(-50%, -50%) scaleY(.06); }
+}
+@keyframes lotus-eye-glance { 0%, 69%, 78%, 100% { transform: none; } 71%, 73.5% { transform: translateX(-9px); } 75%, 77% { transform: translateX(8px); } }
+@media (prefers-reduced-motion: reduce) { .lotus-eye, .lotus-eye g { animation: none; } }
 @media (max-width: 480px) {
   .daily-reading { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .daily-reading .drawn-card { width: min(56vw, 210px); }
