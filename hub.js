@@ -15,6 +15,13 @@
     try { return moonNames[Math.round(Astronomy.MoonPhase(new Date()) / 45) % 8]; }
     catch { return null; }
   }
+  const signKey = 'ishtar-sun-sign-v1';
+  let latest = null;
+  function pickedSign() {
+    const index = Number(IshtarStorage.getItem(signKey) ?? -1);
+    return Number.isInteger(index) && index >= 0 && index < 12 ? zodiacSigns[index] : null;
+  }
+  const horoscopeLink = sign => `<a href="/sky/?sign=${sign.name.toLowerCase()}#daily-horoscope">Today's ${sign.name} horoscope ↗</a>`;
   function sunSign(state) {
     if (!state) return null;
     if (state.natal?.status === 'ready') return zodiacSigns[state.natal.points[0].index];
@@ -22,12 +29,19 @@
     return parts ? zodiacFor(parts) : null;
   }
   function render(state) {
+    latest = state;
     const moon = moonNow();
-    const sign = sunSign(state);
-    today.innerHTML = `${moon ? `<p class="hub-today-item"><span class="section-kicker">The Moon tonight</span><strong>${moon}</strong><small>Calculated in your browser. <a href="/sky/">Today's sky ↗</a></small></p>` : ''}
-      ${sign ? `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong>${sign.symbol} ${sign.name}</strong><small>${sign.mantra} <a href="/charts/">Your birth chart ↗</a></small></p>`
-        : `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong>Add your birthday</strong><small>Your details stay in this browser. <a href="/charts/">Start your birth chart ↗</a></small></p>`}
-      <p class="hub-today-item"><span class="section-kicker">Today's card</span><strong>One card, once a day</strong><small>The same card until tomorrow. <a href="/tarot/">Draw today's card ↗</a></small></p>`;
+    const sign = sunSign(state), picked = sign ? null : pickedSign();
+    today.innerHTML = `${moon ? `<p class="hub-today-item"><span class="section-kicker">The Moon tonight</span><strong>${moon}</strong><small>Calculated in your browser. <a href="/sky/#sky-calendar">Today's sky ↗</a></small></p>` : ''}
+      ${sign ? `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong>${sign.symbol} ${sign.name}</strong><small>${sign.mantra}. ${horoscopeLink(sign)} · <a href="/charts/#birthday-room">Your birth chart ↗</a></small></p>`
+        : `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong><label class="sr-only" for="hub-sign">Your Sun sign</label><select id="hub-sign"><option value="">Choose your sign</option>${zodiacSigns.map((z, i) => `<option value="${i}"${z === picked ? ' selected' : ''}>${z.symbol} ${z.name}</option>`).join('')}</select></strong><small>${picked ? horoscopeLink(picked) : 'No birth details needed.'} · <a href="/charts/#birthday-room">Start your birth chart ↗</a></small></p>`}
+      <p class="hub-today-item"><span class="section-kicker">Today's card</span><strong>One card, once a day</strong><small>The same card until tomorrow. <a href="/tarot/#tarot-readings">Draw today's card ↗</a></small></p>`;
   }
+  today.addEventListener('change', event => {
+    if (event.target.id !== 'hub-sign') return;
+    if (event.target.value === '') IshtarStorage.removeItem(signKey); else IshtarStorage.setItem(signKey, event.target.value);
+    render(latest);
+    today.querySelector('#hub-sign')?.focus();
+  });
   BirthProfile.subscribe(render);
 })();

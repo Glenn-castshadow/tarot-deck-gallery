@@ -4,6 +4,11 @@ const DailyHoroscope = (() => {
   function attach(root) {
     if (!root) return {setProfileSign(){}};
     let selected = 0, profileSign = null, manual = false, renderedDay = '', timer;
+    // A sign chosen here or on the hub is remembered (in memory only unless optional saving is allowed); ?sign= wins.
+    const signKey = 'ishtar-sun-sign-v1', store = typeof IshtarStorage === 'object' ? IshtarStorage : null;
+    const asked = typeof location === 'object' ? new URLSearchParams(location.search).get('sign') : null;
+    const remembered = asked ? DailyHoroscopeEngine.signNames.findIndex(name => name.toLowerCase() === asked.toLowerCase()) : Number(store?.getItem(signKey) ?? -1);
+    if (Number.isInteger(remembered) && remembered >= 0 && remembered < 12) { selected = remembered; manual = true; }
     // Today's model-written paragraphs (docs/DAILY-HOROSCOPE.md, "The prose layer"): fetched once
     // per calendar day. `signs` stays null on any failure and the template reading draws instead.
     let prose = {day: '', signs: null, settled: true};
@@ -49,7 +54,7 @@ const DailyHoroscope = (() => {
           ? `<div class="dh-main"><span class="dh-sign" aria-hidden="true">${reading.glyph}</span><div><p class="dh-label">${esc(reading.sign)} · Today</p><p class="dh-prose">${esc(paragraph)}</p></div></div>`
           : `<div class="dh-main"><span class="dh-sign" aria-hidden="true">${reading.glyph}</span><div><p class="dh-label">${esc(reading.sign)} · Today’s theme</p><h4>${esc(reading.title)}</h4><p>${esc(reading.overview)}</p></div></div>`;
         const tail = paragraph ? '' : `<div class="dh-lenses">${reading.lenses.map(lens=>`<section><h5>${lens.title}</h5><p>${esc(lens.text)}</p></section>`).join('')}</div><div class="dh-action"><p class="dh-label">One small action</p><p>${esc(reading.action)}</p></div>`;
-        output.innerHTML = `<article class="dh-reading"><div class="dh-dateline"><time datetime="${reading.day}">${esc(dateLabel)}</time><span>Today · ${esc(reading.sign)}</span></div>${main}<div class="dh-moon"><span aria-hidden="true">☾</span><div><strong>Moon in ${moon.sign} · ${reading.phase}</strong><p>${reading.illumination}% illuminated at the daily snapshot. ${esc(reading.phasePrompt)}</p></div></div>${tail}<blockquote>${esc(reading.question)}</blockquote></article>`;
+        output.innerHTML = `<article class="dh-reading"><div class="dh-dateline"><time datetime="${reading.day}">${esc(dateLabel)}</time><span>Today · ${esc(reading.sign)}</span></div>${main}<div class="dh-moon"><span aria-hidden="true">☾</span><div><strong>Moon in ${moon.sign} · ${reading.phase}</strong><p>${reading.illumination}% illuminated at 12:00 UTC, the moment this reading is written from. <a href="#sky-calendar">The Moon right now ↓</a></p><p>${esc(reading.phasePrompt)}</p></div></div>${tail}<blockquote>${esc(reading.question)}</blockquote></article>`;
       } catch (error) {
         renderedDay = '';
         output.innerHTML = '<p class="dh-error" role="status">Today’s horoscope is unavailable. Check that your device date is between 1901 and 2100, then try again.</p><button type="button" data-dh-retry>Try again</button>';
@@ -66,8 +71,8 @@ const DailyHoroscope = (() => {
       if (!document.hidden && renderedDay !== DailyHoroscopeEngine.localDateKey()) render();
       schedule();
     }
-    select.addEventListener('change',()=>{selected=Number(select.value);manual=true;render();});
-    profileButton.addEventListener('click',()=>{if(profileSign !== null){selected=profileSign;manual=false;render();}});
+    select.addEventListener('change',()=>{selected=Number(select.value);manual=true;store?.setItem(signKey,String(selected));render();});
+    profileButton.addEventListener('click',()=>{if(profileSign !== null){selected=profileSign;manual=false;store?.removeItem(signKey);render();}});
     output.addEventListener('click',event=>{if(event.target.closest('[data-dh-retry]')) render();});
     document.addEventListener('visibilitychange',refresh);
     window.addEventListener('pageshow',refresh);

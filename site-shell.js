@@ -23,12 +23,12 @@
         <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="brand-lockup"><img src="/assets/ishtar-insights-logo-hero.webp" alt="Ishtar Insights lotus logo" width="1233" height="895"></div>
         <h1>A little clarity. A deeper connection.</h1>
-        <p class="lede">Explore tarot, astrology, and the patterns that guide you.</p>
-        <div class="hero-actions"><a class="hero-cta" href="/tarot/">Begin a reading <span aria-hidden="true">→</span></a><a class="hero-cta hero-cta--ghost" href="/charts/">Explore your birth sky</a></div>
+        <p class="lede">Free tarot readings, a real birth chart and a daily horoscope. No ads, nothing to install.</p>
+        <div class="hero-actions"><a class="hero-cta" href="/tarot/#tarot-readings">Begin a reading <span aria-hidden="true">→</span></a><a class="hero-cta hero-cta--ghost" href="/charts/#birthday-room">Explore your birth sky</a></div>
         <ul class="hero-strip">
-          <li><i aria-hidden="true">✹</i><span><b>Timeless tools</b><small>For a more inspired life</small></span></li>
-          <li><i aria-hidden="true">☾</i><span><b>Cosmic perspective</b><small>Patterns in your story</small></span></li>
-          <li><i aria-hidden="true">✦</i><span><b>A wider world</b><small>From here, to what’s next</small></span></li>
+          <li><i aria-hidden="true">✹</i><span><b>Tarot</b><small>A daily card, full spreads, four decks</small></span></li>
+          <li><i aria-hidden="true">☾</i><span><b>Astrology</b><small>Charts calculated in your browser</small></span></li>
+          <li><i aria-hidden="true">✦</i><span><b>Older traditions</b><small>I Ching, runes, numerology and more</small></span></li>
         </ul>
       </header>`;
   }
