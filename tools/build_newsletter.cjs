@@ -74,7 +74,7 @@ function pullQuote(text) {
   return {quote: first.slice(0, cut), rest: [after, ...others].join('\n\n')};
 }
 
-const panelOpen = 'background:#10252e;border:1px solid #3d5a5a;';
+const panelOpen = 'background:#10252e;';
 // Outlined, light on dark, and never filled: in dark mode a mail app darkens a filled gold button to
 // brown and flips its dark label to white (seen in the first real test send, 2026-09-18).
 const button = (href, label) => `<a href="${href}" style="display:inline-block;padding:13px 26px;border-radius:3px;font:600 15px ${SANS};text-decoration:none;border:1px solid #d9c18e;color:#f4e8d1;">${label}</a>`;
@@ -96,10 +96,10 @@ function signHeading(sign) {
 
 function signSection(sign, text) {
   const {quote, rest} = pullQuote(text);
-  return `<tr><td bgcolor="#10252e" style="${panelOpen}border-bottom:0;font-size:0;line-height:0;">
+  return `<tr><td bgcolor="#10252e" style="${panelOpen}font-size:0;line-height:0;">
   <img src="${ASSETS}/signs/${sign.key}.jpg" width="600" alt="${esc(`${sign.name}: ${sign.alt}`)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;font:italic 600 16px/2.4 ${SERIF};color:#d9c18e;text-align:center;background:#10252e;">
 </td></tr>
-<tr><td bgcolor="#10252e" style="${panelOpen}border-top:0;padding:30px 34px;">
+<tr><td bgcolor="#10252e" style="${panelOpen}padding:30px 34px;">
   ${signHeading(sign)}
   ${quote ? `<p style="margin:24px 0 20px;padding:2px 0 2px 18px;border-left:2px solid #d5b877;font:italic 600 20px/1.5 ${SERIF};color:#e2c990;">${esc(quote)}</p>` : '<p style="margin:0 0 20px;font-size:0;line-height:0;">&nbsp;</p>'}
   ${paragraphs(rest, `margin:0 0 16px;font:16px/1.7 ${SANS};color:#f4e8d1;`)}
@@ -128,7 +128,7 @@ function noSignSection() {
 
 function footer() {
   const link = (href, label) => `<a href="${href}" style="color:#e6b17e;">${label}</a>`;
-  return `<tr><td bgcolor="#160c20" style="padding:28px 32px 34px;background:#160c20;border-top:1px solid #3a2a47;font:12px/1.7 ${SANS};color:#a99bb3;text-align:center;">
+  return `<tr><td bgcolor="#160c20" style="padding:28px 32px 34px;background:#160c20;font:12px/1.7 ${SANS};color:#a99bb3;text-align:center;">
   <p style="margin:0 0 10px;font:10px/1.6 ${MONO};letter-spacing:.12em;text-transform:uppercase;color:#e6b17e;">&#10022; Ishtar Insights &#10022;</p>
   <p style="margin:0 0 10px;">You are receiving this because you asked for the Ishtar Insights newsletter.<br>
   One language model writes each issue from the week&#39;s computed sky, and a second one proofreads it. The constellations are drawn from real star positions. Nobody&#39;s chart is stored with your address.</p>

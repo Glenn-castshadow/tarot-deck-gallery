@@ -187,5 +187,8 @@ test('every solid background is locked against dark-mode recolouring, and no but
     }
     assert.equal(html.includes('background:#e6b17e'), false, 'a filled gold button can have its label flipped to white on brown');
     assert.match(html, /border:1px solid #d9c18e;color:#f4e8d1;/, 'buttons are outlined, light on dark');
+    // Second test send: a border colour cannot be locked, and the app lightened the dark ones (#3d5a5a
+    // round the panel, #3a2a47 over the footer) to a pale line. Light borders were left alone.
+    assert.doesNotMatch(html, /solid #[0-7]/, 'a dark border is lightened in dark mode; only light ones survive');
   }
 });

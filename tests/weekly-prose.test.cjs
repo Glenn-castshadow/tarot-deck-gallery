@@ -320,6 +320,9 @@ test('a reading that talks about the fact sheet instead of the sky is rejected',
   assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'The fact sheet shows two days.'), sg), /fact-sheet wording/);
   assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('The week turns on its weekend.', 'The placements hold.'), W.EXAMPLE_SHEET), /fact-sheet wording/);
   assert.equal(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'Two events matter most.'), sg), null);   // "events" is ordinary English
+  // Sent to a real inbox, 2026-09-18: the sheet's event label pasted in whole, "the Moon is Full moon in Aries".
+  assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('The week turns on its weekend.', 'On Saturday the Moon is Full moon in Aries.'), W.EXAMPLE_SHEET), /fact-sheet wording/);
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace('It is lighter on Monday than it is by the weekend.', 'The Moon is New moon here.'), sg), /fact-sheet wording/);
 });
 
 test('the subject-line example rotates by week, and every set passes the validator', () => {

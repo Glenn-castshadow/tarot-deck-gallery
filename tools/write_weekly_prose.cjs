@@ -96,7 +96,7 @@ function twoParagraphs(text, min, max) {
 }
 
 // Words that belong to the fact sheet, not to the reader (probe: "the placements stay steady").
-const SHEET_WORDING = /\bplacements?\b|\bfact sheet\b/i;
+const SHEET_WORDING = /\bplacements?\b|\bfact sheet\b|\bis (full|new) moon\b/i;
 const SHEET_WORDING_REASON = 'fact-sheet wording: the reader has never seen the fact sheet';
 
 // A weekday in the text tells the reader that day matters, so it must be one the sheet gives: an
