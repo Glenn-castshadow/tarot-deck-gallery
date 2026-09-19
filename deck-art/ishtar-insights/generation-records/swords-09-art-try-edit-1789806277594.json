@@ -1,0 +1,20 @@
+{
+ "file": "swords-09-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1698,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 162
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7186
+ },
+ "made_at": "2026-09-19T08:24:37.594Z",
+ "instruction": "Ten shining swords hang point-down in the night sky inside the arched window: one at the top, four pairs below it, and one single sword at the very bottom centre of the arrangement. Remove exactly ONE sword: the single one at the bottom centre, lowest in the sky, and paint starry sky in its place. Do not change or move the other nine: the one at the top and the four pairs. The finished painting shows exactly nine swords."
+}

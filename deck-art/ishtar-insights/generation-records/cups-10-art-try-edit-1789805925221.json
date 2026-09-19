@@ -1,0 +1,20 @@
+{
+ "file": "cups-10-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1708,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 172
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7196
+ },
+ "made_at": "2026-09-19T08:18:45.221Z",
+ "instruction": "Twelve golden chalices float in an arch over the rainbow, six on the left and six on the right. Remove exactly TWO of them: the lowest chalice at the far left edge of the painting and the lowest chalice at the far right edge of the painting, the two nearest the horizon. Paint night sky and the ends of the rainbow where they were. Do not change or move the other ten chalices. The finished painting shows exactly ten chalices, five on the left and five on the right."
+}

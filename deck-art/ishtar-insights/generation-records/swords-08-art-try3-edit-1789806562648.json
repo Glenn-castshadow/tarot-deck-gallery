@@ -1,0 +1,20 @@
+{
+ "file": "swords-08-art-try3-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1715,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 179
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7203
+ },
+ "made_at": "2026-09-19T08:29:22.648Z",
+ "instruction": "Seven tall swords stand planted upright in the water: three in a row on the left, one directly behind the woman in the centre, and three on the right. Add exactly ONE more identical sword at the far left, standing to the left of the left row with a clear gap, fully visible with its own pommel, grip, crossguard and blade. Do not change, move or remove any of the seven swords already there. The finished painting shows exactly eight swords: four on the left, one in the centre, three on the right."
+}

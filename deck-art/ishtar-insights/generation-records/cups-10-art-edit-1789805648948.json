@@ -1,0 +1,20 @@
+{
+ "file": "cups-10-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1758,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 222
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7246
+ },
+ "made_at": "2026-09-19T08:14:08.948Z",
+ "instruction": "An arch of golden chalices follows the rainbow: one at the very top centre and five down each side, eleven in all, and two of the people on the right also hold cups. Make three removals and nothing else. One: remove the chalice at the very top centre of the arch and put a small radiant star of light in its place, leaving five chalices down the left side and five down the right side. Two and three: remove the cup from the hand of the woman in the blue headwrap and the goblet from the hand of the man behind her, so their hands are raised open and empty toward the rainbow. The finished painting shows exactly ten chalices, five on each side of the arch, and nobody holds a cup."
+}

@@ -1,0 +1,20 @@
+{
+ "file": "swords-08-art-try2-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1707,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 171
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7195
+ },
+ "made_at": "2026-09-19T08:27:07.160Z",
+ "instruction": "Nine tall swords stand planted upright in the water: a row of five on the left, one directly behind the woman in the centre, and three on the right. Remove exactly ONE sword: the outermost sword at the far left edge of the painting, the first one in the left row, and paint misty water and sky where it stood. Do not change or move the other eight. The finished painting shows exactly eight swords: four on the left, one in the centre, three on the right."
+}

@@ -1,0 +1,20 @@
+{
+ "file": "cups-08-art-candidate-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1685,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 149
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7173
+ },
+ "made_at": "2026-09-19T08:16:26.794Z",
+ "instruction": "The stack on the left holds seven dark jewelled chalices in rows of one, two, two and two. Add exactly ONE more identical chalice, standing on its own on the flat rock just to the right of the bottom row of the stack, fully visible and not touching the others. Do not change or move the seven chalices already there. The finished painting shows exactly eight chalices."
+}

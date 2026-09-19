@@ -1,0 +1,20 @@
+{
+ "file": "swords-09-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1694,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 158
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7182
+ },
+ "made_at": "2026-09-19T08:20:33.953Z",
+ "instruction": "Ten swords hang in the dark sky above the figure, arranged as one at the top, then pairs, plus one extra sword in the very centre of the arrangement that breaks the symmetry. Remove exactly ONE sword: that extra one in the centre, between the pairs, and paint dark sky in its place. Keep the other nine exactly where they are: one at the top and four symmetric pairs below it. The finished painting shows exactly nine swords."
+}

@@ -1,0 +1,20 @@
+{
+ "file": "wands-10-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1702,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 166
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7190
+ },
+ "made_at": "2026-09-19T08:27:09.519Z",
+ "instruction": "The woman carries a fanned bundle of nine brass wands over her shoulder, each topped with a glowing glass orb. Add exactly ONE more identical wand to the fan, its shaft starting in the same bound bundle at her shoulder and its glowing orb placed in the widest empty gap between the existing orbs, fully visible and not touching any other orb. Do not change or move the nine wands already there. The finished painting shows exactly ten wands with ten separate glowing orbs."
+}

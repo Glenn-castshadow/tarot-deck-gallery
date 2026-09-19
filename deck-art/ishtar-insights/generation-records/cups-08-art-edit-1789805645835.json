@@ -1,0 +1,20 @@
+{
+ "file": "cups-08-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1701,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 165
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7189
+ },
+ "made_at": "2026-09-19T08:14:05.835Z",
+ "instruction": "The stack of golden chalices has four rows: one on top, then two, then three, then three in the bottom row, nine in all. Remove exactly ONE chalice: the leftmost chalice of the bottom row, the one cut off by the left edge, and paint rock and water in its place. The rows then read one, two, three, two. Keep every other chalice exactly where it is. The finished painting shows exactly eight chalices."
+}

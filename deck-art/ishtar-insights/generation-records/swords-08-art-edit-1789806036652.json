@@ -1,0 +1,20 @@
+{
+ "file": "swords-08-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1723,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 187
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7211
+ },
+ "made_at": "2026-09-19T08:20:36.652Z",
+ "instruction": "Ten swords stand planted upright around the bound figure: five in the group on the left, one in the centre and four in the group on the right. Remove exactly TWO swords: from the left group remove the one set back behind the front row, leaving four swords there; from the right group remove the one set back behind the front row, leaving three swords there. Paint water and mist where they stood. Keep the centre sword and all the others exactly where they are. The finished painting shows exactly eight swords: four on the left, one in the centre, three on the right."
+}

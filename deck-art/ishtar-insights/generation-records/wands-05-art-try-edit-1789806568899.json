@@ -1,0 +1,20 @@
+{
+ "file": "wands-05-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1716,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 180
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7204
+ },
+ "made_at": "2026-09-19T08:29:28.899Z",
+ "instruction": "Five young people spar; four of them clearly hold one long rod each, but the young man in the front left, seen from behind with his arm stretched out, has his rod almost hidden. Repaint only him so that he grips one full-length rod in both hands, held diagonally in front of him and clearly visible from end to end, the same style of rod as the others. Do not add any other rod and do not change the other four people or their rods. The finished painting shows exactly five rods, one held by each person."
+}

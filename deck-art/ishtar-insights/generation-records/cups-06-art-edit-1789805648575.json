@@ -1,0 +1,20 @@
+{
+ "file": "cups-06-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1700,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 164
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7188
+ },
+ "made_at": "2026-09-19T08:14:08.575Z",
+ "instruction": "There are seven golden lotus chalices: one held between the two children at the centre, three standing in the shallow water at the bottom left and three at the bottom right. Remove exactly ONE chalice: the outermost one at the far left edge of the painting, the one cut off by the frame, and paint water and lotus leaves in its place. Keep the held chalice and the other five exactly as they are. The finished painting shows exactly six chalices."
+}

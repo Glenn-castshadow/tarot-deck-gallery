@@ -1,0 +1,20 @@
+{
+ "file": "wands-10-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1706,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 170
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7194
+ },
+ "made_at": "2026-09-19T08:22:18.513Z",
+ "instruction": "The woman carries a bundle of glowing-headed wands over her shoulder, but there are about fifteen of them. Repaint only the bundle so that it contains exactly TEN wands: ten straight shafts fanned neatly, each ending in its own glowing round head, the ten heads spread apart so that every one is separate and easy to count, none overlapping and none hidden. Keep the woman, her pose, her clothes and the whole background exactly as they are. The finished painting shows exactly ten wands."
+}

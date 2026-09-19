@@ -1,0 +1,20 @@
+{
+ "file": "cups-09-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1679,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 143
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7167
+ },
+ "made_at": "2026-09-19T08:14:09.065Z",
+ "instruction": "Nine golden chalices are arranged in a fan behind the woman; keep all nine exactly as they are. She also holds a tenth goblet raised in her right hand: remove that held goblet and have her right hand hold a single pink lotus flower instead. Change nothing else. The finished painting shows exactly nine chalices, all of them in the fan behind her."
+}

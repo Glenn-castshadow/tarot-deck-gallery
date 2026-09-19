@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-09-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1711,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 175
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7199
+ },
+ "made_at": "2026-09-19T08:35:04.709Z",
+ "instruction": "Eight round golden lotus coins rest in the garden: four down the left side and four down the right side. Add exactly ONE more identical golden lotus coin, held in the woman's lowered hand at her side, the hand that hangs open on the left of the picture: she holds the coin lightly by its edge in front of her skirt, the coin fully visible and the same size as the others. Do not change or move the eight coins already there and do not change her falcon hand. The finished painting shows exactly nine coins."
+}

@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-09-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1736,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 200
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7224
+ },
+ "made_at": "2026-09-19T08:33:06.672Z",
+ "instruction": "Nine round golden lotus coins rest in the garden: four down the left side, four down the right side, and one at the very bottom centre edge of the painting below the woman's feet. Move only that bottom-centre coin: remove it from the bottom edge, paint the reflective paving and lotus leaves there instead, and place the same coin among the leaves at the lower left, beside the woman's feet, about one quarter of the way up from the bottom edge, fully visible and not touching any other coin. Do not change or move the other eight coins. The finished painting shows exactly nine coins, and the bottom tenth of the painting contains no coin."
+}

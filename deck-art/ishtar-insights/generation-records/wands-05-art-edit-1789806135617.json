@@ -1,0 +1,20 @@
+{
+ "file": "wands-05-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1686,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 150
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7174
+ },
+ "made_at": "2026-09-19T08:22:15.618Z",
+ "instruction": "Five young people spar with long rods, but there are six rods. Remove exactly ONE rod: the extra one in the middle of the tangle that is gripped by a stray fist not belonging to any of the five people; remove that stray fist as well and paint the background behind it. Each of the five people keeps exactly one rod in their own hands. The finished painting shows exactly five rods."
+}

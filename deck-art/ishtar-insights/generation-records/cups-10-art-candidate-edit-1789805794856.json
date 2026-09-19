@@ -1,0 +1,20 @@
+{
+ "file": "cups-10-art-candidate-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1708,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 172
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7196
+ },
+ "made_at": "2026-09-19T08:16:34.856Z",
+ "instruction": "Eight golden chalices float along the rainbow arch: four on the left side and four on the right side, with an empty gap at the top between them. Add exactly TWO more identical golden chalices in that gap: one just left of the top centre and one just right of the top centre, continuing the curve of the arch so that five chalices sit on each side. Do not change or move the eight chalices already there, and leave everyone's hands empty. The finished painting shows exactly ten chalices."
+}

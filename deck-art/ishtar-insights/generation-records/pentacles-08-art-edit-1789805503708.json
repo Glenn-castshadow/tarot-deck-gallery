@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-08-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1722,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 186
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7210
+ },
+ "made_at": "2026-09-19T08:11:43.708Z",
+ "instruction": "Eight round golden lotus coins are set around the arch in the upper part of the painting; keep all eight exactly as they are. On the workbench in the lower part there are six more finished golden coins: remove ALL of the coins from the workbench and replace them with craft tools, small chisels, a mallet, curls of gold shavings and a folded cloth. Under the craftswoman's stylus put an unfinished square gold plaque with no round outline. The finished painting shows exactly eight round coins, all of them on the arch, and none on the bench."
+}

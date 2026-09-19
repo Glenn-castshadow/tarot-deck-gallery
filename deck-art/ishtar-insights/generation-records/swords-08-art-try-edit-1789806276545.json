@@ -1,0 +1,20 @@
+{
+ "file": "swords-08-art-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1748,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 212
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7236
+ },
+ "made_at": "2026-09-19T08:24:36.545Z",
+ "instruction": "Six tall swords stand planted upright in the water around the blindfolded woman: three in a group on the left, one directly behind her in the centre, and two in a group on the right. Add exactly TWO more identical swords: one added to the left group, standing at its outer left side, making four there; and one added to the right group, standing at its outer right side, making three there. Each added sword is fully visible with its own hilt, crossguard and blade, and does not overlap the others. Do not change or move the six swords already there. The finished painting shows exactly eight swords: four on the left, one in the centre, three on the right."
+}

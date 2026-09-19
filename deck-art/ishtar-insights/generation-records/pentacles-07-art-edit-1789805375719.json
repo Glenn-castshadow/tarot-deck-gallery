@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-07-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1705,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 169
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7193
+ },
+ "made_at": "2026-09-19T08:09:35.719Z",
+ "instruction": "There are eight round golden lotus coins on the vine. Remove exactly ONE of them: the coin in the very middle of the vine, the fourth coin counting down from the top, and paint leaves and a lotus blossom in its place. Do not remove, move or alter any of the other seven coins: the top coin, the two coins below it, the three coins in the lower middle and the two coins at the bottom all stay exactly where they are. The finished vine shows exactly seven coins."
+}

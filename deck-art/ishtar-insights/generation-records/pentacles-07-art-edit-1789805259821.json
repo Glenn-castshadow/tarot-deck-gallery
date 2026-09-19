@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-07-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1661,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 125
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7149
+ },
+ "made_at": "2026-09-19T08:07:39.821Z",
+ "instruction": "The vine must carry exactly seven round golden lotus coins, no more and no fewer. It currently shows eight: remove one coin from the middle of the vine and let leaves and blossoms fill that spot. Every remaining coin stays fully visible, separate from the others and easy to count."
+}

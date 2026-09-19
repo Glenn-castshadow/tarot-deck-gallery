@@ -1,0 +1,20 @@
+{
+ "file": "pentacles-06-art-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1712,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 176
+  },
+  "output_tokens": 5488,
+  "output_tokens_details": {
+   "image_tokens": 5488,
+   "text_tokens": 0
+  },
+  "total_tokens": 7200
+ },
+ "made_at": "2026-09-19T08:11:46.622Z",
+ "instruction": "The scene shows five round golden lotus coins: one in the queen's raised hand, one being passed to the standing figure, one floating in mid-air between them, one at the fingers of the kneeling figure on the lower right, and one in the hands of the kneeling figure on the left. Add exactly ONE more identical golden lotus coin, floating in the open air just above the standing figure's open palm, clearly separate from the others. Do not move or remove any existing coin. The finished painting shows exactly six coins."
+}
