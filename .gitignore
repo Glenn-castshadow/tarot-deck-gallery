@@ -56,6 +56,10 @@ output/imagegen/*.png
 tmp/imagegen/
 output/daily-prose/
 output/weekly-prose/
+output/newsletter/
+# Newsletter banner masters and the d3-celestial source files stay local; keep the prompt manifest.
+output/imagegen/newsletter/*
+!output/imagegen/newsletter/prompts.json
 
 # Superpowers SDD scratch workspace (ledger, briefs, review packages)
 .superpowers/
