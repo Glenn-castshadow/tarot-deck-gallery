@@ -24,6 +24,16 @@ root-owned 644, sha256 equal to the manifest's. First `draft_campaign 2026-09-21
 the free plan, and **the audience had no subscribed member** (two pending confirmation, none with a sign), so
 Mailchimp would not send. Nothing in the repo can send a campaign; Glenn sends in Mailchimp.
 
+**After the test sends (no deploy; the builder runs locally, and only the issue files and the draft changed).**
+Test 1, new Outlook in dark mode: solid backgrounds arrived washed out and the filled gold button brown.
+`c386c4f` locks every solid background with a same-colour gradient and outlines the buttons. Test 2: the
+backgrounds and button held, but the two dark borders (panel `#3d5a5a`, footer rule `#3a2a47`) arrived as a
+pale line, and the overview read "the Moon is Full moon in Aries". `4d5aaf0` drops the dark borders (a border
+colour cannot be locked; the light gold ones survive) and makes the writer reject a pasted moon-phase label.
+The Scorpio and overview sentences were corrected through `review_weekly_prose.cjs --accept`. The draft was
+updated with `draft_campaign 2026-09-21 --replace` (43360 bytes, 12 of 12 signs); two of the campaign's
+twelve tests are used.
+
 ## 2026-09-18 Newsletter audience sync to Mailchimp
 
 Deployed `8a638d9`. **Backend and static**, in that order and within minutes of each other: the consent
