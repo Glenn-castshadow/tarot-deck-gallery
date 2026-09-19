@@ -1,5 +1,48 @@
 # VPS deployment
 
+## 2026-09-19 Two round reading decks: Arcana and Día de los Muertos
+
+Deployed `ef7db9c`. **Static only.** Codex generated two circular decks with its built-in image tool
+(`deck-art/arcana-round`, `deck-art/dia-de-los-muertos-round`: 78 fronts and a back each, 1254 x 1254, the circle
+painted on a cream square). Glenn asked how to put them in the Tarot section, approved the plan, then said
+merge and deploy.
+
+**Build.** `python tools/build_round_decks.py`. The circle drifts about 20 px and is up to 28 px elliptical from
+card to card, so each card is cropped to its own bounding box and resized to an exact square: 600 px cards,
+1200 px large views, 59 MB and 63 MB. The build fails if a deck is incomplete, a source repeats, or cream shows
+on the ring just inside the circle's edge; that check was run against an uncropped card and a crop shifted
+30 px and failed on both.
+
+**Wiring.** `readingDecks` entries with `shape: "round"` set `data-shape="round"` on the reading room and the
+card dialog; CSS makes every card box 1:1 with `border-radius: 50%`, so JPEG is enough. The daily card is wider
+for round decks at each breakpoint (310 / 184 / min(72vw, 280) px). In the Celtic Cross a round crossing card
+turned 90 degrees covers card 1 exactly, so round decks move the crossing place to the right instead. About and
+the Tarot page's descriptions say five decks (About had still said four reading decks).
+
+**Review.** Two agents counted the suit objects on all 80 pip cards. Arcana's Nine of Cups showed ten (nine on
+the arch, one in her hand) after Codex's own review had passed it; corrected with
+`tools/edit_card_art.cjs --square` (new flag, 1024 x 1024), so that one card is 1024 px native where the rest
+are 1254. Día de los Muertos needed nothing; its Seven of Cups has four small candle holders in the suit's
+pattern and still reads as seven. The Arcana back is reversible. The Día de los Muertos back is not: its two
+side candles both stand flame-up. That does not show on the site and matters for print.
+
+**Release.** `/opt/tarot-game/releases/20260919-round-decks-ef7db9c`, a `cp -al` hardlink copy of
+`20260919-newsletter-position-f4461e0`, by `/tmp/ishtar-round-decks.sh`: 321 files, 316 new under the two deck
+folders and 5 replaced (`about.html`, `styles.css`, `tarot-readings.css`, `tarot.js`, `tarot/index.html`), each
+`rm -f`'d first. Gated on `current`, on the five live files matching the `f4461e0` blobs before and after, on the
+sha256 of all 321 files, on a link count of 1 for the five replaced files, on 78 cards, 79 large views and a
+back per deck, and on the previous release lacking both folders and the needle `arcana-round`. Passed first
+time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260919-newsletter-position-f4461e0 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `styles.css?v=round-decks-2`, `tarot-readings.css?v=4`, `tarot.js?v=10` on `/tarot/`.
+
+**Validation.** Suite 692 of 692. Locally at 1280 and 390 px: picker, daily card and flip, reference grid, large
+view, Celtic Cross, no horizontal overflow, portrait decks unchanged. Live: the five replaced files and six
+sampled images are byte-identical to the commit with the right content types; in a browser,
+`/tarot/?deck=dia-de-los-muertos-round` selects the deck, the 310 px round daily card turned over to the Page of
+Pentacles, five deck buttons, no broken image. The only console error is the signed-out account check's 401.
+
 ## 2026-09-19 Newsletter signup after the chart
 
 Deployed `f4461e0`, static only, at Glenn's request to fix the newsletter position.
