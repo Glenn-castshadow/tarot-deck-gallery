@@ -54,6 +54,11 @@ h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08
 .reading-output { position: relative; z-index: 1; grid-column: 1 / -1; min-height: 300px; padding-top: 7px; }
 .daily-reading { display: grid; grid-template-columns: minmax(190px, 250px) minmax(0, 1fr); gap: clamp(28px, 5vw, 54px); align-items: center; min-height: 286px; }
 .daily-reading .drawn-card { width: min(100%, 232px); margin: 0 auto; transform: rotate(-4deg) scale(1.02); }
+/* A round card has no height to spare, so the daily card gets more width than a portrait one at every tier. */
+.reading-room[data-shape="round"] .daily-reading { grid-template-columns: minmax(220px, 330px) minmax(0, 1fr); }
+.reading-room[data-shape="round"] .daily-reading .drawn-card { width: min(100%, 310px); }
+@media (max-width: 700px) { .reading-room[data-shape="round"] .daily-reading { grid-template-columns: 190px minmax(0, 1fr); } .reading-room[data-shape="round"] .daily-reading .drawn-card { width: 184px; } }
+@media (max-width: 480px) { .reading-room[data-shape="round"] .daily-reading { grid-template-columns: minmax(0, 1fr); } .reading-room[data-shape="round"] .daily-reading .drawn-card { width: min(72vw, 280px); } }
 .drawn-card { position: relative; aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; padding: 12px; border: 2px solid rgba(230,177,126,.82); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 10px 12px 0 rgba(0,0,0,.18), 0 16px 36px rgba(0,0,0,.2); transform: rotate(-3deg); }
 .drawn-card::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(255,250,244,.55); }
 .drawn-card-inner { position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 8px 4px; text-align: center; }
