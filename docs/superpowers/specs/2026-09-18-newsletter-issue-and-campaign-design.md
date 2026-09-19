@@ -84,13 +84,13 @@ once by `tools/build_zodiac_figures.cjs` from `constellations.lines.json` and `s
 git-ignored `output/imagegen/newsletter/` with the masters. Every vertex matches a catalogued star to within
 0.01°; the build fails if one does not.
 
-`tools/build_newsletter_assets.ps1` (ImageMagick, like `export_divination_art.ps1`) writes, under
-`assets/newsletter/`:
+`tools/build_newsletter_assets.cjs` (ImageMagick; Node and not PowerShell, because passing the zodiac
+characters to ImageMagick is reliable from Node) writes, under `assets/newsletter/`:
 
 | File | What |
 |---|---|
-| `masthead.jpg` 1200×520 | the celestial hero with the lotus logo composited in its empty centre: one image, so no background image is needed |
-| `moon-arc.jpg` 1200×168 | the moon-phase arc cropped from the foot of the hero |
+| `masthead.jpg` 1200×430 | the celestial hero with the lotus logo composited in its empty centre: one image, so no background image is needed |
+| `moon-arc.jpg` 1200×170 | the moon-phase arc cropped from the foot of the hero |
 | `signs/<sign>.jpg` 1200×520 ×12 | the banners, 89 to 129 KB each |
 | `glyphs/<sign>.png` 136×136 ×12 | each sign's glyph in gold on the panel colour, because live zodiac glyphs render unreliably in mail clients |
 
@@ -122,7 +122,7 @@ files 644, so the `ishtar-app` service account that runs the command can read th
 
 The HTML is pure functions of the issue: `renderEmail(issue, options)`, `signSection(sign, text)`,
 `noSignSection()`, `missingSignSection(sign)`, `footer()`. Text is HTML-escaped; the reading's first sentence is
-pulled out only when the first paragraph has more than one sentence. The build fails if the HTML exceeds 90 KB.
+pulled out only when the first paragraph has more than one sentence. The build fails (exit 6) if the HTML exceeds 90 KB.
 
 ### 3. Corrections the guard refused (change to piece 2)
 
