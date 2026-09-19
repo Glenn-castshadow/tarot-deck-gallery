@@ -1,5 +1,43 @@
 # VPS deployment
 
+## 2026-09-19 Ishtar deck: the number of suit objects corrected on 13 cards
+
+Deployed `70413c6`. **Static only, images only.** Glenn: "some cards don't have correct number of totems",
+then "fix unattended".
+
+**Audit.** All 56 suit cards counted at full size by four independent counters, one per suit, each listing
+every object by position before totalling; every card flagged was then counted again by eye from a zoomed
+crop. Wrong, as shown to visitors: Five of Wands 6, Ten of Wands about 15; Six of Cups 7, Eight 9, Nine 10,
+Ten 13; Six of Swords 5, Eight 10, Nine 10; Six of Pentacles 5, Seven 8, Eight 14 (eight on the arch and six
+more on the workbench), Nine 8. All 16 court cards show one object. Judgement calls left as they are: the Four
+of Wands' two outer garland posts (counted as wands), the Six of Wands' banner pole (not counted), the Queen of
+Wands' forked staff (one), the King of Pentacles' engraved aureole (not a coin). Not a count defect but noted:
+the Two and Three of Pentacles' discs carry an eight-point star, not the lotus the rest of the suit uses.
+
+**Fix.** The repo holds no prompts for this deck, so each card was corrected with `tools/edit_card_art.cjs`:
+the image edit API (`gpt-image-2`, high quality) is given the existing raw illustration and an instruction, and
+repaints only what the instruction names. What was learned: "remove one" overshoots (the first Seven of
+Pentacles lost three coins); naming each object by position ("the fourth coin from the top", "the outermost
+sword at the far left") works, and adding to a too-small count is more reliable than removing from a
+too-large one. 27 edits for 13 cards. Every result was counted before it was accepted, and the 13 were checked
+again after typesetting because the builder crops about 5% off each side and lays the title over the bottom:
+the first corrected Nine of Pentacles had its ninth coin under the title, so the coin was moved into her hand.
+Originals and failed attempts are kept in `deck-art/ishtar-insights/raw-fronts/rejected/` with their counts in
+the file names; instructions and usage are in `deck-art/ishtar-insights/generation-records/`. Only the 13 cards
+were typeset (`build_ishtar_print.build_card`) and exported; the print sheet layouts under
+`print-ready/sheets/` still hold the old art and need `python tools/build_ishtar_print.py` before any printing.
+
+**Release.** `/opt/tarot-game/releases/20260919-ishtar-counts-70413c6`, a `cp -al` hardlink copy of
+`20260919-remove-two-decks-b2e92ab`, by `/tmp/ishtar-counts.sh`: 26 files replaced (13 cards at 360 and 900
+wide), each `rm -f`'d first. Gated on `current`, on the previous release not already serving the corrected
+Nine of Pentacles, on the sha256 of all 26 against the commit's blobs, on a link count of 1 for each, and on
+the previous release's copy being unchanged afterwards. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260919-remove-two-decks-b2e92ab /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Validation.** All 26 images downloaded from ishtarinsights.com hash-identical to the commit; pages 200.
+Images are cached for seven days since this morning's nginx change, so a visitor who viewed one of these
+cards in the hour before this release may see the old art until then; nobody else will.
+
 ## 2026-09-19 The two artist-named reading decks removed
 
 Deployed `b2e92ab`. **Static only.** Glenn's decision ("remove both decks that could be a problem") after the
