@@ -87,6 +87,13 @@ function blocks(file, sheet) {
   return out.filter(b => b.text);
 }
 
+// A correction the guards refused is not thrown away: the owner decides it (tools/review_weekly_prose.cjs).
+// One that fails the block's validator is not kept, because it could not be accepted anyway.
+function suggest(week, o, b, text, why) {
+  week.suggested = {...week.suggested, [b.key]: {text, why}};
+  console.warn(`${o.week} ${b.key}: correction not applied, ${why}; kept for your review`);
+}
+
 function parseArgs(argv, today = new Date().toISOString().slice(0, 10)) {
   const o = {week: null, endpoint: 'http://127.0.0.1:8088/v1', model: 'qwen3.8-27b-local', out: 'output/weekly-prose'};
   for (let i = 0; i < argv.length; i++) {
@@ -114,6 +121,7 @@ async function main(argv, options = {}) {
     const had = week.proof.blocks[b.key];
     if (had && had.sha === sha(b.text)) continue;   // already judged, text unchanged
     delete week.proof.blocks[b.key];
+    if (week.suggested) delete week.suggested[b.key];
     let verdict = null;
     for (let n = 1; n <= 3 && !verdict; n++) {
       try {
@@ -140,10 +148,10 @@ async function main(argv, options = {}) {
       if (canonical !== b.text) {
         const problem = b.check(canonical);
         if (problem) console.warn(`${o.week} ${b.key}: correction discarded, it fails the validator (${problem})`);
-        else if (factWords(canonical) !== factWords(b.text)) console.warn(`${o.week} ${b.key}: correction discarded, it changes a fact word`);
+        else if (factWords(canonical) !== factWords(b.text)) suggest(week, o, b, canonical, 'it changes a fact word');
         else {
           const edits = wordEdits(b.text, canonical), limit = Math.ceil(b.text.trim().split(/\s+/).length * MAX_EDIT_SHARE);
-          if (edits > limit) console.warn(`${o.week} ${b.key}: correction discarded, ${edits} word edits is over the limit of ${limit}`);
+          if (edits > limit) suggest(week, o, b, canonical, `${edits} word edits is over the limit of ${limit}`);
           else { b.set(canonical); week.originals = {...week.originals, [b.key]: b.text}; text = canonical; edited = true; }
         }
       }
@@ -160,5 +168,5 @@ async function main(argv, options = {}) {
   return signsPassed >= 10 && current.includes('overview') ? 0 : 3;
 }
 
-module.exports = {JUDGE, MAX_EDIT_SHARE, WEEKDAYS, SKY_WORDS, factWords, wordEdits, parseVerdict, sha, parseArgs, main};
+module.exports = {JUDGE, MAX_EDIT_SHARE, WEEKDAYS, SKY_WORDS, factWords, wordEdits, parseVerdict, sha, blocks, parseArgs, main};
 if (require.main === module) main(process.argv.slice(2)).then(code => process.exit(code), error => { console.error(error); process.exit(1); });
