@@ -75,8 +75,15 @@ function pullQuote(text) {
 }
 
 const panelOpen = 'background:#10252e;border:1px solid #3d5a5a;';
-const button = (href, label, filled) => `<a href="${href}" style="display:inline-block;padding:13px 26px;border-radius:3px;font:600 15px ${SANS};text-decoration:none;` +
-  (filled ? 'background:#e6b17e;color:#20152b;' : 'border:1px solid #d9c18e;color:#f4e8d1;') + `">${label}</a>`;
+// Outlined, light on dark, and never filled: in dark mode a mail app darkens a filled gold button to
+// brown and flips its dark label to white (seen in the first real test send, 2026-09-18).
+const button = (href, label) => `<a href="${href}" style="display:inline-block;padding:13px 26px;border-radius:3px;font:600 15px ${SANS};text-decoration:none;border:1px solid #d9c18e;color:#f4e8d1;">${label}</a>`;
+
+// Outlook.com, the new Outlook and the Gmail apps recolour solid backgrounds in dark mode, even on a
+// design that is already dark: #20152b arrived as a washed grey-purple. They never touch a background
+// image, and a gradient is one, so every solid colour gets a same-colour gradient on top of it. A client
+// that does not know gradients (Outlook on Windows) ignores the second declaration and shows the first.
+const lockColours = html => html.replace(/background:(#[0-9a-f]{6});/g, (all, colour) => `${all}background-image:linear-gradient(${colour},${colour});`);
 const kicker = text => `<p style="margin:0 0 2px;font:500 11px/1.6 ${MONO};letter-spacing:.08em;text-transform:uppercase;color:#d9c18e;">${text}</p>`;
 
 function signHeading(sign) {
@@ -96,7 +103,7 @@ function signSection(sign, text) {
   ${signHeading(sign)}
   ${quote ? `<p style="margin:24px 0 20px;padding:2px 0 2px 18px;border-left:2px solid #d5b877;font:italic 600 20px/1.5 ${SERIF};color:#e2c990;">${esc(quote)}</p>` : '<p style="margin:0 0 20px;font-size:0;line-height:0;">&nbsp;</p>'}
   ${paragraphs(rest, `margin:0 0 16px;font:16px/1.7 ${SANS};color:#f4e8d1;`)}
-  ${button(`${SITE}/sky/`, 'Read today&#39;s sky', false)}
+  ${button(`${SITE}/sky/`, 'Read today&#39;s sky')}
 </td></tr>`;
 }
 
@@ -106,7 +113,7 @@ function missingSignSection(sign) {
   return `<tr><td bgcolor="#10252e" style="${panelOpen}padding:30px 34px;">
   ${signHeading(sign)}
   <p style="margin:22px 0 18px;font:16px/1.7 ${SANS};color:#f4e8d1;">There is no ${sign.name} reading this week: the one we wrote did not pass our own checks, and we would sooner send none than a poor one. The week&#39;s sky above holds for every sign, and today&#39;s reading for ${sign.name} is on the site.</p>
-  ${button(`${SITE}/sky/`, 'Read today&#39;s sky', false)}
+  ${button(`${SITE}/sky/`, 'Read today&#39;s sky')}
 </td></tr>`;
 }
 
@@ -115,7 +122,7 @@ function noSignSection() {
   ${kicker('Make it yours')}
   <h2 style="margin:0 0 12px;font:700 28px/1.15 ${SERIF};color:#f4e8d1;">Tell us your sign</h2>
   <p style="margin:0 0 20px;font:16px/1.7 ${SANS};color:#f4e8d1;">Each week there is a reading written for every sign. Choose yours once and it arrives here, under the week&#39;s sky.</p>
-  ${button(`${SITE}/account/`, 'Choose your sign', true)}
+  ${button(`${SITE}/account/`, 'Choose your sign')}
 </td></tr>`;
 }
 
@@ -138,7 +145,7 @@ function renderEmail(fit, {subject, only, fonts = false} = {}) {
   const middle = only === 'none' ? noSignSection()
     : only ? section(SIGNS.find(s => s.key === only))
     : SIGNS.map((sign, i) => `*|${i ? 'ELSEIF' : 'IF'}:SIGN=${sign.key}|*\n${section(sign)}`).join('\n') + `\n*|ELSE:|*\n${noSignSection()}\n*|END:IF|*`;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(subject)}</title>
+  return lockColours(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(subject)}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light">
 ${fonts ? '<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">' : ''}
 </head><body style="margin:0;padding:0;background:#160c20;">
@@ -157,7 +164,7 @@ ${fonts ? '<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400
 </td></tr>
 ${middle}
 ${footer()}
-</table></td></tr></table></body></html>`;
+</table></td></tr></table></body></html>`);
 }
 
 // What the campaign is called, and what goes in the inbox.

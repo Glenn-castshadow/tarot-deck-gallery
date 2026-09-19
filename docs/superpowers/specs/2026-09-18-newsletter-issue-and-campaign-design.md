@@ -195,6 +195,20 @@ prints checklist items; warns at 100 members; `--test` posts one address; a sha 
 requests a URL ending `/actions/send` or `/actions/schedule` (asserted over every recorded call); no key, no
 calls. Each new test is seen to fail first.
 
+## Amendment after the first real test send (2026-09-18)
+
+The mail app Glenn read the test in recoloured the design in dark mode: `#20152b` arrived as a washed
+grey-purple, the teal panel as slate, and the filled gold button as brown with its dark label flipped to white.
+Images were untouched. Two changes, both in `tools/build_newsletter.cjs`, with a test for each:
+
+- Every solid background in the rendered email gets a same-colour `background-image:linear-gradient(c,c)`
+  directly after it (`lockColours`, applied once to the whole document). The apps that recolour never touch a
+  background image, and a gradient is one; a client that does not know gradients shows the plain colour. This
+  is the one exception to "no CSS background images": the rule was about pictures Outlook on Windows cannot
+  show, and a same-colour gradient over the same colour loses nothing there. `url(` is still forbidden.
+- No filled button. Both buttons are outlined, light text on the dark panel, which a recolouring app has no
+  reason to flip.
+
 ## Out of scope
 
 Sending or scheduling; a Mailchimp stored template; per-issue generated art; moon-phase icons; a BIMI logo or

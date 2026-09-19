@@ -93,7 +93,9 @@ test('the footer holds what Mailchimp, the law and our own specs require', () =>
 
 test('the HTML keeps to what mail clients render', () => {
   const html = campaign(makeWeek());
-  assert.equal(/background-image|url\(/i.test(html), false, 'no CSS background images');
+  assert.equal(/url\(/i.test(html), false, 'no CSS background images (Outlook on Windows does not show them)');
+  // The one background-image allowed is the same-colour gradient that locks a solid colour (next test).
+  for (const image of html.match(/background-image:[^;"]*/g) || []) assert.match(image, /^background-image:linear-gradient\((#[0-9a-f]{6}),\1\)$/, image);
   assert.equal(/\.webp|<svg/i.test(html), false, 'no WebP, no SVG');
   assert.equal(/<(?:style|script)\b/i.test(html), false, 'styles are inline; no scripts');
   const imgs = html.match(/<img\b[^>]*>/g);
@@ -172,3 +174,18 @@ test('exit codes: 1 no file or not a Monday, 4 no overview, 5 a missing sign unl
   assert.throws(() => B.parseArgs(['--subject', '4']), /--subject/);
   assert.throws(() => B.parseArgs(['--send']), /unknown argument/);
 }));
+
+test('every solid background is locked against dark-mode recolouring, and no button is a filled one', () => {
+  // Seen in the first real test send (2026-09-18): the mail app turned #20152b into a washed grey-purple,
+  // the teal panel into slate, and the gold button into brown with a white label. Those apps never touch a
+  // background image, and a gradient is one; a client that ignores it falls back to the plain colour.
+  for (const html of [campaign(makeWeek()), B.renderEmail(B.fitBlocks(makeWeek()), {subject: 'x', only: 'none'})]) {
+    const solids = html.match(/background:#[0-9a-f]{6};/g) || [];
+    assert.ok(solids.length >= 8, 'the email has solid backgrounds');
+    for (const found of html.matchAll(/background:(#[0-9a-f]{6});(.{0,60})/g)) {
+      assert.ok(found[2].startsWith(`background-image:linear-gradient(${found[1]},${found[1]});`), `${found[0].slice(0, 40)} has no lock`);
+    }
+    assert.equal(html.includes('background:#e6b17e'), false, 'a filled gold button can have its label flipped to white on brown');
+    assert.match(html, /border:1px solid #d9c18e;color:#f4e8d1;/, 'buttons are outlined, light on dark');
+  }
+});
