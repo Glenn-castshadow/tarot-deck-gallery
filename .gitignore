@@ -76,3 +76,10 @@ deck-art/earth-warden/print-ready/
 deck-art/earth-warden/contact-sheets/
 deck-art/ishtar-insights/raw-fronts/rejected/
 deck-art/earth-warden/raw-fronts/rejected/
+# Round decks (Codex, 2026-09-19): native PNGs, proofs and zips stay on the NAS; web JPEGs, plans and manifests are versioned.
+deck-art/*-round/cards/
+deck-art/*-round/rejected/
+deck-art/*-round/contact-sheets/
+deck-art/*-round/references/
+deck-art/round-decks-queue.json
+output/round-decks/

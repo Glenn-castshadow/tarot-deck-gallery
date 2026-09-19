@@ -47,3 +47,15 @@ node --check app.js
 Use `--deck light-minimal`, `--deck arts-and-crafts` or `--deck expressive-figures` to rebuild one deck. `--web-only` skips print PNG export. The check validates complete card inventories, unique selected source files, native dimensions, all print canvases and all web derivatives.
 
 The planning scripts prepare queues for the built-in image tool; they do not make paid API calls. Reruns preserve selected revisions. A checkout containing only Git files needs the ignored native sources copied from the NAS before rebuilding.
+
+## Round decks
+
+`deck-art/arcana-round` (Arcana) and `deck-art/dia-de-los-muertos-round` (Día de los Muertos) are circular decks made by Codex with the built-in image tool: 78 fronts plus `78-back.png`, each a 1254 × 1254 square with the circle painted on cream. The circle drifts and is slightly elliptical from card to card, so the build crops every card to its own bounding box and squares it up:
+
+```powershell
+python tools/build_round_decks.py
+```
+
+It writes `assets/<deck>-deck/cards/NN.jpg` (600 px), `large/NN.jpg` (1200 px) and `back.jpg`, and fails if a deck is incomplete, a source repeats, or cream paper shows on the ring just inside the circle's edge. No print canvases are built; the sources are proofs.
+
+On the site a round deck is a `readingDecks` entry in `tarot.js` with `shape: "round"`. That sets `data-shape="round"` on the reading room and the card dialog, and the CSS makes every card box 1:1 with `border-radius: 50%`. In the Celtic Cross a round crossing card sits to the right of card 1 instead of being turned 90°, which would cover it exactly. The Día de los Muertos back is not reversible (its skulls and candles have an up); that does not matter on the site, where backs are always shown upright, and does matter in print.

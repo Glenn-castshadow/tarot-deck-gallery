@@ -35,6 +35,10 @@
 .tarot-layout-celtic .tarot-place:nth-last-child(-n+4) .tarot-table-label { top: 50%; left: 112%; width: 84%; transform: translateY(-50%); text-align: left; font-size: 8px; }
 .tarot-crossing .tarot-dealt-card { transform: rotate(90deg); }
 .tarot-crossing .tarot-position-number { transform: rotate(-90deg); }
+/* A round card turned 90deg covers the card beneath it exactly, so round decks lay the crossing card, with its label, to the right instead. */
+.reading-room[data-shape="round"] .tarot-crossing { transform: translate(-8%, -50%); }
+.reading-room[data-shape="round"] .tarot-crossing .tarot-dealt-card { transform: none; }
+.reading-room[data-shape="round"] .tarot-crossing .tarot-position-number { transform: none; }
 .tarot-crossing .tarot-table-label { top: auto; bottom: calc(100% + 8px); }
 .tarot-place:first-of-type { z-index: 1; }
 .tarot-layout-horseshoe { aspect-ratio: 100 / 65; }

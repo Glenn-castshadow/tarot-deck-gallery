@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 44,
+  "name": "Nine of Cups",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:03:50.073Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-8bab6559-f6c7-4fd4-aeea-25161367c7ce.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/44-nine-of-cups.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/44-nine-of-cups.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Nine of Cups: eight chalices on shelf; add ninth and replace foreground cup-shaped candle holders with plain candles. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

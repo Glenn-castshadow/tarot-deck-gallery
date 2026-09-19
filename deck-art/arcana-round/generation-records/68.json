@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 68,
+  "name": "Five of Pentacles",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:06:38.409Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-d423ada1-2d07-4bd5-bae2-f054d46339c3.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/68-five-of-pentacles.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/68-five-of-pentacles.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Five of Pentacles: six in window, remove center from middle row so 1+2+2=5. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

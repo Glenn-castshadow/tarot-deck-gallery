@@ -48,6 +48,9 @@
     ishtar: { name: "Ishtar Insights", assets: "/assets/ishtar-deck", description: "A luminous world of lotus symbolism, deep violet and holographic reflections.", back: "The shared mirrored lotus back for all 78 cards." },
     "earth-warden": { name: "Earth Warden", assets: "/assets/earth-warden-deck", description: "Women who keep the wild places: spirit-lit forests, springs, high rock and harvest ground, painted in moss green, loam and antique gold.", back: "A great tree whose roots mirror its branches, ringed with ferns and antlers, made to read the same either way up." },
     "arts-and-crafts": { name: "Arts & Crafts", assets: "/assets/arts-and-crafts-deck", description: "Botanical woodcut scenes in forest green, madder red and ochre, with quiet references to craft, initiation and Masonic geometry.", back: "A botanical repeat with acacia, oak, drawing compasses and measured geometry, designed for both orientations." },
+    // shape: "round" decks ship square images of a circular card; the corners are clipped in CSS.
+    "arcana-round": { name: "Arcana", shape: "round", assets: "/assets/arcana-round-deck", description: "A circular deck in the Pre-Raphaelite manner: auburn-haired figures in Mediterranean gardens, ringed in deep teal and gold.", back: "An eight-pointed gold star ringed by four irises and four shell fans on deep teal, mirrored so it reads the same either way up." },
+    "dia-de-los-muertos-round": { name: "Día de los Muertos", shape: "round", assets: "/assets/dia-de-los-muertos-round-deck", description: "A circular deck for the Day of the Dead: calavera faces, embroidered dress, candlelit ofrendas and a ring of marigolds.", back: "A great marigold at the centre, with sugar skulls, candles and papel picado inside a ring of marigolds." },
   };
   let activeReadingDeck = "ishtar";
   const requestedDeck = new URLSearchParams(location.search).get("deck");
@@ -124,7 +127,7 @@
       const group = card ? (card.type === "major" ? `Major Arcana · ${card.number}` : `${card.suit} · ${card.number}`) : "The matching back";
       const source = readingArt(index);
       return `<button type="button" class="ishtar-card" data-ishtar-card="${index}" aria-label="View ${name} large">
-        <img src="${source}" alt="${name} artwork" loading="lazy" decoding="async" width="360" height="597">
+        <img src="${source}" alt="${name} artwork" loading="lazy" decoding="async" width="360" height="${deck.shape === "round" ? 360 : 597}">
         <span class="ishtar-card-group">${group}</span><span class="ishtar-card-name">${name}</span>
       </button>`;
     }).join("");
@@ -353,6 +356,7 @@
 
   function renderReading(animateDeal = false) {
     document.querySelector(".reading-room").dataset.deck = activeReadingDeck;
+    document.querySelector(".reading-room").dataset.shape = dialog.dataset.shape = readingDecks[activeReadingDeck].shape || "portrait";
     document.querySelector(".reading-badge").textContent = `${readingDecks[activeReadingDeck].name} · 78 cards`;
     document.querySelectorAll("[data-reading-deck]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.readingDeck === activeReadingDeck));

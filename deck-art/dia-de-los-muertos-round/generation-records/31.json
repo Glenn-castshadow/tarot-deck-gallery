@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 31,
+  "name": "Ten of Wands",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:03:08.112Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-9d873873-0104-45a5-a02f-04c5d3e42f83.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/31-ten-of-wands.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/31-ten-of-wands.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Ten of Wands: four left and five right = nine; correct to ten. Redraw the carried rods as EXACTLY TWO CLEAR GROUPS OF FIVE straight unbranched wooden wands each, five separate upper ends and five separate lower ends per group, ten total. Avoid twig branches and merged rods. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

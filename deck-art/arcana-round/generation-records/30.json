@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 30,
+  "name": "Nine of Wands",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:01:38.097Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-16744f31-8d0b-4a95-aa0c-35a9726e5b62.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/30-nine-of-wands.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/30-nine-of-wands.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Nine of Wands: four background left, three right plus held one = eight; correct to nine. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

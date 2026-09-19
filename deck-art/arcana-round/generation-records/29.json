@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 29,
+  "name": "Eight of Wands",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:16:27.699Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-e4ef3dfd-a92d-42bc-8188-d9264b5d20db.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/29-eight-of-wands.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/29-eight-of-wands.png",
+  "prompt": "Add a FOURTH ROW of two flying flower wands to this image, in the conspicuously blank sky beneath the existing three rows. One new wand in lower left from x210,y640 to x560,y790; one new wand in lower right from x730,y640 to x1050,y790. Match their diagonal angle, wooden shafts, white blossoms and cream ribbons to the existing six. Keep the existing three rows of two completely unchanged. The only edit is adding the missing bottom row of two. After editing, there are four rows of two, EIGHT wands. Preserve landscape, frame and title."
+}
