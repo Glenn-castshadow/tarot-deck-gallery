@@ -1,5 +1,40 @@
 # VPS deployment
 
+## 2026-09-18 First-visit critique fixes
+
+Deployed `2b2969b`. **Static only.**
+
+**Release.** `/opt/tarot-game/releases/20260918-critique-fixes-2b2969b`, a `cp -al` hardlink copy of
+`20260918-lotus-eye-0739216`, by `/tmp/ishtar-critique-fixes.sh`. Thirteen files replaced (`site-shell.js`,
+`site-shell.css`, `hub.js`, `hub.css`, `daily-horoscope.js` and all eight pages' HTML), each `rm -f`'d before
+extraction. The tar was built with `git -c core.autocrlf=false archive` and its contents hashed against the
+commit's blobs before shipping; the thirteen live files were confirmed byte-identical to `0739216` and free of
+the needle `ishtar-sun-sign-v1`. Gated on `current`, on the sha256 of the thirteen files, on a link count of 1
+for each, and on the previous release still lacking the needle. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-lotus-eye-0739216 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (from a first-visit walk of the live site, at Glenn's "let's fix").**
+- The hero subline states the offer ("Free tarot readings, a real birth chart and a daily horoscope. No ads,
+  nothing to install.") and the strip names Tarot, Astrology and Older traditions with one fact each. The copy
+  is Claude's; the headline is unchanged. On phones the strip is near-opaque so it reads over the moon arc.
+- Hero and hub links carry the section hash (`/tarot/#tarot-readings`, `/charts/#birthday-room`,
+  `/sky/#sky-calendar`), which `mobile-sections.js` already follows, so a phone lands on an open fold.
+- The hub's "Your Sun sign" is an inline picker when no birth profile exists. The choice is kept under the
+  `IshtarStorage` key `ishtar-sun-sign-v1` (memory only unless optional saving is allowed) and travels to the
+  Sky page as `/sky/?sign=<name>#daily-horoscope`; the Sky widget honours `?sign=`, then the stored key, and
+  "Use my birth sign" clears it.
+- The horoscope's Moon line says its snapshot is 12:00 UTC and links to the live Moon below, since the two can
+  show different signs on the same page.
+
+**Cache keys.** `site-shell.js?v=9` and `site-shell.css?v=6` on all eight pages; `hub.js?v=2`,
+`hub.css?v=sign-1` on `/`; `daily-horoscope.js?v=4` on `/sky/`.
+
+**Validation.** All eight pages, `/api/health/` and the five assets return 200; needles confirmed on the served
+`hub.js`, `site-shell.js` and `daily-horoscope.js`; every page serves `site-shell.js?v=9`. In a browser at
+ishtarinsights.com: picking Sagittarius on the hub produced the Sky link, and `/sky/?sign=sagittarius` opened
+on Sagittarius with the new Moon line. Locally at 375px before the deploy: "Begin a reading" opened the Tarot
+fold with the deck on screen (lotus eye 59px wide), no horizontal overflow. Suite 677 of 677.
+
 ## 2026-09-18 The lotus eye on the Ishtar card back
 
 Deployed `0739216`. **Static only.**
