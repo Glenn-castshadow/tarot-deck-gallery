@@ -1,5 +1,57 @@
 # VPS deployment
 
+## 2026-09-19 The Earth Warden reading deck
+
+Deployed `116f7bb`. **Static only.** Glenn's brief: a new original deck, "earth warden", "feminine aspect",
+art made through the API; he chose luminous mythic fantasy, an all-women cast and one generation run, approved
+the design and its cost in chat, saw the contact sheets, and said deploy.
+
+**The deck.** 78 fronts and a back generated with `tools/make_deck_art.cjs` (OpenAI images API, `gpt-image-2`,
+1024x1536, medium quality, 1,372 output tokens each) from `deck-art/earth-warden/scenes.json`: one style
+preamble, 78 scenes written for an all-women cast with exact object counts, per-suit object definitions
+(living staves, stone-and-shell chalices, obsidian swords, flower-carved gold discs) and a reversible back. No
+artist is named in any prompt, label or description, and the scenes file says none may be added. The Ten of
+Swords is a cloak on a dawn shore with ten blades and no body, written that way so the API would not refuse it.
+Card names are standard, so the site's meanings apply unchanged.
+
+**Review.** Every image looked at by eye (two count-audit agents died on the Claude spend limit before
+counting anything). Majors, courts and the back were clean: all women, no lettering, right symbols. Eleven
+numbered cards had the wrong number of suit objects (Wands 6, 8, 9, 10; Cups 3, 9, 10; Swords 8; Pentacles 6,
+8, 9) and were corrected with `tools/edit_card_art.cjs --quality medium`, each recounted from a zoomed crop.
+What the Ten of Wands taught over seven attempts: asking this model to add or remove one object moves the
+count by two; asking for small countable groups ("five, a gap, then five") works; and chained edits darken and
+grain the image, so an instruction that works should be re-applied near the original. The Five of Wands reads
+as five or six staves depending on the eye and was left. Originals and attempts are in
+`deck-art/earth-warden/raw-fronts/rejected/` (git-ignored natives); prompts and usage are in
+`deck-art/earth-warden/generation-records/`.
+
+**Build and wiring.** `python tools/build_companion_decks.py --deck earth-warden --web-only` (the builder no
+longer lists the two decks removed this morning, so a rebuild cannot restore them): titles typeset in a footer
+below the uncropped art, 360-wide cards and 1080-wide large views, 49 MB. `readingDecks` gains `earth-warden`;
+the chooser shows Ishtar Insights, Earth Warden, Arts & Crafts; the Tarot page's descriptions and `about.html`
+say three decks. Print canvases were not built.
+
+**Release.** `/opt/tarot-game/releases/20260919-earth-warden-116f7bb`, a `cp -al` hardlink copy of
+`20260919-ishtar-counts-70413c6`, by `/tmp/ishtar-earth-warden.sh`: 161 files, 158 new under
+`assets/earth-warden-deck/` and 3 replaced (`tarot.js`, `tarot/index.html`, `about.html`), each `rm -f`'d first.
+Gated on `current`, on the previous release having no deck folder, on the sha256 of all 161 files, on a link
+count of 1 for the three replaced files, on 78 cards and 79 large views being present, and on the previous
+release still lacking the folder and the needle `earth-warden`. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260919-ishtar-counts-70413c6 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache key.** `tarot.js?v=9` on `/tarot/`.
+
+**Validation.** Pages and sample card, large and back images 200 with `image/jpeg`; nine sampled large images
+hash-identical to the commit; the served `tarot.js` and Tarot page carry the deck. In a browser at
+ishtarinsights.com, `/tarot/?deck=earth-warden` selects the deck, the back loads, the daily card turned over
+to the deck's Page of Pentacles, no image is broken and the content-security policy blocks nothing. Suite 692
+of 692.
+
+**Also this night.** The 03:30 `Ishtar-Daily-Prose` run ended `rc=1`: llama.cpp did not become healthy within
+180 seconds while loading Glimmer from `N:`, and the server was healthy a few minutes later. No visitor
+impact, the live site held prose through 2026-09-24; the off-site backup step ran. If it recurs, raise the
+wait in `%LOCALAPPDATA%\hermes\llama-server\start.ps1` or keep the Glimmer file on local disk.
+
 ## 2026-09-19 Ishtar deck: the number of suit objects corrected on 13 cards
 
 Deployed `70413c6`. **Static only, images only.** Glenn: "some cards don't have correct number of totems",
