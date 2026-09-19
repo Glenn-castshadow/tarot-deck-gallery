@@ -2,6 +2,7 @@ import hashlib
 import io
 import json
 import tempfile
+import urllib.error
 from pathlib import Path
 from unittest import mock
 
@@ -18,11 +19,15 @@ TITLE = f'Ishtar Insights {WEEK}'
 
 class FakeMailchimp:
     """Records every call and answers like the Marketing API for the endpoints the command uses."""
-    def __init__(self, campaigns=(), members=2, ready=True, items=()):
-        self.calls, self.campaigns, self.members, self.ready, self.items = [], list(campaigns), members, ready, list(items)
+    def __init__(self, campaigns=(), members=2, ready=True, items=(), fail=None):
+        self.calls, self.campaigns, self.members, self.ready, self.items, self.fail = [], list(campaigns), members, ready, list(items), fail
 
     def __call__(self, method, path, body=None, params=None):
         self.calls.append((method, path, body, params))
+        if self.fail:
+            fail_method, fail_suffix, fail_exception = self.fail
+            if method == fail_method and path.endswith(fail_suffix):
+                raise fail_exception
         if (method, path) == ('GET', '/campaigns'):
             return {'campaigns': self.campaigns}
         if (method, path) == ('POST', '/campaigns'):
@@ -74,8 +79,20 @@ class DraftCampaignTests(TestCase):
         for args in ([], ['--test', 'owner@example.com'], ['--replace']):
             fake = FakeMailchimp(campaigns=[{'id': 'old1', 'web_id': 7, 'status': 'save', 'settings': {'title': TITLE}}] if args == ['--replace'] else [])
             self.run_command(fake, *args)
+            self.assertGreaterEqual(len(fake.calls), 4)
             for method, path, _, _ in fake.calls:
                 self.assertFalse(path.endswith('/actions/send') or path.endswith('/actions/schedule'), path)
+                # Check that the call is one of the allowed endpoints
+                allowed = (
+                    (method, path) == ('GET', '/campaigns') or
+                    (method, path) == ('POST', '/campaigns') or
+                    (method == 'PATCH' and path.startswith('/campaigns/')) or
+                    (method == 'PUT' and '/campaigns/' in path and path.endswith('/content')) or
+                    (method == 'GET' and '/campaigns/' in path and path.endswith('/send-checklist')) or
+                    (method == 'GET' and path.startswith('/lists/')) or
+                    (method == 'POST' and '/actions/test' in path and args == ['--test', 'owner@example.com'])
+                )
+                self.assertTrue(allowed, f'Unexpected call: {method} {path}')
 
     def test_an_existing_draft_is_left_alone_without_replace_and_updated_with_it(self):
         draft = [{'id': 'old1', 'web_id': 7, 'status': 'save', 'settings': {'title': TITLE}}]
@@ -137,6 +154,58 @@ class DraftCampaignTests(TestCase):
         self.manifest.update(signs_included=['aries'] * 11, signs_missing=['gemini'])
         self.write_manifest()
         self.assertIn('missing-reading panel: gemini', self.run_command(FakeMailchimp()))
+
+    def http_error(self, code, body):
+        return urllib.error.HTTPError('https://example.invalid', code, 'Bad Request', {}, io.BytesIO(body))
+
+    def test_a_mailchimp_rejection_is_reported_in_mailchimps_words_without_a_traceback(self):
+        fake = FakeMailchimp(fail=('PUT', '/content', self.http_error(400, b'{"detail": "Your HTML is too large."}')))
+        with self.assertRaises(CommandError) as caught:
+            self.run_command(fake)
+        message = str(caught.exception)
+        self.assertIn('400', message)
+        self.assertIn('Your HTML is too large.', message)
+        self.assertIn('--replace', message)
+
+    def test_a_timeout_is_reported_without_a_traceback(self):
+        fake = FakeMailchimp(fail=('GET', '/campaigns', urllib.error.URLError('timed out')))
+        with self.assertRaisesMessage(CommandError, 'did not answer'):
+            self.run_command(fake)
+
+    def test_a_rejected_test_send_never_echoes_the_address(self):
+        body = b'{"detail": "owner@example.com looks fake or invalid"}'
+        fake = FakeMailchimp(fail=('POST', '/actions/test', self.http_error(400, body)))
+        with self.assertRaises(CommandError) as caught:
+            self.run_command(fake, '--test', 'owner@example.com')
+        self.assertNotIn('owner@example.com', str(caught.exception))
+        self.assertIn('test send', str(caught.exception))
+
+    def test_a_truncated_manifest_is_caught_before_any_call(self):
+        (Path(self.tmp.name) / WEEK / 'issue.json').write_text('{"week":', encoding='utf-8')
+        fake = FakeMailchimp()
+        with self.assertRaisesMessage(CommandError, 'no pushed issue'):
+            self.run_command(fake)
+        self.assertEqual(fake.calls, [])
+
+    def test_a_missing_manifest_key_is_caught_before_any_call(self):
+        del self.manifest['signs_missing']
+        self.write_manifest()
+        fake = FakeMailchimp()
+        with self.assertRaises(CommandError) as caught:
+            self.run_command(fake)
+        self.assertIn('signs_missing', str(caught.exception))
+        self.assertEqual(fake.calls, [])
+
+    def test_hashes_the_pushed_bytes_and_preserves_crlf(self):
+        html_with_crlf = '<html><body>line1\r\nline2</body></html>'
+        (Path(self.tmp.name) / WEEK / 'issue.html').write_bytes(html_with_crlf.encode('utf-8'))
+        self.manifest['html_sha256'] = hashlib.sha256(html_with_crlf.encode('utf-8')).hexdigest()
+        self.manifest['bytes'] = len(html_with_crlf.encode('utf-8'))
+        self.write_manifest()
+        fake = FakeMailchimp()
+        self.run_command(fake)
+        content_call = next(c for c in fake.calls if c[0] == 'PUT' and '/content' in c[1])
+        self.assertEqual(content_call[2]['html'], html_with_crlf)
 
 
 class EmptyReplyTests(TestCase):

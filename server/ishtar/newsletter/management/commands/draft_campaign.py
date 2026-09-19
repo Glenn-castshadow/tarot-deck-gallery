@@ -1,6 +1,7 @@
 import hashlib
 import json
 import re
+import urllib.error
 from pathlib import Path
 
 from django.conf import settings
@@ -33,12 +34,30 @@ class Command(BaseCommand):
         folder = Path(settings.NEWSLETTER_ISSUE_DIR) / week
         try:
             manifest = json.loads((folder / 'issue.json').read_text(encoding='utf-8'))
-            html = (folder / 'issue.html').read_text(encoding='utf-8')
-        except OSError as error:
+            data = (folder / 'issue.html').read_bytes()
+        except (OSError, ValueError) as error:
             raise CommandError(f'no pushed issue for {week}: {error}')
-        if hashlib.sha256(html.encode('utf-8')).hexdigest() != manifest['html_sha256']:
+        if hashlib.sha256(data).hexdigest() != manifest['html_sha256']:
             raise CommandError('issue.html does not match the sha256 in issue.json; push the issue again')
+        html = data.decode('utf-8')
 
+        try:
+            for key in ('title', 'subject', 'preview', 'from_name', 'reply_to', 'bytes', 'signs_included', 'signs_missing'):
+                manifest[key]
+        except KeyError as error:
+            raise CommandError(f'issue.json has no {error.args[0]!r}; build and push the issue again')
+
+        try:
+            self.draft(manifest, html, test, replace)
+        except urllib.error.HTTPError as error:
+            said = error.read().decode('utf-8', 'replace')[:600]
+            raise CommandError(f'Mailchimp rejected the request ({error.code}): {said}\n'
+                               f'If a draft was created it may have no content yet; run again with --replace.')
+        except urllib.error.URLError as error:
+            raise CommandError(f'Mailchimp did not answer: {error.reason}. '
+                               f'If a draft now exists, run again with --replace.')
+
+    def draft(self, manifest, html, test, replace):
         campaign = self.existing(manifest['title'])
         if campaign and campaign['status'] != 'save':
             raise CommandError(f"a campaign titled {manifest['title']!r} is already {campaign['status']}; not touching it")
@@ -72,12 +91,21 @@ class Command(BaseCommand):
             self.stdout.write('  WARNING: the free plan carries a weekly newsletter to about 115 subscribers')
 
         if test:
-            mailchimp._request('POST', f"/campaigns/{campaign['id']}/actions/test",
-                               {'test_emails': [test], 'send_type': 'html'})
+            try:
+                mailchimp._request('POST', f"/campaigns/{campaign['id']}/actions/test",
+                                   {'test_emails': [test], 'send_type': 'html'})
+            except urllib.error.HTTPError as error:
+                raise CommandError(f'Mailchimp rejected the test send ({error.code}). The draft itself is in place. '
+                                   f'Check the address you gave; it is not repeated here.')
             self.stdout.write('test sent. A test shows the no-sign version whatever the recipient\'s sign: '
                               'Mailchimp does not fill merge fields in a test.')
-        self.stdout.write(f"review and send it yourself: https://{settings.MAILCHIMP_SERVER}.admin.mailchimp.com/"
-                          f"campaigns/edit?id={campaign.get('web_id', '')}")
+        target = campaign.get('web_id')
+        if target:
+            self.stdout.write(f"review and send it yourself: https://{settings.MAILCHIMP_SERVER}.admin.mailchimp.com/"
+                              f"campaigns/edit?id={target}")
+        else:
+            self.stdout.write(f"review and send it yourself: open the draft titled {manifest['title']!r} in Mailchimp "
+                              f"(campaign id {campaign['id']})")
 
     def existing(self, title):
         found = mailchimp._request('GET', '/campaigns', params={

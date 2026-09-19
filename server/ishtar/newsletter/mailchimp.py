@@ -28,9 +28,9 @@ def _request(method, path, body=None, params=None):
         headers['Content-Type'] = 'application/json'
     request = urllib.request.Request(url, data=data, headers=headers, method=method)
     with urllib.request.urlopen(request, timeout=5) as response:
-        body = response.read()
+        payload = response.read()
     # A test send and a few other actions answer 204 with no body.
-    return json.loads(body) if body.strip() else {}
+    return json.loads(payload) if payload.strip() else {}
 
 
 def _hash(email):
