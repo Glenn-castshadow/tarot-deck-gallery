@@ -4,8 +4,8 @@
    show the wrong number of suit objects). The original moves to a rejected/ folder beside it; a record of
    the instruction and usage goes to <deck>/generation-records/. The key is read from OPENAI_API_KEY and is
    never printed or written anywhere.
-     node tools/edit_card_art.cjs <path-to-raw.png> "<instruction>" [--quality medium|high] [--keep]
-   --keep writes <name>-candidate.png beside the original instead of replacing it. */
+     node tools/edit_card_art.cjs <path-to-raw.png> "<instruction>" [--quality medium|high] [--square] [--keep]
+   --square asks for 1024x1024, for the round decks. --keep writes <name>-candidate.png beside the original instead of replacing it. */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -25,7 +25,7 @@ const PREAMBLE = 'Edit this tarot card illustration. Keep the same painting styl
     const form = new FormData();
     form.append('model', 'gpt-image-2');
     form.append('prompt', PREAMBLE + instruction);
-    form.append('size', '1024x1536');
+    form.append('size', args.includes('--square') ? '1024x1024' : '1024x1536');
     form.append('quality', quality);
     form.append('n', '1');
     for (const [k, v] of Object.entries(extra)) form.append(k, v);

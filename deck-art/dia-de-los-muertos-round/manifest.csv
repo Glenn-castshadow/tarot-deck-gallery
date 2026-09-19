@@ -1,0 +1,80 @@
+﻿index,name,category,file,width,height,sha256
+0,The Fool,major,cards/00-the-fool.png,1254,1254,1303504a24c1b14386c41dfb88784c037d6d3c51a849290a585ed8c04e88d405
+1,The Magician,major,cards/01-the-magician.png,1254,1254,003d27f25aebbf23671482647c3c4885e107dbe59261f5d1cf674bd2d2be2c05
+2,The High Priestess,major,cards/02-the-high-priestess.png,1254,1254,668f3641e64a6edf56fdfede54d2548b5bb5c9cb20cb8f130d2a49e5bea73bd8
+3,The Empress,major,cards/03-the-empress.png,1254,1254,2a303a309e28160c13a8bbeb7b8fdd9c89c31a9ad720e223a3c1c479ecf9bc4e
+4,The Emperor,major,cards/04-the-emperor.png,1254,1254,bd125b15e35a1b0a54035c9232d8c21243dab0608fccb362a2144acebeb647fc
+5,The Hierophant,major,cards/05-the-hierophant.png,1254,1254,30a15e3dfe995d5bf401462b252c8bef8cb39c16b6df38cea7a10cbef9153127
+6,The Lovers,major,cards/06-the-lovers.png,1254,1254,7e6f87a8cdcf3e4c349426f07544e4240ffcfb10b1de1c6c086b944436c9a06a
+7,The Chariot,major,cards/07-the-chariot.png,1254,1254,6daf2fb294699258762103f13d9a4145fe7f0eecf89722b4717feb7320656a2a
+8,Strength,major,cards/08-strength.png,1254,1254,9885d308a0e31ab7e111aba20d4492b3c463e93ba420c941ae875b6aaf6fdac6
+9,The Hermit,major,cards/09-the-hermit.png,1254,1254,a7e58c581b5f45b201c72325db18c0af45e6ed7703a428fbf8252d4a90118a6d
+10,Wheel of Fortune,major,cards/10-wheel-of-fortune.png,1254,1254,f5c8efd4498956b26c064628f4f11e77f97430172b3004e7e0381e3830515748
+11,Justice,major,cards/11-justice.png,1254,1254,16149d94fc63e0e96a5480a71df5429fbacb424423ea2d05ed9d44ba67654cbe
+12,The Hanged Man,major,cards/12-the-hanged-man.png,1254,1254,32f57095b65cde06cafabe78ffaba3fc36b8ba2c6e0484c91527ea0441e7bfc8
+13,Death,major,cards/13-death.png,1254,1254,cd77f62838e712af8383e3d6bd1ebc35e404e8382b73e30b4bb710f55d648215
+14,Temperance,major,cards/14-temperance.png,1254,1254,f2a5c9eba69a154283bdc7d92f36cce4f56e2a541896d8d7d65a11ea6c4f8fed
+15,The Devil,major,cards/15-the-devil.png,1254,1254,1ecee4553e986543eff7ee9c913716d45255498ce609e6947acebd29d42cde9c
+16,The Tower,major,cards/16-the-tower.png,1254,1254,540277962a5ff19a811520eca98fbbe39b1e2baba25155e9393760a592b0942d
+17,The Star,major,cards/17-the-star.png,1254,1254,5e8f256b8b7f276f37b2d7c3882cf3a2c256d92d471495a41532407c030b5589
+18,The Moon,major,cards/18-the-moon.png,1254,1254,1ff2fe141c96d5e7991745194a6675601be5a7eecaa84a6e100b9711bcea106b
+19,The Sun,major,cards/19-the-sun.png,1254,1254,9d8e8124db81afda37b16614d4b589e24d5f8a31c1a55ab312b6e7e9f42b0045
+20,Judgement,major,cards/20-judgement.png,1254,1254,f97a21c2b2cc07be06ef8b6147197cf4c93381cff81d9a9004d9e95e6f3457fa
+21,The World,major,cards/21-the-world.png,1254,1254,47117461f973b3ddc6af1171627a70dbdcfd1a13044cbbe8f3103f8ecb383e10
+22,Ace of Wands,wands,cards/22-ace-of-wands.png,1254,1254,5d4e78f7ad38a4b705530b709e2773e524fd9ac959c565d60a8322b511dc50d7
+23,Two of Wands,wands,cards/23-two-of-wands.png,1254,1254,ba8bc256a7e5420a5417d86a8d0a6b312ff5f0f582188d89f560587620bc029d
+24,Three of Wands,wands,cards/24-three-of-wands.png,1254,1254,c2fe16483821043ceed5632a322ed58dc45a3913a963625ac96704e5d71a3b3c
+25,Four of Wands,wands,cards/25-four-of-wands.png,1254,1254,752a5e895120aea729db8f4536e35fedb3459b53b119b9f93ffb70f5d78885eb
+26,Five of Wands,wands,cards/26-five-of-wands.png,1254,1254,ae98f7fb0ddd81f304b3e9a87ba72d9316dc2936db2233d7af0495ffd3641fe4
+27,Six of Wands,wands,cards/27-six-of-wands.png,1254,1254,92dba8aa44a46e4e4066ba54819fd94ab64d7c99b65083e8debc33ecc15a5a64
+28,Seven of Wands,wands,cards/28-seven-of-wands.png,1254,1254,113db7aae478323f700e5e9669c5b7957efb9a86f9edc8d1daffeae0f014ea53
+29,Eight of Wands,wands,cards/29-eight-of-wands.png,1254,1254,2bfeeaa93dab81645d0e3b9ff166bf1b1c73ad892f05aa049ffffdb47e65e5ab
+30,Nine of Wands,wands,cards/30-nine-of-wands.png,1254,1254,321c8b849062da978edf41b9febd42a95c3289ce7753662af387dca3ec8e9955
+31,Ten of Wands,wands,cards/31-ten-of-wands.png,1254,1254,95c1a697d1e4457123667b9c911084e0c1f1d969d7bfb7a0532e9f567e663eb8
+32,Page of Wands,wands,cards/32-page-of-wands.png,1254,1254,dbb758ebad1df3cd8559a16c37af55a4249311389b34d8573bef1a1b51c8528d
+33,Knight of Wands,wands,cards/33-knight-of-wands.png,1254,1254,f905a38518a237e61bc61e469c20cc95599eda9c12d7f70a2a44460343354e11
+34,Queen of Wands,wands,cards/34-queen-of-wands.png,1254,1254,f1ec877563ef61af54b2e190c8600a3cc743a339111a01507c9822dd3e5837ce
+35,King of Wands,wands,cards/35-king-of-wands.png,1254,1254,633ed69485734e4ce487673b846da1ae79903d345964e23979937f255846b93c
+36,Ace of Cups,cups,cards/36-ace-of-cups.png,1254,1254,2845f727765d261e2de551c6dbea8287d03f15cf448e2fada03b72d3a7c293f7
+37,Two of Cups,cups,cards/37-two-of-cups.png,1254,1254,87339e48afdfc7643591d1cb5020be99b2cf9a30b976902dda98ce592409ee69
+38,Three of Cups,cups,cards/38-three-of-cups.png,1254,1254,a2075ec82e374b777bc4b91f93e9f61cb6da68ac42e9d5e1c78a23461ba89655
+39,Four of Cups,cups,cards/39-four-of-cups.png,1254,1254,7ad2e3dd68be9ae167401f6415269cf15dcc06536184dbb3767ee080c955cc13
+40,Five of Cups,cups,cards/40-five-of-cups.png,1254,1254,30d6c4b823c557b1d60f993a0938ed8c8d0cab47297979f5b5aa6008bcf6d7e5
+41,Six of Cups,cups,cards/41-six-of-cups.png,1254,1254,97a26b8f27358cc1373220c66c0a48c9cfd60f67516056c8e4f8b015625a25f3
+42,Seven of Cups,cups,cards/42-seven-of-cups.png,1254,1254,bd394b79ab468c7640522691820224d2e5fa77329e8845ab39af02366f4eed4c
+43,Eight of Cups,cups,cards/43-eight-of-cups.png,1254,1254,39e9302f0897d34dcc9c03e09d417c482e080a6fd551c08849bb8014b1dd4f84
+44,Nine of Cups,cups,cards/44-nine-of-cups.png,1254,1254,91331fbc0337873605220e8cd004b588a9d278635c237982c8ca7857afc7e2fb
+45,Ten of Cups,cups,cards/45-ten-of-cups.png,1254,1254,033c91d20ad1ad6ca0867ef7c541b8d5dcf6fd4850120dfecab9a151a10b1f4e
+46,Page of Cups,cups,cards/46-page-of-cups.png,1254,1254,85550164bd414bf085d4625ea6b69d9f3656d3c0250ed1f8734068a002701090
+47,Knight of Cups,cups,cards/47-knight-of-cups.png,1254,1254,854b94dafd44fc887b23c0565b189cc3db186f9720db5b289e80dbccbcb3ae8f
+48,Queen of Cups,cups,cards/48-queen-of-cups.png,1254,1254,ed82d46256248f4b02cde64cbd92805740b0d73605803839e0b20108c437239e
+49,King of Cups,cups,cards/49-king-of-cups.png,1254,1254,14ae5b4f008ce28c2d1f93ac3f2c9a46236fff84dd45a2cf7ea4505713d1022d
+50,Ace of Swords,swords,cards/50-ace-of-swords.png,1254,1254,f0e7a76589df9c1d81f2c6a232e8ff78b595be8f3a79036d9ea29c5704658bd0
+51,Two of Swords,swords,cards/51-two-of-swords.png,1254,1254,3e70199a7a8caf81dfa1825769022b84f2576d8d584753e083225ed22bcefea6
+52,Three of Swords,swords,cards/52-three-of-swords.png,1254,1254,7085819dd11ff51fe71c6465deb91b6ae05fe00d8b5dfe11abeab26caadb9c22
+53,Four of Swords,swords,cards/53-four-of-swords.png,1254,1254,5231cf0c4a02ebb9d4c8af92e4e3b3cd31c00c0759ec52a74184d14fda8614cf
+54,Five of Swords,swords,cards/54-five-of-swords.png,1254,1254,4eec62a2349d5459e0c3dfa201052ee6777a9f2a5ebfabb44b1c5ff4653fbe67
+55,Six of Swords,swords,cards/55-six-of-swords.png,1254,1254,fea3708e2a18d9ce171921b921b7668e2717be561752085cf97ab0821f4154ee
+56,Seven of Swords,swords,cards/56-seven-of-swords.png,1254,1254,623e3b29b0e544857474d1faf63c34ccba5fa8d00c7123aac0cdf23ad3471b82
+57,Eight of Swords,swords,cards/57-eight-of-swords.png,1254,1254,9b597e8b9d931548466da7caf2b27d1267ca2078f6c9577f6ffe68d8aa40ce8e
+58,Nine of Swords,swords,cards/58-nine-of-swords.png,1254,1254,226ba9181b8002a3d3bca46e48c02b3dd73a98c5bcdd41efabcb3caf4cdb96f5
+59,Ten of Swords,swords,cards/59-ten-of-swords.png,1254,1254,09a233d7c2267a289ea52f5f3a1b8b218d2d2edba295f32f89237694af02de3f
+60,Page of Swords,swords,cards/60-page-of-swords.png,1254,1254,7b087c19582f6906d791ae72e3c4e51999f269d64e5cb18443278dcb8ed8d50c
+61,Knight of Swords,swords,cards/61-knight-of-swords.png,1254,1254,45f7fcaab7fd6a917c58cf599fb7a2d9ab36d00f3424b530eb5ea57e345c7418
+62,Queen of Swords,swords,cards/62-queen-of-swords.png,1254,1254,1cb9d0b2d1ef75b503591975524851f69470c89d4a8298dd2649db06f7a5ce8d
+63,King of Swords,swords,cards/63-king-of-swords.png,1254,1254,ac9b624036c594e12ab35d3c69e655586b8669f3ee7983d983bd4956efabcc87
+64,Ace of Pentacles,pentacles,cards/64-ace-of-pentacles.png,1254,1254,3b359076fa6e147b83058b75c3680ab382b48d0c069df013be33ccfe79bdb47a
+65,Two of Pentacles,pentacles,cards/65-two-of-pentacles.png,1254,1254,1136c61db33eab5a4e49bee22913480881b0b224b8dbaba914d85b5e90866ca2
+66,Three of Pentacles,pentacles,cards/66-three-of-pentacles.png,1254,1254,1a530c97bf8ea5d4b51b5174228aabae9b605d9e4033bbf4ded5df5522be28a6
+67,Four of Pentacles,pentacles,cards/67-four-of-pentacles.png,1254,1254,882847e417ce318efb7312a6428894ea942dbaa2895bf00751cbd7aecd785fe4
+68,Five of Pentacles,pentacles,cards/68-five-of-pentacles.png,1254,1254,7b383f68004a42a40b92bd32a1b2a8ac8185605ce82cc4a177e98e7a14b89bbd
+69,Six of Pentacles,pentacles,cards/69-six-of-pentacles.png,1254,1254,fd3740cb9c7d994dffd8905b45565482c3142e4e6f15a192c43af17623316329
+70,Seven of Pentacles,pentacles,cards/70-seven-of-pentacles.png,1254,1254,e4d7c7d408996ce9f162127285f3b26fbed26658d657a9a5e80d0ebbe17de172
+71,Eight of Pentacles,pentacles,cards/71-eight-of-pentacles.png,1254,1254,f786cc18226cb8f0ffa7e0c36e321b056524d97260c403370810ef774921962e
+72,Nine of Pentacles,pentacles,cards/72-nine-of-pentacles.png,1254,1254,ba13c583da4c7fa9d0273bc7d64ad624dec06c6884a7ad71ec04a6974d16a816
+73,Ten of Pentacles,pentacles,cards/73-ten-of-pentacles.png,1254,1254,4e090b3e72773923a75f8d2ee31e91638ec8737f2ebaddedb9c9958f13cd4029
+74,Page of Pentacles,pentacles,cards/74-page-of-pentacles.png,1254,1254,666d05a7dcb2ac724bc46bc511ca67bb5bf3c536f41565f8374ba33100f34ff2
+75,Knight of Pentacles,pentacles,cards/75-knight-of-pentacles.png,1254,1254,447ee0b3f43bd9ae9bce1189d2bab709c0aa98f7fb3c46a26a26170592ddfcfb
+76,Queen of Pentacles,pentacles,cards/76-queen-of-pentacles.png,1254,1254,c6eba33039be099f6f23f1fc648de82e9e01579e5977f368da2c3e71f7cbf926
+77,King of Pentacles,pentacles,cards/77-king-of-pentacles.png,1254,1254,741ae13374760fa9bfc9406dabcbf9d2eb2ae7c7d95f6b280ccbe2315305c3fe
+78,Card back,back,cards/78-back.png,1254,1254,d93674fd6b4f8fee1175a7f6266da7530ff533f366017e9eff5110c825430d69

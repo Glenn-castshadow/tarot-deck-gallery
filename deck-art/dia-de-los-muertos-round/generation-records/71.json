@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 71,
+  "name": "Eight of Pentacles",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:14:40.845Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-6109f0eb-de5a-4156-b3b0-a4431d2098c2.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/71-eight-of-pentacles.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/71-eight-of-pentacles.png",
+  "prompt": "Add ONE gold pentacle plaque to the wall in this image. Place it in the EMPTY WALL GAP directly ABOVE and slightly to the LEFT of the woman's flower crown, to the right of the existing upper-left pentacle, near horizontal center x=500,y=210. There are currently SIX wall pentacles plus ONE on the table. Keep all seven existing discs unchanged and add this one on the wall, yielding SEVEN on the wall plus ONE on the table, EIGHT total. Preserve everything else including painting style, figure, title and border."
+}

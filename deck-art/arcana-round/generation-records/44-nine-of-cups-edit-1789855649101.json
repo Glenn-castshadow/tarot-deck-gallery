@@ -1,0 +1,20 @@
+{
+ "file": "44-nine-of-cups-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "high",
+ "usage": {
+  "input_tokens": 1672,
+  "input_tokens_details": {
+   "image_tokens": 1521,
+   "text_tokens": 151
+  },
+  "output_tokens": 7024,
+  "output_tokens_details": {
+   "image_tokens": 7024,
+   "text_tokens": 0
+  },
+  "total_tokens": 8696
+ },
+ "made_at": "2026-09-19T22:07:29.101Z",
+ "instruction": "This card must show exactly nine cups. It currently shows ten: nine on the arch behind her and one in her raised hand. Remove the cup from her hand and leave that hand resting empty and relaxed near her shoulder. Keep all nine cups on the arch exactly as they are. Keep the circular teal and gold border, the title banner reading NINE OF CUPS and the cream paper outside the circle unchanged."
+}

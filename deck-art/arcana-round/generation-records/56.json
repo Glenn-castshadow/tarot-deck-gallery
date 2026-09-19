@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 56,
+  "name": "Seven of Swords",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:12:15.152Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-22aa841f-bef3-4e53-9bdf-1496a2065569.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/56-seven-of-swords.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/56-seven-of-swords.png",
+  "prompt": "Correct this round SEVEN OF SWORDS tarot card. The woman currently holds SIX swords, with TWO more planted at left, totaling eight. REMOVE the lowest/rightmost sword from her bundle: the one with the round pommel near the right edge of her arm at about 3:45 on the clock. Remove its entire handle, guard, and blade, leaving EXACTLY FIVE swords held and the TWO swords planted at left unchanged, totaling SEVEN. The five remaining held hilts form one simple rising-and-falling arc. Preserve face, hands, scene, Mucha style, border and title. No new swords."
+}

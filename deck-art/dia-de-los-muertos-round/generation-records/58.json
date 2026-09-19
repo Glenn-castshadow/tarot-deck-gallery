@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 58,
+  "name": "Nine of Swords",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:05:56.633Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-21227e46-f8b3-4ba4-be0a-be8c6d63e9b1.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/58-nine-of-swords.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/58-nine-of-swords.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Nine of Swords: eight horizontal swords; add ninth. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

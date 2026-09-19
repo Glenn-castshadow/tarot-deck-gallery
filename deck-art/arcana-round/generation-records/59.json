@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 59,
+  "name": "Ten of Swords",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:05:16.130Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-4b7687b9-7028-482c-8824-ae64ff995bdd.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/59-ten-of-swords.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/59-ten-of-swords.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Ten of Swords: five left and four right = nine; add fifth on right. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

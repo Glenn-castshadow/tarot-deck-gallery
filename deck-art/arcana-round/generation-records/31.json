@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 31,
+  "name": "Ten of Wands",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:02:21.244Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-106775d1-d2e1-4b52-86f4-4f22d4f6fcd6.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/31-ten-of-wands.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/31-ten-of-wands.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Ten of Wands: bundles may contain four each; verify and correct. Redraw the carried rods as EXACTLY TWO CLEAR GROUPS OF FIVE straight unbranched wooden wands each, five separate upper ends and five separate lower ends per group, ten total. Avoid twig branches and merged rods. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

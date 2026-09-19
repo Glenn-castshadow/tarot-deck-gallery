@@ -1,0 +1,11 @@
+{
+  "deck": "arcana-round",
+  "index": 45,
+  "name": "Ten of Cups",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:04:33.872Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-8596e2bf-23bc-483b-8197-1a26170dd00f.png",
+  "file": "V:/tarot_game/deck-art/arcana-round/cards/45-ten-of-cups.png",
+  "reference": "V:/tarot_game/deck-art/arcana-round/cards/45-ten-of-cups.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Ten of Cups: only eight rainbow chalices, needs ten. Redraw the rainbow chalices as exactly TEN, five on each half of the rainbow with a gap at center; all ten clearly separated, no other cups. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

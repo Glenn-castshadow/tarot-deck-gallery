@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 72,
+  "name": "Nine of Pentacles",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:13:58.846Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-e8bbda76-1281-4498-8c6b-8473b74ab17b.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/72-nine-of-pentacles.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/72-nine-of-pentacles.png",
+  "prompt": "Add ONE gold pentacle coin to this image, positioned among the grape leaves on the lower RIGHT, directly BELOW the current lowest right-hand coin, near the woman's wrist level, inside the circular frame. There are currently five coins on the left and three on the right. Keep ALL eight current coins unchanged. Add this single new coin so there are FIVE on the left and FOUR on the right, NINE total. Preserve absolutely everything else, including title, border, figure and painting style."
+}

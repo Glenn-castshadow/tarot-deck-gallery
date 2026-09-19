@@ -1,0 +1,11 @@
+{
+  "deck": "dia-de-los-muertos-round",
+  "index": 27,
+  "name": "Six of Wands",
+  "tool": "built-in image_gen",
+  "generated_at": "2026-09-19T21:03:01.953Z",
+  "source": "C:\\Users\\glenn\\.codex\\generated_images\\01a0bb1b-e178-7700-82bb-185c0ea74526\\exec-90f3ecb0-c08a-4f89-8c24-183be599fbce.png",
+  "file": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/27-six-of-wands.png",
+  "reference": "V:/tarot_game/deck-art/dia-de-los-muertos-round/cards/27-six-of-wands.png",
+  "prompt": "Edit this existing round tarot card. Preserve its illustration style, characters, scene, colors, circular border, exact title lettering and canvas composition. Correct ONLY the suit-symbol count: Six of Wands: two background left, two right and held one = five; correct to six. Count the actual full objects carefully before finalizing. Do not change the title or add numbers or labels. Return one finished individual square card image."
+}

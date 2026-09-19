@@ -54,6 +54,11 @@ h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08
 .reading-output { position: relative; z-index: 1; grid-column: 1 / -1; min-height: 300px; padding-top: 7px; }
 .daily-reading { display: grid; grid-template-columns: minmax(190px, 250px) minmax(0, 1fr); gap: clamp(28px, 5vw, 54px); align-items: center; min-height: 286px; }
 .daily-reading .drawn-card { width: min(100%, 232px); margin: 0 auto; transform: rotate(-4deg) scale(1.02); }
+/* A round card has no height to spare, so the daily card gets more width than a portrait one at every tier. */
+.reading-room[data-shape="round"] .daily-reading { grid-template-columns: minmax(220px, 330px) minmax(0, 1fr); }
+.reading-room[data-shape="round"] .daily-reading .drawn-card { width: min(100%, 310px); }
+@media (max-width: 700px) { .reading-room[data-shape="round"] .daily-reading { grid-template-columns: 190px minmax(0, 1fr); } .reading-room[data-shape="round"] .daily-reading .drawn-card { width: 184px; } }
+@media (max-width: 480px) { .reading-room[data-shape="round"] .daily-reading { grid-template-columns: minmax(0, 1fr); } .reading-room[data-shape="round"] .daily-reading .drawn-card { width: min(72vw, 280px); } }
 .drawn-card { position: relative; aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; padding: 12px; border: 2px solid rgba(230,177,126,.82); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 10px 12px 0 rgba(0,0,0,.18), 0 16px 36px rgba(0,0,0,.2); transform: rotate(-3deg); }
 .drawn-card::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(255,250,244,.55); }
 .drawn-card-inner { position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 8px 4px; text-align: center; }
@@ -102,12 +107,15 @@ h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08
 .reading-deck-picker button[aria-pressed="true"] { border-color: var(--gold-light); background: rgba(230,177,126,.13); box-shadow: inset 0 -3px var(--gold-light); }
 .reading-deck-picker button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
 .reading-deck-picker img { width: 48px; height: 80px; object-fit: contain; flex-shrink: 0; }
+.reading-deck-picker img.is-round { height: auto; aspect-ratio: 1; border-radius: 50%; }
 .reading-deck-picker strong { display: block; font: 600 clamp(16px, 1.7vw, 21px)/1.2 "Playfair Display", serif; }
 .reading-deck-picker small { display: block; margin-top: 7px; font-size: 11px; line-height: 1.5; color: rgba(255,250,244,.7); }
 .reading-room:not([data-deck="ishtar"]) .drawn-card { padding: 0; border: 0; aspect-ratio: 3 / 5; background: transparent; }
 .reading-room:not([data-deck="ishtar"]) .drawn-card:not(.flip-card)::before { display: none; }
 .reading-room:not([data-deck="ishtar"]) .drawn-card-inner { padding: 0; }
 .reading-room:not([data-deck="ishtar"]) .drawn-card-inner img { object-fit: contain; }
+/* Round decks: square images of a circular card, so every card box is 1:1 and clipped to a circle. */
+.reading-room[data-shape="round"] .drawn-card.flip-card { aspect-ratio: 1; }
 @media (max-width: 1000px) {
   .reading-deck-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -142,6 +150,7 @@ h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08
 .ishtar-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px 24px; }
 .ishtar-card { display: flex; flex-direction: column; min-width: 0; appearance: none; border: 0; padding: 0; color: var(--cream); background: transparent; text-align: left; cursor: zoom-in; }
 .ishtar-card img { display: block; width: 100%; height: auto; aspect-ratio: 360 / 597; object-fit: contain; background: #1e132b; box-shadow: 0 12px 24px rgba(0,0,0,.24); transition: transform .2s ease, box-shadow .2s ease; }
+.reading-room[data-shape="round"] .ishtar-card img { aspect-ratio: 1; border-radius: 50%; background: transparent; }
 .ishtar-card:hover img { transform: translateY(-5px); box-shadow: 0 18px 30px rgba(0,0,0,.34); }
 .ishtar-card-group { margin-top: 16px; color: var(--gold-light); text-transform: uppercase; font: 9px/1.6 "DM Mono", monospace; letter-spacing: .09em; }
 .ishtar-card-name { margin-top: 5px; font: 600 clamp(17px, 1.7vw, 23px)/1.25 "Playfair Display", serif; }
@@ -325,6 +334,7 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .card-detail-art { position: relative; display: grid; place-items: center; padding: 28px; background: radial-gradient(circle at center, rgba(230,177,126,.24), transparent 68%), var(--plum-dark); }
 .card-detail-image { width: min(100%, 330px); height: auto; display: block; border: 2px solid var(--gold-light); box-shadow: 12px 14px 0 rgba(0,0,0,.2), 0 26px 50px rgba(0,0,0,.26); }
 .card-detail-image.is-reversed { transform: rotate(180deg); }
+.detail-dialog[data-shape="round"] .card-detail-image { border-radius: 50%; }
 .card-detail-zoom { position: absolute; left: 28px; bottom: 20px; color: rgba(255,250,244,.52); text-transform: uppercase; letter-spacing: .1em; font: 9px "DM Mono", monospace; }
 .card-detail-fallback { width: min(100%, 330px); aspect-ratio: 2.2 / 3.4; display: grid; place-items: center; align-content: center; gap: 20px; border: 2px solid var(--gold-light); color: var(--cream); background: linear-gradient(145deg, #dfad7b, #5f305f 54%, #21132c); box-shadow: 12px 14px 0 rgba(0,0,0,.2); text-align: center; }
 .card-detail-fallback span { color: var(--gold-light); font: 14px "DM Mono", monospace; }
@@ -383,6 +393,8 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .flip-card-back { transform: rotateY(0deg) translateZ(1px); }
 .flip-card-front { transform: rotateY(180deg) translateZ(1px); }
 .flip-card-front.is-reversed img { transform: rotate(180deg); }
+.reading-room[data-shape="round"] .drawn-card.flip-card::before, .reading-room[data-shape="round"] .flip-card-side, .reading-room[data-shape="round"] .flip-card-side img { border-radius: 50%; }
+.reading-room[data-shape="round"] .flip-card-side { padding: 0; }
 .drawn-card.flip-card.is-revealed { cursor: zoom-in; }
 .revealed-copy[hidden], .reveal-invitation[hidden] { display: none; }
 .revealed-copy:not([hidden]) { animation: reading-copy-reveal 900ms ease both; }

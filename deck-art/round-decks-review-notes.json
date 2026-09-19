@@ -1,0 +1,119 @@
+{
+  "status": "Artwork proof review complete",
+  "cards": 158,
+  "corrections": [
+    {
+      "deck": "arcana-round",
+      "index": 29,
+      "name": "Eight of Wands",
+      "initial_issue": "Eight of Wands: appears seven distinct rods; verify and correct.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 30,
+      "name": "Nine of Wands",
+      "initial_issue": "Nine of Wands: four background left, three right plus held one = eight; correct to nine.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 31,
+      "name": "Ten of Wands",
+      "initial_issue": "Ten of Wands: bundles may contain four each; verify and correct.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 27,
+      "name": "Six of Wands",
+      "initial_issue": "Six of Wands: two background left, two right and held one = five; correct to six.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 31,
+      "name": "Ten of Wands",
+      "initial_issue": "Ten of Wands: four left and five right = nine; correct to ten.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 44,
+      "name": "Nine of Cups",
+      "initial_issue": "Nine of Cups: eight chalices on shelf; add ninth and replace foreground cup-shaped candle holders with plain candles.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 45,
+      "name": "Ten of Cups",
+      "initial_issue": "Ten of Cups: only eight rainbow chalices, needs ten.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 45,
+      "name": "Ten of Cups",
+      "initial_issue": "Ten of Cups: only nine rainbow chalices, needs ten.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 56,
+      "name": "Seven of Swords",
+      "initial_issue": "Seven of Swords: four carried plus two planted = six; add fifth carried sword.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 59,
+      "name": "Ten of Swords",
+      "initial_issue": "Ten of Swords: five left and four right = nine; add fifth on right.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 58,
+      "name": "Nine of Swords",
+      "initial_issue": "Nine of Swords: eight horizontal swords; add ninth.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 68,
+      "name": "Five of Pentacles",
+      "initial_issue": "Five of Pentacles: six in window, remove center from middle row so 1+2+2=5.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 71,
+      "name": "Eight of Pentacles",
+      "initial_issue": "Eight of Pentacles: eight on wall plus one worked = nine; remove one wall disc.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 72,
+      "name": "Nine of Pentacles",
+      "initial_issue": "Nine of Pentacles: five left three right = eight; add fourth right.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "arcana-round",
+      "index": 72,
+      "name": "Nine of Pentacles",
+      "initial_issue": "Nine of Pentacles: five left three right = eight; add fourth right.",
+      "status": "Corrected with image_gen and visually reviewed"
+    },
+    {
+      "deck": "dia-de-los-muertos-round",
+      "index": 73,
+      "name": "Ten of Pentacles",
+      "initial_issue": "Ten of Pentacles: four left four right = eight; add one on each side for five plus five.",
+      "status": "Corrected with image_gen and visually reviewed"
+    }
+  ],
+  "production_note": "Native artwork proofs. Printer-specific bleed, cutting alignment, back reversibility and color proofing remain production steps."
+}
