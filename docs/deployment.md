@@ -1,5 +1,29 @@
 # VPS deployment
 
+## 2026-09-19 Newsletter signup after the chart
+
+Deployed `f4461e0`, static only, at Glenn's request to fix the newsletter position.
+`charts/index.html` now keeps **Read my sky** directly after the birth inputs and puts
+the optional newsletter in its own form after `#birthday-output`. The existing input
+IDs, form associations, consent handling and newsletter script are unchanged. The
+form stays within the Birth sky section on mobile and is capped at 680px on desktop.
+`celestial-room.css` also keeps the newsletter out of printed chart reports; the Charts
+page uses `celestial-room.css?v=newsletter-position-1`.
+
+Release: `/opt/tarot-game/releases/20260919-newsletter-position-f4461e0`, a hardlink copy
+of `20260919-earth-warden-116f7bb`. Only `charts/index.html` and `celestial-room.css`
+were replaced, unlinked before extraction. Baseline hashes, replacement hashes,
+replacement link counts and the unchanged previous files were checked before an
+atomic symlink switch. Both live HTTPS files then matched the commit's bytes.
+
+Validation: 26 existing newsletter UI, site-shell and chart-room tests passed. Local
+browser checks at 1440px and 390px confirmed input/button, result, signup order and
+that an invalid newsletter email does not prevent a birth reading. Live mobile
+verification regenerated the sample natal chart and confirmed signup below the result.
+No signup email was sent. No backend or subscriber-data changes.
+
+Rollback: `ln -sfn /opt/tarot-game/releases/20260919-earth-warden-116f7bb /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
 ## 2026-09-19 The Earth Warden reading deck
 
 Deployed `116f7bb`. **Static only.** Glenn's brief: a new original deck, "earth warden", "feminine aspect",
