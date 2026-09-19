@@ -73,7 +73,7 @@
   function renderFooter() {
     return `<footer class="footer">
         <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="/tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
-        <p><a href="/cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
+        <p><a href="/about.html">About</a> · <a href="/about.html#contact">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
         <p>Look something up: <a href="/tarot/cards/">Tarot card meanings</a> · <a href="/sky/signs/">Zodiac signs</a> · <a href="/divination/i-ching/">I Ching hexagrams</a></p>
       </footer>`;
   }

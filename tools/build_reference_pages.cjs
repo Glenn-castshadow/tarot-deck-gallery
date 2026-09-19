@@ -270,7 +270,7 @@ function signPages() {
 }
 
 // /account/ is disallowed in robots.txt and stays out, as it is today.
-const HAND_WRITTEN = ['/', '/tarot/', '/sky/', '/charts/', '/eastern/', '/numerology/', '/divination/'];
+const HAND_WRITTEN = ['/', '/tarot/', '/sky/', '/charts/', '/eastern/', '/numerology/', '/divination/', '/about.html', '/privacy.html'];
 
 function allFiles() {
   const pages = [...cardPages(), ...hexagramPages(), ...signPages()];

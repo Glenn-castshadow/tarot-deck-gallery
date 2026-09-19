@@ -54,7 +54,7 @@ test('the compact header can demote its title so a generated page owns the h1', 
 
 test('the footer links the three reference indexes', () => {
   const {footer} = SiteShell.render({page: 'sky', variant: 'compact'});
-  for (const href of ['/tarot/cards/', '/sky/signs/', '/divination/i-ching/']) {
+  for (const href of ['/tarot/cards/', '/sky/signs/', '/divination/i-ching/', '/about.html', '/about.html#contact', '/privacy.html']) {
     assert.ok(footer.includes(`href="${href}"`), `footer lacks ${href}`);
   }
 });

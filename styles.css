@@ -414,7 +414,7 @@ h2 { font: 700 clamp(26px, 3.2vw, 40px)/1.1 "Playfair Display", serif; letter-sp
 .storage-actions button { flex: 1; min-height: 44px; padding: 10px 14px; border: 1px solid var(--plum); border-radius: 24px; background: var(--plum); color: var(--cream); }
 .storage-actions button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .policy-page { max-width: 800px; margin: auto; padding: 40px 24px; }
-.policy-page h1 { white-space: normal; font-size: clamp(32px, 6vw, 56px); }
+.policy-page h1 { max-width: none; margin: 24px 0 0; white-space: normal; color: var(--plum-dark); font-size: clamp(32px, 6vw, 56px); text-shadow: none; }
 .policy-page h2 { margin-top: 28px; font-size: 24px; }
 .policy-page p, .policy-page li { margin-top: 14px; line-height: 1.7; }
 .newsletter-signup { grid-column: 1 / -1; min-width: 0; margin: 12px 0 0; padding: 20px; border: 1px solid #b79a7566; border-radius: 10px; }

@@ -133,7 +133,7 @@ test('12 sign pages with date ranges that meet end to end', () => {
 test('the sitemap lists the eight-minus-account pages and every generated page, once', () => {
   const xml = B.allFiles().find(f => f.file === 'sitemap.xml').html;
   const locs = xml.match(/<loc>(.*?)<\/loc>/g).map(tag => tag.slice(5, -6));
-  assert.equal(locs.length, 7 + 79 + 65 + 13);
+  assert.equal(locs.length, 9 + 79 + 65 + 13);
   assert.equal(new Set(locs).size, locs.length);
   assert.ok(locs.includes('https://ishtarinsights.com/tarot/cards/the-star/'));
   assert.ok(!locs.some(loc => loc.includes('/account/')));

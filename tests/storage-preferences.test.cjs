@@ -27,7 +27,11 @@ function boot(choice) {
   };
   const status = {textContent: ''};
   const context = {
-    localStorage: {getItem: k => store.has(k) ? store.get(k) : null, setItem: (k, v) => store.set(k, String(v)), removeItem: k => store.delete(k)},
+    // A Proxy so Object.keys(localStorage) lists the stored keys, as it does in a browser; clearSaved() relies on that.
+    localStorage: new Proxy({getItem: k => store.has(k) ? store.get(k) : null, setItem: (k, v) => store.set(k, String(v)), removeItem: k => store.delete(k)}, {
+      ownKeys: () => [...store.keys()],
+      getOwnPropertyDescriptor: (target, key) => store.has(key) ? {value: store.get(key), enumerable: true, configurable: true} : Reflect.getOwnPropertyDescriptor(target, key)
+    }),
     document: {
       addEventListener(type, handler) { if (type === 'DOMContentLoaded') domReadyHandler = handler; },
       querySelector(selector) {
@@ -40,7 +44,7 @@ function boot(choice) {
     },
     window: {}
   };
-  Object.defineProperty(context.localStorage, 'length', {get: () => store.size});
+  Object.defineProperty(context.localStorage, 'length', {get: () => store.size, configurable: true});
   context.Object = Object;
   vm.runInNewContext(fs.readFileSync(require.resolve('../storage-preferences.js'), 'utf8'), context);
   return {
@@ -173,4 +177,19 @@ test('a visitor who was never signed in is unaffected by all three fixes', () =>
   // remote branch; behaviour is identical to before this fix.
   assert.doesNotThrow(() => storage.setItem('arcana-birthday-profile-v1', '{"birthday":"1980-08-08"}'));
   assert.equal(storage.getItem('arcana-birthday-profile-v1'), '{"birthday":"1980-08-08"}');
+});
+
+test('declining clears every optional entry, the remembered Sun sign included, and keeps the choice', () => {
+  const {store, declineButton, fireDomReady} = boot('allow');
+  store.set('arcana-reading-deck-v1', 'ishtar');
+  store.set('arcana-daily-v2-2026-09-19', '{"card":17}');
+  store.set('ishtar-sun-sign-v1', '4');
+  store.set('someone-elses-key', 'untouched');
+  fireDomReady();
+  declineButton.click();
+  assert.equal(store.get('ishtar-storage-choice-v1'), 'decline');
+  for (const key of ['arcana-reading-deck-v1', 'arcana-daily-v2-2026-09-19', 'ishtar-sun-sign-v1']) {
+    assert.ok(!store.has(key), `${key} survived declining`);
+  }
+  assert.equal(store.get('someone-elses-key'), 'untouched');
 });
