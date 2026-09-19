@@ -1,0 +1,20 @@
+{
+ "file": "31-ten-of-wands-try3-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1707,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 171
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3079
+ },
+ "made_at": "2026-09-19T10:40:28.705Z",
+ "instruction": "The woman carries a fan of nine leafy wooden staves, each ending in one glowing tip. Counting the glowing tips from left to right there are nine, and there is a wide empty gap between the eighth tip and the ninth tip at the far right. Paint exactly ONE additional staff whose glowing tip sits in the middle of that gap, its shaft running down into the same bundle. Add only this one staff and nothing else; do not add any other staff anywhere. The finished painting shows exactly ten glowing tips."
+}

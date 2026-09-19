@@ -1,0 +1,20 @@
+{
+ "file": "29-eight-of-wands-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1697,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 161
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3069
+ },
+ "made_at": "2026-09-19T10:39:29.829Z",
+ "instruction": "Seven leafy glowing staves fly in parallel diagonally down the sky, stacked one below another. Between the topmost staff and the second staff there is a wider empty gap, beside the small crescent moon. Add exactly ONE more identical staff in that gap, parallel to the others, the same length, with its own glowing tip at the lower right end. Do not change the seven staves already there. The finished painting shows exactly eight flying staves."
+}

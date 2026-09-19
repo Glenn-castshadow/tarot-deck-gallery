@@ -1,0 +1,20 @@
+{
+ "file": "71-eight-of-pentacles-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1716,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 180
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3088
+ },
+ "made_at": "2026-09-19T10:36:45.545Z",
+ "instruction": "Eight round gold discs hang on the wooden post in three rows: three in the top row, three in the middle row and two in the bottom row. One more disc lies on the workbench being carved and one more lies on the ground in the foreground, ten in all. Remove exactly TWO discs: the two in the bottom row of the post, showing the bare wooden post and hanging tools there. Keep the six discs in the top two rows, the disc on the bench and the disc on the ground. The finished painting shows exactly eight discs."
+}

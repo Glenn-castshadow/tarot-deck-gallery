@@ -1,0 +1,20 @@
+{
+ "file": "45-ten-of-cups-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1675,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 139
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3047
+ },
+ "made_at": "2026-09-19T10:36:14.530Z",
+ "instruction": "Eleven pale stone chalices float in an arc along the rainbow. Remove exactly ONE chalice: the one at the very top centre of the arc, and show the glowing rainbow and sky there. Leave five chalices on the left side of the arc and five on the right side exactly where they are. The finished painting shows exactly ten chalices."
+}

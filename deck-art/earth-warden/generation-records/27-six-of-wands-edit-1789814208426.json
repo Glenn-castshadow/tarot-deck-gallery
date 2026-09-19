@@ -1,0 +1,20 @@
+{
+ "file": "27-six-of-wands-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1734,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 198
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3106
+ },
+ "made_at": "2026-09-19T10:36:48.427Z",
+ "instruction": "A woman crowned with laurel rides a white horse through a cheering crowd, holding one staff crowned with a wreath. The crowd holds too many staves. Repaint the crowd's staves so that exactly FIVE tall leafy staves with glowing tips are held upright by women in the crowd: two on the left of the rider and three on the right, each clearly separate. Remove every other staff in the background and show raised open hands and forest there instead. Keep the rider, her wreath staff, the horse and the faces as they are. The finished painting shows exactly six staves in all: the rider's and five in the crowd."
+}

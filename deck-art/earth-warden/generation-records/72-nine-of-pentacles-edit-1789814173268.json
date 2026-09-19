@@ -1,0 +1,20 @@
+{
+ "file": "72-nine-of-pentacles-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1677,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 141
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3049
+ },
+ "made_at": "2026-09-19T10:36:13.268Z",
+ "instruction": "Ten round gold discs rest among the vines: seven down the left side and three down the right side. Remove exactly ONE disc: the lowest disc at the bottom of the left side, and show vine leaves and grapes there. Do not move or change the other nine. The finished painting shows exactly nine discs: six on the left and three on the right."
+}

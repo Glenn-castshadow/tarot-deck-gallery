@@ -1,0 +1,20 @@
+{
+ "file": "30-nine-of-wands-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1701,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 165
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3073
+ },
+ "made_at": "2026-09-19T10:35:21.961Z",
+ "instruction": "Behind the woman stands a fence of seven upright glowing staves: four on the left of her and three on the right. She holds one more staff herself. Add exactly ONE more identical upright staff to the fence at the far right, beyond the three already there, with the same spacing and its own glowing tip, making four on the right. Do not change the other staves. The finished painting shows exactly nine staves: eight in the fence and the one she holds."
+}

@@ -1,0 +1,20 @@
+{
+ "file": "31-ten-of-wands-try6-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1730,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 194
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3102
+ },
+ "made_at": "2026-09-19T10:44:16.655Z",
+ "instruction": "The woman carries leafy wooden staves with glowing tips in two separate groups: a left group of six staves behind her head and a right group of six staves over her shoulder. Remove exactly ONE staff from the left group, the outermost one at its far left, and exactly ONE staff from the right group, the outermost one at its far right, showing trees and sky where they were. Keep the other ten staves exactly as they are and keep the brightness and colour of the whole painting the same. The finished painting shows exactly ten staves: five in the left group and five in the right group."
+}

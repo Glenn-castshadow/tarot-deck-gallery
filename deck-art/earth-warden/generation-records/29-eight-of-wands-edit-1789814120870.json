@@ -1,0 +1,20 @@
+{
+ "file": "29-eight-of-wands-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1678,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 142
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3050
+ },
+ "made_at": "2026-09-19T10:35:20.870Z",
+ "instruction": "Seven leafy glowing staves fly in parallel diagonally across the sky. Add exactly ONE more identical staff flying in the same direction and parallel to the others, in the open sky at the upper left above the topmost staff, fully visible with its own glowing tip. Do not change the seven staves already there. The finished painting shows exactly eight flying staves."
+}

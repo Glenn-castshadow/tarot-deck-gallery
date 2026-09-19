@@ -1,0 +1,20 @@
+{
+ "file": "44-nine-of-cups-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1676,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 140
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3048
+ },
+ "made_at": "2026-09-19T10:35:18.925Z",
+ "instruction": "Ten pale stone chalices stand in a single row along the shelf draped in blue cloth behind the seated woman. Remove exactly ONE chalice: the one at the far right end of the row, and show the plain blue cloth where it stood. Do not move or change the other nine. The finished painting shows exactly nine chalices in the row."
+}

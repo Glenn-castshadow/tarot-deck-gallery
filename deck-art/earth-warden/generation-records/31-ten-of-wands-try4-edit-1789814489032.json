@@ -1,0 +1,20 @@
+{
+ "file": "31-ten-of-wands-try4-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1717,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 181
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3089
+ },
+ "made_at": "2026-09-19T10:41:29.033Z",
+ "instruction": "The woman carries a fan of leafy wooden staves with glowing tips. Repaint only the staves so that they form TWO separate groups with a wide empty gap of sky between the groups: a left group of exactly five staves and a right group of exactly five staves. Within each group the five glowing tips are evenly spaced and clearly separate. There are no other staves anywhere. Keep the woman, the trees, the sky and the village exactly as they are. The finished painting shows exactly ten staves: five, a gap, then five."
+}

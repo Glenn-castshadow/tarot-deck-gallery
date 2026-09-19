@@ -1,0 +1,20 @@
+{
+ "file": "57-eight-of-swords-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1708,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 172
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3080
+ },
+ "made_at": "2026-09-19T10:36:13.438Z",
+ "instruction": "Six black obsidian swords stand planted upright in the marsh around the blindfolded woman: three on her left and three on her right. Add exactly TWO more identical swords: one more on the left, standing at the far left with a clear gap from the others, and one more on the right, standing at the far right with a clear gap, each fully visible with its own bronze hilt. Do not change the six swords already there. The finished painting shows exactly eight swords, four on each side."
+}

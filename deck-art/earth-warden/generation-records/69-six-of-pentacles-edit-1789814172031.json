@@ -1,0 +1,20 @@
+{
+ "file": "69-six-of-pentacles-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1687,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 151
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3059
+ },
+ "made_at": "2026-09-19T10:36:12.031Z",
+ "instruction": "Seven large round gold discs float in an arc above the woman in the red mantle. Remove exactly ONE disc: the one at the very top centre of the arc, directly above her head, and show the glowing forest canopy there. Leave three discs on the left side and three on the right side exactly where they are. The small coins falling from her hand stay. The finished painting shows exactly six large discs."
+}

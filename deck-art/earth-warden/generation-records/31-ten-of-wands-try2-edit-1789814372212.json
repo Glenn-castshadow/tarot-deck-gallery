@@ -1,0 +1,20 @@
+{
+ "file": "31-ten-of-wands-try2-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1679,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 143
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3051
+ },
+ "made_at": "2026-09-19T10:39:32.212Z",
+ "instruction": "The woman carries a fan of eleven leafy wooden staves, each with a glowing tip. Remove exactly ONE staff: the lowest staff at the far right end of the fan, the one pointing most nearly sideways toward the village, and show the misty sky there. Do not change the other ten. The finished painting shows exactly ten staves with ten separate glowing tips."
+}

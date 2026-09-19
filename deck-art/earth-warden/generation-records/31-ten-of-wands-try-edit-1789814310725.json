@@ -1,0 +1,20 @@
+{
+ "file": "31-ten-of-wands-try-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1691,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 155
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3063
+ },
+ "made_at": "2026-09-19T10:38:30.725Z",
+ "instruction": "The woman carries a fanned bundle of nine leafy wooden staves, each with its own glowing tip. Add exactly ONE more identical staff to the fan, its shaft starting in the same bundle in her arms and its glowing leafy tip placed at the far left end of the fan, clearly separate from the others. Do not change the nine staves already there. The finished painting shows exactly ten staves with ten separate glowing tips."
+}

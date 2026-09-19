@@ -1,0 +1,20 @@
+{
+ "file": "38-three-of-cups-candidate.png",
+ "model": "gpt-image-2",
+ "quality": "medium",
+ "usage": {
+  "input_tokens": 1684,
+  "input_tokens_details": {
+   "image_tokens": 1536,
+   "text_tokens": 148
+  },
+  "output_tokens": 1372,
+  "output_tokens_details": {
+   "image_tokens": 1372,
+   "text_tokens": 0
+  },
+  "total_tokens": 3056
+ },
+ "made_at": "2026-09-19T10:35:24.016Z",
+ "instruction": "Three women dance in a circle. Two of them each raise one pale stone chalice high, but the woman on the left in the green dress holds no chalice. Give her exactly ONE identical pale stone chalice, raised high in her free hand at the same height as the other two. Change nothing else. The finished painting shows exactly three raised chalices, one held by each woman."
+}
