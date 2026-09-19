@@ -1,5 +1,42 @@
 # VPS deployment
 
+## 2026-09-19 The two artist-named reading decks removed
+
+Deployed `b2e92ab`. **Static only.** Glenn's decision ("remove both decks that could be a problem") after the
+About page made the decks' AI origin explicit: "Moebius-inspired" and "Francis Bacon-inspired" used two real
+artists' names as product labels for AI-generated art. The Arts & Crafts deck names a movement, not a person,
+and stays.
+
+**Release.** `/opt/tarot-game/releases/20260919-remove-two-decks-b2e92ab`, a `cp -al` hardlink copy of
+`20260919-privacy-backup-6897e95`, by `/tmp/ishtar-remove-decks.sh`. Thirteen files replaced (`tarot.js`,
+`tarot/index.html`, `styles.css`, `site-shell.js`, `tarot-reference.js`, `about.html` and the other seven
+pages' HTML for the shell key), each `rm -f`'d first. **First release that removes files:** after extraction
+the script `rm -rf`s `assets/light-minimal-deck` and `assets/expressive-figures-deck` (316 files, 66 MB) in
+the new release only, which drops that release's hardlinks; gated on the previous release holding the same
+316 files before and after. Other gates: `current`, sha256 of the thirteen files, link count 1, no "moebius"
+in the new `tarot.js` or Tarot page, and the previous `tarot.js` still naming it. Passed first time. Rollback
+restores the decks:
+`ln -sfn /opt/tarot-game/releases/20260919-privacy-backup-6897e95 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+Older release folders on the VPS still hold the art on disk, unserved. In the repo the art is in git history;
+the source material under `deck-art/` was not touched.
+
+**Change.** Two entries out of `readingDecks` and two buttons out of the chooser, which is now
+`repeat(auto-fit, minmax(240px, 1fr))` so two decks fill the row. The ids `moebius` and `bacon` no longer
+exist, so an old `?deck=` link, a saved browser choice or a journal reading made with a removed deck falls
+back to the Ishtar deck through the `Object.hasOwn(readingDecks, …)` guards that were already there; the
+reading itself still opens. Copy that counted four decks corrected: the Tarot page's descriptions and
+`about.html` say two, the hero strip says "A daily card, full spreads, every card explained".
+
+**Cache keys.** `tarot.js?v=8`, `tarot-reference.js?v=2` (a comment only), `styles.css?v=two-decks-1` on
+`/tarot/`; `site-shell.js?v=12` on all eight pages. The reference pages are unaffected (drift check clean).
+
+**Validation.** Pages and the two remaining decks' images 200; the removed decks' images 404;
+`/tarot/?deck=moebius` 200. No served page or script names either artist. In a browser on the live site,
+`/tarot/?deck=bacon` opens on the Ishtar deck, switching to Arts & Crafts loads its back, no image is broken
+and the content-security policy blocks nothing. Suite 692 of 692. Images are now cached for seven days, so a
+visitor who opened one of those decks in the hour between the cache change and this release may see its cards
+from their own browser cache until then.
+
 ## 2026-09-19 Hardening: self-hosted fonts, security headers, cache lifetimes, off-site backup
 
 Four changes Glenn approved as one pass. **Static (two releases), nginx, and one script on GLENNHOMEPC.**
