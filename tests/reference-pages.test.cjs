@@ -39,3 +39,35 @@ test('a rendered page is complete, static and carries one h1', () => {
   assert.equal(ld['@graph'][1].itemListElement.length, 3);
   assert.doesNotMatch(html, /gtag|googletagmanager|plausible|adsbygoogle/);
 });
+
+test('78 card pages and their index, each with the site\'s own text', () => {
+  const pages = B.cardPages();
+  assert.equal(pages.length, 79);
+  assert.equal(pages[0].file, 'tarot/cards/index.html');
+  assert.equal((pages[0].html.match(/href="\/tarot\/cards\/[a-z0-9-]+\/"/g) || []).length, 78);
+  const star = pages.find(p => p.url === '/tarot/cards/the-star/');
+  assert.equal(star.file, 'tarot/cards/the-star/index.html');
+  assert.match(star.html, /<h1>The Star<\/h1>/);
+  assert.match(star.html, /<title>The Star tarot card meaning · Ishtar Insights<\/title>/);
+  assert.ok(star.html.includes(B.esc(B.TarotReference.entry(17).reference)), 'the reference essay is on the page');
+  assert.ok(star.html.includes(B.esc(B.BirthLore.majorArcana[17].upright)));
+  assert.ok(star.html.includes(B.esc(B.BirthLore.majorArcana[17].reversed)));
+  assert.match(star.html, /src="\/assets\/ishtar-deck\/cards\/17\.jpg" width="360" height="597"/);
+  assert.match(star.html, /href="\/tarot\/cards\/the-tower\/"[^>]*>← The Tower/);
+  assert.match(star.html, /href="\/tarot\/cards\/the-moon\/"[^>]*>The Moon →/);
+  assert.match(star.html, /href="\/tarot\/\?card=the-star"/);
+  const ace = pages.find(p => p.url === '/tarot/cards/ace-of-wands/');
+  assert.match(ace.html, /src="\/assets\/ishtar-deck\/cards\/22\.jpg"/);
+  assert.match(ace.html, /Minor Arcana · Wands/);
+});
+
+test('every card page has one h1, a unique title and a description of sane length', () => {
+  const titles = new Set();
+  for (const page of B.cardPages()) {
+    assert.equal((page.html.match(/<h1[ >]/g) || []).length, 1, page.file);
+    const title = page.html.match(/<title>(.*?)<\/title>/)[1];
+    assert.ok(!titles.has(title), `duplicate title ${title}`); titles.add(title);
+    const description = page.html.match(/<meta name="description" content="(.*?)">/)[1];
+    assert.ok(description.length >= 50 && description.length <= 170, `${page.file}: ${description.length}`);
+  }
+});

@@ -127,5 +127,52 @@ function renderPage({url, section, title, description, image, crumbs, body}) {
 `;
 }
 
+const pad = index => String(index).padStart(2, '0');
+const cardUrl = index => `/tarot/cards/${TarotReference.slug(index)}/`;
+
+function pager(previous, next) {
+  return `<nav class="ref-pager" aria-label="Previous and next">
+          <span>${previous ? `<a href="${previous.url}" rel="prev">← ${esc(previous.name)}</a>` : ''}</span>
+          <span>${next ? `<a href="${next.url}" rel="next">${esc(next.name)} →</a>` : ''}</span>
+        </nav>`;
+}
+
+function cardPages() {
+  const cards = catalogue();
+  const crumbsBase = [{name: 'Tarot', url: '/tarot/'}, {name: 'Card meanings', url: '/tarot/cards/'}];
+  const kicker = (card) => card.type === 'major' ? `${card.number} · Major Arcana` : `Minor Arcana · ${card.suit}`;
+  const pages = cards.map((card, i) => {
+    const entry = TarotReference.entry(i);
+    const near = j => (j >= 0 && j < 78 ? {url: cardUrl(j), name: cards[j].name} : null);
+    const slug = TarotReference.slug(i);
+    const body = `<header><p class="ref-kicker">${esc(kicker(card))}</p><h1>${esc(card.name)}</h1><p class="ref-keywords">${esc(card.keywords)}</p></header>
+        <div class="ref-layout">
+          <figure><img src="/assets/ishtar-deck/cards/${pad(i)}.jpg" width="360" height="597" alt="${esc(card.name)}, from the Ishtar Insights tarot deck"></figure>
+          <div>
+            <section><h2>What ${esc(card.name)} means</h2><p>${esc(entry.reference)}</p></section>
+            <section><h2>Upright</h2><p>${esc(card.upright)}</p></section>
+            <section><h2>Reversed</h2><p>${esc(card.reversed)}</p></section>
+            <section><h2>A question to sit with</h2><p>${esc(card.prompt)}</p></section>
+            <section><h2>Traditional attribution</h2><p>${esc(entry.attribution.line)}. Attributions follow the Golden Dawn with Waite's numbering.</p></section>
+          </div>
+        </div>
+        <p class="ref-cta"><a class="ref-button" href="/tarot/#tarot-readings">Draw a reading</a><a href="/tarot/?card=${slug}">Open ${esc(card.name)} in the card reference</a></p>
+        ${pager(near(i - 1), near(i + 1))}`;
+    return {file: `tarot/cards/${slug}/index.html`, url: cardUrl(i), html: renderPage({url: cardUrl(i), section: 'tarot',
+      title: `${card.name} tarot card meaning`, description: clip(entry.reference),
+      image: {src: `/assets/ishtar-deck/cards/${pad(i)}.jpg`, width: 360, height: 597},
+      crumbs: [...crumbsBase, {name: card.name, url: cardUrl(i)}], body})};
+  });
+  const group = (label, from, to) => `<h2>${label}</h2><ul class="ref-index">${cards.slice(from, to).map((card, k) =>
+    `<li><a href="${cardUrl(from + k)}">${esc(card.name)}</a><small>${esc(card.keywords)}</small></li>`).join('')}</ul>`;
+  const indexBody = `<header><p class="ref-kicker">78 cards</p><h1>Tarot card meanings</h1><p class="ref-keywords">Every card on its own page: what it means, upright and reversed, with its traditional attribution.</p></header>
+        ${group('Major Arcana', 0, 22)}${TarotReference.SUITS.map((suit, s) => group(suit, 22 + s * 14, 36 + s * 14)).join('')}
+        <p class="ref-cta"><a class="ref-button" href="/tarot/#tarot-readings">Draw a reading</a></p>`;
+  const index = {file: 'tarot/cards/index.html', url: '/tarot/cards/', html: renderPage({url: '/tarot/cards/', section: 'tarot',
+    title: 'Tarot card meanings: all 78 cards', description: 'All 78 tarot cards, each on its own page: what the card means, upright and reversed, and its traditional Golden Dawn attribution.',
+    image: null, crumbs: crumbsBase, body: indexBody})};
+  return [index, ...pages];
+}
+
 module.exports = {SITE, LASTMOD, ROOT, esc, clip, read, catalogue, renderPage,
-  TarotReference, BirthLore, DivinationData, IChingLines};
+  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages};
