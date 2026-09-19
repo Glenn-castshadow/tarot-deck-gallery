@@ -46,9 +46,7 @@
   const tarotCards = [...majorArcana.map(card => ({ ...card, type: "major" })), ...minorArcana];
   const readingDecks = {
     ishtar: { name: "Ishtar Insights", assets: "/assets/ishtar-deck", description: "A luminous world of lotus symbolism, deep violet and holographic reflections.", back: "The shared mirrored lotus back for all 78 cards." },
-    moebius: { name: "Moebius-inspired", assets: "/assets/light-minimal-deck", description: "Fine ink, open skies and strange horizons. A light, minimal deck with clear cerulean, coral and lavender color.", back: "Floating stone forms and celestial geometry echo the deck’s open skies in a reversible design." },
     "arts-and-crafts": { name: "Arts & Crafts", assets: "/assets/arts-and-crafts-deck", description: "Botanical woodcut scenes in forest green, madder red and ochre, with quiet references to craft, initiation and Masonic geometry.", back: "A botanical repeat with acacia, oak, drawing compasses and measured geometry, designed for both orientations." },
-    bacon: { name: "Francis Bacon-inspired", assets: "/assets/expressive-figures-deck", description: "Erased faces, dragged paint and isolated figures inhabit deep black spaces. Bruised violet, oxblood and harsh ochre give familiar tarot symbols an unsettling psychological intensity.", back: "Opposed gestural figures and geometric enclosures carry the deck’s painterly tension into an abstract two-way back." }
   };
   let activeReadingDeck = "ishtar";
   const requestedDeck = new URLSearchParams(location.search).get("deck");

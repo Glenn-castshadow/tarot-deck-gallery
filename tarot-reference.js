@@ -97,7 +97,7 @@
 
   // Standalone reference copy, keyed by card index. Filled in batches; see
   // docs/superpowers/plans/2026-09-13-tarot-reference.md. Every entry describes what the
-  // card holds, never what any one deck pictures, because four decks ship with this site.
+  // card holds, never what any one deck pictures, because more than one deck ships with this site.
   const REFERENCE = {};
 
   // the Major Arcana, indices 0-21.
