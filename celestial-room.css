@@ -25,6 +25,8 @@
 .city-attribution { color: #aebcc6; font-size: 10px; line-height: 1.5; }
 .city-attribution a { color: var(--atlas-gold); text-underline-offset: 3px; }
 #birthday-room .birthday-output { min-width: 0; }
+#birthday-room #newsletter-form { grid-column: 1 / -1; width: 100%; max-width: 680px; justify-self: center; }
+@media print { #newsletter-form { display: none !important; } }
 #birthday-room .birthday-navigation { gap: 8px; margin: 6px 0 28px; padding-bottom: 18px; border-color: var(--atlas-line); }
 #birthday-room .birthday-navigation button { min-height: 47px; padding: 12px 20px; color: #dce4e8; font-size: 14px; border-color: var(--atlas-line); }
 #birthday-room .birthday-navigation button[aria-pressed="true"] { color: #142331; background: var(--atlas-gold); }

@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/styles.css?v=site-shell-2">
     <link rel="stylesheet" href="/site-shell.css?v=7">
     <link rel="stylesheet" href="/account.css?v=c5-2">
-    <link rel="stylesheet" href="/celestial-room.css?v=chinese-year-1">
+    <link rel="stylesheet" href="/celestial-room.css?v=newsletter-position-1">
     <link rel="stylesheet" href="/astrocartography.css?v=1">
     <link rel="stylesheet" href="/celestial-extras.css?v=4">
     <link rel="stylesheet" href="/chart-in-time.css?v=2">
@@ -57,6 +57,11 @@
               <label class="natal-manual-toggle"><input id="birth-manual-enabled" type="checkbox"><span>Enter coordinates for an unlisted place</span></label>
               <fieldset id="birth-manual-fields" class="natal-manual-fields" disabled hidden><legend>Custom birthplace</legend><label><span>Latitude <small>north + / south −</small></span><input id="birth-latitude" type="number" min="-89.9999" max="89.9999" step="any" required></label><label><span>Longitude <small>east + / west −</small></span><input id="birth-longitude" type="number" min="-180" max="180" step="any" required></label><label class="natal-full-row"><span>IANA time zone</span><input id="birth-timezone" type="text" list="birth-timezones" placeholder="e.g. America/Los_Angeles" autocomplete="off" required></label><datalist id="birth-timezones"></datalist></fieldset>
             </div></details>
+            <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
+            <p id="birth-save-status" class="birth-save-status" role="status" hidden></p>
+          </form>
+          <div id="birthday-output" class="birthday-output" aria-live="polite" data-room="natal"></div>
+          <form id="newsletter-form" class="birthday-form" aria-label="Optional newsletter signup">
             <fieldset class="newsletter-signup">
               <legend>Stay in the circle <small>optional</small></legend>
               <label for="newsletter-email">Email address</label>
@@ -68,10 +73,7 @@
               <button id="newsletter-join" form="newsletter-form" type="submit">Join the newsletter</button>
             </fieldset>
             <p id="newsletter-status" role="status" aria-live="polite" hidden></p>
-            <button class="birthday-button" type="submit"><span>✦</span> Read my sky</button>
-            <p id="birth-save-status" class="birth-save-status" role="status" hidden></p>
           </form>
-          <div id="birthday-output" class="birthday-output" aria-live="polite" data-room="natal"></div>
         </div>
         <section id="astrocartography-room" class="astrocartography-room" aria-labelledby="acg-title" data-fold="Astrocartography" data-fold-key="world" data-fold-subtitle="Explore your sky across the world"></section>
         <section id="celestial-extras" class="celestial-extras" aria-label="Transits, relationship chart and Four Pillars" data-fold="More astrology charts" data-fold-key="charts" data-fold-subtitle="Sky today · two skies · Four Pillars" data-room="synastry composite davison bazi"></section>
@@ -101,7 +103,6 @@
       <form id="account-code-form" class="account-step" hidden><p class="section-kicker">Check your email</p><h2>Enter the code</h2><p id="account-code-hint"></p><label for="account-code-input">Code</label><input id="account-code-input" type="text" inputmode="text" autocomplete="one-time-code" required maxlength="12" autocapitalize="characters" spellcheck="false"><button type="submit">Sign in</button><button type="button" class="text-button" id="account-resend">Send a new code</button><button type="button" class="text-button" id="account-restart">Use a different email</button></form>
       <p id="account-dialog-status" role="status" aria-live="polite"></p>
     </dialog>
-    <form id="newsletter-form"></form>
     <div data-shell="notice"></div>
     <script src="/site-shell.js?v=12"></script>
     <script>SiteShell.mount('charts');</script>
