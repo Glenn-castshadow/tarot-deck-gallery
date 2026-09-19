@@ -30,10 +30,19 @@ function parseArgs(argv, today = new Date().toISOString().slice(0, 10)) {
   const o = {week: null, out: 'output/weekly-prose', accept: [], reject: []};
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--accept' || a === '--reject') o[a.slice(2)].push(argv[++i]);
-    else if (a === '--week' || a === '--out') o[a.slice(2)] = argv[++i];
-    else throw new Error(`unknown argument ${a}`);
+    if (a === '--accept' || a === '--reject') {
+      const val = argv[++i];
+      if (!val || val.startsWith('--')) throw new Error(`${a} needs a block name`);
+      o[a.slice(2)].push(val);
+    } else if (a === '--week' || a === '--out') {
+      const val = argv[++i];
+      if (!val || val.startsWith('--')) throw new Error(`${a} needs a value`);
+      o[a.slice(2)] = val;
+    } else throw new Error(`unknown argument ${a}`);
   }
+  o.accept = [...new Set(o.accept)];
+  o.reject = [...new Set(o.reject)];
+  for (const key of o.accept) if (o.reject.includes(key)) throw new Error(`cannot both accept and reject ${key}`);
   o.week = o.week || nextMonday(today);
   return o;
 }
@@ -48,12 +57,16 @@ function main(argv, options = {}) {
   const byKey = Object.fromEntries(blocks(week, options.sheet || engine.weekSheet(o.week)).map(b => [b.key, b]));
   let code = 0;
 
+  week.proof = week.proof || {blocks: {}};
+  week.proof.blocks = week.proof.blocks || {};
+
   for (const key of [...o.accept, ...o.reject]) if (!suggested[key]) console.warn(`${o.week} ${key}: no suggestion is waiting.`);
   for (const key of o.reject.filter(k => suggested[k])) { delete suggested[key]; console.log(`${o.week} ${key}: rejected; Glimmer's text stands.`); }
   for (const key of o.accept.filter(k => suggested[k])) {
-    const block = byKey[key], text = suggested[key].text;
-    const problem = block ? block.check(text) : 'the block is no longer in the issue';
+    const block = byKey[key], raw = suggested[key].text;
+    const problem = block ? block.check(raw) : 'the block is no longer in the issue (you can still --reject it)';
     if (problem) { console.error(`${o.week} ${key}: cannot accept, ${problem}. The suggestion is kept.`); code = 7; continue; }
+    const text = block.canonical(raw);
     week.originals = {...week.originals, [key]: week.originals?.[key] || block.text};
     block.set(text);
     week.proof.blocks[key] = {verdict: 'pass', reason: '', edited: true, accepted_by: 'owner', sha: sha(text)};
@@ -63,8 +76,9 @@ function main(argv, options = {}) {
   if (Object.keys(suggested).length) week.suggested = suggested; else delete week.suggested;
   if (o.accept.length || o.reject.length) fs.writeFileSync(file, JSON.stringify(week, null, 1) + '\n');
 
+  const show = (key, t) => { if (key !== 'subjects') return t; try { return JSON.stringify(JSON.parse(t), null, 1); } catch { return t; } };
   for (const [key, s] of Object.entries(suggested)) {
-    console.log(`\n${key}: refused because ${s.why}\n  ${byKey[key] ? wordDiff(byKey[key].text, s.text) : '(the block is no longer in the issue)'}`);
+    console.log(`\n${key}: refused because ${s.why}\n  ${byKey[key] ? wordDiff(show(key, byKey[key].text), show(key, s.text)) : '(the block is no longer in the issue)'}`);
     console.log(`  node tools/review_weekly_prose.cjs --week ${o.week} --accept ${key}     or     --reject ${key}`);
   }
   if (!Object.keys(suggested).length) console.log(`${o.week}: no corrections are waiting.`);
@@ -72,4 +86,4 @@ function main(argv, options = {}) {
 }
 
 module.exports = {wordDiff, parseArgs, main};
-if (require.main === module) process.exit(main(process.argv.slice(2)));
+if (require.main === module) { try { process.exit(main(process.argv.slice(2))); } catch (error) { console.error(error.message); process.exit(1); } }

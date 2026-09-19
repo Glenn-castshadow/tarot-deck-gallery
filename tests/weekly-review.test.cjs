@@ -109,3 +109,42 @@ test('wordDiff shows only what changed; listing and a missing file', async () =>
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-review-'));
   try { assert.equal(R.main(['--week', WEEK, '--out', dir], {sheet: SHEET}), 1); } finally { fs.rmSync(dir, {recursive: true}); }
 });
+
+test('a key given twice is accepted once, and the accept is kept', async () => {
+  await proofed(CLUMSY, offerTidied, async dir => {
+    assert.equal(R.main(['--week', WEEK, '--out', dir, '--accept', 'taurus', '--accept', 'taurus'], {sheet: SHEET}), 0);
+    assert.equal(read(dir).signs.taurus, TIDIED);
+    assert.equal(read(dir).suggested, undefined);
+  });
+});
+
+test('contradictory or incomplete instructions are refused before anything changes', async () => {
+  assert.throws(() => R.parseArgs(['--accept']), /needs a block name/);
+  assert.throws(() => R.parseArgs(['--accept', 'taurus', '--reject', 'taurus']), /both accept and reject taurus/);
+  assert.deepEqual(R.parseArgs(['--accept', 'taurus', '--accept', 'taurus', '--reject', 'leo'], '2026-09-19').accept, ['taurus']);
+});
+
+test('an accepted subjects suggestion stores its canonical text', async () => {
+  await proofed(CLUMSY, offerTidied, async dir => {
+    const good = JSON.parse(W.EXAMPLE_SUBJECTS);
+    const changed = good.subjects[0].replace('changes the mood', 'lifts the mood');
+    const reversed = JSON.stringify({preview: good.preview, subjects: [changed, good.subjects[1], good.subjects[2]]});
+    const f = read(dir);
+    f.suggested = {subjects: {text: reversed, why: 'test'}};
+    fs.writeFileSync(path.join(dir, `${WEEK}.json`), JSON.stringify(f));
+    assert.equal(R.main(['--week', WEEK, '--out', dir, '--accept', 'subjects'], {sheet: SHEET}), 0);
+    const updated = read(dir);
+    assert.equal(updated.proof.blocks.subjects.sha, P.sha(JSON.stringify({subjects: updated.subjects, preview: updated.preview})));
+    assert.equal(updated.subjects[0], changed);
+  });
+});
+
+test('wordDiff of pretty-printed subjects JSON shows only changed words', async () => {
+  const good = JSON.parse(W.EXAMPLE_SUBJECTS);
+  const before = JSON.stringify({subjects: good.subjects, preview: good.preview}, null, 1);
+  const changed = good.subjects[0].replace('changes', 'shifts');
+  const after = JSON.stringify({subjects: [changed, good.subjects[1], good.subjects[2]], preview: good.preview}, null, 1);
+  const diff = R.wordDiff(before, after);
+  assert(diff.length < 60, `diff is ${diff.length} chars, expected under 60`);
+  assert(diff.includes('changes'), `diff does not include the changed word: ${diff}`);
+});

@@ -283,9 +283,9 @@ async function main(argv) {
     if (parsed) ({subjects, preview} = parsed);
   }
 
-  const {proof, originals, rejected} = kept;
+  const {proof, originals, rejected, suggested} = kept;
   const out = {week: o.week, generated: new Date().toISOString(), model: o.model, overview, signs, subjects, preview,
-    ...(proof && {proof}), ...(originals && {originals}), ...(rejected && {rejected})};
+    ...(proof && {proof}), ...(originals && {originals}), ...(rejected && {rejected}), ...(suggested && {suggested})};
   fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n');
   console.log(`${o.week}: ${Object.keys(signs).length}/12 signs, overview ${overview ? 'written' : 'missing'}, ${subjects.length} subjects`);
   return Object.keys(signs).length >= 10 && overview ? 0 : 3;

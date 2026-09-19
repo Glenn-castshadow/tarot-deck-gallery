@@ -290,12 +290,14 @@ test('--force rewrites every block and drops the proof fields; a plain re-run ke
   await withFake({}, async dir => {
     await W.main(['--week', '2026-09-21', '--out', dir]);
     const file = path.join(dir, '2026-09-21.json');
-    fs.writeFileSync(file, JSON.stringify({...read(dir, '2026-09-21'), proof: {blocks: {}}, originals: {aries: 'x'}, rejected: {}}));
+    fs.writeFileSync(file, JSON.stringify({...read(dir, '2026-09-21'), proof: {blocks: {}}, originals: {aries: 'x'}, rejected: {}, suggested: {taurus: {text: 'x', why: 'y'}}}));
     await W.main(['--week', '2026-09-21', '--out', dir]);
     assert.deepEqual(read(dir, '2026-09-21').originals, {aries: 'x'});
+    assert.deepEqual(read(dir, '2026-09-21').suggested, {taurus: {text: 'x', why: 'y'}});
     await W.main(['--week', '2026-09-21', '--out', dir, '--force']);
     assert.equal('proof' in read(dir, '2026-09-21'), false);
     assert.equal('originals' in read(dir, '2026-09-21'), false);
+    assert.equal('suggested' in read(dir, '2026-09-21'), false);
   });
 });
 
