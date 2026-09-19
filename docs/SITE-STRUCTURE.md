@@ -336,3 +336,10 @@ is checked once on load; a match calls `location.replace(target)`:
 
 No other page carries this map — a topic page has no older single-page bookmarks
 pointing at it that a different topic page's fragments could collide with.
+
+## Static reference pages
+
+Three more index pages exist outside the shell-mounted pages above, generated (not
+hand-written) from the site's own data modules: `/tarot/cards/`, `/divination/i-ching/`
+and `/sky/signs/`. See `docs/REFERENCE-PAGES.md` for the full URL scheme, the build
+commands and what triggers a rebuild.
