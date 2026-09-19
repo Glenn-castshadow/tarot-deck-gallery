@@ -282,12 +282,13 @@ if (require.main === module) {
     if (files.length) { console.error(`stale or missing (${files.length}):\n${files.join('\n')}`); process.exit(1); }
     console.log('reference pages are current');
   } else {
-    for (const {file, html} of allFiles()) {
+    const files = allFiles();
+    for (const {file, html} of files) {
       const target = path.join(ROOT, file);
       fs.mkdirSync(path.dirname(target), {recursive: true});
       fs.writeFileSync(target, html);
     }
-    console.log(`wrote ${allFiles().length} files`);
+    console.log(`wrote ${files.length} files`);
   }
 }
 
