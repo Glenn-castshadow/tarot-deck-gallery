@@ -1,5 +1,29 @@
 # VPS deployment
 
+## 2026-09-18 Newsletter issue builder, images and the draft command
+
+Deployed `34e78f2`. **Static (new files only) and backend.**
+
+**Static release.** `/opt/tarot-game/releases/20260918-newsletter-assets-9443f6c`, a `cp -al` hardlink copy of
+`20260918-newsletter-mailchimp-8a638d9`, by `/tmp/ishtar-newsletter-assets.sh`. Twenty-six new files under
+`assets/newsletter/` (masthead, moon arc, twelve sign banners, twelve glyph PNGs, about 1.6 MB); nothing
+existing was replaced. Gated on `current`, on the previous release having no `assets/newsletter`, on the sha256
+of all 26 files against the commit's blobs, and on the previous release still having none afterwards. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-newsletter-mailchimp-8a638d9 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`
+(a drafted or sent issue would then show its styled alt text in place of images).
+
+**Backend.** The documented `git archive` path and `sh /tmp/deploy-app.sh`. No migration. Adds
+`manage.py draft_campaign`, the setting `NEWSLETTER_ISSUE_DIR` (default `/var/lib/ishtar-app/newsletter`), and
+lets `mailchimp._request` take an empty reply. Health check `{"ok": true}`.
+
+**Validation.** All 26 image URLs return 200 with `image/jpeg` or `image/png`; `/`, `/sky/`, `/tarot/` and
+`/api/health/` return 200. `sync_mailchimp` by hand after the deploy: `pushed=0 removed=0 deleted=0 failed=0`.
+First real `build_newsletter.cjs --push` for the week of 2026-09-21: 40.5 KB, 12 of 12 signs, files on the VPS
+root-owned 644, sha256 equal to the manifest's. First `draft_campaign 2026-09-21 --test <owner>`: draft created
+(Mailchimp web id 15063169), test sent, and the checklist reported what was true: scheduling is unavailable on
+the free plan, and **the audience had no subscribed member** (two pending confirmation, none with a sign), so
+Mailchimp would not send. Nothing in the repo can send a campaign; Glenn sends in Mailchimp.
+
 ## 2026-09-18 Newsletter audience sync to Mailchimp
 
 Deployed `8a638d9`. **Backend and static**, in that order and within minutes of each other: the consent
