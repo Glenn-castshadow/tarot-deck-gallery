@@ -162,6 +162,8 @@ NEWSLETTER_CONSENT_TEXT = 'Yes, email me the Ishtar Insights newsletter and occa
 MAILCHIMP_API_KEY = os.environ.get('MAILCHIMP_API_KEY', '')
 MAILCHIMP_SERVER = os.environ.get('MAILCHIMP_SERVER', '')
 MAILCHIMP_AUDIENCE_ID = os.environ.get('MAILCHIMP_AUDIENCE_ID', '')
+# Where tools/build_newsletter.cjs --push leaves each week's issue.html and issue.json.
+NEWSLETTER_ISSUE_DIR = os.environ.get('NEWSLETTER_ISSUE_DIR', '/var/lib/ishtar-app/newsletter')
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
