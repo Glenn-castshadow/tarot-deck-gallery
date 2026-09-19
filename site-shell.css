@@ -51,4 +51,5 @@
 .masthead--compact { padding-bottom: 30px; }
 .masthead--compact .brand-lockup img { width: 160px; }
 .masthead--compact h1 { max-width: none; margin: 14px auto 0; font-size: clamp(15px, 1.6vw, 20px); letter-spacing: normal; }
+.masthead-title { max-width: none; margin: 14px auto 0; color: #fff; font: 700 clamp(15px, 1.6vw, 20px)/1.08 "Playfair Display", serif; letter-spacing: normal; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
 .masthead .lede { text-wrap: balance; }

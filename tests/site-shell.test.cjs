@@ -44,3 +44,17 @@ test('collectSections keeps top-level folds that have an id, in document order',
   const doc = {querySelectorAll: sel => sel === '[data-fold]' ? [room, nested, unnamed, horary] : []};
   assert.deepEqual(SiteShell.collectSections(doc), [{id: 'birthday-room', label: 'Birth sky'}, {id: 'horary', label: 'Horary'}]);
 });
+
+test('the compact header can demote its title so a generated page owns the h1', () => {
+  const demoted = SiteShell.render({page: 'tarot', variant: 'compact', heading: 'p'}).header;
+  assert.doesNotMatch(demoted, /<h1/);
+  assert.match(demoted, /<p class="masthead-title">Tarot<\/p>/);
+  assert.match(SiteShell.render({page: 'tarot', variant: 'compact'}).header, /<h1>Tarot<\/h1>/);
+});
+
+test('the footer links the three reference indexes', () => {
+  const {footer} = SiteShell.render({page: 'sky', variant: 'compact'});
+  for (const href of ['/tarot/cards/', '/sky/signs/', '/divination/i-ching/']) {
+    assert.ok(footer.includes(`href="${href}"`), `footer lacks ${href}`);
+  }
+});

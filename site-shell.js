@@ -33,13 +33,14 @@
       </header>`;
   }
 
-  function renderCompactHeader(page) {
+  function renderCompactHeader(page, heading = 'h1') {
     const entry = NAV.find(item => item.key === page);
     const title = entry ? entry.label : '';
+    const titleHTML = heading === 'p' ? `<p class="masthead-title">${title}</p>` : `<h1>${title}</h1>`;
     return `<header class="masthead masthead--compact">
         <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="brand-lockup"><img src="/assets/ishtar-insights-logo-hero.webp" alt="Ishtar Insights lotus logo" width="1233" height="895"></div>
-        <h1>${title}</h1>
+        ${titleHTML}
       </header>`;
   }
 
@@ -73,6 +74,7 @@
     return `<footer class="footer">
         <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="/tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
         <p><a href="/cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
+        <p>Look something up: <a href="/tarot/cards/">Tarot card meanings</a> · <a href="/sky/signs/">Zodiac signs</a> · <a href="/divination/i-ching/">I Ching hexagrams</a></p>
       </footer>`;
   }
 
@@ -86,9 +88,9 @@
     </section>`;
   }
 
-  function render({page, variant, links = 'page', sections = []}) {
+  function render({page, variant, links = 'page', sections = [], heading = 'h1'}) {
     return {
-      header: variant === 'hero' ? renderHeroHeader() : renderCompactHeader(page),
+      header: variant === 'hero' ? renderHeroHeader() : renderCompactHeader(page, heading),
       nav: renderNav(page, links, sections),
       footer: renderFooter(),
       notice: renderNotice()
