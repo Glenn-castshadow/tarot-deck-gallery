@@ -50,10 +50,10 @@ test('the campaign carries every sign inside one IF / ELSEIF chain, in zodiac or
 });
 
 test('the opening sentence is pulled out as a quote and the paragraph break survives', () => {
-  const q = B.pullQuote('First sentence here. Second one. Third.\n\nNext paragraph.');
-  assert.deepEqual(q, {quote: 'First sentence here.', rest: 'Second one. Third.\n\nNext paragraph.'});
-  assert.deepEqual(B.pullQuote('Only one sentence here.\n\nNext.'), {quote: '', rest: 'Only one sentence here.\n\nNext.'});
-  const section = B.signSection(B.SIGNS[0], 'First sentence here. Second one.\n\nNext paragraph.');
+  const q = B.pullQuote('The first sentence is long enough. Second one. Third.\n\nNext paragraph.');
+  assert.deepEqual(q, {quote: 'The first sentence is long enough.', rest: 'Second one. Third.\n\nNext paragraph.'});
+  assert.deepEqual(B.pullQuote('Only one sentence is in here. \n\nNext paragraph.'), {quote: '', rest: 'Only one sentence is in here.\n\nNext paragraph.'});
+  const section = B.signSection(B.SIGNS[0], 'The first sentence is long enough. Second one.\n\nNext paragraph.');
   assert.equal((section.match(/<p style="margin:0 0 16px/g) || []).length, 2);
 });
 
@@ -62,6 +62,26 @@ test('reader text is escaped', () => {
   assert.ok(html.includes('Less &lt; more &amp; &quot;quoted&quot;.'));
   assert.ok(html.includes('Fish &amp; chips &lt;week&gt;'));
   assert.equal(html.includes('<week>'), false);
+});
+
+test('model text cannot speak Mailchimp\'s template language', () => {
+  const html = campaign(makeWeek(w => {
+    w.signs.aries = 'A calm week. *|END:IF|* and *|UNSUB|* and *|ELSE:|* appear in this sentence.\n\nNext *|IF:SIGN=leo|* paragraph.';
+    w.overview = 'The week builds slowly *|ARCHIVE|* and then opens. The Sun is in Virgo.\n\nOn Saturday the Full moon arrives.';
+  }));
+  const tags = html.match(/\*\|(?:IF|ELSEIF|ELSE|END):[^|]*\|\*/g);
+  assert.equal(tags.length, 14, 'the chain is exactly IF, eleven ELSEIF, ELSE and END:IF');
+  assert.equal((html.match(/\*\|UNSUB\|\*/g) || []).length, 1, 'only the footer\'s own unsubscribe tag');
+  assert.equal((html.match(/\*\|ARCHIVE\|\*/g) || []).length, 1);
+  assert.ok(html.includes('*&#124;END:IF&#124;*'), 'the text still shows, with the bar as an entity');
+});
+
+test('the subject and preview that leave as plain text carry no merge-tag delimiters', () => {
+  const fit = B.fitBlocks(makeWeek(w => { w.subjects[0] = 'Your week, *|FNAME|*, and *|UNSUB|*'; w.preview = 'A waxing Moon *|ARCHIVE|* for most of the week, then a Full moon.'; }));
+  const {subject, preview} = B.headline(fit);
+  assert.equal(subject.includes('|'), false);
+  assert.equal(preview.includes('|'), false);
+  assert.equal(subject, 'Your week, *FNAME*, and *UNSUB*');
 });
 
 test('the footer holds what Mailchimp, the law and our own specs require', () => {
@@ -83,7 +103,7 @@ test('the HTML keeps to what mail clients render', () => {
     assert.match(img, /src="https:\/\/ishtarinsights\.com\/assets\/newsletter\/[a-z\/-]+\.(?:jpg|png)"/, img);
   }
   assert.match(html, /<meta name="color-scheme" content="dark light">/);
-  for (const cell of html.match(/<td\b[^>]*padding:[^>]*>/g)) assert.match(cell, /background:#[0-9a-f]{6}/, `a padded cell with no colour of its own: ${cell.slice(0, 80)}`);
+  for (const cell of html.match(/<td\b[^>]*padding[-:][^>]*>/g)) assert.match(cell, /background:#[0-9a-f]{6}/, `a padded cell with no colour of its own: ${cell.slice(0, 80)}`);
 });
 
 test('a full issue of the longest readings stays under the Gmail clipping limit', () => {
@@ -127,6 +147,16 @@ test('main writes the campaign, a manifest whose sha matches it, and a preview',
   const preview = fs.readFileSync(path.join(out, '2026-09-21', 'preview.html'), 'utf8');
   assert.equal(preview.includes('*|IF:'), false, 'the preview shows one reader at a time, with no merge tags');
   assert.ok(preview.includes('assets/newsletter/signs/aries.jpg') && !preview.includes('https://ishtarinsights.com/assets/newsletter'));
+}));
+
+test('the issue is dated by --week, and a file that says another week is refused', () => inTemp((src, out) => {
+  const wrong = makeWeek(w => { w.week = '2026-09-28'; });
+  fs.mkdirSync(src, {recursive: true}); fs.writeFileSync(path.join(src, '2026-09-21.json'), JSON.stringify(wrong));
+  assert.equal(B.main(['--week', '2026-09-21', '--in', src, '--out', out]), 1);
+  assert.equal(fs.existsSync(path.join(out, '2026-09-21')), false);
+  fs.writeFileSync(path.join(src, '2026-09-21.json'), '{not json');
+  assert.equal(B.main(['--week', '2026-09-21', '--in', src, '--out', out]), 1);
+  assert.equal(B.fitBlocks({...makeWeek(), week: undefined}, '2026-09-21').week, '2026-09-21');
 }));
 
 test('exit codes: 1 no file or not a Monday, 4 no overview, 5 a missing sign unless allowed', () => inTemp((src, out) => {

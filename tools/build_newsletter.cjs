@@ -39,20 +39,20 @@ const SIGNS = [
 ].map(([key, name, element, modality, ruler, alt]) => ({key, name, element, modality, ruler, alt}));
 
 const sha = text => crypto.createHash('sha256').update(text).digest('hex');
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const paragraphs = (text, style) => text.split(/\n\s*\n/).map(p => `<p style="${style}">${esc(p.trim())}</p>`).join('');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\|/g, '&#124;');
+const paragraphs = (text, style) => text.split(/\n\s*\n/).filter(p => p.trim()).map(p => `<p style="${style}">${esc(p.trim())}</p>`).join('');
 const weekLabel = monday => { const [, m, d] = monday.split('-').map(Number); return `${d} ${MONTHS[m - 1]}`; };
 
 // Piece 2's contract: a block is fit to send only when its verdict is pass and the recorded sha
 // is that of the text now in the file.
-function fitBlocks(week) {
-  const proofed = (key, text) => Boolean(text) && week.proof?.blocks?.[key]?.verdict === 'pass' && week.proof.blocks[key].sha === sha(text);
+function fitBlocks(week, monday = week.week) {
+  const proofed = (key, text) => typeof text === 'string' && text && week.proof?.blocks?.[key]?.verdict === 'pass' && week.proof.blocks[key].sha === sha(text);
   const signs = {};
   for (const {key} of SIGNS) if (proofed(key, week.signs?.[key])) signs[key] = week.signs[key];
-  const subjectsText = week.subjects?.length === 3 ? JSON.stringify({subjects: week.subjects, preview: week.preview}) : '';
+  const subjectsText = Array.isArray(week.subjects) && week.subjects.length === 3 && week.subjects.every(s => typeof s === 'string') && typeof week.preview === 'string' ? JSON.stringify({subjects: week.subjects, preview: week.preview}) : '';
   const subjectsFit = proofed('subjects', subjectsText);
   return {
-    week: week.week,
+    week: monday,
     overview: proofed('overview', week.overview) ? week.overview : '',
     signs, missing: SIGNS.map(s => s.key).filter(key => !signs[key]),
     subjects: subjectsFit ? week.subjects : [], preview: subjectsFit ? week.preview : '',
@@ -62,10 +62,16 @@ function fitBlocks(week) {
 
 // The reading's opening sentence is pulled out as a quote, when the paragraph has more to follow.
 function pullQuote(text) {
-  const [first, ...others] = text.split(/\n\s*\n/);
-  const cut = first.search(/[.!?]\s/) + 1;
-  if (cut <= 0) return {quote: '', rest: text};
-  return {quote: first.slice(0, cut), rest: [first.slice(cut).trim(), ...others].join('\n\n')};
+  const paragraphs = text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p);
+  if (!paragraphs.length) return {quote: '', rest: text};
+  const first = paragraphs[0];
+  const others = paragraphs.slice(1);
+  const match = first.slice(25).match(/[.!?]\s/);
+  if (!match) return {quote: '', rest: paragraphs.join('\n\n')};
+  const cut = 25 + match.index + 1;
+  const after = first.slice(cut).trim();
+  if (!after) return {quote: '', rest: paragraphs.join('\n\n')};
+  return {quote: first.slice(0, cut), rest: [after, ...others].join('\n\n')};
 }
 
 const panelOpen = 'background:#10252e;border:1px solid #3d5a5a;';
@@ -156,9 +162,10 @@ ${footer()}
 
 // What the campaign is called, and what goes in the inbox.
 function headline(fit, pick = 1) {
-  if (fit.subjects.length) return {subject: fit.subjects[pick - 1], preview: fit.preview};
+  const plain = s => s.replace(/\|/g, '');
+  if (fit.subjects.length) return {subject: plain(fit.subjects[pick - 1]), preview: plain(fit.preview)};
   const first = fit.overview.split(/(?<=[.!?])\s/)[0];
-  return {subject: `Your week ahead: ${weekLabel(fit.week)}`, preview: first.length > 110 ? `${first.slice(0, 107).trimEnd()}...` : first};
+  return {subject: `Your week ahead: ${weekLabel(fit.week)}`, preview: plain(first.length > 110 ? `${first.slice(0, 107).trimEnd()}...` : first)};
 }
 
 // The preview: every reader's version side by side with a phone, from the same renderEmail.
@@ -209,6 +216,7 @@ function push(week, dir) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(week)) throw new Error(`refusing to push a malformed week: ${week}`);
   const remote = `/var/lib/ishtar-app/newsletter/${week}`;
   execFileSync('ssh', ['vps', `install -d -m 755 /var/lib/ishtar-app/newsletter ${remote}`], {stdio: 'inherit'});
+  // The HTML goes first. If the push dies between the two, the server holds a manifest whose sha256 does not match (or none), and draft_campaign refuses it. The other order would not be safe.
   for (const name of ['issue.html', 'issue.json']) {
     execFileSync('ssh', ['vps', `cat > ${remote}/${name}.tmp && chmod 644 ${remote}/${name}.tmp && mv -f ${remote}/${name}.tmp ${remote}/${name}`],
       {input: fs.readFileSync(path.join(dir, name)), stdio: ['pipe', 'inherit', 'inherit']});
@@ -220,7 +228,15 @@ function main(argv) {
   const o = parseArgs(argv);
   const file = path.join(o.in, `${o.week}.json`);
   if (new Date(`${o.week}T00:00:00Z`).getUTCDay() !== 1 || !fs.existsSync(file)) { console.error(`${o.week}: not a Monday, or no issue file at ${file}.`); return 1; }
-  const fit = fitBlocks(JSON.parse(fs.readFileSync(file, 'utf8')));
+  let parsed;
+  try {
+    parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    console.error(`${o.week}: ${file} is not valid JSON.`);
+    return 1;
+  }
+  if (parsed.week !== o.week) { console.error(`${o.week}: ${file} says it is for week ${parsed.week}.`); return 1; }
+  const fit = fitBlocks(parsed, o.week);
   if (!fit.overview) { console.error(`${o.week}: the overview is not fit to send (missing, failed, or changed since it was proofread). No issue.`); return 4; }
   if (fit.missing.length && !o.allowMissing) { console.error(`${o.week}: not fit to send: ${fit.missing.join(', ')}. Repair the week, or pass --allow-missing.`); return 5; }
   for (const key of fit.suggested) console.warn(`${o.week}: a correction for ${key} is waiting for your decision (node tools/review_weekly_prose.cjs --week ${o.week}).`);
@@ -245,4 +261,4 @@ function main(argv) {
 }
 
 module.exports = {SIGNS, ASSETS, MAX_BYTES, sha, fitBlocks, pullQuote, signSection, missingSignSection, noSignSection, footer, renderEmail, headline, previewPage, parseArgs, main};
-if (require.main === module) process.exit(main(process.argv.slice(2)));
+if (require.main === module) { try { process.exit(main(process.argv.slice(2))); } catch (error) { console.error(error.message); process.exit(1); } }
