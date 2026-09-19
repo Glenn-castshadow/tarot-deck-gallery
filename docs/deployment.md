@@ -1,5 +1,31 @@
 # VPS deployment
 
+## 2026-09-18 The lotus eye on the Ishtar card back
+
+Deployed `0739216`. **Static only.**
+
+**Release.** `/opt/tarot-game/releases/20260918-lotus-eye-0739216`, a `cp -al` hardlink copy of
+`20260918-newsletter-assets-9443f6c`, by `/tmp/ishtar-lotus-eye.sh`. Three files replaced (`styles.css`,
+`tarot.js`, `tarot/index.html`), each `rm -f`'d before extraction. Before the run, the three live files were
+confirmed byte-identical to `8f70053` and free of the needle `lotus-eye`. Gated on `current`, on the sha256 of
+the three files against the commit's blobs, on a link count of 1 for each, and on the previous release still
+lacking `lotus-eye`. The first run aborted at the hash gate with the site untouched: the tar had been built
+without `-c core.autocrlf=false` (see the 2026-09-17 entry); rebuilt, the second run passed. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260918-newsletter-assets-9443f6c /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Change (Glenn's request: the lotus on the card back opens as an eye occasionally).** `cardVisual` in
+`tarot.js` adds an inline SVG eye over the back image, Ishtar deck only (the other backs have no lotus). CSS
+only, a 16s cycle: closed about 10s, then open, glance, blink, close. The daily card first opens about 4s after
+load; spread cards are staggered 5s apart through `--eye-delay`. It stays closed under
+`prefers-reduced-motion`. Size (27% of the card width) and cycle length are single values in `styles.css`.
+
+**Cache keys.** `styles.css?v=lotus-eye-1` and `tarot.js?v=7`, on `/tarot/` only; no other page draws the eye.
+
+**Validation.** `/`, `/tarot/`, `/sky/`, `/api/health/` and both assets return 200; the served `tarot.js`
+carries `class="lotus-eye"` and the served CSS `@keyframes lotus-eye-open`. In a browser at
+ishtarinsights.com/tarot/ the eye was open in the lotus heart 5.5s after load. Suite 677 of 677. Not checked
+at phone width.
+
 ## 2026-09-18 Newsletter issue builder, images and the draft command
 
 Deployed `34e78f2`. **Static (new files only) and backend.**
