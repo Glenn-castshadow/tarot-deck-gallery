@@ -1,5 +1,57 @@
 # VPS deployment
 
+## 2026-09-19 Hardening: self-hosted fonts, security headers, cache lifetimes, off-site backup
+
+Four changes Glenn approved as one pass. **Static (two releases), nginx, and one script on GLENNHOMEPC.**
+
+**Self-hosted fonts, `5ab933c`.** `/opt/tarot-game/releases/20260919-self-hosted-fonts-5ab933c`, from
+`20260919-trust-pages-f02a27e`, by `/tmp/ishtar-self-fonts.sh`: 183 files, 170 replaced and 13 new under
+`assets/fonts/` (eight woff2 files, latin and latin-ext, 164 KB; `fonts.css`; three OFL texts; a README).
+Usual gates plus "the previous release has no `assets/fonts`" and "no shipped page still links
+`fonts.googleapis.com`". The font blobs were checked byte-identical to the downloaded files. Every page and
+the reference-page generator now link `/assets/fonts/fonts.css?v=1`; the five policy pages, which loaded no
+fonts at all to avoid the Google request, get the typefaces too. `privacy.html` and `cookie-policy.html` no
+longer name Google as a third party. In a browser on the live site, home, Charts, Tarot and a reference page
+made no request to any other origin.
+
+**nginx, `server/harden-nginx.sh`.** Touches only this site's server block, one snippet
+(`/etc/nginx/snippets/ishtar-security-headers.conf`) and one map file (`/etc/nginx/conf.d/ishtar-cache.conf`);
+the other sites on the VPS are untouched and were checked to still answer. Backs the site file up beside
+itself, runs `nginx -t`, restores all three files on failure. Dry-run locally against a copy of the live file
+first. A location with its own `add_header` inherits none from the server, so the snippet is included at
+server level and in each such location.
+- Headers: HSTS six months (no `includeSubDomains`, no preload), `nosniff`, `X-Frame-Options DENY`,
+  `Referrer-Policy strict-origin-when-cross-origin`, a `Permissions-Policy` denying geolocation, camera,
+  microphone, payment and usb, `server_tokens off`, and a content-security policy:
+  `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'
+  data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';
+  frame-ancestors 'none'`. `'unsafe-inline'` stays because every page has a small inline script and the cards
+  set inline custom properties. Run first as Report-Only: eleven surfaces (the eight pages, a reference page,
+  the unsubscribe page, the Django admin login) produced no violation, and a deliberate probe proved
+  violations were being captured. Then enforced; inline scripts, inline styles, sign-in and the charts still
+  work and the console shows no "Refused". To go back: `sh /tmp/harden-nginx.sh report-only`, or copy
+  `/etc/nginx/sites-available/ishtarinsights.com.bak-20260919073340` over the site file and reload.
+- Cache: a `.css` or `.js` asked for with a `?v=` key is `public, max-age=31536000, immutable`; fonts 30 days;
+  images 7 days; HTML, unversioned scripts and data stay `no-cache`; `/sky/daily/` and the API are unchanged.
+  Checked per type with `curl -I`, including that `/?v=1` stays `no-cache`. Consequence: a changed image now
+  takes up to a week to reach a returning visitor unless its URL changes.
+
+**Off-site backup.** `tools/pull_vps_backup.ps1` pulls the newest `/var/backups/ishtar-app/db-*.sqlite3` to
+`N:\backups\ishtar-app` over SSH, verifies its sha256 against the server, and keeps 14, matching the server so
+the privacy page's "about two weeks" stays true. Called from `C:\Users\glenn\Scripts\daily-prose.ps1` (the
+03:30 task's wrapper) in its `finally`, inside a try/catch that cannot change the prose job's exit code; no new
+scheduled task. First pull: 249,856 bytes, sha256 verified, `pragma integrity_check` ok, 18 tables. Not
+encrypted at rest on the NAS (Claude proposed "encrypted" and did not build it; the transfer is encrypted).
+
+**Privacy wording, `6897e95`.** `/opt/tarot-game/releases/20260919-privacy-backup-6897e95`, from the fonts
+release, by `/tmp/ishtar-privacy-backup.sh`: `privacy.html` only, saying a second set of fourteen copies is
+kept on a private storage device of ours in the United States. Rollback for either static release:
+`ln -sfn /opt/tarot-game/releases/<previous> /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Validation.** All pages 200; `fonts.css?v=1` immutable, a woff2 30 days, HTML `no-cache`, the API `no-store`;
+the enforced policy header present; `privacy.html` carries the new sentence and no mention of Google; the home
+page has no `fonts.googleapis` link. Suite 692 of 692.
+
 ## 2026-09-19 About and privacy pages, footer links, and three corrections
 
 Deployed `f02a27e`. **Static only.**
