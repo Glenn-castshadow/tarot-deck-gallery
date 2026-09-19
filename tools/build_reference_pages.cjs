@@ -116,9 +116,9 @@ function renderPage({url, section, title, description, image, crumbs, body}) {
     <meta property="og:url" content="${SITE + url}">
     <meta name="twitter:card" content="${twitterCard}">
     <link rel="canonical" href="${SITE + url}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin-400-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/playfair-display-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/fonts/fonts.css?v=1">
     ${stylesheetLinks()}
     <script type="application/ld+json">${jsonLd({url, title: fullTitle, description, image, crumbs})}</script>
   </head>
