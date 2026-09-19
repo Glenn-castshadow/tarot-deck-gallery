@@ -95,3 +95,42 @@ test('every hexagram page has one h1 and a unique title', () => {
     assert.ok(!titles.has(title), title); titles.add(title);
   }
 });
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+test('12 sign pages with date ranges that meet end to end', () => {
+  const pages = B.signPages();
+  assert.equal(pages.length, 13);
+  const aries = pages.find(p => p.url === '/sky/signs/aries/');
+  assert.match(aries.html, /<h1><span aria-hidden="true">♈<\/span> Aries<\/h1>/);
+  assert.match(aries.html, /March 21 to April 19/);
+  assert.match(aries.html, /href="\/sky\/\?sign=aries#daily-horoscope"/);
+  assert.match(aries.html, /href="\/tarot\/cards\/the-emperor\/"/, 'Aries is the Emperor in the Golden Dawn attributions');
+  const capricorn = pages.find(p => p.url === '/sky/signs/capricorn/');
+  assert.match(capricorn.html, /December 22 to January 19/, 'the range crosses the year end');
+});
+
+test('the sitemap lists the eight-minus-account pages and every generated page, once', () => {
+  const xml = B.allFiles().find(f => f.file === 'sitemap.xml').html;
+  const locs = xml.match(/<loc>(.*?)<\/loc>/g).map(tag => tag.slice(5, -6));
+  assert.equal(locs.length, 7 + 79 + 65 + 13);
+  assert.equal(new Set(locs).size, locs.length);
+  assert.ok(locs.includes('https://ishtarinsights.com/tarot/cards/the-star/'));
+  assert.ok(!locs.some(loc => loc.includes('/account/')));
+});
+
+test('every internal link on a generated page resolves to a file in the repo', () => {
+  const generated = new Set(B.allFiles().map(f => f.file));
+  for (const {file, html} of B.allFiles()) {
+    if (file === 'sitemap.xml') continue;
+    for (const match of html.matchAll(/href="(\/[^"#?]*)/g)) {
+      const target = match[1].endsWith('/') ? match[1].slice(1) + 'index.html' : match[1].slice(1);
+      assert.ok(generated.has(target) || fs.existsSync(path.join(B.ROOT, target)), `${file} links to missing ${match[1]}`);
+    }
+  }
+});
+
+test('the committed pages are what the generator produces now', () => {
+  assert.deepEqual(B.stale(), [], 'run: node tools/build_reference_pages.cjs');
+});

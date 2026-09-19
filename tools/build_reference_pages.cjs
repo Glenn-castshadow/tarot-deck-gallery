@@ -214,5 +214,83 @@ function hexagramPages() {
   return [index, ...pages];
 }
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function signPages() {
+  const signs = BirthLore.zodiacSigns;
+  const crumbsBase = [{name: 'Sky', url: '/sky/'}, {name: 'Zodiac signs', url: '/sky/signs/'}];
+  const url = sign => `/sky/signs/${sign.name.toLowerCase()}/`;
+  const range = i => {
+    const [month, day] = signs[i].start, [nextMonth, nextDay] = signs[(i + 1) % 12].start;
+    const end = new Date(Date.UTC(2025, nextMonth - 1, nextDay - 1));
+    return `${MONTHS[month - 1]} ${day} to ${MONTHS[end.getUTCMonth()]} ${end.getUTCDate()}`;
+  };
+  const cardFor = name => {
+    for (let i = 0; i < 22; i++) if (TarotReference.attribution(i).sign === name) return i;
+    return -1;
+  };
+  const pages = signs.map((sign, i) => {
+    const slug = sign.name.toLowerCase(), card = cardFor(sign.name);
+    const near = j => ({url: url(signs[(j + 12) % 12]), name: signs[(j + 12) % 12].name});
+    const facts = [['Dates', range(i)], ['Element', sign.element], ['Modality', sign.modality], ['Ruler', sign.ruler],
+      ['Stones', sign.stones], ['Flower', sign.flower], ['Mantra', sign.mantra]];
+    const body = `<header><p class="ref-kicker">${esc(sign.element)} · ${esc(sign.modality)}</p><h1><span aria-hidden="true">${sign.symbol}</span> ${esc(sign.name)}</h1><p class="ref-keywords">${esc(range(i))}</p></header>
+        <figure class="ref-banner"><img src="/assets/newsletter/signs/${slug}.jpg" width="1200" height="520" alt="${esc(sign.name)}, illustrated"></figure>
+        <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
+        <section><h2>${esc(sign.name)} in a sentence</h2><p>${esc(sign.horoscope)}</p></section>
+        ${card >= 0 ? `<section><h2>${esc(sign.name)} in the tarot</h2><p>In the Golden Dawn attributions ${esc(sign.name)} belongs to <a href="${cardUrl(card)}">${esc(TarotReference.name(card))}</a>.</p></section>` : ''}
+        <p class="ref-cta"><a class="ref-button" href="/sky/?sign=${slug}#daily-horoscope">Read today's ${esc(sign.name)} horoscope</a><a href="/charts/#birthday-room">Find your rising sign with a birth chart</a></p>
+        ${pager(near(i - 1), near(i + 1))}`;
+    return {file: `sky/signs/${slug}/index.html`, url: url(sign), html: renderPage({url: url(sign), section: 'sky',
+      title: `${sign.name} (${range(i)}): dates, element, ruler and today's horoscope`,
+      description: clip(`${sign.name}, ${range(i)}. ${sign.element} sign, ${sign.modality.toLowerCase()}, ruled by ${sign.ruler}. ${sign.horoscope}`),
+      image: {src: `/assets/newsletter/signs/${slug}.jpg`, width: 1200, height: 520}, crumbs: [...crumbsBase, {name: sign.name, url: url(sign)}], body})};
+  });
+  const indexBody = `<header><p class="ref-kicker">12 signs</p><h1>The zodiac signs</h1><p class="ref-keywords">Dates, element, modality and ruler for each sign, with a link to today's horoscope.</p></header>
+        <ul class="ref-index">${signs.map((sign, i) => `<li><a href="${url(sign)}"><span aria-hidden="true">${sign.symbol}</span> ${esc(sign.name)}</a><small>${esc(range(i))}</small></li>`).join('')}</ul>
+        <p class="ref-cta"><a class="ref-button" href="/sky/#daily-horoscope">Today's horoscope</a></p>`;
+  const index = {file: 'sky/signs/index.html', url: '/sky/signs/', html: renderPage({url: '/sky/signs/', section: 'sky',
+    title: 'The twelve zodiac signs: dates, elements and rulers', description: 'The twelve zodiac signs with their dates, element, modality, ruling planet and a link to each sign\'s horoscope for today.',
+    image: null, crumbs: crumbsBase, body: indexBody})};
+  return [index, ...pages];
+}
+
+// /account/ is disallowed in robots.txt and stays out, as it is today.
+const HAND_WRITTEN = ['/', '/tarot/', '/sky/', '/charts/', '/eastern/', '/numerology/', '/divination/'];
+
+function allFiles() {
+  const pages = [...cardPages(), ...hexagramPages(), ...signPages()];
+  const urls = [...HAND_WRITTEN, ...pages.map(page => page.url)];
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(url => `  <url>\n    <loc>${SITE}${url}</loc>\n    <lastmod>${LASTMOD}</lastmod>\n  </url>`).join('\n')}
+</urlset>
+`;
+  return [...pages.map(({file, html}) => ({file, html})), {file: 'sitemap.xml', html: sitemap}];
+}
+
+function stale() {
+  return allFiles().filter(({file, html}) => {
+    const target = path.join(ROOT, file);
+    return !fs.existsSync(target) || fs.readFileSync(target, 'utf8').replace(/\r\n/g, '\n') !== html;
+  }).map(({file}) => file);
+}
+
+if (require.main === module) {
+  if (process.argv.includes('--check')) {
+    const files = stale();
+    if (files.length) { console.error(`stale or missing (${files.length}):\n${files.join('\n')}`); process.exit(1); }
+    console.log('reference pages are current');
+  } else {
+    for (const {file, html} of allFiles()) {
+      const target = path.join(ROOT, file);
+      fs.mkdirSync(path.dirname(target), {recursive: true});
+      fs.writeFileSync(target, html);
+    }
+    console.log(`wrote ${allFiles().length} files`);
+  }
+}
+
 module.exports = {SITE, LASTMOD, ROOT, esc, clip, read, catalogue, renderPage,
-  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages, hexagramUrl, hexagramPages};
+  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages, hexagramUrl, hexagramPages,
+  signPages, allFiles, stale};
