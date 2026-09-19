@@ -77,10 +77,10 @@ Rules: sentence case. Present tense, with no future tense. The email goes to rea
 // with the nouns swapped), so the example rotates by week and no two weeks running copy the same one.
 const EXAMPLE_SUBJECTS_SETS = [
   {subjects: ['A quiet start, then Venus changes the mood', "Clear the desk before Sunday's New moon", 'This week: finish first, begin on Sunday'],
-   preview: 'The Sun in Virgo, a waning Moon, and one good day to ask a favour.'},
+   preview: 'The Sun in Virgo, a waning Moon, and a good day to ask a favour.'},
   {subjects: ['What Thursday changes, and what it leaves alone', 'Small completions count for more than big plans', 'Tidy up now, the fresh page arrives on Sunday'],
    preview: 'Venus moves on Thursday, and the New moon closes the week in Virgo.'},
-  {subjects: ['Two days worth planning your week around', 'Less starting and more finishing, until Sunday', 'The mood between people softens after midweek'],
+  {subjects: ['A steady week with a soft landing at the end','Less starting and more finishing, until Sunday', 'The mood between people softens after midweek'],
    preview: 'A waning Moon for most of the week, then a New moon on Sunday to begin again.'}
 ].map(set => JSON.stringify(set));
 const EXAMPLE_SUBJECTS = EXAMPLE_SUBJECTS_SETS[0];
@@ -105,7 +105,7 @@ const SHEET_WORDING_REASON = 'fact-sheet wording: the reader has never seen the 
 const WEEKDAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 function strayWeekday(t, events, placements) {
   const allowed = new Set(['Monday', ...events.map(e => e.weekday), ...placements.filter(p => p.until).map(p => p.until)]);
-  const stray = WEEKDAY_NAMES.find(day => !allowed.has(day) && new RegExp(`\\b${day}s?\\b`).test(t));
+  const stray = WEEKDAY_NAMES.find(day => !allowed.has(day) && new RegExp(`\\b${day}s?\\b`, 'i').test(t));
   return stray ? `names ${stray}, which is not a day in the sheet` : null;
 }
 
@@ -212,7 +212,7 @@ function overviewMessages(sheet) {
 }
 
 function subjectsMessages(sheet, overview) {
-  const example = EXAMPLE_SUBJECTS_SETS[Math.round(Date.parse(sheet.from) / 6048e5) % EXAMPLE_SUBJECTS_SETS.length];   // 6048e5 ms is one week
+  const example = EXAMPLE_SUBJECTS_SETS[Math.round(Date.parse(sheet.from) / 6048e5) % EXAMPLE_SUBJECTS_SETS.length] || EXAMPLE_SUBJECTS;   // 6048e5 ms is one week
   return [
     {role: 'system', content: `${RULES_SUBJECTS}\n\nExample of the shape, written for a different week:\n${example}`},
     {role: 'user', content: `Subject lines, week of ${sheet.from}:\n${JSON.stringify(sharedFacts(sheet), null, 1)}\n\nOpening section:\n${overview || '(not written yet)'}\n\nReply with the JSON object.`}

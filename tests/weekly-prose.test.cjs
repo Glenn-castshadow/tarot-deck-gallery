@@ -360,3 +360,22 @@ test('a reading may name only Monday and the weekdays in its sheet', () => {
   assert.match(W.validateSign(quietText.replace(anchor, 'Finish one room before Wednesday.'), quiet), /names Wednesday/);
   assert.match(W.validateOverview(W.EXAMPLE_OVERVIEW.replace('for now', 'until Tuesday'), W.EXAMPLE_SHEET), /names Tuesday, which is not a day in the sheet/);
 });
+
+test('a weekday is caught in any letter case', () => {
+  const sg = W.EXAMPLE_SIGN_SHEET, anchor = 'It is lighter on Monday than it is by the weekend.';
+  assert.match(W.validateSign(W.EXAMPLE_SIGN.replace(anchor, 'Close one account before wednesday.'), sg), /names Wednesday, which is not a day in the sheet/);
+  const good = JSON.parse(W.EXAMPLE_SUBJECTS);
+  const lower = {...good, subjects: ['a quiet start, then a lift before tuesday', good.subjects[1], good.subjects[2]]};
+  assert.match(W.validateSubjects(JSON.stringify(lower), W.EXAMPLE_SHEET), /names Tuesday/);
+});
+
+test('no subject-line example states a count, which the model would copy into other weeks', () => {
+  for (const set of W.EXAMPLE_SUBJECTS_SETS) for (const line of [...JSON.parse(set).subjects, JSON.parse(set).preview])
+    assert.doesNotMatch(line, /\b(one|two|three|four|five|six|seven)\b|\d/i, line);
+});
+
+test('subjectsMessages falls back to the first example when the week cannot be parsed', () => {
+  const shown = W.subjectsMessages({...W.EXAMPLE_SHEET, from: 'not a date'}, 'x')[0].content;
+  assert.ok(shown.endsWith(W.EXAMPLE_SUBJECTS));
+  assert.doesNotMatch(shown, /undefined/);
+});

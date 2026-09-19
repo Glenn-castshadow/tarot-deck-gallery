@@ -272,8 +272,27 @@ test('factWords is an ordered sequence, so swapping two fact words changes it', 
   const swapped = 'On Sunday Venus enters your partnership sector. On Thursday the New moon falls in your sign.';
   assert.notEqual(P.factWords(text), P.factWords(swapped));
   assert.notEqual(P.factWords(text), P.factWords(text.replace('your partnership sector', 'your sign').replace(/your sign\.$/, 'your partnership sector.')));
-  assert.equal(P.factWords(text), P.factWords(text.replace('enters', 'moves into').replace('falls', 'lands')));
-  // "Sunday" is one fact word, not "Sun" plus "day".
-  assert.equal(P.factWords('On Sunday rest.'), P.factWords('on sunday, rest'));
+  assert.equal(P.factWords(text), P.factWords(text.replace('falls', 'lands').replace('On Sunday the', 'On Sunday, the')));
+  // "Sunday" is one fact word, not "Sun" plus "day"; case does not matter.
+  assert.equal(P.factWords('On Sunday rest.'), 'sunday');
+  assert.equal(P.factWords('on SUNDAY, rest'), 'sunday');
   assert.notEqual(P.factWords('The Sun rests on Sunday.'), P.factWords('On Sunday the Sun rests.'));
+});
+
+test('factWords also tracks the small words that carry a fact\'s meaning', () => {
+  const same = (a, b) => assert.equal(P.factWords(a), P.factWords(b), `${a} / ${b}`);
+  const differ = (a, b) => assert.notEqual(P.factWords(a), P.factWords(b), `${a} / ${b}`);
+  differ('The Moon is waning as the week opens.', 'The Moon is not waning as the week opens.');
+  differ('On Thursday Venus enters your partnership sector.', 'Before Thursday Venus enters your partnership sector.');
+  differ('On Sunday the New moon falls in your sign.', 'Long after Sunday the New moon falls in your sign.');
+  differ('Venus stays there until Thursday, so rest.', 'Venus stays there until Thursday and well beyond it, so rest.');
+  differ('The Sun is in Virgo as Monday opens.', 'The Sun is leaving Virgo as Monday opens.');
+  differ('Venus is moving into Libra.', 'Venus is moving out of Libra.');
+  differ('Give it the first three evenings.', 'Give it the first five evenings.');
+  // Whole words only, so an honest spelling fix is not mistaken for a new fact.
+  same('Keep your boundries clear.', 'Keep your boundaries clear.');        // "aries" inside "boundaries"
+  same('Return the libary book.', 'Return the library book.');              // "libra" inside "library"
+  same('Say it direcly.', 'Say it directly.');                              // "direct" inside "directly"
+  same('Nothing is lost.', 'Nothing at all is lost.');                      // "not" inside "nothing"
+  differ('Venus is moving into Libra.', 'Venus is moving into the library.');
 });

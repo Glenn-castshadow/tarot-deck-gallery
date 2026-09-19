@@ -16,13 +16,20 @@ const {validateSign, validateOverview, validateSubjects, parseSubjects, nextMond
 const MAX_EDIT_SHARE = 0.08;   // of the original's word count
 
 // The words a spelling or grammar fix never needs to touch. A correction must leave every one of
-// them in place and in the same ORDER; otherwise it changed a fact, and Glimmer's text stands.
-// Order, not count: swapping Thursday with Sunday keeps every count and moves an event two days.
+// them in place and in the same ORDER; otherwise it may have changed a fact, and Glimmer's text
+// stands. Order, not count: swapping Thursday with Sunday keeps every count and moves an event two
+// days. This is a tripwire, not a proof: it cannot see every way a sentence's meaning can change,
+// which is why a correction must also pass the validator and stay inside MAX_EDIT_SHARE.
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const SKY_WORDS = ['new moon', 'first quarter', 'full moon', 'third quarter', 'waxing', 'waning', 'direct', 'retrograde', 'eclipse', 'until'];
-// Longest first, so "sunday" is matched whole and never as "sun".
-const FACT_WORD = new RegExp([...WEEKDAYS, ...PLANETS, ...engine.signNames, ...engine.sectorNames, ...SKY_WORDS]
-  .sort((a, b) => b.length - a.length).map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + '|\\d+', 'gi');
+const SKY_WORDS = ['new moon', 'first quarter', 'full moon', 'third quarter', 'waxing', 'waning', 'direct', 'retrograde', 'eclipse'];
+// The small words that carry a fact's direction, timing or polarity ("is not waning", "before
+// Thursday", "out of Libra"), and spelled-out numbers.
+const HINGE_WORDS = ['not', 'no longer', 'never', 'until', 'before', 'after', 'beyond', 'past', 'through', 'into', 'out of',
+  'enters', 'leaves', 'leaving', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+// Whole words only, so fixing "boundries" to "boundaries" does not look like a new mention of
+// Aries. Longest first, so "no longer" and "out of" are matched before their parts.
+const FACT_WORD = new RegExp('\\b(?:' + [...WEEKDAYS, ...PLANETS, ...engine.signNames, ...engine.sectorNames, ...SKY_WORDS, ...HINGE_WORDS]
+  .sort((a, b) => b.length - a.length).map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + '|\\d+)\\b', 'gi');
 function factWords(text) {
   return (text.match(FACT_WORD) || []).map(word => word.toLowerCase()).join('|');
 }
