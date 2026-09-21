@@ -155,6 +155,46 @@ class DraftCampaignTests(TestCase):
         self.write_manifest()
         self.assertIn('missing-reading panel: gemini', self.run_command(FakeMailchimp()))
 
+    def sent(self, fake):
+        return [c for c in fake.calls if c[1].endswith('/actions/send')]
+
+    def test_send_sends_the_campaign_once_everything_passes(self):
+        fake = FakeMailchimp()
+        out = self.run_command(fake, '--send')
+        self.assertEqual(self.sent(fake), [('POST', '/campaigns/new1/actions/send', None, None)])
+        content = fake.calls.index(('PUT', '/campaigns/new1/content', {'html': HTML}, None))
+        self.assertLess(content, fake.calls.index(self.sent(fake)[0]))
+        self.assertIn('SENT', out)
+
+    def test_send_refuses_when_mailchimps_own_checklist_is_not_ready(self):
+        fake = FakeMailchimp(ready=False, items=[{'type': 'error', 'heading': 'From address', 'details': 'is not verified'}])
+        with self.assertRaisesMessage(CommandError, 'checklist'):
+            self.run_command(fake, '--send')
+        self.assertEqual(self.sent(fake), [])
+
+    def test_send_refuses_when_a_sign_has_no_reading(self):
+        self.manifest.update(signs_included=['aries'] * 11, signs_missing=['gemini'])
+        self.write_manifest()
+        fake = FakeMailchimp()
+        with self.assertRaisesMessage(CommandError, 'gemini'):
+            self.run_command(fake, '--send')
+        self.assertEqual(self.sent(fake), [])
+
+    def test_send_refuses_when_the_month_would_exceed_the_free_plan(self):
+        fake = FakeMailchimp(members=116)
+        with self.assertRaisesMessage(CommandError, '500'):
+            self.run_command(fake, '--send')
+        self.assertEqual(self.sent(fake), [])
+        under = FakeMailchimp(members=115)
+        self.run_command(under, '--send')
+        self.assertEqual(len(self.sent(under)), 1)
+
+    def test_send_leaves_the_draft_in_place_when_mailchimp_rejects_the_send(self):
+        fake = FakeMailchimp(fail=('POST', '/actions/send', self.http_error(400, b'{"detail": "This campaign cannot be sent."}')))
+        with self.assertRaises(CommandError) as caught:
+            self.run_command(fake, '--send')
+        self.assertIn('This campaign cannot be sent.', str(caught.exception))
+
     def http_error(self, code, body):
         return urllib.error.HTTPError('https://example.invalid', code, 'Bad Request', {}, io.BytesIO(body))
 
