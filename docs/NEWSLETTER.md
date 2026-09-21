@@ -116,10 +116,15 @@ Mailchimp; piece 3 reads the file this produces.
 
 Spec: `docs/superpowers/specs/2026-09-18-newsletter-issue-and-campaign-design.md`. One campaign goes to the whole
 audience; it carries every sign's section inside Mailchimp's `*|IF:SIGN=aries|* … *|ELSEIF:…|* … *|ELSE:|* … *|END:IF|*`
-chain, so each reader sees their own, and a reader with no sign sees an invitation to choose one. **Nothing in
-this repo can send or schedule a campaign. Glenn sends, in Mailchimp.**
+chain, so each reader sees their own, and a reader with no sign sees an invitation to choose one.
 
-The weekly routine, after the Sunday job has written and proofread `output/weekly-prose/<monday>.json`:
+**Sending is unattended since 2026-09-21 (Glenn's decision).** The original design said "nothing in this repo can
+send or schedule a campaign; Glenn sends, in Mailchimp", and the spec above still reads that way. It is no longer
+true: `draft_campaign --send` sends to the whole audience, and the Sunday job passes it. Mailchimp's own
+scheduling is still unused (it is a paid feature); the send is a direct API call at the end of the chain.
+
+The automatic chain, every Sunday from `Ishtar-Weekly-Prose`, is steps 2 and 3 below with no step 1 and no
+step 4. The manual routine is what you run when a week fails and you are repairing it by hand:
 
 1. `node tools/review_weekly_prose.cjs` lists any correction Qwen offered and the guards refused, as a
    word-level before and after. Decide each: `--accept <key>` or `--reject <key>` (a key is a lowercase sign,
@@ -135,14 +140,31 @@ The weekly routine, after the Sunday job has written and proofread `output/weekl
    102 KB; a normal issue is about 40 KB). A block is fit only with a current `pass` whose `sha` matches its
    text. `--push` copies the two files to `/var/lib/ishtar-app/newsletter/<monday>/` on the VPS.
 3. On the VPS, with the environment loaded as the `sync_mailchimp` cron line does:
-   `manage.py draft_campaign <monday> [--test you@example.com] [--replace]`. It checks the pushed HTML against
+   `manage.py draft_campaign <monday> [--test you@example.com] [--replace] [--send]`. From this box, the
+   wrapper `ssh vps ishtar-draft-campaign <monday> --send` does the same with no quoting (installed to
+   `/usr/local/bin` by `deploy-app.sh`, written whole on every deploy). It checks the pushed HTML against
    the manifest's sha256 before it calls Mailchimp; creates the draft titled `Ishtar Insights <monday>`, or
    updates it with `--replace` (a campaign already sent is never touched); prints every problem in Mailchimp's
    send checklist; prints the audience size against the free plan; with `--test` sends one test. If Mailchimp
    rejects something it prints Mailchimp's own words; if that happens after the draft was created, run again
    with `--replace`.
 4. In Mailchimp, preview the draft **with live merge data** as a real subscriber of each sign you care about,
-   then send.
+   then send. (Only when you are repairing a week by hand; the Sunday job's `--send` does this itself.)
+
+**The unattended send and what stops it.** `--send` sends only when all three hold, and raises otherwise,
+leaving the draft in place for you: Mailchimp's own `send-checklist` reports ready; `signs_missing` in the
+manifest is empty; and the audience would not take the month past the free plan's 500 sends (a hard refusal,
+not the warning the non-sending path prints). A campaign already `sent` is never touched — `existing()` refuses
+anything not in `save` status, so a re-run cannot send twice. The Sunday job stops before the send on any
+non-zero code, so a weak week (proofreader 3) or an unfit sign (builder 5) means **no issue that week at all**
+rather than a degraded one; `--allow-missing` is never passed automatically. The task's Last Result is the
+health signal: 0 means the week's newsletter went out, anything else means it did not and
+`C:\Users\glenn\Scripts\weekly-prose.log` says at which step.
+
+**What this makes optional.** `review_weekly_prose.cjs` no longer gates anything. A correction Qwen offers that
+the guards refused is still only applied when you accept it, so the unattended issue always carries Glimmer's
+own text; the builder warns about a waiting decision and builds anyway. Decide corrections when you want the
+edit, not because the send is waiting on you.
 
 What a test send can and cannot show: Mailchimp does not fill merge fields in a test, so **every test shows the
 no-sign version**, whoever receives it. A test proves layout, images, dark mode and delivery. The sign branches

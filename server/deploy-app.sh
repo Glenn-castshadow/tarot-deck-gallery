@@ -98,6 +98,23 @@ chmod 644 /etc/cron.d/ishtar-app-backup
 printf '*/10 * * * * root cd %s/app && set -a && . /etc/ishtar-app.env && set +a && DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3 sudo -u ishtar-app -E %s/venv/bin/python manage.py sync_mailchimp >/dev/null 2>>/var/log/ishtar-mailchimp.err\n' "$APP" "$APP" > /etc/cron.d/ishtar-app-mailchimp
 chmod 644 /etc/cron.d/ishtar-app-mailchimp
 
+# The unattended Sunday job on Glenn's box builds the week's issue, pushes it
+# here and then sends it over ssh. This wrapper is what it calls, so that remote
+# command carries no quotes, no && and no environment of its own:
+#   ssh vps ishtar-draft-campaign 2026-09-28 --send
+# Same environment as the reconcile line above. Written whole on every run like
+# the cron entries, so re-deploying converges instead of drifting.
+cat > /usr/local/bin/ishtar-draft-campaign <<EOF
+#!/bin/sh
+set -eu
+cd $APP/app
+set -a
+. /etc/ishtar-app.env
+set +a
+DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3 sudo -u ishtar-app -E $APP/venv/bin/python manage.py draft_campaign "\$@"
+EOF
+chmod 755 /usr/local/bin/ishtar-draft-campaign
+
 export DJANGO_SETTINGS_MODULE=ishtar.settings DJANGO_DB_PATH=/var/lib/ishtar-app/db.sqlite3
 cd "$APP/app"
 sudo -u ishtar-app -E "$APP/venv/bin/python" manage.py migrate --noinput
