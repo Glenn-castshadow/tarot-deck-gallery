@@ -401,6 +401,37 @@ carries `class="lotus-eye"` and the served CSS `@keyframes lotus-eye-open`. In a
 ishtarinsights.com/tarot/ the eye was open in the lotus heart 5.5s after load. Suite 677 of 677. Not checked
 at phone width.
 
+## 2026-09-21 The weekly newsletter sends itself
+
+Deployed `5940d2e`. **Backend only** (no static release; the builder and the Sunday job run on Glenn's box).
+
+**What changed.** `manage.py draft_campaign` gains `--send`. It sends the campaign to the whole audience only
+when Mailchimp's own `send-checklist` reports ready, the manifest's `signs_missing` is empty, and the audience
+would not take the month past the free plan's 500 sends. That last one is a hard refusal here where the
+non-sending path only warns: unattended, a growing list would otherwise blow the quota mid-month. Each refusal
+leaves the draft in place. `existing()` still refuses any campaign not in `save` status, so a re-run cannot
+send twice. `deploy-app.sh` now also writes `/usr/local/bin/ishtar-draft-campaign`, whole on every run like the
+two cron entries, so the Sunday job's remote command needs no quotes, no `&&` and no environment of its own.
+
+Off-repo: `C:\Users\glenn\Scripts\weekly-prose.ps1` grows a tail that runs only when the proofreader returned
+0 — `build_newsletter.cjs --push`, then `ssh vps ishtar-draft-campaign <week> --send`. It never passes
+`--allow-missing`, so a weak week (proofreader 3) or an unfit sign (builder 5) means no issue that week rather
+than a degraded one. The Monday is read back from the builder's own push line, never recomputed here. The
+task's Last Result is now "did the newsletter go out".
+
+**This reverses the rule** that nothing in the repo may send a campaign. Glenn's decision, 2026-09-21;
+`docs/NEWSLETTER.md` records it as his and marks the spec above it out of date.
+
+**Validation.** `manage.py test newsletter`: 55 of 55, including five new tests for the send gates and the
+existing `test_never_sends_or_schedules`, which now proves `--send` is the only path that can send. Deploy
+health check `{"ok": true}`. Wrapper installed 755 root:root. The full remote chain was rehearsed from Windows
+through `cmd /c ssh`: `ishtar-draft-campaign 2026-09-21 --send` answered `a campaign titled 'Ishtar Insights
+2026-09-21' is already sent; not touching it` and returned 1 to PowerShell, so every link was exercised with
+nothing sent. The builder was rehearsed the same way: rc 0, 42.3 KB, 12 of 12 signs, pushed, and the tail's
+regex parsed `2026-09-21` out of its real output. `weekly-prose.ps1` parses clean.
+
+**Not yet proven:** a real unattended send. The first is Sunday 2026-09-27 04:30, for the week of 09-28.
+
 ## 2026-09-18 Newsletter issue builder, images and the draft command
 
 Deployed `34e78f2`. **Static (new files only) and backend.**
