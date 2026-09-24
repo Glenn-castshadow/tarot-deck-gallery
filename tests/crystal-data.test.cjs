@@ -74,7 +74,7 @@ const written = crystals.filter(c => PROSE.some(field => field in c));
 const words = text => text.trim().split(/\s+/).length;
 const sentences = text => (text.match(/[.!?](?=\s|$)/g) || []).length;
 // Named conditions and cure language. The copy may say a stone soothes or supports; it may not name a disease.
-const CLAIMS = /\b(cure[sd]?|curing|treat(s|ed|ing|ment)?|disease|disorder|syndrome|cancer|tumou?r|diabetes|arthritis|infection|depression|medication|prescription|doctor)\b/i;
+const CLAIMS = /\b(cure[sd]?|curing|treat(s|ed|ing|ment)?|disease|disorder|syndrome|cancer|tumou?r|diabetes|arthritis|infection|depression|medication|prescription|doctor|anxiety|insomnia)\b/i;
 
 test('prose is all or nothing per entry, and in shape when present', () => {
   for (const c of written) {
@@ -100,7 +100,7 @@ test('openings vary: no two-word opening starts more than three entries of one f
   for (const get of fields) {
     const counts = new Map();
     for (const c of written) {
-      const opening = get(c).split(/\s+/).slice(0, 2).join(' ').toLowerCase();
+      const opening = get(c).replace(new RegExp('^' + c.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), 'NAME').split(/\s+/).slice(0, 2).join(' ').toLowerCase();
       counts.set(opening, (counts.get(opening) || 0) + 1);
     }
     for (const [opening, n] of counts) assert.ok(n <= 3, `"${opening}" opens ${n} entries`);
@@ -111,7 +111,7 @@ test('openings vary: no two-word opening starts more than three entries of one f
 // or use in elixirs. Extend when a reviewer flags another. The list names only stones in Task 2's table.
 const WATER = ['selenite', 'halite', 'desert-rose', 'angelite', 'celestite', 'pyrite', 'hematite', 'lodestone',
   'malachite', 'azurite', 'chrysocolla', 'cinnabar', 'vanadinite', 'turquoise', 'peacock-ore'];
-const TOXIC = ['malachite', 'azurite', 'chrysocolla', 'cinnabar', 'vanadinite', 'peacock-ore'];
+const TOXIC = ['malachite', 'azurite', 'chrysocolla', 'cinnabar', 'vanadinite', 'peacock-ore', 'amazonite'];
 
 test('water-sensitive and toxic stones say so in their care note', () => {
   for (const slug of [...WATER, ...TOXIC]) assert.ok(crystals.some(c => c.slug === slug), `${slug} is not in the data`);
@@ -119,6 +119,14 @@ test('water-sensitive and toxic stones say so in their care note', () => {
     if (WATER.includes(c.slug)) assert.match(c.care, /water/i, `${c.slug} care must mention water`);
     if (TOXIC.includes(c.slug)) assert.match(c.care, /toxic|elixir/i, `${c.slug} care must warn against elixirs`);
     if (TOXIC.includes(c.slug)) assert.match(c.care, /wash|hands/i, `${c.slug} care must say to wash hands`);
+  }
+});
+
+test('British spelling throughout the prose', () => {
+  const spelling = /\b(color|colors|colored|favorite|center|centered|gray|energized|energize)\b/i;
+  for (const c of written) {
+    const all = [c.keyword, c.meaning, c.properties.emotional, c.properties.spiritual, c.properties.physical, c.care, c.prompt].join(' ');
+    assert.doesNotMatch(all, spelling, c.slug);
   }
 });
 
