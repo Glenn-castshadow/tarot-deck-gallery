@@ -109,7 +109,7 @@ test('openings vary: no two-word opening starts more than three entries of one f
 
 // [judgement] Stones that are soluble, porous or rust in water, and stones that are toxic to handle
 // or use in elixirs. Extend when a reviewer flags another. The list names only stones in Task 2's table.
-const WATER = ['selenite', 'halite', 'desert-rose', 'angelite', 'celestite', 'pyrite', 'hematite', 'lodestone',
+const WATER = ['selenite', 'halite', 'desert-rose', 'angelite', 'celestite', 'pyrite', 'lodestone',
   'malachite', 'azurite', 'chrysocolla', 'cinnabar', 'vanadinite', 'turquoise', 'peacock-ore'];
 const TOXIC = ['malachite', 'azurite', 'chrysocolla', 'cinnabar', 'vanadinite', 'peacock-ore', 'amazonite'];
 
