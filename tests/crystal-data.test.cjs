@@ -136,3 +136,7 @@ test('tarot cards are spread across the crystals', () => {
   for (const [card, n] of counts) assert.ok(n <= 4, `${card} is on ${n} crystals`);
   assert.ok(crystals.filter(c => c.cards.length === 2).length >= 40, 'at least 40 crystals carry two cards');
 });
+
+test('every crystal has its prose', () => {
+  assert.equal(written.length, crystals.length);
+});
