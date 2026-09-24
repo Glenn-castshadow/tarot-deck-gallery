@@ -4,6 +4,7 @@ const BirthLore = require('../birth-lore.js');
 
 test('stoneSlug turns a stone name into its crystal URL segment', () => {
   assert.equal(BirthLore.stoneSlug("Tiger's eye"), 'tigers-eye');
+  assert.equal(BirthLore.stoneSlug('Tiger’s eye'), 'tigers-eye');
   assert.equal(BirthLore.stoneSlug('Lapis lazuli'), 'lapis-lazuli');
   assert.equal(BirthLore.stoneSlug('Garnet'), 'garnet');
   assert.equal(BirthLore.stoneSlug(' Moss  agate '), 'moss-agate');

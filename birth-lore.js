@@ -58,7 +58,7 @@
 
   // A stone's crystal page: "Tiger's eye" -> /crystals/tigers-eye/. crystal-data.js slugs match.
   function stoneSlug(name) {
-    return String(name).toLowerCase().replace(/['']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return String(name).toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   }
 
   function stoneLinks(text) {
