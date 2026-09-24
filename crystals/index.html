@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#20152b">
-    <title>Cards and divination · Ishtar Insights</title>
-    <meta name="description" content="Lenormand, the Ishtar Reflection Oracle, runes, geomancy, the I Ching and playing cards, cast in the browser.">
+    <title>Crystals · Ishtar Insights</title>
+    <meta name="description" content="Crystal meanings and properties: today's crystal, your birthstone and sign stones, and 100 stones by chakra, sign and element.">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Cards and divination · Ishtar Insights">
-    <meta property="og:description" content="Lenormand, the Ishtar Reflection Oracle, runes, geomancy, the I Ching and playing cards, cast in the browser.">
+    <meta property="og:title" content="Crystals · Ishtar Insights">
+    <meta property="og:description" content="Crystal meanings and properties: today's crystal, your birthstone and sign stones, and 100 stones by chakra, sign and element.">
     <meta property="og:image" content="https://ishtarinsights.com/assets/celestial-hero.webp">
-    <meta property="og:url" content="https://ishtarinsights.com/divination/">
-    <link rel="canonical" href="https://ishtarinsights.com/divination/">
+    <meta property="og:url" content="https://ishtarinsights.com/crystals/">
+    <link rel="canonical" href="https://ishtarinsights.com/crystals/">
     <link rel="preload" href="/assets/fonts/dm-sans-latin-400-700.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/playfair-display-latin-600-800.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/assets/fonts/fonts.css?v=1">
     <link rel="stylesheet" href="/styles.css?v=site-shell-2">
     <link rel="stylesheet" href="/site-shell.css?v=7">
     <link rel="stylesheet" href="/account.css?v=c5-2">
-    <link rel="stylesheet" href="/divination.css?v=c4d-2">
+    <link rel="stylesheet" href="/crystals.css?v=1">
     <link rel="stylesheet" href="/mobile-sections.css?v=2">
   </head>
   <body>
@@ -27,7 +27,30 @@
       <div data-shell="header"></div>
       <div data-shell="nav"></div>
 
-      <section id="divination-room" class="divination-room" aria-labelledby="divination-title" data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching cartomancy" data-fold="Cards &amp; divination" data-fold-key="divination" data-fold-subtitle="Lenormand · oracle cards · runes · geomancy · I Ching · playing cards"></section>
+      <section id="crystal-room" class="crystal-room" aria-label="Crystals">
+        <div id="crystal-day" class="crystal-panel" data-fold="Crystal of the day" data-fold-key="crystal-day" data-fold-subtitle="One stone for everyone, until midnight">
+          <p class="section-kicker">Crystal of the day</p>
+          <h2>Today's stone</h2>
+          <div id="crystal-day-output" aria-live="polite"></div>
+        </div>
+        <div id="your-stones" class="crystal-panel" data-fold="Your stones" data-fold-key="your-stones" data-fold-subtitle="Birthstone and sign stones">
+          <p class="section-kicker">Your stones</p>
+          <h2>Stones for your birthday</h2>
+          <div id="your-stones-output" aria-live="polite"></div>
+        </div>
+        <div id="crystal-library" class="crystal-panel" data-fold="All crystals" data-fold-key="crystals" data-fold-subtitle="Search and filter 100 stones">
+          <p class="section-kicker">The crystal library</p>
+          <h2>All crystals</h2>
+          <form id="crystal-filters" class="crystal-filters" role="search">
+            <label><span>Search</span><input name="q" type="search" placeholder="e.g. quartz" autocomplete="off"></label>
+            <label><span>Chakra</span><select name="chakra"><option value="">Any chakra</option></select></label>
+            <label><span>Sign</span><select name="sign"><option value="">Any sign</option></select></label>
+            <label><span>Element</span><select name="element"><option value="">Any element</option></select></label>
+          </form>
+          <p id="crystal-count" class="crystal-count" role="status"></p>
+          <div id="crystal-grid" class="crystal-grid"></div>
+        </div>
+      </section>
 
       <div data-shell="footer"></div>
     </main>
@@ -40,17 +63,18 @@
     </dialog>
     <div data-shell="notice"></div>
     <script src="/site-shell.js?v=14"></script>
-    <script>SiteShell.mount('divination');</script>
+    <script>SiteShell.mount('crystals');</script>
     <script src="/rooms.js?v=c5-kinds-1"></script>
     <script src="/storage-preferences.js?v=sun-sign-1"></script>
     <script src="/account-core.js?v=newsletter-sign-1"></script>
     <script src="/account.js?v=pages-5"></script>
-    <script src="/divination-data.js?v=c4b-1"></script>
-    <script src="/divination-engine.js?v=c4b-1"></script>
-    <script src="/divination-art.js?v=iching-1"></script>
-    <script src="/playing-cards.js?v=1"></script>
-    <script src="/iching-lines.js?v=2"></script>
-    <script src="/divination.js?v=c4d-2"></script>
+    <script src="/birthday-insights.js?v=celestial-atlas-1"></script>
+    <script src="/vendor/astronomy-engine/astronomy.browser.min.js?v=2.1.19"></script>
+    <script src="/natal-engine.js?v=c5-1"></script>
+    <script src="/birth-lore.js?v=2"></script>
+    <script src="/birth-profile.js?v=1"></script>
+    <script src="/crystal-data.js?v=1"></script>
+    <script src="/crystals.js?v=1"></script>
     <script>
       // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
       // register once account.js has dispatched the first signed-in state, so wait for it.

@@ -15,6 +15,7 @@
     {key: 'eastern', href: '/eastern/', hash: '#jyotish', label: 'Eastern', blurb: 'Jyotish and your Chinese zodiac portrait'},
     {key: 'numerology', href: '/numerology/', hash: '#birthday-numbers', label: 'Numerology', blurb: 'The six-view numerology studio'},
     {key: 'divination', href: '/divination/', hash: '#divination-room', label: 'Divination', blurb: 'Lenormand, oracle, runes, geomancy, and I Ching'},
+    {key: 'crystals', href: '/crystals/', hash: '#crystal-room', label: 'Crystals', blurb: 'Crystal of the day, your birthstones, and 100 stones by chakra and sign'},
     {key: 'account', href: '/account/', hash: '#account-room', label: 'Account', blurb: 'Sign-in, your journal, and saving preferences'}
   ];
 

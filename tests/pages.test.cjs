@@ -110,6 +110,9 @@ const DEPENDENCIES = {
   // its section is present -- /eastern/ and /numerology/ carry the form without it.
   'birth-form.js': ['birth-lore.js', 'birthplace-search.js', 'birth-profile.js',
     {when: 'chart-in-time', needs: ['chart-in-time.js']}],
+  // `const {crystals, chakras} = CrystalData`, `BirthLore.*`, `BirthProfile.subscribe` and
+  // `IshtarStorage.getItem` inside attach(), which runs at load when #crystal-room is present.
+  'crystals.js': ['crystal-data.js', 'birth-lore.js', 'birth-profile.js', 'storage-preferences.js'],
   // natal-room.js loads on /charts/, /eastern/ and /sky/. `const {...} = BirthLore` and the
   // #birthday-output subscriber's `BirthProfile.subscribe` are unconditional; every section
   // attachment below is behind its own document.querySelector guard.
@@ -154,7 +157,7 @@ const label = file => path.relative(ROOT, file).replace(/\\/g, '/');
 test('every page is a real page manifest', () => {
   const found = pages().map(label);
   // A page added without a row here would go unchecked, so pin the set.
-  assert.deepEqual(found.sort(), ['account/index.html', 'charts/index.html', 'divination/index.html',
+  assert.deepEqual(found.sort(), ['account/index.html', 'charts/index.html', 'crystals/index.html', 'divination/index.html',
     'eastern/index.html', 'index.html', 'numerology/index.html', 'sky/index.html', 'tarot/index.html']);
 });
 

@@ -2,9 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const SiteShell = require('../site-shell.js');
 
-test('nav renders eight links with the current page marked', () => {
+test('nav renders nine links with the current page marked', () => {
   const {nav} = SiteShell.render({page: 'charts', variant: 'compact'});
-  assert.equal((nav.match(/<a /g) || []).length, 8);
+  assert.equal((nav.match(/<a /g) || []).length, 9);
   assert.match(nav, /href="\/charts\/" aria-current="page"/);
   assert.doesNotMatch(nav, /href="\/tarot\/" aria-current/);
 });
@@ -26,7 +26,7 @@ test('the nav floats as one bar and lists the page sections on long pages', () =
   const sections = [{id: 'birthday-room', label: 'Birth sky'}, {id: 'horary', label: 'Horary'}];
   const {nav} = SiteShell.render({page: 'charts', variant: 'compact', sections});
   assert.match(nav, /^<div class="page-nav">/);
-  assert.equal((nav.match(/href="\//g) || []).length, 8, 'the eight page links are still there');
+  assert.equal((nav.match(/href="\//g) || []).length, 9, 'the nine page links are still there');
   assert.ok(nav.includes('<nav class="page-sections" aria-label="On this page"><span>On this page</span><a href="#birthday-room">Birth sky</a><a href="#horary">Horary</a></nav>'), nav);
   // A page with one section (or none) gets no section row.
   assert.doesNotMatch(SiteShell.render({page: 'divination', variant: 'compact', sections: [sections[0]]}).nav, /page-sections/);
