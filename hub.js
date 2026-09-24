@@ -35,7 +35,8 @@
     today.innerHTML = `${moon ? `<p class="hub-today-item"><span class="section-kicker">The Moon tonight</span><strong>${moon}</strong><small>Calculated in your browser. <a href="/sky/#sky-calendar">Today's sky ↗</a></small></p>` : ''}
       ${sign ? `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong>${sign.symbol} ${sign.name}</strong><small>${sign.mantra}. ${horoscopeLink(sign)} · <a href="/charts/#birthday-room">Your birth chart ↗</a></small></p>`
         : `<p class="hub-today-item"><span class="section-kicker">Your Sun sign</span><strong><label class="sr-only" for="hub-sign">Your Sun sign</label><select id="hub-sign"><option value="">Choose your sign</option>${zodiacSigns.map((z, i) => `<option value="${i}"${z === picked ? ' selected' : ''}>${z.symbol} ${z.name}</option>`).join('')}</select></strong><small>${picked ? horoscopeLink(picked) : 'No birth details needed.'} · <a href="/charts/#birthday-room">Start your birth chart ↗</a></small></p>`}
-      <p class="hub-today-item"><span class="section-kicker">Today's card</span><strong>One card, once a day</strong><small>The same card until tomorrow. <a href="/tarot/#tarot-readings">Draw today's card ↗</a></small></p>`;
+      <p class="hub-today-item"><span class="section-kicker">Today's card</span><strong>One card, once a day</strong><small>The same card until tomorrow. <a href="/tarot/#tarot-readings">Draw today's card ↗</a></small></p>
+      <p class="hub-today-item"><span class="section-kicker">Today's crystal</span><strong>One stone for everyone</strong><small>A new stone at midnight. <a href="/crystals/#crystal-day">See today's crystal ↗</a></small></p>`;
   }
   today.addEventListener('change', event => {
     if (event.target.id !== 'hub-sign') return;

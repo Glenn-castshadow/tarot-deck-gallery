@@ -12,7 +12,7 @@
    window.NatalRoom, which existed only so mobile-sections.js could drive that switcher. */
 (() => {
   'use strict';
-  const {zodiacSigns, birthstones, moonNames, escapeHTML, birthdayParts, zodiacFor, decanFor, moonPhaseFor, tarotBirthCardFor} = BirthLore;
+  const {zodiacSigns, birthstones, moonNames, escapeHTML, birthdayParts, zodiacFor, decanFor, moonPhaseFor, tarotBirthCardFor, stoneLinks} = BirthLore;
 
   const birthdayOutput = document.querySelector("#birthday-output");
   // The sky explorer dialog, like the sections below, is not on every page that loads this
@@ -117,7 +117,7 @@
     const planetMarks = {Mars:"♂",Venus:"♀",Mercury:"☿",Moon:"☾",Sun:"☉",Jupiter:"♃",Saturn:"♄"};
     const facts = [
       ["Ruling planet", sign.ruler, "Traditional + modern ruler", planetMarks[sign.ruler.split(" · ")[0]] || "☉"],
-      ["Birthstone", birthstones[parts.month], sign.stones, "◇"],
+      ["Birthstone", stoneLinks(birthstones[parts.month]), stoneLinks(sign.stones), "◇"],
       ["Birth flower", sign.flower, "Seasonal flower lore", "✿"],
       ["Moon phase", moon.name, `${natalModel ? "" : "Approx. "}${moon.illumination}% illuminated`, "☾"],
       ["Chinese zodiac", chinese ? `${chinese.phase.name} ${chinese.animal.name}` : "Unavailable", chinese ? `${chinese.polarity} · lunar year ${chinese.year}` : "Calendar not supported for this date", "☯"],
