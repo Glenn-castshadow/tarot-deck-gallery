@@ -1,7 +1,7 @@
 'use strict';
-/* Builds the static reference pages (78 cards, 64 hexagrams, 12 signs, three indexes) and
-   sitemap.xml from the site's own data modules. The output is committed: a release hashes
-   files against commit blobs. docs/REFERENCE-PAGES.md says when to re-run it.
+/* Builds the static reference pages (78 cards, 64 hexagrams, 12 signs, 100 crystals, three
+   indexes) and sitemap.xml from the site's own data modules. The output is committed: a release
+   hashes files against commit blobs. docs/REFERENCE-PAGES.md says when to re-run it.
      node tools/build_reference_pages.cjs          write the files
      node tools/build_reference_pages.cjs --check  exit 1 if any file on disk is stale */
 const fs = require('node:fs');
@@ -10,7 +10,7 @@ const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..');
 const SITE = 'https://ishtarinsights.com';
-const LASTMOD = '2026-09-19';
+const LASTMOD = '2026-09-24';
 
 const SiteShell = require('../site-shell.js');
 const TarotReference = require('../tarot-reference.js');
@@ -18,6 +18,8 @@ const BirthLore = require('../birth-lore.js');
 const TarotReadings = require('../tarot-readings.js');
 const DivinationData = require('../divination-data.js');
 const IChingLines = require('../iching-lines.js');
+const CrystalData = require('../crystal-data.js');
+const Crystals = require('../crystals.js');
 
 const esc = BirthLore.escapeHTML;
 
@@ -76,7 +78,7 @@ function stylesheetLinks() {
     const tag = page.match(new RegExp(`<link rel="stylesheet" href="/${name.replace('.', '\\.')}\\?v=[^"]*">`));
     if (!tag) throw new Error(`divination/index.html no longer links ${name}`);
     return tag[0];
-  }).concat('<link rel="stylesheet" href="/reference-pages.css?v=1">').join('\n    ');
+  }).concat('<link rel="stylesheet" href="/reference-pages.css?v=2">').join('\n    ');
 }
 
 function jsonLd({url, title, description, image, crumbs}) {
@@ -246,11 +248,11 @@ function signPages() {
   const pages = signs.map((sign, i) => {
     const slug = sign.name.toLowerCase(), card = cardFor(sign.name);
     const near = j => ({url: url(signs[(j + 12) % 12]), name: signs[(j + 12) % 12].name});
-    const facts = [['Dates', range(i)], ['Element', sign.element], ['Modality', sign.modality], ['Ruler', sign.ruler],
-      ['Stones', sign.stones], ['Flower', sign.flower], ['Mantra', sign.mantra]];
+    const facts = [['Dates', esc(range(i))], ['Element', esc(sign.element)], ['Modality', esc(sign.modality)], ['Ruler', esc(sign.ruler)],
+      ['Stones', BirthLore.stoneLinks(sign.stones)], ['Flower', esc(sign.flower)], ['Mantra', esc(sign.mantra)]];
     const body = `<header><p class="ref-kicker">${esc(sign.element)} · ${esc(sign.modality)}</p><h1><span aria-hidden="true">${sign.symbol}</span> ${esc(sign.name)}</h1><p class="ref-keywords">${esc(range(i))}</p></header>
         <figure class="ref-banner"><img src="/assets/newsletter/signs/${slug}.jpg" width="1200" height="520" alt="${esc(sign.name)}, illustrated"></figure>
-        <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
+        <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${value}</dd></div>`).join('')}</dl>
         <section><h2>${esc(sign.name)} in brief</h2><p>${esc(sign.horoscope)}</p></section>
         ${card >= 0 ? `<section><h2>${esc(sign.name)} in the tarot</h2><p>In the Golden Dawn attributions ${esc(sign.name)} belongs to <a href="${cardUrl(card)}">${esc(TarotReference.name(card))}</a>.</p></section>` : ''}
         <p class="ref-cta"><a class="ref-button" href="/sky/?sign=${slug}#daily-horoscope">Read today's ${esc(sign.name)} horoscope</a><a href="/charts/#birthday-room">Find your rising sign with a birth chart</a></p>
@@ -269,11 +271,48 @@ function signPages() {
   return [index, ...pages];
 }
 
+const crystalUrl = slug => `/crystals/${slug}/`;
+
+function crystalPages() {
+  const {crystals, chakras} = CrystalData;
+  const chakraName = key => chakras.find(c => c.key === key).name;
+  const byName = [...crystals].sort((a, b) => a.name.localeCompare(b.name));
+  return byName.map((c, i) => {
+    const url = crystalUrl(c.slug);
+    const near = j => (byName[j] ? {url: crystalUrl(byName[j].slug), name: byName[j].name} : null);
+    const card = slug => { const index = TarotReference.indexForSlug(slug); return `<a href="${cardUrl(index)}">${esc(TarotReference.name(index))}</a>`; };
+    const facts = [['Chakra', esc(c.chakras.map(chakraName).join(', '))], ['Element', esc(c.element)], ['Planet', esc(c.planet)],
+      ['Signs', c.signs.map(name => `<a href="/sky/signs/${name.toLowerCase()}/">${esc(name)}</a>`).join(', ')],
+      ['Tarot', c.cards.map(card).join(', ')]];
+    const kin = byName.filter(o => o !== c && o.chakras.some(k => c.chakras.includes(k))).slice(0, 8);
+    const body = `<header><p class="ref-kicker">Crystal · ${esc(c.keyword)}</p><h1>${esc(c.name)}</h1>${c.aka.length ? `<p class="ref-keywords">Also called ${esc(c.aka.join(', '))}</p>` : ''}</header>
+        <div class="ref-layout">
+          <figure><span class="ref-swatch" style="background:${Crystals.swatch(c.colours)}" role="img" aria-label="${esc(`The colours of ${c.name}`)}"></span></figure>
+          <div>
+            <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${value}</dd></div>`).join('')}</dl>
+            <p class="ref-note">Crystal correspondences are traditional; the descriptions are original to this site.</p>
+            <section><h2>What ${esc(c.name)} means</h2><p>${esc(c.meaning)}</p></section>
+            <section><h2>Emotional properties</h2><p>${esc(c.properties.emotional)}</p></section>
+            <section><h2>Spiritual properties</h2><p>${esc(c.properties.spiritual)}</p></section>
+            <section><h2>Physical properties</h2><p>${esc(c.properties.physical)}</p></section>
+            <section><h2>Care and cleansing</h2><p>${esc(c.care)}</p></section>
+            <section><h2>A question to sit with</h2><p>${esc(c.prompt)}</p></section>
+          </div>
+        </div>
+        ${kin.length ? `<h2>Stones that share a chakra</h2><ul class="ref-index">${kin.map(o => `<li><a href="${crystalUrl(o.slug)}">${esc(o.name)}</a><small>${esc(o.keyword)}</small></li>`).join('')}</ul>` : ''}
+        <p class="ref-cta"><a class="ref-button" href="/crystals/#crystal-day">Today's crystal</a><a href="/crystals/#crystal-library">Browse all crystals</a></p>
+        ${pager(near(i - 1), near(i + 1))}`;
+    return {file: `crystals/${c.slug}/index.html`, url, html: renderPage({url, section: 'crystals',
+      title: `${c.name} crystal meaning and properties`, description: clip(`${c.meaning} ${c.properties.emotional}`),
+      image: null, crumbs: [{name: 'Crystals', url: '/crystals/'}, {name: c.name, url}], body})};
+  });
+}
+
 // /account/ is disallowed in robots.txt and stays out, as it is today.
-const HAND_WRITTEN = ['/', '/tarot/', '/sky/', '/charts/', '/eastern/', '/numerology/', '/divination/', '/about.html', '/privacy.html'];
+const HAND_WRITTEN = ['/', '/tarot/', '/sky/', '/charts/', '/eastern/', '/numerology/', '/divination/', '/crystals/', '/about.html', '/privacy.html'];
 
 function allFiles() {
-  const pages = [...cardPages(), ...hexagramPages(), ...signPages()];
+  const pages = [...cardPages(), ...hexagramPages(), ...signPages(), ...crystalPages()];
   const urls = [...HAND_WRITTEN, ...pages.map(page => page.url)];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -307,5 +346,5 @@ if (require.main === module) {
 }
 
 module.exports = {SITE, LASTMOD, ROOT, esc, clip, read, catalogue, renderPage,
-  TarotReference, BirthLore, DivinationData, IChingLines, cardUrl, pager, cardPages, hexagramUrl, hexagramPages,
-  signPages, allFiles, stale};
+  TarotReference, BirthLore, DivinationData, IChingLines, CrystalData, cardUrl, pager, cardPages, hexagramUrl, hexagramPages,
+  signPages, crystalUrl, crystalPages, allFiles, stale};

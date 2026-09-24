@@ -130,13 +130,39 @@ test('12 sign pages with date ranges that meet end to end', () => {
   assert.match(capricorn.html, /December 22 to January 19/, 'the range crosses the year end');
 });
 
-test('the sitemap lists the eight-minus-account pages and every generated page, once', () => {
+test('the sitemap lists the hand-written pages and every generated page, once', () => {
   const xml = B.allFiles().find(f => f.file === 'sitemap.xml').html;
   const locs = xml.match(/<loc>(.*?)<\/loc>/g).map(tag => tag.slice(5, -6));
-  assert.equal(locs.length, 9 + 79 + 65 + 13);
+  assert.equal(locs.length, 10 + 79 + 65 + 13 + 100);
   assert.equal(new Set(locs).size, locs.length);
   assert.ok(locs.includes('https://ishtarinsights.com/tarot/cards/the-star/'));
+  assert.ok(locs.includes('https://ishtarinsights.com/crystals/'));
+  assert.ok(locs.includes('https://ishtarinsights.com/crystals/rose-quartz/'));
   assert.ok(!locs.some(loc => loc.includes('/account/')));
+});
+
+test('100 crystal pages, each with its prose, correspondences and links', () => {
+  const pages = B.crystalPages();
+  assert.equal(pages.length, 100);
+  assert.ok(!pages.some(p => p.file === 'crystals/index.html'), '/crystals/ is hand-written; the generator must not write it');
+  const rose = pages.find(p => p.url === '/crystals/rose-quartz/');
+  const data = B.CrystalData.crystals.find(c => c.slug === 'rose-quartz');
+  assert.equal(rose.file, 'crystals/rose-quartz/index.html');
+  assert.match(rose.html, /<h1>Rose quartz<\/h1>/);
+  assert.match(rose.html, /<title>Rose quartz crystal meaning and properties · Ishtar Insights<\/title>/);
+  for (const text of [data.meaning, data.properties.emotional, data.properties.spiritual, data.properties.physical, data.care, data.prompt]) {
+    assert.ok(rose.html.includes(B.esc(text)), 'prose missing from the page');
+  }
+  for (const sign of data.signs) assert.ok(rose.html.includes(`href="/sky/signs/${sign.toLowerCase()}/"`), sign);
+  for (const card of data.cards) assert.ok(rose.html.includes(`href="/tarot/cards/${card}/"`), card);
+  assert.ok(rose.html.includes('Crystal correspondences are traditional; the descriptions are original to this site.'));
+  assert.match(rose.html, /class="ref-swatch"/);
+  assert.match(rose.html, /href="\/crystals\/" aria-current="page"/, 'Crystals is marked in the nav');
+});
+
+test('sign pages link their stones to the crystal pages', () => {
+  const aquarius = B.signPages().find(p => p.url === '/sky/signs/aquarius/');
+  assert.ok(aquarius.html.includes('<a href="/crystals/amethyst/">Amethyst</a> · <a href="/crystals/garnet/">garnet</a>'));
 });
 
 test('every internal link on a generated page resolves to a file in the repo', () => {
