@@ -56,6 +56,15 @@
     return String(value).replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", "\"": "&quot;" }[character]));
   }
 
+  // A stone's crystal page: "Tiger's eye" -> /crystals/tigers-eye/. crystal-data.js slugs match.
+  function stoneSlug(name) {
+    return String(name).toLowerCase().replace(/['']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  function stoneLinks(text) {
+    return String(text).split(" · ").map(name => `<a href="/crystals/${stoneSlug(name)}/">${escapeHTML(name)}</a>`).join(" · ");
+  }
+
   function birthdayParts(value) {
     return BirthdayInsights.parseDate(value);
   }
@@ -104,5 +113,5 @@
     return `${today.getFullYear()}-${month}-${day}`;
   }
 
-  return {majorArcana, zodiacSigns, birthstones, moonNames, escapeHTML, birthdayParts, zodiacFor, decanFor, moonPhaseFor, tarotBirthCardFor, localDateKey};
+  return {majorArcana, zodiacSigns, birthstones, moonNames, escapeHTML, stoneSlug, stoneLinks, birthdayParts, zodiacFor, decanFor, moonPhaseFor, tarotBirthCardFor, localDateKey};
 });
