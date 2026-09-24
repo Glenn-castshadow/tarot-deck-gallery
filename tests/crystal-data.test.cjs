@@ -123,9 +123,9 @@ test('water-sensitive and toxic stones say so in their care note', () => {
 });
 
 test('British spelling throughout the prose', () => {
-  const spelling = /\b(color|colors|colored|favorite|center|centered|gray|energized|energize)\b/i;
+  const spelling = /\b(color|colors|colored|favorite|favor|favored|center|centered|gray|energized|energize|jewelry|honor|fiber|theater|mold|molded)\b/i;
   for (const c of written) {
-    const all = [c.keyword, c.meaning, c.properties.emotional, c.properties.spiritual, c.properties.physical, c.care, c.prompt].join(' ');
+    const all = [c.aka.join(' '), c.keyword, c.meaning, c.properties.emotional, c.properties.spiritual, c.properties.physical, c.care, c.prompt].join(' ');
     assert.doesNotMatch(all, spelling, c.slug);
   }
 });
