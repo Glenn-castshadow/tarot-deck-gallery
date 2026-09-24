@@ -121,3 +121,10 @@ test('water-sensitive and toxic stones say so in their care note', () => {
     if (TOXIC.includes(c.slug)) assert.match(c.care, /wash|hands/i, `${c.slug} care must say to wash hands`);
   }
 });
+
+test('tarot cards are spread across the crystals', () => {
+  const counts = new Map();
+  for (const c of crystals) for (const card of c.cards) counts.set(card, (counts.get(card) || 0) + 1);
+  for (const [card, n] of counts) assert.ok(n <= 4, `${card} is on ${n} crystals`);
+  assert.ok(crystals.filter(c => c.cards.length === 2).length >= 40, 'at least 40 crystals carry two cards');
+});
