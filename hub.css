@@ -23,3 +23,6 @@
 @media (prefers-reduced-motion: reduce) { .hub-card { transition: none; } .hub-card:hover { transform: none; } }
 #hub-sign { max-width: 100%; padding: 0 18px 2px 0; border: 0; border-bottom: 1px solid var(--gold); background-color: transparent; color: inherit; font: inherit; cursor: pointer; }
 #hub-sign:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+/* The animated hero lotus (site-shell.js) takes the static logo's box from site-shell.css. */
+.brand-lockup video { display: block; width: min(300px, 66vw); height: auto; aspect-ratio: 1233 / 895; filter: drop-shadow(0 0 22px rgba(255,220,160,.22)); }
+@media (max-width: 700px) { .brand-lockup video { width: min(260px, 72vw); } }

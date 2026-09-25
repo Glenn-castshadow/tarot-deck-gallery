@@ -99,6 +99,48 @@
     };
   }
 
+  // The hub's lotus opens once on arrival. Safari plays the HEVC file, which keeps its alpha
+  // channel; other browsers play the VP9 WebM. The static logo stays when the visitor prefers
+  // reduced motion, and comes back if autoplay is refused (iOS Low Power Mode), neither file
+  // plays, or nothing has started within four seconds. The last frame is the static logo, so
+  // the sharper image takes over again when the video ends.
+  const HERO_VIDEO = [
+    ['/assets/ishtar-logo-animated-hevc.mp4', 'video/mp4; codecs="hvc1"'],
+    ['/assets/ishtar-logo-animated.webm', 'video/webm; codecs="vp9"']
+  ];
+
+  function animateHeroLogo(img, win) {
+    if (!img || !win.matchMedia || win.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+    const doc = img.ownerDocument;
+    const video = doc.createElement('video');
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    for (const [name, value] of [['muted', ''], ['playsinline', ''], ['width', '1233'], ['height', '895'], ['role', 'img'], ['aria-label', img.alt]]) video.setAttribute(name, value);
+    for (const [src, type] of HERO_VIDEO) {
+      const source = doc.createElement('source');
+      source.setAttribute('src', src);
+      source.setAttribute('type', type);
+      video.appendChild(source);
+    }
+    let started = false, done = false;
+    const restore = () => {
+      if (done) return;
+      done = true;
+      video.pause();
+      if (video.parentNode) video.replaceWith(img);
+    };
+    video.addEventListener('playing', () => { started = true; });
+    video.addEventListener('ended', restore);
+    video.addEventListener('error', restore);
+    video.lastChild.addEventListener('error', restore);   // no source could be played
+    win.setTimeout(() => { if (!started) restore(); }, 4000);
+    img.replaceWith(video);
+    const playing = video.play();
+    if (playing && playing.catch) playing.catch(restore);
+    return video;
+  }
+
   function mount(page, {links} = {}) {
     const variant = page === 'hub' ? 'hero' : 'compact';
     const {header, nav, footer, notice} = render({page, variant, links, sections: collectSections(document)});
@@ -107,7 +149,8 @@
       const target = document.querySelector(`[data-shell="${name}"]`);
       if (target) target.innerHTML = parts[name];
     });
+    if (variant === 'hero') animateHeroLogo(document.querySelector('.brand-lockup img'), window);
   }
 
-  return {NAV, render, mount, collectSections};
+  return {NAV, render, mount, collectSections, animateHeroLogo};
 });

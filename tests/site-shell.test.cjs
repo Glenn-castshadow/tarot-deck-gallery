@@ -58,3 +58,58 @@ test('the footer links the three reference indexes', () => {
     assert.ok(footer.includes(`href="${href}"`), `footer lacks ${href}`);
   }
 });
+
+test('the hero lotus animates, and the static logo comes back on every failure path', async () => {
+  // A minimal DOM: elements that record listeners and can swap places in one parent.
+  const make = (tag) => {
+    const el = {tagName: tag, attrs: {}, children: [], listeners: {}, parentNode: null, paused: false,
+      setAttribute(k, v) { this.attrs[k] = v; }, appendChild(c) { this.children.push(c); c.parentNode = this; },
+      get lastChild() { return this.children[this.children.length - 1]; },
+      addEventListener(t, f) { (this.listeners[t] ||= []).push(f); }, fire(t) { (this.listeners[t] || []).forEach(f => f()); },
+      replaceWith(other) { const p = this.parentNode; p.children[p.children.indexOf(this)] = other; other.parentNode = p; this.parentNode = null; },
+      pause() { this.paused = true; }, play: () => playResult};
+    return el;
+  };
+  let playResult;
+  const setup = ({reduce = false, play = Promise.resolve()} = {}) => {
+    playResult = play;
+    const timers = [];
+    const lockup = make('div');
+    const img = make('img');
+    img.alt = 'Ishtar Insights lotus logo';
+    img.ownerDocument = {createElement: make};
+    lockup.appendChild(img);
+    const win = {matchMedia: () => ({matches: reduce}), setTimeout: f => timers.push(f)};
+    const video = SiteShell.animateHeroLogo(img, win);
+    return {lockup, img, video, timers};
+  };
+  const shown = (s) => s.lockup.children[0].tagName;
+  const tick = () => new Promise(r => setImmediate(r));
+
+  const reduced = setup({reduce: true});
+  assert.equal(reduced.video, null);
+  assert.equal(shown(reduced), 'img', 'reduced motion keeps the static logo');
+
+  const ok = setup();
+  assert.equal(shown(ok), 'video');
+  assert.deepEqual(ok.video.children.map(s => s.attrs.src), ['/assets/ishtar-logo-animated-hevc.mp4', '/assets/ishtar-logo-animated.webm'], 'Safari’s HEVC is offered first');
+  assert.equal(ok.video.attrs['aria-label'], 'Ishtar Insights lotus logo');
+  assert.ok('muted' in ok.video.attrs && 'playsinline' in ok.video.attrs, 'iOS autoplays only muted inline video');
+  ok.video.fire('playing'); ok.timers.forEach(f => f());
+  assert.equal(shown(ok), 'video', 'a video that started is not cut off by the timeout');
+  ok.video.fire('ended');
+  assert.equal(shown(ok), 'img', 'the sharper static logo takes over at the end');
+
+  const refused = setup({play: Promise.reject(new Error('NotAllowedError'))});
+  await tick();
+  assert.equal(shown(refused), 'img', 'refused autoplay (Low Power Mode) restores the logo');
+
+  const stalled = setup();
+  stalled.timers.forEach(f => f());
+  assert.equal(shown(stalled), 'img', 'nothing playing after the timeout restores the logo');
+  assert.ok(stalled.video.paused);
+
+  const unplayable = setup();
+  unplayable.video.lastChild.fire('error');
+  assert.equal(shown(unplayable), 'img', 'no playable source restores the logo');
+});
