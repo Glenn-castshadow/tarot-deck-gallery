@@ -73,7 +73,26 @@
     natalPrintFocus = Boolean(document.activeElement?.closest(".natal-report"));
     birthdayOutput.querySelector(".natal-report").outerHTML = NatalChart.report(natalModel,natalView,"all",natalShowMinor);
   });
+  // The keepsake edition exists only while the print dialog is open; html.nk-printing hides the page around it.
+  let keepsakePalette = "ivory";
+  let natalPlace = "";
+  let pageTitle = null;
+  function printKeepsake() {
+    document.querySelector(".natal-keepsake")?.remove();
+    document.body.insertAdjacentHTML("beforeend", NatalChart.keepsake(natalModel,{place:natalPlace,palette:keepsakePalette,showMinor:natalShowMinor}));
+    document.documentElement.classList.add("nk-printing");
+    // The document title becomes the default PDF file name.
+    pageTitle = document.title;
+    document.title = NatalChart.keepsakeTitle(natalModel);
+    window.print();
+  }
   window.addEventListener("afterprint", () => {
+    if (pageTitle !== null) {
+      document.title = pageTitle;
+      pageTitle = null;
+      document.documentElement.classList.remove("nk-printing");
+      document.querySelector(".natal-keepsake")?.remove();
+    }
     if (!natalModel) return;
     refreshNatalReport();
     if (natalPrintFocus) birthdayOutput.querySelector("[data-print-natal]")?.focus({preventScroll:true});
@@ -91,6 +110,7 @@
     }
     const { profile, natal } = state;
     if(natal.status === "ready") natalModel = natal;
+    natalPlace = profile?.place || "";
     // Keyed on the birth details alone: house system, orb and return-location edits keep the year.
     const profileKey = [profile?.birthday, profile?.time, profile?.place].join("|");
     if (profileKey !== profectionProfileKey || profectionYear === null) {
@@ -132,7 +152,7 @@
       </div>
       <dl class="sky-facts">${facts.map(([label, value, detail, mark]) => `<div class="sky-fact"><dt><span class="sky-fact-symbol" aria-hidden="true">${SkyChart.glyph(mark)}</span>${label}</dt><dd>${value}<small>${detail}</small></dd></div>`).join("")}</dl>
       <div class="horoscope-lenses">${["Connections", "Work & creativity", "Rest & growth"].map((label, index) => `<article><span class="lens-ornament" aria-hidden="true">${["☌","✷","☾"][index]}</span><div><h5>${label}</h5><p>${BirthdayInsights.westernThemes[sign.name][index]}</p></div></article>`).join("")}</div>
-      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor) + chartDepth() + ChartRooms.saveControl('natal', ChartRooms.NOTES.one) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
+      ${natalModel ? NatalChart.report(natalModel,natalView,natalAspectFilter,natalShowMinor) + NatalChart.keepsakePanel(natalModel,keepsakePalette) + chartDepth() + ChartRooms.saveControl('natal', ChartRooms.NOTES.one) : '<details class="insight-method"><summary>About your sky portrait</summary><p>Without a birth time and confirmed location, sun signs and decans use approximate date ranges and moon phase uses an average lunar cycle. Enter those details to calculate planets, rising sign, houses and aspects.</p></details>'}
     </div>
     <p class="birthday-privacy">${saved ? "Showing a saved chart. Your birth profile is unchanged." : "Your birthday details are saved in this browser."}</p>`;
   }
@@ -150,7 +170,16 @@
       if(natalButton && natalModel) {skyExplorer.openNatal(natalModel,natalButton,{kind:natalButton.dataset.openNatal,key:natalButton.dataset.natalKey});return;}
       const reportButton = event.target.closest("[data-natal-view]");
       if(reportButton && natalModel) {natalView = reportButton.dataset.natalView;refreshNatalReport();birthdayOutput.querySelector(`[data-natal-view="${natalView}"]`).focus({preventScroll:true});return;}
-      if(event.target.closest("[data-print-natal]")) {window.print();return;}
+      if(event.target.closest("[data-print-natal]") && natalModel) {printKeepsake();return;}
+      if(event.target.closest("[data-natal-download]") && natalModel) {NatalChart.download(natalModel,{kind:"none"},true,natalShowMinor,keepsakePalette);return;}
+      const paletteButton = event.target.closest("[data-keepsake-palette]");
+      if(paletteButton) {
+        keepsakePalette = paletteButton.dataset.keepsakePalette;
+        const panel = paletteButton.closest(".natal-keepsake-panel");
+        panel.querySelectorAll("[data-keepsake-palette]").forEach(button => button.setAttribute("aria-pressed", String(button === paletteButton)));
+        panel.querySelector(".natal-wheel").classList.toggle("ivory", keepsakePalette === "ivory");
+        return;
+      }
       const skyButton = event.target.closest("[data-open-sky]");
       if (skyButton) { skyExplorer.open(skyButton.dataset.openSky,skyButton); return; }
     });
