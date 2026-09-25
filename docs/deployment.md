@@ -1,5 +1,13 @@
 # VPS deployment
 
+## 2026-09-25 Footer motto: "Look closer."
+
+Deployed `8d72f0b` at Glenn's request: the footer's line under the lotus changes from "Built for looking closely."
+to "Look closer." Release `/opt/tarot-game/releases/20260925-look-closer-8d72f0b` from
+`20260925-footer-motto-9c4b79e`: 267 files (`site-shell.js?v=19`, its nine pages, the 257 generated pages rebuilt).
+Passed first time; all 267 served files match the commit; suite 719 of 719.
+Rollback: `ln -sfn /opt/tarot-game/releases/20260925-footer-motto-9c4b79e /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
 ## 2026-09-25 Footer drops the image-reuse line
 
 Deployed `9c4b79e` at Glenn's request ("I don't feel like this is necessary"). The footer keeps "Built for looking
