@@ -1,5 +1,28 @@
 # VPS deployment
 
+## 2026-09-25 Readable birthstone links in the sky facts
+
+Deployed `cf34d82`. **Static only.** The birthstone names in "Your sky at a glance" are links, and they showed in
+the browser's visited purple on the dark card. They now take the card's text colour with a soft underline. The rule
+first went into `styles.css` (`429e1a2`) and was moved to `celestial-room.css` (`cf34d82`) before release:
+`styles.css` is served `immutable` for a year under `?v=site-shell-2` on 273 pages, so changing it would have meant
+rekeying all of them. The sky facts render only on the three pages that load `celestial-room.css`. `styles.css`
+at `cf34d82` is byte-identical to the live copy (after CR stripping), so it did not ship.
+
+**Release.** `/opt/tarot-game/releases/20260925-link-color-cf34d82`, a `cp -al` hardlink copy of
+`20260925-crystals-fix-e1a946a`, by `/tmp/ishtar-link-color.sh`. Four files replaced, each removed first:
+`celestial-room.css`, `charts/index.html`, `eastern/index.html`, `numerology/index.html`. Same gates as the
+crystals release. The delta tar was built from `git show` blobs, not `git archive`: with `core.autocrlf=true` the
+archive converts to CRLF and its hashes no longer match the commit. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-crystals-fix-e1a946a /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache key.** `celestial-room.css?v=link-color-1` on `/charts/`, `/eastern/` and `/numerology/`.
+
+**Validation.** Suite 717 of 717. The three pages and the stylesheet are served byte-identical to the commit;
+`/` 200, `/api/health/` `{"ok": true}`. In a browser on the live `/charts/`, with a December birthday the
+birthstone link computes to the card's cream (`rgb(255, 246, 232)`) and the sign-stone links to the caption's
+grey-blue.
+
 ## 2026-09-25 Crystals: chakra links spread, saved-birthday cue
 
 Deployed `e1a946a`, at Glenn's request after the keepsake release. **Static only.** Stones sharing a chakra now
