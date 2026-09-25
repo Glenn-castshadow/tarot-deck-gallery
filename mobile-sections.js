@@ -48,6 +48,13 @@ window.MobileSections = (() => {
     }
     const icon = document.createElement('span');
     icon.className = 'fold-chevron'; icon.setAttribute('aria-hidden', 'true');
+    // Top-level sections match the hub's paths: a gold-ringed star with the section's own mark.
+    if (group === 'main' && typeof SiteShell !== 'undefined') {
+      const star = document.createElement('span');
+      star.className = 'fold-mark'; star.innerHTML = SiteShell.mark(SiteShell.FOLD_MARKS[key], 'fold-mark-icon');
+      button.append(star);
+      icon.className = 'fold-toggle'; icon.innerHTML = SiteShell.mark('caret-down', 'fold-toggle-icon');
+    }
     button.append(label, icon); heading.append(button);
     const body = document.createElement('div');
     body.className = 'fold-body'; body.id = `fold-content-${serial}`;

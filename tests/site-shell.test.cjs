@@ -113,3 +113,19 @@ test('the hero lotus animates, and the static logo comes back on every failure p
   unplayable.video.lastChild.fire('error');
   assert.equal(shown(unplayable), 'img', 'no playable source restores the logo');
 });
+
+test('every hub path and every top-level section fold has a mark from the icon set', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  for (const entry of SiteShell.NAV.filter(e => e.key !== 'hub')) {
+    assert.ok(SiteShell.ICONS[SiteShell.PATH_MARKS[entry.key]], `path ${entry.key} has no mark`);
+  }
+  // Top-level folds are [data-fold] sections without an explicit (nested) data-fold-group.
+  const pages = ['tarot', 'sky', 'charts', 'eastern', 'numerology', 'divination', 'crystals'];
+  const keys = pages.flatMap(page => [...fs.readFileSync(path.join(__dirname, '..', page, 'index.html'), 'utf8')
+    .matchAll(/<[a-z]+[^>]*\sdata-fold="[^"]*"[^>]*>/g)].map(m => m[0])
+    .filter(tag => !/data-fold-group=/.test(tag)).map(tag => tag.match(/data-fold-key="([^"]+)"/)[1]));
+  assert.ok(keys.length >= 16, `found only ${keys.length} top-level folds`);
+  for (const key of keys) assert.ok(SiteShell.ICONS[SiteShell.FOLD_MARKS[key]], `fold ${key} has no mark`);
+  assert.match(SiteShell.mark('no-such-icon', 'x'), /<path d="M/, 'an unknown name falls back to a star');
+});

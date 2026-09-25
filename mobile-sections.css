@@ -57,6 +57,28 @@
   .tarot-connections > :is(.reading-label,h3) { display: none; }
   .tarot-synthesis { margin: 0 0 20px; }
   .num-life-lenses, .num-reading-pair { grid-column: 1 / -1; }
+
+  /* Top-level sections, in the hub's night-sky language: the folds run edge to edge as one band
+     of sky, each headed by a gold-ringed star carrying the section's own mark, with a soft glow
+     behind it. Colours are the masthead's (night #261336, plum, gold-light, cream). */
+  .main-fold { --night: #261336; --star-ring: rgba(230,177,126,.55); margin: 0 -17px; border: 0; border-block: 1px solid rgba(230,177,126,.2); background: var(--night); color: #fff6e8; }
+  .main-fold + .main-fold { border-top: 0; }
+  #crystal-room { row-gap: 0; }   /* its folds stack flush like every other page's */
+  .main-fold > .fold-heading > button { display: grid; grid-template-columns: 48px minmax(0, 1fr) 34px; gap: 16px; min-height: 92px; padding: 20px 20px; color: #fff; font: 600 22px/1.15 'Playfair Display', serif; letter-spacing: -.01em; -webkit-tap-highlight-color: transparent;
+    background: radial-gradient(1.2px 1.2px at 71% 24%, rgba(255,250,244,.7) 50%, transparent 55%), radial-gradient(1px 1px at 88% 78%, rgba(255,250,244,.5) 50%, transparent 55%), radial-gradient(1.3px 1.3px at 52% 84%, rgba(230,177,126,.75) 50%, transparent 55%), radial-gradient(160px 110px at 44px 50%, rgba(74,37,89,.95), transparent 70%); }
+  .main-fold > .fold-heading > button:focus-visible { outline: 2px solid #fff6e8; outline-offset: -4px; }
+  .main-fold > .fold-heading .fold-label small { margin-top: 5px; color: rgba(255,250,244,.7); font-size: 12.5px; letter-spacing: 0; }
+  .fold-mark { display: grid; place-items: center; width: 48px; aspect-ratio: 1; border: 1px solid var(--star-ring); border-radius: 50%; background: var(--night); color: #e6b17e; transition: background-color .35s cubic-bezier(.16,1,.3,1), color .35s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.16,1,.3,1); }
+  .fold-mark-icon { width: 24px; height: 24px; fill: currentColor; }
+  .fold-toggle { display: grid; place-items: center; width: 34px; aspect-ratio: 1; border: 1px solid rgba(230,177,126,.35); border-radius: 50%; color: #e6b17e; transition: transform .35s cubic-bezier(.16,1,.3,1), background-color .35s cubic-bezier(.16,1,.3,1); }
+  .fold-toggle-icon { width: 16px; height: 16px; fill: currentColor; }
+  .main-fold.is-open > .fold-heading .fold-toggle { transform: rotate(180deg); background: rgba(230,177,126,.14); }
+  .main-fold.is-open > .fold-heading .fold-mark, .main-fold > .fold-heading > button:active .fold-mark { background: #e6b17e; color: var(--night); }
+  .main-fold > .fold-heading > button:active .fold-mark { transform: scale(.94); }
+  .main-fold.is-open > .fold-heading { border-bottom: 1px solid rgba(230,177,126,.2); }
+}
+@media screen and (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .fold-mark, .fold-toggle { transition: none; }
 }
 @media print {
   .mobile-fold > .fold-body[hidden] { display: contents !important; }
