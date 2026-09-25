@@ -19,7 +19,6 @@ const TarotReadings = require('../tarot-readings.js');
 const DivinationData = require('../divination-data.js');
 const IChingLines = require('../iching-lines.js');
 const CrystalData = require('../crystal-data.js');
-const Crystals = require('../crystals.js');
 
 const esc = BirthLore.escapeHTML;
 
@@ -287,7 +286,7 @@ function crystalPages() {
     const kin = byName.filter(o => o !== c && o.chakras.some(k => c.chakras.includes(k))).slice(0, 8);
     const body = `<header><p class="ref-kicker">Crystal · ${esc(c.keyword)}</p><h1>${esc(c.name)}</h1>${c.aka.length ? `<p class="ref-keywords">Also called ${esc(c.aka.join(', '))}</p>` : ''}</header>
         <div class="ref-layout">
-          <figure><span class="ref-swatch" style="background:${Crystals.swatch(c.colours)}" role="img" aria-label="${esc(`The colours of ${c.name}`)}"></span></figure>
+          <figure><img src="/assets/crystals/${c.slug}.webp" width="800" height="800" alt="AI-generated depiction of ${esc(c.name)}"><figcaption class="ref-note">AI-generated depiction; natural specimens vary.</figcaption></figure>
           <div>
             <dl class="ref-facts">${facts.map(([term, value]) => `<div><dt>${term}</dt><dd>${value}</dd></div>`).join('')}</dl>
             <p class="ref-note">Crystal correspondences are traditional; the descriptions are original to this site.</p>
@@ -304,7 +303,8 @@ function crystalPages() {
         ${pager(near(i - 1), near(i + 1))}`;
     return {file: `crystals/${c.slug}/index.html`, url, html: renderPage({url, section: 'crystals',
       title: `${c.name} crystal meaning and properties`, description: clip(`${c.meaning} ${c.properties.emotional}`),
-      image: null, crumbs: [{name: 'Crystals', url: '/crystals/'}, {name: c.name, url}], body})};
+      image: {src: `/assets/crystals/${c.slug}.webp`, width: 800, height: 800},
+      crumbs: [{name: 'Crystals', url: '/crystals/'}, {name: c.name, url}], body})};
   });
 }
 

@@ -44,8 +44,3 @@ test('filter by name or other name, chakra, sign and element', () => {
   assert.deepEqual(slugs({sign: 'Cancer', element: 'Water'}), ['pearl', 'moonstone']);
   assert.deepEqual(slugs({sign: 'Leo'}), []);
 });
-
-test('a swatch is a solid colour or a gradient', () => {
-  assert.equal(Crystals.swatch(['#9966cc']), '#9966cc');
-  assert.equal(Crystals.swatch(['#7b1e2b', '#b33a3a']), 'linear-gradient(135deg, #7b1e2b, #b33a3a)');
-});

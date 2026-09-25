@@ -83,3 +83,6 @@ deck-art/*-round/contact-sheets/
 deck-art/*-round/references/
 deck-art/round-decks-queue.json
 output/round-decks/
+
+# Crystal image-generation masters stay in the workspace; optimized web assets are versioned.
+crystal-art/raw/

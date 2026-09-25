@@ -30,7 +30,7 @@
       && (!chakra || c.chakras.includes(chakra)) && (!sign || c.signs.includes(sign)) && (!element || c.element === element));
   }
 
-  const swatch = colours => colours.length === 1 ? colours[0] : `linear-gradient(135deg, ${colours.join(', ')})`;
+  const thumb = crystal => `/assets/crystals/thumbs/${crystal.slug}.webp`;
 
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const SIGN_KEY = 'ishtar-sun-sign-v1'; // shared with the hub's sign picker
@@ -39,11 +39,11 @@
     const {crystals, chakras} = CrystalData;
     const {zodiacSigns, escapeHTML: esc, birthdayParts, zodiacFor, localDateKey} = BirthLore;
     const byName = [...crystals].sort((a, b) => a.name.localeCompare(b.name));
-    const card = c => `<a class="crystal-card" href="/crystals/${c.slug}/"><span class="crystal-swatch" style="background:${swatch(c.colours)}" aria-hidden="true"></span><strong>${esc(c.name)}</strong><small>${esc(c.keyword)}</small></a>`;
+    const card = c => `<a class="crystal-card" href="/crystals/${c.slug}/"><img class="crystal-image" src="${thumb(c)}" width="320" height="320" alt="" loading="lazy" decoding="async"><strong>${esc(c.name)}</strong><small>${esc(c.keyword)}</small></a>`;
 
     const today = crystals[dailyIndex(localDateKey(), crystals.length)];
     document.querySelector('#crystal-day-output').innerHTML = `<div class="crystal-day">
-      <span class="crystal-swatch" style="background:${swatch(today.colours)}" aria-hidden="true"></span>
+      <img class="crystal-image" src="${thumb(today)}" width="320" height="320" alt="AI-generated depiction of ${esc(today.name)}" decoding="async">
       <div><h3>${esc(today.name)}</h3><p class="crystal-keyword">${esc(today.keyword)}</p><p>${esc(today.meaning)}</p>
       <p class="crystal-prompt">${esc(today.prompt)}</p><p><a href="/crystals/${today.slug}/">Read about ${esc(today.name)} ↗</a></p></div></div>`;
 
@@ -101,5 +101,5 @@
   }
   if (typeof document !== 'undefined' && document.querySelector('#crystal-room')) attach();
 
-  return {dailyIndex, stonesFor, filter, swatch};
+  return {dailyIndex, stonesFor, filter};
 });

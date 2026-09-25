@@ -3,7 +3,8 @@
 .crystal-panel { padding: clamp(20px, 3.4vw, 36px); border: 1px solid var(--line); background: var(--cream); }
 .crystal-panel h2 { margin: 4px 0 16px; color: var(--plum-dark); font: 700 clamp(24px, 2.8vw, 32px)/1.15 "Playfair Display", serif; }
 .crystal-panel h3 { margin: 20px 0 10px; color: var(--plum); font: 600 17px/1.3 "Playfair Display", serif; }
-.crystal-swatch { display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; box-shadow: inset 0 -8px 18px rgba(0, 0, 0, .2), inset 0 6px 12px rgba(255, 255, 255, .35); }
+.crystal-image { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; background: var(--cream); box-shadow: var(--shadow); }
+.crystal-image-note { margin: 14px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 1.5; }
 .crystal-day { display: grid; grid-template-columns: minmax(96px, 160px) minmax(0, 1fr); gap: clamp(18px, 3vw, 36px); align-items: start; }
 .crystal-day h3 { margin: 0; color: var(--plum-dark); font: 700 clamp(26px, 3vw, 36px)/1.1 "Playfair Display", serif; }
 .crystal-day p { max-width: 62ch; color: var(--ink); line-height: 1.7; }
@@ -11,7 +12,7 @@
 .crystal-prompt { font-style: italic; }
 .crystal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 14px; }
 .crystal-card { display: grid; justify-items: center; gap: 6px; padding: 16px 10px 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, .55); color: var(--ink); text-align: center; text-decoration: none; transition: .2s ease; }
-.crystal-card .crystal-swatch { width: 56px; }
+.crystal-card .crystal-image { width: 86px; box-shadow: none; }
 .crystal-card strong { color: var(--plum); font: 600 16px/1.2 "Playfair Display", serif; }
 .crystal-card small { color: var(--ink-soft); font-size: 12px; line-height: 1.35; }
 .crystal-card:hover, .crystal-card:focus-visible { border-color: var(--gold); box-shadow: var(--shadow); }
@@ -23,7 +24,7 @@
 @media (prefers-reduced-motion: reduce) { .crystal-card { transition: none; } }
 @media (max-width: 700px) {
   .crystal-day { grid-template-columns: minmax(0, 1fr); }
-  .crystal-day .crystal-swatch { width: 112px; }
+  .crystal-day .crystal-image { width: 112px; }
   .crystal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crystal-filters label, .crystal-filters input, .crystal-filters select { width: 100%; }
 }

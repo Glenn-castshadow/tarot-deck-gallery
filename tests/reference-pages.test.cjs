@@ -156,8 +156,15 @@ test('100 crystal pages, each with its prose, correspondences and links', () => 
   for (const sign of data.signs) assert.ok(rose.html.includes(`href="/sky/signs/${sign.toLowerCase()}/"`), sign);
   for (const card of data.cards) assert.ok(rose.html.includes(`href="/tarot/cards/${card}/"`), card);
   assert.ok(rose.html.includes('Crystal correspondences are traditional; the descriptions are original to this site.'));
-  assert.match(rose.html, /class="ref-swatch"/);
+  assert.match(rose.html, /src="\/assets\/crystals\/rose-quartz.webp"/);
+  assert.match(rose.html, /AI-generated depiction; natural specimens vary/);
   assert.match(rose.html, /href="\/crystals\/" aria-current="page"/, 'Crystals is marked in the nav');
+  for (const crystal of B.CrystalData.crystals) {
+    const file = path.join(__dirname, '..', 'assets', 'crystals', `${crystal.slug}.webp`);
+    const thumb = path.join(__dirname, '..', 'assets', 'crystals', 'thumbs', `${crystal.slug}.webp`);
+    assert.ok(fs.existsSync(file), `${crystal.slug} detail image is missing`);
+    assert.ok(fs.existsSync(thumb), `${crystal.slug} thumbnail is missing`);
+  }
 });
 
 test('sign pages link their stones to the crystal pages', () => {

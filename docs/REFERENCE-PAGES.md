@@ -48,8 +48,10 @@ and commit the result:
   evaluated at build time) and `tarot-readings.js`, which supplies `enrichMinor`
   (minor-card keywords, upright, reversed and prompt text) to that evaluation.
 - `divination-data.js`, `iching-lines.js`: hexagram and line copy.
-- `crystal-data.js`: crystal facts and copy. `crystals.js`: supplies `swatch(colours)`,
-  the colour-chip style on each crystal page.
+- `crystal-data.js`: crystal facts and copy. Crystal pages use the matching
+  `assets/crystals/<slug>.webp` image, built from the local PNG masters by
+  `tools/build_crystal_images.py`; the appearance briefs are in
+  `crystal-art/prompts.json`.
 - `site-shell.js`: the shared header/nav/footer chrome.
 - `divination/index.html`: the tool lifts the account dialog, its four script tags
   (`rooms.js`, `storage-preferences.js`, `account-core.js`, `account.js`) and the
