@@ -283,7 +283,9 @@ function crystalPages() {
     const facts = [['Chakra', esc(c.chakras.map(chakraName).join(', '))], ['Element', esc(c.element)], ['Planet', esc(c.planet)],
       ['Signs', c.signs.map(name => `<a href="/sky/signs/${name.toLowerCase()}/">${esc(name)}</a>`).join(', ')],
       ['Tarot', c.cards.map(card).join(', ')]];
-    const kin = byName.filter(o => o !== c && o.chakras.some(k => c.chakras.includes(k))).slice(0, 8);
+    // Start from the stone after this one and wrap, so links spread across the alphabet
+    // instead of every page pointing at the first eight names.
+    const kin = [...byName.slice(i + 1), ...byName.slice(0, i)].filter(o => o.chakras.some(k => c.chakras.includes(k))).slice(0, 8);
     const body = `<header><p class="ref-kicker">Crystal · ${esc(c.keyword)}</p><h1>${esc(c.name)}</h1>${c.aka.length ? `<p class="ref-keywords">Also called ${esc(c.aka.join(', '))}</p>` : ''}</header>
         <div class="ref-layout">
           <figure><img src="/assets/crystals/${c.slug}.webp" width="800" height="800" alt="AI-generated depiction of ${esc(c.name)}"><figcaption class="ref-note">AI-generated depiction; natural specimens vary.</figcaption></figure>

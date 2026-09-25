@@ -85,7 +85,8 @@
       }
       const {birthstone, signStones, kindred} = stonesFor(crystals, BirthLore, {month: m, sign});
       const group = (title, list) => list.length ? `<h3>${esc(title)}</h3><div class="crystal-grid">${list.map(card).join('')}</div>` : '';
-      mine.innerHTML = (m ? group(`${MONTHS[m - 1]} birthstone`, birthstone) : '')
+      mine.innerHTML = (parts ? '<p class="crystal-empty">From the birth date saved in this browser. <a href="/charts/#birthday-room">Change it on the Charts page</a>.</p>' : '')
+        + (m ? group(`${MONTHS[m - 1]} birthstone`, birthstone) : '')
         + (sign ? group(`${sign.name} stones`, signStones) + group(`Also linked with ${sign.name}`, kindred) : '')
         + (!m && !sign ? '<p class="crystal-empty">Choose a month or a sign, or enter your birth date on the <a href="/charts/#birthday-room">Charts page</a>.</p>' : '');
     }

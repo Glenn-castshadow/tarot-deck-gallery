@@ -141,6 +141,30 @@ test('the sitemap lists the hand-written pages and every generated page, once', 
   assert.ok(!locs.some(loc => loc.includes('/account/')));
 });
 
+test('every crystal page has one h1, a unique title and a description of sane length', () => {
+  const titles = new Set(), descriptions = new Set();
+  for (const page of B.crystalPages()) {
+    assert.equal((page.html.match(/<h1[ >]/g) || []).length, 1, page.file);
+    const title = page.html.match(/<title>(.*?)<\/title>/)[1];
+    assert.ok(!titles.has(title), `duplicate title ${title}`); titles.add(title);
+    const description = page.html.match(/<meta name="description" content="(.*?)">/)[1];
+    assert.ok(description.length >= 50 && description.length <= 170, `${page.file}: ${description.length}`);
+    assert.ok(!descriptions.has(description), `duplicate description on ${page.file}`); descriptions.add(description);
+    assert.match(page.html, /<link rel="canonical" href="https:\/\/ishtarinsights\.com\/crystals\/[a-z0-9-]+\/">/, page.file);
+  }
+});
+
+test('"stones that share a chakra" spreads links across the alphabet', () => {
+  const inbound = new Map();
+  for (const page of B.crystalPages()) {
+    const section = page.html.split('<h2>Stones that share a chakra</h2>')[1]?.split('</ul>')[0] || '';
+    for (const [, slug] of section.matchAll(/href="\/crystals\/([a-z0-9-]+)\/"/g)) inbound.set(slug, (inbound.get(slug) || 0) + 1);
+  }
+  // Taking the first eight by name gave agate-to-amethyst dozens of links and late stones almost none.
+  assert.ok(Math.max(...inbound.values()) <= 20, `most-linked stone has ${Math.max(...inbound.values())} links`);
+  assert.ok(inbound.size >= 95, `only ${inbound.size} stones get a chakra link`);
+});
+
 test('100 crystal pages, each with its prose, correspondences and links', () => {
   const pages = B.crystalPages();
   assert.equal(pages.length, 100);
