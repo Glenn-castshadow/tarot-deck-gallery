@@ -77,6 +77,8 @@
 .sky-fact-symbol { position: absolute; top: 22px; left: 0; color: var(--atlas-teal); font: 33px/1 "Segoe UI Symbol", "Apple Symbols", serif; }
 #birthday-room .sky-fact dd { margin-top: 10px; font: 600 22px/1.25 "Playfair Display", serif; }
 #birthday-room .sky-fact dd small { margin-top: 7px; color: #b4c6ce; font: 12px/1.6 "DM Sans", sans-serif; }
+#birthday-room .sky-fact dd a { color: inherit; text-decoration-color: rgba(255,250,244,.35); text-underline-offset: .18em; }
+#birthday-room .sky-fact dd a:hover { text-decoration-color: currentColor; }
 #birthday-room .horoscope-lenses { gap: 25px; margin-top: 14px; padding: 26px 0 4px; border-top: 1px solid var(--atlas-line); }
 .horoscope-lenses article { display: flex; align-items: start; gap: 13px; }
 .lens-ornament { color: var(--atlas-gold); font: 28px/1 "Segoe UI Symbol", serif; }

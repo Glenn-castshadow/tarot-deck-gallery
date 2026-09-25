@@ -191,8 +191,6 @@ h1 { max-width: 16ch; margin: 28px auto 0; font: 700 clamp(30px, 5vw, 66px)/1.08
 .sky-fact { min-height: 64px; padding: 10px 11px; border: 1px solid rgba(255,250,244,.13); background: rgba(255,250,244,.055); }
 .sky-fact dt { color: var(--gold-light); text-transform: uppercase; letter-spacing: .1em; font: 8px "DM Mono", monospace; }
 .sky-fact dd { margin: 6px 0 0; color: var(--cream); font: 600 15px/1.15 "Playfair Display", serif; }
-.sky-fact dd a { color: inherit; text-decoration-color: rgba(255,250,244,.35); text-underline-offset: .18em; }
-.sky-fact dd a:hover { text-decoration-color: currentColor; }
 .sky-fact dd small { display: block; margin-top: 3px; color: rgba(255,250,244,.52); font: 10px "DM Sans", sans-serif; }
 .horoscope-card { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.35fr); gap: 22px; padding: 17px 18px; border: 1px solid rgba(230,177,126,.28); background: linear-gradient(120deg, rgba(230,177,126,.12), rgba(255,250,244,.045)); }
 .horoscope-card .reading-label { color: var(--gold-light); text-transform: uppercase; letter-spacing: .14em; font: 10px "DM Mono", monospace; }
