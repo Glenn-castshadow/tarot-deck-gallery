@@ -1,5 +1,31 @@
 # VPS deployment
 
+## 2026-09-25 Phone section folds join the night sky
+
+Deployed `55adae4`, at Glenn's request after the paths redesign ("should this UI match now?"). **Static only,
+phones only.** The top-level section folds on the eight topic pages (`.main-fold`, built by `mobile-sections.js`)
+now run edge to edge as one band of night sky. Each is headed by a gold-ringed star with the section's own mark and a
+soft glow, with a ringed caret that turns on open; the star fills with gold when open or pressed. Nested folds inside
+readings and the desktop layout are unchanged. `#crystal-room` drops its 28px grid gap on phones so its folds stack
+flush like every other page's.
+
+The Phosphor marks moved from `hub.js` into `site-shell.js` (`ICONS`, `PATH_MARKS`, `FOLD_MARKS`, `mark`), so the
+hub and the folds share one set of 22. A new test fails if any hub path, or any top-level `[data-fold]` on the
+seven fold pages, lacks a mark (checked by removing `horary`'s).
+
+**Release.** `/opt/tarot-game/releases/20260925-night-folds-55adae4`, a `cp -al` hardlink copy of
+`20260925-paths-footer-7dc2705`, by `/tmp/ishtar-night-folds.sh`. 13 files replaced (`mobile-sections.css`,
+`mobile-sections.js`, `site-shell.js`, `hub.js` and the nine shell pages); the test file does not ship. Passed first
+time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-paths-footer-7dc2705 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `mobile-sections.css?v=3`, `mobile-sections.js?v=data-fold-5` (8 pages), `site-shell.js?v=17`
+(9 pages), `hub.js?v=paths-2`. The generated pages do not load these; `build_reference_pages.cjs --check` is current.
+
+**Validation.** Suite 719 of 719. All 13 served files are byte-identical to the commit; `/api/health/`
+`{"ok": true}`. At 375px, every page's folds are flush (0px apart), 375px wide with no overflow, and carry their
+mark; opening a fold fills the star and flips the caret. The Impeccable detector reports nothing.
+
 ## 2026-09-25 Hub paths as a constellation, night-sky footer
 
 Deployed `7dc2705`, at Glenn's request after an iPhone screenshot ("this UI needs to be more creative"). **Static only.**
