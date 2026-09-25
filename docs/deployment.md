@@ -1,5 +1,35 @@
 # VPS deployment
 
+## 2026-09-25 Natal chart keepsake print edition
+
+Deployed `7eeac3f`. **Static only.** Glenn asked for the "Print chart & report" button to become a polished,
+bigger save-and-print feature. The print buttons now print a five-page keepsake edition (cover with wheel and
+big three, placements, houses, aspect grid with balance, reflection prompts), and a panel below the natal report
+offers an Ivory or Midnight wheel, print or save as PDF, and the SVG download. Design and mechanics are in
+`docs/NATAL-CHART.md`.
+
+**Release.** `/opt/tarot-game/releases/20260925-keepsake-7eeac3f`, a `cp -al` hardlink copy of
+`20260924-crystal-images-5b00e69-lf`, by `/tmp/ishtar-keepsake.sh`. Seven files replaced (`celestial-room.css`,
+`natal-chart.js`, `natal-room.js`, and the Charts, Eastern, Numerology and Sky pages for their cache keys), each
+`rm -f`'d first; nothing added. Tar from `git -c core.autocrlf=false archive`, all seven hashed against the
+commit's blobs before shipping. Gated on `current`, on the seven live files matching the `5b00e69` baseline
+before and after, on the sha256 of the seven new files, on a link count of 1 for each, and on the previous
+`natal-chart.js` still lacking `keepsake`. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260924-crystal-images-5b00e69-lf /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Not in this release.** `e1a946a` (crystals: chakra links, per-page SEO checks, saved-birthday cue) was
+committed after the crystal-images release and has not been deployed; none of its files overlap this release.
+
+**Cache keys.** `celestial-room.css?v=keepsake-1` on Charts, Eastern and Numerology; `natal-chart.js?v=keepsake-1`
+on Charts; `natal-room.js?v=12` on Charts, Eastern and Sky.
+
+**Validation.** Suite 717 of 717 (three new keepsake tests). Headless Chrome print-to-PDF gave exactly five
+pages on Letter and A4 for both palettes, including the densest reference chart with minor aspects. Live: the
+seven served files are byte-identical to the commit with the right content types; `/` 200, `/api/health/`
+`{"ok": true}`. In a browser at ishtarinsights.com/charts/, the print button built the five pages, set the title
+to "Natal chart · August 14, 1990 · Ishtar Insights" and restored everything after printing; at 390px the
+panel is one column with no horizontal overflow. The only console error is the signed-out account check's 401.
+
 ## 2026-09-24 Crystal specimen images
 
 Deployed `5b00e69` from `main` as
