@@ -1,5 +1,27 @@
 # VPS deployment
 
+## 2026-09-25 Crystals: chakra links spread, saved-birthday cue
+
+Deployed `e1a946a`, at Glenn's request after the keepsake release. **Static only.** Stones sharing a chakra now
+link to the stones after them, wrapping, so no page carries more than 14 chakra links (the earliest names had
+52). "Your stones" says when it is using the birth date saved in this browser. The per-page SEO tests in the
+same commit do not ship.
+
+**Release.** `/opt/tarot-game/releases/20260925-crystals-fix-e1a946a`, a `cp -al` hardlink copy of
+`20260925-keepsake-7eeac3f`, by `/tmp/ishtar-crystals-fix.sh`. 95 files replaced (`crystals.js` and 94 crystal
+pages), each removed first; nothing added. Same gates as the keepsake release: `current`, the 95 live files
+matching the `5b00e69` baseline before and after, the sha256 of all 95 new files, a link count of 1 for each,
+and the previous `crystals.js` still lacking "From the birth date saved". The script's removals use
+`${NEW:?}/${f:?}` so an empty variable stops the script instead of reaching `/`. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-keepsake-7eeac3f /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache key.** `crystals.js?v=4` on the crystals pages.
+
+**Validation.** Suite 717 of 717. All 95 served files are byte-identical to the commit; the keepsake's
+`natal-chart.js` is unchanged; `/charts/` 200, `/api/health/` `{"ok": true}`. In a browser,
+`/crystals/amethyst/` has one `h1`, its canonical URL, 14 crystal links and no broken image; the only console
+errors are the signed-out account check's 401s.
+
 ## 2026-09-25 Natal chart keepsake print edition
 
 Deployed `7eeac3f`. **Static only.** Glenn asked for the "Print chart & report" button to become a polished,
