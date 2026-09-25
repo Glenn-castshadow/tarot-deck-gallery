@@ -1,5 +1,15 @@
 # VPS deployment
 
+## 2026-09-25 Footer drops the image-reuse line
+
+Deployed `9c4b79e` at Glenn's request ("I don't feel like this is necessary"). The footer keeps "Built for looking
+closely." on its own; the sentence "Read the catalog notes and sources before reusing an image." is gone. The catalog
+notes (`/tarot-decks/README.md`, each archive deck's source and rights) stay linked from the About page's "Drawn."
+paragraph. Release `/opt/tarot-game/releases/20260925-footer-motto-9c4b79e` from `20260925-night-folds-55adae4`:
+267 files (`site-shell.js?v=18`, its nine pages, and the 257 generated pages rebuilt with
+`tools/build_reference_pages.cjs`). Passed first time; all 267 served files match the commit; suite 719 of 719.
+Rollback: `ln -sfn /opt/tarot-game/releases/20260925-night-folds-55adae4 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
 ## 2026-09-25 Phone section folds join the night sky
 
 Deployed `55adae4`, at Glenn's request after the paths redesign ("should this UI match now?"). **Static only,
