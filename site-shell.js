@@ -73,10 +73,18 @@
 
   function renderFooter() {
     return `<footer class="footer">
-        <p><span class="footer-star">✦</span> Built for looking closely. Read the <a href="/tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
-        <p><a href="/about.html">About</a> · <a href="/about.html#contact">Contact</a> · <a href="/privacy.html">Privacy</a> · <a href="/cookie-policy.html">Cookies &amp; browser storage</a> · <button type="button" class="text-button" data-storage-settings>Cookie settings</button></p>
-        <p>Look something up: <a href="/tarot/cards/">Tarot card meanings</a> · <a href="/sky/signs/">Zodiac signs</a> · <a href="/divination/i-ching/">I Ching hexagrams</a></p>
-        <p>Created by <a href="https://castshadow.com">Cast Shadow Design</a>.</p>
+        <div class="footer-sign">
+          <img src="/assets/ishtar-insights-logo-hero.webp" alt="" width="1233" height="895" loading="lazy" decoding="async">
+          <p><strong>Built for looking closely.</strong> Read the <a href="/tarot-decks/README.md">catalog notes and sources</a> before reusing an image.</p>
+        </div>
+        <nav class="footer-lookup" aria-labelledby="footer-lookup-title">
+          <p id="footer-lookup-title">Look something up</p>
+          <a href="/tarot/cards/">Tarot card meanings</a><a href="/sky/signs/">Zodiac signs</a><a href="/divination/i-ching/">I Ching hexagrams</a>
+        </nav>
+        <nav class="footer-links" aria-label="About this site">
+          <a href="/about.html">About</a><a href="/about.html#contact">Contact</a><a href="/privacy.html">Privacy</a><a href="/cookie-policy.html">Cookies &amp; browser storage</a><button type="button" class="text-button" data-storage-settings>Cookie settings</button>
+        </nav>
+        <p class="footer-credit">Created by <a href="https://castshadow.com">Cast Shadow Design</a>.</p>
       </footer>`;
   }
 

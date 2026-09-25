@@ -1,4 +1,4 @@
-/* The hub: a today strip and the seven category cards. */
+/* The hub: a today strip and the reading paths. */
 .hub-today { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 26px; align-items: start; margin: 4px 0 34px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); background: var(--cream); box-shadow: var(--shadow); }
 .hub-today p { margin: 0; }
 .hub-today .hub-today-item { display: grid; gap: 6px; }
@@ -7,20 +7,60 @@
 .hub-today small { color: var(--ink-soft); font-size: 12px; line-height: 1.6; }
 .hub-today a { color: var(--plum); }
 
-.hub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 18px; margin-bottom: 48px; padding: 0; list-style: none; }
-.hub-card { display: grid; align-content: start; gap: 8px; min-height: 132px; padding: 22px 24px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); text-decoration: none; transition: .2s ease; }
-.hub-card:hover, .hub-card:focus-visible { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-2px); }
-.hub-card:focus-visible { outline: 2px solid var(--plum); outline-offset: 3px; }
-.hub-card strong { font: 600 22px/1.2 "Playfair Display", serif; color: var(--plum); }
-.hub-card span { color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
-.hub-card em { color: var(--gold); font-style: normal; font-size: 18px; }
+/* The reading paths: the hero's night sky picks up again, and the paths hang in it as a
+   constellation. Each mark is a star in a gold ring; a dotted line joins it to the next.
+   Colours are the masthead's: night #261336, plum, gold-light and cream. */
+.hub-cards {
+  --night: #261336;
+  --star-ring: rgba(230,177,126,.55);
+  --dim: rgba(255,250,244,.7);
+  position: relative; margin: 0 0 48px; padding: clamp(34px, 5vw, 60px) clamp(22px, 5vw, 64px) clamp(26px, 4vw, 48px);
+  border-radius: 8px; color: var(--cream); box-shadow: var(--shadow);
+  background:
+    radial-gradient(1.2px 1.2px at 8% 12%, rgba(255,250,244,.85) 50%, transparent 55%),
+    radial-gradient(1px 1px at 22% 64%, rgba(255,250,244,.55) 50%, transparent 55%),
+    radial-gradient(1.4px 1.4px at 41% 8%, rgba(230,177,126,.9) 50%, transparent 55%),
+    radial-gradient(1px 1px at 57% 38%, rgba(255,250,244,.5) 50%, transparent 55%),
+    radial-gradient(1.2px 1.2px at 73% 86%, rgba(255,250,244,.7) 50%, transparent 55%),
+    radial-gradient(1px 1px at 88% 22%, rgba(255,250,244,.6) 50%, transparent 55%),
+    radial-gradient(1.4px 1.4px at 94% 58%, rgba(230,177,126,.8) 50%, transparent 55%),
+    radial-gradient(1px 1px at 33% 93%, rgba(255,250,244,.5) 50%, transparent 55%),
+    radial-gradient(120% 70% at 50% 0%, var(--plum) 0%, var(--night) 62%);
+}
+.hub-paths-title { max-width: 18ch; margin: 0 0 clamp(22px, 3vw, 34px); font: 700 clamp(30px, 4.4vw, 46px)/1.08 "Playfair Display", serif; letter-spacing: -.025em; color: #fff; text-wrap: balance; text-shadow: 0 2px 24px rgba(0,0,0,.35); }
+.hub-paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(28px, 5vw, 72px); }
+.hub-path { position: relative; display: grid; grid-template-columns: 56px minmax(0, 1fr) 20px; align-items: center; gap: 18px; padding: 15px 0; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+/* The constellation line: a segment above and below each ring, so rows of any height still meet. */
+.hub-path::before, .hub-path::after { content: ""; position: absolute; left: 27.5px; width: 1px; height: calc(50% - 28px); background: linear-gradient(var(--star-ring) 50%, transparent 0) 0 0 / 1px 6px repeat-y; }
+.hub-path::before { top: 0; }
+.hub-path::after { bottom: 0; }
+.hub-path:nth-child(-n+2)::before, .hub-path:nth-last-child(-n+2)::after { display: none; }
+.hub-path-mark { position: relative; z-index: 1; display: grid; place-items: center; width: 56px; aspect-ratio: 1; border: 1px solid var(--star-ring); border-radius: 50%; background: var(--night); color: var(--gold-light); transition: background-color .35s cubic-bezier(.16,1,.3,1), color .35s cubic-bezier(.16,1,.3,1), box-shadow .35s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.16,1,.3,1); }
+.hub-path-icon { width: 27px; height: 27px; fill: currentColor; }
+.hub-path-text { display: grid; gap: 3px; }
+.hub-path-text strong { font: 600 clamp(21px, 2vw, 24px)/1.15 "Playfair Display", serif; letter-spacing: -.01em; }
+.hub-path-text span { color: var(--dim); font-size: 13.5px; line-height: 1.5; }
+.hub-path-go { width: 20px; height: 20px; fill: var(--gold-light); opacity: .55; transition: opacity .35s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.16,1,.3,1); }
+.hub-path:hover .hub-path-mark, .hub-path:focus-visible .hub-path-mark { background: var(--gold-light); color: var(--night); box-shadow: 0 8px 22px rgba(0,0,0,.4); transform: translateY(-2px); }
+.hub-path:hover .hub-path-go, .hub-path:focus-visible .hub-path-go { opacity: 1; transform: translateX(4px); }
+.hub-path:active .hub-path-mark { background: var(--gold-light); color: var(--night); transform: scale(.94); }
+.hub-path:focus-visible { outline: none; }
+.hub-path:focus-visible .hub-path-text strong { text-decoration: underline; text-decoration-color: var(--gold-light); text-underline-offset: .2em; }
+.hub-path:focus-visible .hub-path-mark { outline: 2px solid var(--cream); outline-offset: 3px; }
+@media (max-width: 700px) {
+  .hub-cards { margin: 0 -17px 0; border-radius: 0; box-shadow: none; }
+  .hub-paths { grid-template-columns: 1fr; }
+  .hub-path { grid-template-columns: 52px minmax(0, 1fr) 18px; gap: 16px; padding: 13px 0; }
+  .hub-path::before, .hub-path::after { left: 25.5px; height: calc(50% - 26px); }
+  .hub-path-mark { width: 52px; }
+  .hub-path:nth-child(2)::before { display: block; }
+  .hub-path:nth-last-child(2)::after { display: block; }
+}
+@media (prefers-reduced-motion: reduce) { .hub-path-mark, .hub-path-go { transition: none; } .hub-path:hover .hub-path-mark, .hub-path:focus-visible .hub-path-mark { transform: none; } }
 
 @media (max-width: 700px) {
   .hub-today { gap: 16px; margin-bottom: 26px; }
-  .hub-cards { grid-template-columns: 1fr; gap: 12px; }
-  .hub-card { min-height: 0; padding: 18px 20px; }
 }
-@media (prefers-reduced-motion: reduce) { .hub-card { transition: none; } .hub-card:hover { transform: none; } }
 #hub-sign { max-width: 100%; padding: 0 18px 2px 0; border: 0; border-bottom: 1px solid var(--gold); background-color: transparent; color: inherit; font: inherit; cursor: pointer; }
 #hub-sign:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 /* The animated hero lotus (site-shell.js) takes the static logo's box from site-shell.css. */
