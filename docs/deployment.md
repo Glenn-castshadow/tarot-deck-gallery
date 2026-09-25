@@ -1,5 +1,31 @@
 # VPS deployment
 
+## 2026-09-24 Crystals reference section
+
+Deployed `8a92b2b` from `main` as `/opt/tarot-game/releases/20260924-crystals-8a92b2b`, a
+hardlink copy of `20260919-round-decks-ef7db9c`. **Static only:** no backend, nginx or database
+change. The delta contains 275 site files (104 new, 171 replaced), including the `/crystals/` hub,
+100 crystal detail pages, regenerated reference pages, navigation, and a 267-URL sitemap. Every
+replaced file has link count 1 in the new release; all 171 files in the previous release retained
+their original bytes. The archive came from `git -c core.autocrlf=false archive`.
+
+The first preflight found that the previous release's `tarot/index.html` uses CRLF, while its Git
+blob uses LF. Its text was identical after line-ending normalization, so the baseline manifest
+used the verified live hash for that one file. A subsequent preparation attempt stopped before
+the symlink switch because the uploaded path lists had CRLF. After converting them to LF, all
+275 target hashes, 171 baseline hashes and replacement link counts passed; the release was
+switched atomically. Neither stopped attempt changed the live symlink or previous release.
+
+Cache keys include `crystals.css?v=2`, `crystals.js?v=2`, `crystal-data.js?v=2`,
+`site-shell.js?v=14` and `birth-lore.js?v=3`. The keyword text on the crystals hub now uses plum,
+with an 11.9:1 contrast ratio on cream (previous gold: 2.89:1).
+
+Validation: 713 Node tests passed, the reference-page drift check was clean, and live HTTPS
+responses for `/`, `/crystals/`, `/crystals/amethyst/`, `crystal-data.js`, `crystals.css` and
+`sitemap.xml` were byte-identical to the archive. `/crystals/` on `www` and `/api/health/` also
+returned 200. Rollback:
+`ln -s /opt/tarot-game/releases/20260919-round-decks-ef7db9c /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
 ## 2026-09-19 Two round reading decks: Arcana and Día de los Muertos
 
 Deployed `ef7db9c`. **Static only.** Codex generated two circular decks with its built-in image tool
