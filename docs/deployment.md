@@ -1,5 +1,34 @@
 # VPS deployment
 
+## 2026-09-25 Hub paths as a constellation, night-sky footer
+
+Deployed `7dc2705`, at Glenn's request after an iPhone screenshot ("this UI needs to be more creative"). **Static only.**
+
+- **Hub paths** (`hub.js`, `hub.css`): the eight plain cream cards became one night-sky panel continuing the hero,
+  headed "Where would you like to begin?". Each path is a gold-ringed star with its own mark and a dotted
+  constellation line to the next; one column on phones (full-bleed like the hero), two on desktop. The marks are
+  Phosphor Icons 2.1.1, Light weight (MIT, notice in `hub.js`): cards-three, moon-stars, compass, yin-yang,
+  number-nine, hand-eye, diamond, user-circle, arrow-right. Path data is inlined; nothing is fetched at runtime.
+- **Footer, site-wide** (`site-shell.js` `renderFooter`, `site-shell.css`): the same night band, with the lotus,
+  "Built for looking closely.", the three lookup links as an index with arrows, and the site links in two columns
+  (46px tap rows on phones). Same links and the same `data-storage-settings` button as before. Colours are the
+  masthead's; no new fonts or colours.
+- Footer markup lives in `site-shell.js`, so the 257 generated pages were rebuilt with
+  `node tools/build_reference_pages.cjs` (their diff is the footer and the stylesheet key only; `--check` passes).
+
+**Release.** `/opt/tarot-game/releases/20260925-paths-footer-7dc2705`, a `cp -al` hardlink copy of
+`20260925-hero-lotus-1c99e88`, by `/tmp/ishtar-paths-footer.sh`. 270 files replaced (266 pages, `hub.css`,
+`hub.js`, `site-shell.css`, `site-shell.js`), none added. Same gates, 810 hashes. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-hero-lotus-1c99e88 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `site-shell.css?v=8` on all 266 pages; `site-shell.js?v=16` on its nine; `hub.css?v=paths-1` and
+`hub.js?v=paths-1` on `/`.
+
+**Validation.** Suite 718 of 718. All 270 served files are byte-identical to the commit; `/` 200, `/api/health/`
+`{"ok": true}`. Browser: no horizontal overflow at 375px, all eight rings in one column, rows 78-114px tall with
+the line meeting at every height; desktop at 1280px (headless Edge) shows two columns and a three-column footer;
+a generated crystal page shows the new footer. The Impeccable detector reports nothing on the changed files.
+
 ## 2026-09-25 Homepage hero lotus animation
 
 Deployed `1c99e88`. **Static only.** The hub's logo now plays once on arrival (8 s): the bud opens and shimmers,
