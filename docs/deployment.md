@@ -1,5 +1,27 @@
 # VPS deployment
 
+## 2026-09-24 Crystal specimen images
+
+Deployed `5b00e69` from `main` as
+`/opt/tarot-game/releases/20260924-crystal-images-5b00e69-lf`. This static release adds
+100 generated crystal specimen images in two WebP sizes (800 and 320 px), uses thumbnails
+on the crystals hub, and uses the larger images on each crystal page. The 10 x 10 labeled
+contact sheet is `crystal-art/contact-sheet.jpg`; prompts and build instructions are in
+`crystal-art/`. The site labels the images as AI-generated illustrations.
+
+The release changed 303 site files (200 new images, 103 replacements). It was copied from
+`20260924-crystals-8a92b2b` using hardlinks, with each replacement unlinked before writing.
+All target hashes and replacement link counts passed, and the previous release retained
+its original bytes. An initial archive converted line endings on text files; a corrected
+archive made with `git -c core.autocrlf=false archive` was verified against Git blobs and
+deployed as the `-lf` release. The earlier archive is not live.
+
+Validation: 712 Node tests passed, the reference-page drift check and `git diff --check`
+passed, and eight public HTTPS responses (hub, two detail pages, CSS, JS, and three sample
+images) matched Git blob hashes and expected content types. The live `current` symlink
+points to the `-lf` release. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260924-crystals-8a92b2b /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
 ## 2026-09-24 Crystals reference section
 
 Deployed `8a92b2b` from `main` as `/opt/tarot-game/releases/20260924-crystals-8a92b2b`, a
