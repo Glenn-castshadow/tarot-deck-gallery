@@ -1,5 +1,35 @@
 # VPS deployment
 
+## 2026-09-25 Homepage hero lotus animation
+
+Deployed `1c99e88`. **Static only.** The hub's logo now plays once on arrival (8 s): the bud opens and shimmers,
+then the wordmark forms from mist, ending on the static logo. It was rendered on the ComfyUI box
+(`ishtar-logo-anim.zip`, see its `HANDOFF.md`) and chosen after Glenn's iPhone test of four encodings: HEVC with
+alpha kept its transparency in Safari, so the site uses a plain `<video>` with two sources and no WebGL player.
+
+- `assets/ishtar-logo-animated-hevc.mp4` (1.0 MB, `hvc1`, x265 alpha layer) for Safari; `assets/ishtar-logo-animated.webm`
+  (1.7 MB, VP9 alpha) for Chrome, Edge and Firefox. Both 620x450 at 24 fps.
+- `site-shell.js` `animateHeroLogo` swaps the static `<img>` for the video on the hub only. The static logo stays
+  for `prefers-reduced-motion`, and comes back if `play()` is refused (iOS Low Power Mode, a background tab), no
+  source plays, or nothing has started within 4 s. It also takes over again on `ended`, being sharper than the video.
+- The video's box and glow are in `hub.css` (homepage only), since `site-shell.css` is keyed on 266 pages.
+
+**Release.** `/opt/tarot-game/releases/20260925-hero-lotus-1c99e88`, a `cp -al` hardlink copy of
+`20260925-link-color-cf34d82`, by `/tmp/ishtar-hero-lotus.sh`. 11 files replaced (`site-shell.js`, `hub.css` and
+the nine pages that load `site-shell.js`), 2 videos added and asserted absent from the previous release. Same gates
+as before; the delta was built from `git show` blobs. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-link-color-cf34d82 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `site-shell.js?v=15` on its nine pages; `hub.css?v=lotus-1` on `/`. The videos are new URLs.
+
+**Validation.** Suite 718 of 718, including a fake-DOM test of every fallback path that fails with the fallbacks
+removed. All 13 served files are byte-identical to the commit; both videos are served as `video/mp4` and
+`video/webm` with `Accept-Ranges: bytes` and answer a range request with 206 (Safari needs this). In headless
+Edge the hub plays the WebM (at 4.0 s after 4 s) in the static logo's exact box (260x189 at phone width, same
+drop-shadow); the live homepage still shows the video 3 s after load. The HEVC path was verified on Glenn's iPhone
+from the test page, not yet on the live homepage. The videos come back with `Cache-Control: no-cache` (nginx's
+long-cache rule does not match `.mp4`/`.webm`), so repeat visits revalidate with a 304 rather than skip the request.
+
 ## 2026-09-25 Readable birthstone links in the sky facts
 
 Deployed `cf34d82`. **Static only.** The birthstone names in "Your sky at a glance" are links, and they showed in
