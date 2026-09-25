@@ -79,7 +79,7 @@ const CLAIMS = /\b(cure[sd]?|curing|treat(s|ed|ing|ment)?|disease|disorder|syndr
 test('prose is all or nothing per entry, and in shape when present', () => {
   for (const c of written) {
     for (const field of PROSE) assert.ok(field in c, `${c.slug} has some prose but no ${field}`);
-    assert.ok(words(c.keyword) <= 4 && !/[.!?]$/.test(c.keyword), `${c.slug} keyword`);
+    assert.ok(c.keyword.trim() && words(c.keyword) >= 1 && words(c.keyword) <= 4 && !/[.!?]$/.test(c.keyword), `${c.slug} keyword`);
     assert.ok(sentences(c.meaning) >= 1 && sentences(c.meaning) <= 2, `${c.slug} meaning sentences`);
     assert.ok(words(c.meaning) >= 12 && words(c.meaning) <= 50, `${c.slug} meaning ${words(c.meaning)} words`);
     for (const part of ['emotional', 'spiritual', 'physical']) {

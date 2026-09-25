@@ -110,9 +110,10 @@ const DEPENDENCIES = {
   // its section is present -- /eastern/ and /numerology/ carry the form without it.
   'birth-form.js': ['birth-lore.js', 'birthplace-search.js', 'birth-profile.js',
     {when: 'chart-in-time', needs: ['chart-in-time.js']}],
-  // `const {crystals, chakras} = CrystalData`, `BirthLore.*`, `BirthProfile.subscribe` and
-  // `IshtarStorage.getItem` inside attach(), which runs at load when #crystal-room is present.
-  'crystals.js': ['crystal-data.js', 'birth-lore.js', 'birth-profile.js', 'storage-preferences.js'],
+  // `const {crystals, chakras} = CrystalData`, `BirthLore.*` (birthdayParts calls
+  // `BirthdayInsights.parseDate`), `BirthProfile.subscribe` and `IshtarStorage.getItem` inside
+  // attach(), which runs at load when #crystal-room is present.
+  'crystals.js': ['crystal-data.js', 'birth-lore.js', 'birth-profile.js', 'storage-preferences.js', 'birthday-insights.js'],
   // natal-room.js loads on /charts/, /eastern/ and /sky/. `const {...} = BirthLore` and the
   // #birthday-output subscriber's `BirthProfile.subscribe` are unconditional; every section
   // attachment below is behind its own document.querySelector guard.

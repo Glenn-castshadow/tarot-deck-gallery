@@ -31,11 +31,12 @@
         <div id="crystal-day" class="crystal-panel" data-fold="Crystal of the day" data-fold-key="crystal-day" data-fold-subtitle="One stone for everyone, until midnight">
           <p class="section-kicker">Crystal of the day</p>
           <h2>Today's stone</h2>
-          <div id="crystal-day-output" aria-live="polite"></div>
+          <div id="crystal-day-output"></div>
         </div>
         <div id="your-stones" class="crystal-panel" data-fold="Your stones" data-fold-key="your-stones" data-fold-subtitle="Birthstone and sign stones">
           <p class="section-kicker">Your stones</p>
           <h2>Stones for your birthday</h2>
+          <div id="your-stones-pickers"></div>
           <div id="your-stones-output" aria-live="polite"></div>
         </div>
         <div id="crystal-library" class="crystal-panel" data-fold="All crystals" data-fold-key="crystals" data-fold-subtitle="Search and filter 100 stones">
@@ -73,8 +74,8 @@
     <script src="/natal-engine.js?v=c5-1"></script>
     <script src="/birth-lore.js?v=3"></script>
     <script src="/birth-profile.js?v=1"></script>
-    <script src="/crystal-data.js?v=1"></script>
-    <script src="/crystals.js?v=1"></script>
+    <script src="/crystal-data.js?v=2"></script>
+    <script src="/crystals.js?v=2"></script>
     <script>
       // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
       // register once account.js has dispatched the first signed-in state, so wait for it.
