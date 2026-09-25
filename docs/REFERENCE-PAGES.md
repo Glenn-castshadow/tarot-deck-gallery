@@ -1,9 +1,10 @@
 # Reference pages (`tools/build_reference_pages.cjs`)
 
-157 static landing pages plus `sitemap.xml`, one per tarot card, I Ching hexagram and
-zodiac sign, generated from the site's own data modules. They exist for search: each
-card, hexagram and sign gets its own indexable URL instead of living only behind a
-JS-driven picker on `/tarot/`, `/divination/` or `/sky/`.
+257 static landing pages plus `sitemap.xml`, one per tarot card, I Ching hexagram,
+zodiac sign and crystal, generated from the site's own data modules. They exist for
+search: each card, hexagram, sign and crystal gets its own indexable URL instead of
+living only behind a JS-driven picker on `/tarot/`, `/divination/`, `/sky/` or
+`/crystals/`.
 
 ## URL scheme
 
@@ -12,17 +13,22 @@ JS-driven picker on `/tarot/`, `/divination/` or `/sky/`.
 | Tarot cards | `/tarot/cards/` | `/tarot/cards/<slug>/` | 78 |
 | I Ching hexagrams | `/divination/i-ching/` | `/divination/i-ching/hexagram-<n>/` | 64 |
 | Zodiac signs | `/sky/signs/` | `/sky/signs/<sign>/` | 12 |
+| Crystals | *(none — `/crystals/` is hand-written)* | `/crystals/<slug>/` | 100 |
 
-`<slug>` is a card's lower-cased, hyphenated name (`the-star`); `<n>` is the hexagram's
-number 1-64; `<sign>` is the sign's lower-cased name.
+`<slug>` is a card's or crystal's lower-cased, hyphenated name (`the-star`,
+`tigers-eye`); `<n>` is the hexagram's number 1-64; `<sign>` is the sign's lower-cased
+name.
 
 ## Generated. Do not hand-edit.
 
-Every file under `tarot/cards/`, `divination/i-ching/` and `sky/signs/`, plus
-`sitemap.xml`, is written by the tool below. They render the shared header, nav and
-footer at build time via `SiteShell.render({heading: 'p'})` baked into static HTML, and
-do not load `site-shell.js` themselves. A hand edit is a diff the drift check flags as
-stale, and the next build overwrites it anyway.
+Every file under `tarot/cards/`, `divination/i-ching/`, `sky/signs/` and every
+`crystals/<slug>/` page, plus `sitemap.xml`, is written by the tool below. They render
+the shared header, nav and footer at build time via `SiteShell.render({heading: 'p'})`
+baked into static HTML, and do not load `site-shell.js` themselves. A hand edit is a
+diff the drift check flags as stale, and the next build overwrites it anyway.
+`crystals/index.html` itself is the one exception under `crystals/` — it is
+hand-written shell-mounted chrome, not generated, and the tool never writes it (see
+`HAND_WRITTEN` in the tool and `docs/SITE-STRUCTURE.md`).
 
 ```
 node tools/build_reference_pages.cjs          # write the files
@@ -42,6 +48,8 @@ and commit the result:
   evaluated at build time) and `tarot-readings.js`, which supplies `enrichMinor`
   (minor-card keywords, upright, reversed and prompt text) to that evaluation.
 - `divination-data.js`, `iching-lines.js`: hexagram and line copy.
+- `crystal-data.js`: crystal facts and copy. `crystals.js`: supplies `swatch(colours)`,
+  the colour-chip style on each crystal page.
 - `site-shell.js`: the shared header/nav/footer chrome.
 - `divination/index.html`: the tool lifts the account dialog, its four script tags
   (`rooms.js`, `storage-preferences.js`, `account-core.js`, `account.js`) and the
@@ -49,30 +57,40 @@ and commit the result:
   this page (`accountChrome()` and `stylesheetLinks()` in the tool), so its cache keys
   cannot drift from what the rest of the site serves. Bumping any of those three `?v=`
   keys needs a rebuild too.
-- `reference-pages.css`: editing it means bumping the hard-coded `?v=1` in
-  `stylesheetLinks()` and rebuilding all 157 pages.
+- `reference-pages.css`: editing it means bumping the hard-coded `?v=2` in
+  `stylesheetLinks()` and rebuilding all 257 pages.
 
 ## `LASTMOD`
 
 `LASTMOD` is a constant near the top of the tool, bumped by hand whenever generated
 content changes. It is the `<lastmod>` value for every URL in `sitemap.xml`, hand-set
 rather than read from the filesystem so the sitemap stays deterministic across runs.
+`sitemap.xml` now holds 267 URLs: the 257 generated pages above plus the 10
+`HAND_WRITTEN` pages (the eight shell-mounted pages, `/about.html` and `/privacy.html`).
 
-## Two fixed provenance sentences
+## Three fixed provenance sentences
 
 Every card page carries "Attributions follow the Golden Dawn with Waite's numbering."
 (written once in `cardPages()`, in the "Traditional attribution" section). Every
 hexagram page carries "A changing line is read on its own. These are original
 reflections written for this site, not a translation." (written once in
-`hexagramPages()`, ahead of the six lines). Both are literal strings in the tool, not
-data pulled from a module.
+`hexagramPages()`, ahead of the six lines). Every crystal page carries "Crystal
+correspondences are traditional; the descriptions are original to this site." (written
+once in `crystalPages()`, ahead of the "What \<Name\> means" section). All three are
+literal strings in the tool, not data pulled from a module.
 
-Beyond those two sentences, the only other fixed, templated text the tool writes is:
+Beyond those three sentences, the only other fixed, templated text the tool writes is:
 the sign pages' sentence "In the Golden Dawn attributions \<Sign\> belongs to
 \<Card\>." (a templated fact from `TarotReference.attribution`), the three index
 pages' ledes and descriptions, and the fixed section labels (e.g. "Upright",
-"Reversed", "\<Sign\> in brief"). None of it interprets a card, hexagram or sign;
-every interpretive sentence on every page comes from the data modules listed above.
+"Reversed", "\<Sign\> in brief"). None of it interprets a card, hexagram, sign or
+crystal; every interpretive sentence on every page comes from the data modules listed
+above.
+
+Sign pages now link their stones: the "Stones" row in each sign's facts list is run
+through `BirthLore.stoneLinks(sign.stones)`, the same helper `natal-room.js` uses for
+the `/charts/` Birthstone row, turning the `' · '`-separated stone names into
+`<a href="/crystals/<slug>/">` links rather than plain text.
 
 ## Known limit: sign pages are thin
 

@@ -10,13 +10,14 @@ that is called out explicitly rather than smoothed over.
 
 | URL | Directory | Page | Canonical |
 |---|---|---|---|
-| `/` | `index.html` (repo root) | Hub — celestial hero, today strip, seven category cards | `https://ishtarinsights.com/` |
+| `/` | `index.html` (repo root) | Hub — celestial hero, today strip, eight category cards | `https://ishtarinsights.com/` |
 | `/tarot/` | `tarot/` | Daily card, full readings, deck chooser, deck archive, gallery | `https://ishtarinsights.com/tarot/` |
 | `/sky/` | `sky/` | Daily horoscope, sky calendar (Moon now, this month, retrogrades, my transits) | `https://ishtarinsights.com/sky/` |
 | `/charts/` | `charts/` | Birth form, natal chart, astrocartography, transits, synastry, composite and Davison charts, Four Pillars (BaZi), chart in time, horary | `https://ishtarinsights.com/charts/` |
 | `/eastern/` | `eastern/` | Chinese zodiac portrait, Jyotish | `https://ishtarinsights.com/eastern/` |
 | `/numerology/` | `numerology/` | The six-view numerology studio | `https://ishtarinsights.com/numerology/` |
 | `/divination/` | `divination/` | Lenormand (including the Grand Tableau), oracle, runes, geomancy (including its house chart view), I Ching, playing cards | `https://ishtarinsights.com/divination/` |
+| `/crystals/` | `crystals/` | Crystal of the day, your stones (birthstone and sign), the crystal library (100 stones, searchable by chakra, sign and element) | `https://ishtarinsights.com/crystals/` |
 | `/account/` | `account/` | Sign-in, journal, birth-detail and browser-saving preferences, newsletter toggle, delete | `https://ishtarinsights.com/account/` |
 
 `/account/` is deliberately excluded from `sitemap.xml` and disallowed in `robots.txt`
@@ -54,7 +55,7 @@ title) — `mount()` picks the variant from `page === 'hub'` automatically, call
 pass it.
 
 `SiteShell.NAV` is the single source of the nav bar, the compact header's title lookup,
-and (via each entry's `href`) the hub's category cards. Its eight entries:
+and (via each entry's `href`) the hub's category cards. Its nine entries:
 
 | key | href | hash | label |
 |---|---|---|---|
@@ -65,6 +66,7 @@ and (via each entry's `href`) the hub's category cards. Its eight entries:
 | eastern | `/eastern/` | `#jyotish` | Eastern |
 | numerology | `/numerology/` | `#birthday-numbers` | Numerology |
 | divination | `/divination/` | `#divination-room` | Divination |
+| crystals | `/crystals/` | `#crystal-room` | Crystals |
 | account | `/account/` | `#account-room` | Account |
 
 `renderNav(page, links)` chooses `href` (cross-page, the normal case) or `hash`
@@ -76,7 +78,7 @@ stays documented).
 
 Every page after `SiteShell.mount(...)` loads `rooms.js`, then the shared
 storage/account stack (`storage-preferences.js`, `account-core.js`, `account.js`) before
-any page-specific module. Every one of the seven topic pages ends with
+any page-specific module. Every one of the eight topic pages ends with
 `mobile-sections.js`; the hub does not load it at all (see its script list below — it
 has no `[data-fold]` markup for that module to act on). The table below is the exact
 `<script src>` order read from each page's `index.html`; anything not in the brief's
@@ -85,7 +87,10 @@ page table but present in the file is called out.
 **`/` (hub):** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `birthday-insights.js` →
 `vendor/astronomy-engine/astronomy.browser.min.js` → `natal-engine.js` →
-`birth-lore.js` → `birth-profile.js` → `hub.js`.
+`birth-lore.js` → `birth-profile.js` → `hub.js`. The today strip's "Today's crystal"
+item, written into `today.innerHTML` by `hub.js`'s `render()`, is fixed copy linking
+to `/crystals/#crystal-day`, not a computed stone — the hub does not load
+`crystal-data.js`.
 
 **`/tarot/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `archive-decks.js` → `tarot-readings.js` →
@@ -131,6 +136,13 @@ first `ishtar-account-change` fires.
 **`/divination/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `divination-data.js` → `divination-engine.js` →
 `divination-art.js` → `playing-cards.js` → `iching-lines.js` → `divination.js` → `mobile-sections.js`.
+
+**`/crystals/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
+`account-core.js` → `account.js` → `birthday-insights.js` →
+`vendor/astronomy-engine/astronomy.browser.min.js` → `natal-engine.js` →
+`birth-lore.js` → `birth-profile.js` → `crystal-data.js` → `crystals.js` →
+`mobile-sections.js`. No `birth-form.js` or `birthplace-search.js` — "Your stones"
+reads the birth profile set elsewhere, it does not collect one itself.
 
 **`/account/`:** `site-shell.js` → `rooms.js` → `storage-preferences.js` →
 `account-core.js` → `account.js` → `mobile-sections.js`. No room module, no
@@ -179,6 +191,12 @@ switcher (Western/Chinese/numerology) from the single-page era; that switcher is
 now that Chinese and numerology have their own pages, and the global was deleted with
 it in site-foundation. Anything referencing `NatalRoom` predates this split.
 
+The Birthstone row in that facts table (`/charts/`'s `#birthday-output`, the only page
+that renders it) now links: `stoneLinks(birthstones[parts.month])` and
+`stoneLinks(sign.stones)` each turn their `' · '`-separated stone list into
+`<a href="/crystals/<slug>/">` links via `BirthLore.stoneLinks`, the same helper the
+static sign reference pages use.
+
 ## `data-fold` and `data-room` conventions
 
 ### `data-fold` — mobile disclosure sections (`mobile-sections.js`)
@@ -211,6 +229,8 @@ Per page, the elements actually carrying `data-fold` today:
 - `/numerology/`: "Numerology studio" (`key=numerology`), "Birth details"
   (`key=birth-form`, nested).
 - `/divination/`: "Cards & divination" (`key=divination`).
+- `/crystals/`: "Crystal of the day" (`key=crystal-day`), "Your stones"
+  (`key=your-stones`), "All crystals" (`key=crystals`).
 - `/account/`: none — the journal and preference panels carry no `[data-fold]` markup,
   so `mobile-sections.js`'s `init()` skips the "choose a section" intro paragraph for
   this page (it only inserts that intro before `.reading-room` or the first
@@ -278,10 +298,10 @@ with `data-room` markup on `/eastern/`'s `#jyotish`.
 
 ## The `?reading=` opener
 
-Every one of the seven topic pages, including `/account/` itself, carries the same
+Every one of the eight topic pages, including `/account/` itself, carries the same
 inline `<script>` block verbatim, right after its last page-specific `<script src>`. The
 hub (`/`) does not carry it — `grep`ing `index.html` for `ishtar-account-change` or
-`reading=` finds nothing there, only in the seven topic pages:
+`reading=` finds nothing there, only in the eight topic pages:
 
 ```js
 document.addEventListener('ishtar-account-change', async function once(event) {
@@ -296,15 +316,16 @@ document.addEventListener('ishtar-account-change', async function once(event) {
 });
 ```
 
-This is duplicated seven times (once per topic page) rather than factored into a shared
+This is duplicated eight times (once per topic page) rather than factored into a shared
 file — a journal entry opened from `/account/` (`?reading=<id>`) can land on any of the
-other six topic pages depending on the reading's kind, so each of those six needs the
-same opener waiting on the first `ishtar-account-change` event before `Rooms.get(kind)`
-has anything registered to find. `/account/` itself carries the identical block even
-though it loads no room module and can never resolve a kind — a click from the journal
-never sends `?reading=` to `/account/` in the first place, so the block there is inert
-but harmless. The hub needs none of this: it is never a `?reading=` destination for any
-registered kind, so it carries no opener at all.
+other six topic pages that register a room (tarot, sky, charts, eastern, numerology,
+divination) depending on the reading's kind, so each of those six needs the same opener
+waiting on the first `ishtar-account-change` event before `Rooms.get(kind)` has anything
+registered to find. `/crystals/` and `/account/` each carry the identical block too,
+even though neither loads a room that calls `Rooms.register` and neither can resolve a
+kind — a click from the journal never sends `?reading=` to either page in the first
+place, so the block on each is inert but harmless. The hub needs none of this: it is
+never a `?reading=` destination for any registered kind, so it carries no opener at all.
 
 ## Hash-redirect map
 
