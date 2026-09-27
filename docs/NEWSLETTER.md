@@ -118,7 +118,14 @@ Spec: `docs/superpowers/specs/2026-09-18-newsletter-issue-and-campaign-design.md
 audience; it carries every sign's section inside Mailchimp's `*|IF:SIGN=aries|* … *|ELSEIF:…|* … *|ELSE:|* … *|END:IF|*`
 chain, so each reader sees their own, and a reader with no sign sees an invitation to choose one.
 
-**Sending is unattended since 2026-09-21 (Glenn's decision).** The original design said "nothing in this repo can
+**Sending is suspended since 2026-09-27.** Mailchimp's abuse review disabled `Ishtar Insights 2026-09-28` after
+the send call had returned success. Its Acceptable Use Policy prohibits "content promising to solve personal issues
+based on astrological signs or predictions" and allows only educational astrology content. The job still logged
+`SENT … rc=0`, because the review runs after the API accepts the send, so a 0 from this job does not prove delivery.
+Mailchimp warned that repeat violations can suspend the account, so `weekly-prose.ps1` no longer passes `--send`.
+The Sunday job still builds and drafts. Do not send a per-sign weekly reading through Mailchimp again.
+
+**Sending was unattended from 2026-09-21 to 2026-09-27 (Glenn's decision).** The original design said "nothing in this repo can
 send or schedule a campaign; Glenn sends, in Mailchimp", and the spec above still reads that way. It is no longer
 true: `draft_campaign --send` sends to the whole audience, and the Sunday job passes it. Mailchimp's own
 scheduling is still unused (it is a paid feature); the send is a direct API call at the end of the chain.
