@@ -1,6 +1,8 @@
 /* The chart-depth section under the natal report: this year's profection, the Part of Fortune
    and aspect patterns. Pure: returns an HTML string and touches no DOM, so its copy is tested
-   under Node. The engine does the arithmetic; conventions are in docs/NATAL-CHART.md. */
+   under Node. The engine does the arithmetic; conventions are in docs/NATAL-CHART.md. Where
+   time-lords.js is loaded, its lots, firdaria and zodiacal releasing are nested at the end, so the
+   report's own re-render of this section carries them along. */
 const ChartDepth = (() => {
   const engine = typeof ChartDepthEngine !== 'undefined' ? ChartDepthEngine : require('./chart-depth-engine.js');
   const esc = value => String(value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -78,7 +80,7 @@ const ChartDepth = (() => {
         <p>Patterns are read from the ten planets’ major and minor aspects together — a yod needs quincunxes — so this list does not change with the minor-aspect setting in the Aspects panel. Minor aspects use a fixed 2° orb. The lunar nodes and chart angles are not counted.</p>
         <p>Profections and the day and night reversal of the Lot of Fortune follow the Hellenistic tradition as Vettius Valens set it out in his <cite>Anthology</cite> (2nd century CE); the names of the aspect patterns — T-square, grand cross, yod and the rest — are modern.</p>
         <p>Sources: <a href="docs/NATAL-CHART.md" target="_blank" rel="noopener">methods &amp; validation</a></p>
-      </details></section>`;
+      </details>${typeof TimeLords !== 'undefined' ? TimeLords.render(chart) : ''}</section>`;
   }
 
   return {render};

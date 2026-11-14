@@ -100,3 +100,54 @@ Manual browser QA covers desktop and 390px layouts, keyboard/touch city selectio
 The "Print or save as PDF" buttons print a keepsake edition instead of the page: `NatalChart.keepsake()` renders five print-only pages (cover with wheel and big three, placements, houses with the method notes, aspect grid with balance and aspect list, reflection prompts with writing lines), appended to `<body>` only while the print dialog is open (`html.nk-printing` hides everything else; `afterprint` removes it and restores the document title, which is set to the chart date so it becomes the default PDF file name). The keepsake panel below the report offers an ink-light Ivory wheel or the Midnight wheel for print and SVG download; the Ivory rules sit in every wheel's own `<style>`, scoped to `.natal-wheel.ivory` because an inline SVG's styles apply to the whole page. It is laid out to fit five pages on both Letter and A4 including minor aspects on the densest reference chart; `tests/natal-keepsake.test.cjs` covers the page count, escaping and aspect counts. A browser Ctrl+P still prints the page itself, with all four detail sections. SVG exports include their own styling and can be enlarged without raster pixelation. The display uses user-agent fonts for zodiac/planet symbols.
 
 See [docs/JYOTISH.md](JYOTISH.md) for a sidereal (Vedic) reading of this same calculated chart: the Lahiri-shifted Lagna and grahas, nakshatras, Vimshottari dashas and the navamsa chart.
+
+## Lots and time lords: the seven lots, firdaria and zodiacal releasing
+
+Added 2026-11-14, nested at the end of the "Traditional techniques" section on `/charts/`. Design:
+`docs/superpowers/specs/2026-11-14-time-lords-design.md`. `time-lords-engine.js` is arithmetic on the chart
+already calculated (longitudes, sect, the birth instant); `time-lords.js` returns the HTML; `time-lords.css`
+is scoped under `.time-lords` / `.tl-*`. `chart-depth.js` calls `TimeLords.render` inside its own section when
+the file is loaded, so `natal-room.js`'s re-render of `.chart-depth` carries it along.
+
+**The seven lots** follow Paulus of Alexandria (Introduction, ch. 23). Day formulas, each reversed by night:
+
+| Lot | Planet | Day formula |
+|---|---|---|
+| Fortune | Moon | Asc + Moon − Sun |
+| Spirit | Sun | Asc + Sun − Moon |
+| Eros | Venus | Asc + Venus − Spirit |
+| Necessity | Mercury | Asc + Fortune − Mercury |
+| Courage | Mars | Asc + Fortune − Mars |
+| Victory | Jupiter | Asc + Jupiter − Spirit |
+| Nemesis | Saturn | Asc + Fortune − Saturn |
+
+Fortune and Spirit enter the other five in their sect-appropriate form. Valens (IV.25) and Firmicus (VI.32)
+give other formulas for Eros and Necessity; they are not offered.
+
+**Firdaria.** Sun 10, Venus 8, Mercury 13, Moon 9, Saturn 11, Jupiter 12, Mars 7, North Node 3, South Node 2:
+75 years. Day order as listed; night order Moon, Saturn, Jupiter, Mars, Sun, Venus, Mercury, then the nodes
+(the Abu Maʿshar placement; the after-Mars placement rests on Bonatti as Zoller read him). Years run from
+birthday to birthday. Each planet's period is seven equal sub-periods, its own lord first and then the same
+descending order; the nodes are not divided and are never sub-lords. After 75 the sequence restarts.
+
+**Zodiacal releasing** (Valens, Anthology IV). Counts by sign: Aries 15, Taurus 8, Gemini 20, Cancer 25, Leo 19,
+Virgo 20, Libra 8, Scorpio 15, Sagittarius 12, Capricorn 27, Aquarius 30, Pisces 12. Level 1 in 360-day years,
+level 2 in 30-day months; levels 3 and 4 are not shown. Level 2 begins in its level-1 sign and is cut off when
+the level-1 period ends. Loosing of the bond: once level 2 has released all twelve signs (211 months) it jumps
+to the sign opposite the one it began in and continues from there; this happens once per level-1 period and
+only in Gemini, Cancer, Leo, Virgo, Capricorn and Aquarius periods. Peaks are the 1st, 4th, 7th and 10th signs
+from the Lot of Fortune and are not ranked. Released from Spirit and from Fortune; if the two share a sign,
+Spirit is released from the next sign.
+
+**What was checked, 2026-11-14.** Secondary sources only; no primary text was read. Confirmed: all seven lot
+formulas and their planets (Greenbaum, "From Love to Desire", MHNH 15, quoting Paulus, for Fortune, Spirit, Eros
+and Necessity; Wikipedia "Arabic parts" alone for Courage, Victory and Nemesis); the firdaria years, both
+orders, the sub-period rule and both node placements (Stellium's research note and Augurine); the releasing
+counts, units, starting rule, truncation, loosing of the bond, the four peak signs and the same-sign rule
+(Chris Brennan, Astrology Podcast ep. 192, and a Mountain Astrologer article). Not confirmed: "211 months" as a
+stated figure (it is the sum of the table, and it reproduces Brennan's published dates for Al Gore exactly,
+which is a test); any ranking of the peaks; the restart after 75, found in one source only.
+
+`tests/time-lords.test.cjs` covers the lots by both sects against the formulas above and against the existing
+Part of Fortune, the firdaria orders, abutting periods, sub-periods and restart, the releasing counts, level-2
+truncation, the loosing of the bond for every sign, peaks, the same-sign rule, the Gore dates, and the view.
