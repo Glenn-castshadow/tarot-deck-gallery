@@ -1,0 +1,38 @@
+/* Oracles of the book on /divination/. Scoped under .book-oracles / .bo-*; it takes the
+   divination room's palette (and reuses its .dv-method disclosure) but edits no shared rule. */
+.book-oracles { --dv-accent: #e9bf82; --dv-ink: #fbf2e6; --dv-muted: #c9becd; padding: clamp(24px,4vw,52px); margin: 0 0 48px; color: var(--dv-ink); background: #241a30; border: 1px solid #ad897450; scroll-margin-top: 170px; }
+.book-oracles [hidden] { display: none !important; }
+.bo-visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.bo-heading .section-kicker { margin: 0; color: var(--dv-accent); font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; }
+.bo-heading h2 { max-width: 660px; margin: 12px 0; font: 600 clamp(28px,3.6vw,48px)/1.16 'Playfair Display',serif; }
+.bo-heading p:last-child { max-width: 680px; margin: 0; color: var(--dv-muted); font-size: 15px; line-height: 1.75; }
+
+.bo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 0 clamp(24px, 4vw, 52px); margin-top: 30px; }
+.bo-part { min-width: 0; padding-top: 24px; border-top: 1px solid #b09bba55; }
+.bo-kicker { margin: 0; color: var(--dv-accent); font: 10px/1.6 'DM Mono',monospace; text-transform: uppercase; letter-spacing: .13em; }
+.bo-part h3 { margin: 9px 0 13px; font: 600 clamp(25px,3vw,36px)/1.2 'Playfair Display',serif; }
+.bo-part > p { margin: 0 0 12px; color: var(--dv-muted); font-size: 14px; line-height: 1.75; }
+
+.bo-form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 20px 0 6px; }
+.bo-form fieldset { display: flex; gap: 8px; margin: 0; padding: 0; border: 0; }
+.bo-form legend { margin-bottom: 8px; padding: 0; color: var(--dv-accent); font: 10px/1.4 'DM Mono',monospace; letter-spacing: .1em; text-transform: uppercase; }
+.bo-form select { width: 62px; min-height: 46px; padding: 0 10px; border: 1px solid #b09bba88; border-radius: 0; background: #1a1224; color: var(--dv-ink); font: 18px 'DM Sans',sans-serif; color-scheme: dark; }
+.bo-form button { min-height: 46px; padding: 10px 18px; border: 1px solid var(--dv-accent); background: transparent; color: var(--dv-accent); font: 500 14px 'DM Sans',sans-serif; cursor: pointer; }
+.bo-form button#bo-homer-roll, .bo-form#bo-virgil-form button { background: var(--dv-accent); color: #2e193a; }
+.bo-form button:hover { background: var(--dv-accent); color: #2e193a; }
+.bo-form select:focus-visible, .bo-form button:focus-visible, .book-oracles summary:focus-visible { outline: 2px solid var(--dv-ink); outline-offset: 3px; }
+.bo-status { min-height: 20px; margin: 6px 0 0; color: var(--dv-muted); font-size: 13px; }
+
+.bo-result { margin: 16px 0 22px; padding: clamp(18px, 2.6vw, 28px); border: 1px solid #e9bf8266; background: #1a1224; }
+.bo-label { margin: 0; color: var(--dv-accent); font: 10px/1.8 'DM Mono',monospace; letter-spacing: .12em; text-transform: uppercase; }
+.bo-dice { margin: 0 6px; font-size: 22px; letter-spacing: 0; vertical-align: -3px; }
+.bo-result blockquote { margin: 12px 0 0; padding: 0; }
+.bo-line { margin: 0; font: 500 clamp(21px, 2.4vw, 27px)/1.4 'Playfair Display',serif; }
+.bo-context { margin: 0; color: #a99bb0; font: 400 clamp(16px, 1.8vw, 19px)/1.6 'Playfair Display',serif; }
+.bo-line + .bo-context, .bo-context + .bo-line { margin-top: 4px; }
+.bo-greek { margin: 12px 0 0; color: var(--dv-muted); font-size: 15px; line-height: 1.6; }
+.bo-result figcaption { margin-top: 14px; color: var(--dv-muted); font-size: 12.5px; line-height: 1.6; }
+.book-oracles .dv-method { margin-top: 8px; }
+.bo-silent { border-style: dashed; }
+.bo-silent .bo-line { margin-top: 12px; color: var(--dv-muted); }

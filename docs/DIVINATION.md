@@ -538,3 +538,43 @@ No generated letters or dots are relied on for the divination symbols.
 Visitors can preview the back before drawing, enlarge a revealed card, or use the
 library's View artwork control. The dialog supports Face/Back, Escape, visible keyboard
 focus and focus restoration.
+
+## Oracles of the book
+
+Added 2026-11-14 as a second section on `/divination/` (`#book-oracles`, fold key `book-oracles`). Design:
+`docs/superpowers/specs/2026-11-14-book-oracles-design.md`. `book-oracles.js` (logic and views),
+`book-oracles.css` (scoped under `.book-oracles` / `.bo-*`), `homer-oracle-data.js` and
+`assets/texts/aeneid-dryden.json`. It does not touch `divination.js` and registers no journal room.
+Randomness is `DivinationEngine.randomInt`. Nothing is stored.
+
+**The Homer oracle.** Three throws of a die, read in the order thrown, index a table of 216 rows
+(1-1-1 … 6-6-6). The reader can have the page throw or enter their own throws.
+
+- *Table.* F. Maltomini, "P.Lond. 121 (= PGM VII), 1-221: Homeromanteion", ZPE 106 (1995) 107-122, read
+  2026-11-14, cross-checked against the older Preisendanz/Betz arrangement as tabulated on Wikipedia
+  ("Sortes Homericae"). 177 rows agree in both; 23 rest on Maltomini alone (throws 1-1-1 to 1-3-3, known only
+  from P.Oxy. 3831 and P.Bon. 3, and a few others; 2-1-5 and 2-2-2 come from a table citing Martín-Hernández
+  2014, which was not read); 6 are disputed and follow Maltomini (1-3-6, 1-4-3, 1-5-3, 2-1-3, 2-2-1, 4-2-4).
+  `support` in the data file records this per row.
+- *Lost.* Ten throws have no surviving verse: 2-1-6, 2-2-3, 2-2-4, 2-2-5, 2-2-6, 2-5-4, 2-5-5, 2-5-6, 2-6-1,
+  2-6-2. They are shown as lost. Glenn approved this on 2026-11-14; they must not be filled in.
+- *Do not use Wikipedia's roll numbers.* Its "Roll" column is a running count over the pre-1995 line order and
+  is wrong for roughly the first third (it gives 1-1-1 as Od. 15.344; Maltomini has Il. 24.369).
+- *Greek.* The standard text by book and line, from the Perseus Digital Library XML (Monro and Allen's Iliad,
+  Murray's Odyssey), fetched 2026-11-14. The papyrus's own wording differs in about fifty verses, mostly in
+  spelling. Throw 4-1-2 is a composite of Od. 8.548 and 11.224 in the oracle; only 8.548 is shown, with a note.
+- *English.* Written for the site, one verse at a time, from the Greek. Not checked against a published
+  translation line by line. Three verses occur twice in the oracle and are translated identically.
+- *Withheld.* Throw 6-2-1 (Od. 11.278) describes a suicide. It keeps its row and reference but is not shown as
+  an answer. This is Claude's judgement, reported to Glenn at release.
+- *Left out.* The prayer to Apollo and the lists of permitted days and hours.
+
+**The Virgilian lots.** One line drawn uniformly from all 13,699 lines of Dryden's Aeneid (1697), shown with two
+lines either side, never crossing a book boundary. The text is built by `tools/build_aeneid_text.cjs` from
+Project Gutenberg ebook #228, with each book's prose Argument and all Gutenberg text removed. Line numbers
+count Dryden's verse and do not match the Latin. The file is about 650 KB (about 250 KB gzipped) and is fetched
+only when the book is first opened.
+
+`tests/book-oracles.test.cjs` covers the roll index, the shape of all 216 rows, the ten lost throws and the
+withheld one by name, the support counts, repeated verses, the Aeneid text, uniform drawing at the book
+boundaries, passages at the edges of a book, the views, and attach with a failing fetch.

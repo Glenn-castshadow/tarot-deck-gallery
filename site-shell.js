@@ -14,7 +14,7 @@
     {key: 'charts', href: '/charts/', hash: '#birthday-room', label: 'Charts', blurb: 'Birth form, natal chart, transits, astrocartography, Four Pillars, and horary'},
     {key: 'eastern', href: '/eastern/', hash: '#jyotish', label: 'Eastern', blurb: 'Jyotish and your Chinese zodiac portrait'},
     {key: 'numerology', href: '/numerology/', hash: '#birthday-numbers', label: 'Numerology', blurb: 'The six-view numerology studio'},
-    {key: 'divination', href: '/divination/', hash: '#divination-room', label: 'Divination', blurb: 'Lenormand, oracle, runes, geomancy, and I Ching'},
+    {key: 'divination', href: '/divination/', hash: '#divination-room', label: 'Divination', blurb: 'Lenormand, oracle, runes, geomancy, I Ching, and the book oracles'},
     {key: 'crystals', href: '/crystals/', hash: '#crystal-room', label: 'Crystals', blurb: 'Crystal of the day, your birthstones, and 100 stones by chakra and sign'},
     {key: 'account', href: '/account/', hash: '#account-room', label: 'Account', blurb: 'Sign-in, your journal, and saving preferences'}
   ];
@@ -138,7 +138,7 @@
   };
   const PATH_MARKS = {tarot: 'cards-three', sky: 'moon-stars', charts: 'compass', eastern: 'yin-yang', numerology: 'number-nine',
     divination: 'hand-eye', crystals: 'diamond', account: 'user-circle'};
-  const FOLD_MARKS = {tarot: 'cards-three', archive: 'stack', 'daily-horoscope': 'sun-horizon', 'sky-calendar': 'calendar-star', 'planetary-hours': 'hourglass-medium', 'lunar-mansions': 'moon-stars',
+  const FOLD_MARKS = {tarot: 'cards-three', archive: 'stack', 'daily-horoscope': 'sun-horizon', 'sky-calendar': 'calendar-star', 'planetary-hours': 'hourglass-medium', 'lunar-mansions': 'moon-stars', 'book-oracles': 'stack',
     birthday: 'planet', world: 'globe-hemisphere-west', charts: 'chart-polar', 'chart-in-time': 'hourglass-medium', horary: 'question',
     chinese: 'yin-yang', jyotish: 'flower-lotus', numerology: 'number-nine', divination: 'hand-eye',
     'crystal-day': 'sparkle', 'your-stones': 'diamond', crystals: 'magnifying-glass'};

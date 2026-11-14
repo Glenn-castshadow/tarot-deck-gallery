@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/site-shell.css?v=9">
     <link rel="stylesheet" href="/account.css?v=c5-2">
     <link rel="stylesheet" href="/divination.css?v=c4d-2">
+    <link rel="stylesheet" href="/book-oracles.css?v=1">
     <link rel="stylesheet" href="/mobile-sections.css?v=3">
   </head>
   <body>
@@ -28,6 +29,7 @@
       <div data-shell="nav"></div>
 
       <section id="divination-room" class="divination-room" aria-labelledby="divination-title" data-room="lenormand grand-tableau oracle runes geomancy geomancy-houses iching cartomancy" data-fold="Cards &amp; divination" data-fold-key="divination" data-fold-subtitle="Lenormand · oracle cards · runes · geomancy · I Ching · playing cards"></section>
+      <section id="book-oracles" class="book-oracles" aria-labelledby="book-oracles-title" data-fold="Oracles of the book" data-fold-key="book-oracles" data-fold-subtitle="The Homer oracle · the Virgilian lots"></section>
 
       <div data-shell="footer"></div>
     </main>
@@ -39,7 +41,7 @@
       <p id="account-dialog-status" role="status" aria-live="polite"></p>
     </dialog>
     <div data-shell="notice"></div>
-    <script src="/site-shell.js?v=22"></script>
+    <script src="/site-shell.js?v=23"></script>
     <script>SiteShell.mount('divination');</script>
     <script src="/rooms.js?v=c5-kinds-1"></script>
     <script src="/storage-preferences.js?v=sun-sign-1"></script>
@@ -51,6 +53,8 @@
     <script src="/playing-cards.js?v=1"></script>
     <script src="/iching-lines.js?v=2"></script>
     <script src="/divination.js?v=c4d-2"></script>
+    <script src="/homer-oracle-data.js?v=1"></script>
+    <script src="/book-oracles.js?v=1"></script>
     <script>
       // A journal entry opened from /account/ arrives here as ?reading=<id>. The rooms only
       // register once account.js has dispatched the first signed-in state, so wait for it.
