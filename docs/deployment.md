@@ -1,5 +1,37 @@
 # VPS deployment
 
+## 2026-11-14 Planetary hours on /sky/
+
+Deployed `259dcd7`, then `a855bdf`, at Glenn's request ("add planetary hours to the site"). **Static only.**
+
+A third section on `/sky/` (`#planetary-hours`): the hour now with its ruler and span, the day's ruler, sunrise
+and sunset, and all twenty-four hours for a chosen city and date. See `docs/SKY.md` and
+`docs/superpowers/specs/2026-11-14-planetary-hours-design.md`. It reuses `ClassicalEngine.planetaryHours` and
+`BirthplaceSearch`, starts from the saved birthplace or New York, and stores nothing.
+
+**Releases.**
+- `/opt/tarot-game/releases/20261114-planetary-hours-259dcd7`, a `cp -al` copy of `20261114-review-fixes-e74c75a`:
+  12 files, 10 replaced (`site-shell.js` and the nine pages that load it) and 2 added (`planetary-hours.js`,
+  `planetary-hours.css`). `docs/` and `tests/` do not ship.
+- `/opt/tarot-game/releases/20261114-planetary-hours-fix-a855bdf`, a copy of the above: 3 files replaced. Two faults
+  found on the live page within minutes of the first release. Choosing a city while viewing today kept the old
+  zone's date, so a city already on the next date (Tokyo, from New York) lost its "hour now" card; the date now
+  follows today into the new zone. At 375px the table was 391px in a 333px box and the Ends column was clipped;
+  the Day or night column is hidden on phones and night hours carry a moon.
+
+Both built from `git show` blobs with `tar --unlink-first`. Rollback to before the feature:
+`ln -sfn /opt/tarot-game/releases/20261114-review-fixes-e74c75a /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `site-shell.js?v=21` (9 pages); `planetary-hours.js?v=2` and `planetary-hours.css?v=2` on `/sky/`.
+
+**Validation.** Suite 728 of 728 (8 new). Served files match the commits; the previous release was verified
+untouched each time; `/api/health/` `{"ok": true}`. In a browser on the live `/sky/`: New York shows 24 rows, one
+marked current, and the hour card; typing "Tokyo", arrow down, Enter, Enter selects the city, moves the date to the
+15th and shows "Hour of Moon, night hour 9 of 12" under Saturday, Saturn's day (02:30 Sunday there, before sunrise);
+a December date shows the table with no hour card; "Planetary hours" appears in the On this page row and as a
+phone fold; at 375px the table is 333px wide with no page overflow. Not checked: Safari, a real phone, a saved
+birthplace as the starting place (covered by a unit test only), and a polar date in the browser (unit test only).
+
 ## 2026-11-14 Review fixes: gold text contrast, skip link, tap targets, metadata, 404 page
 
 Deployed `e74c75a` at Glenn's request ("fix the remaining issues from the review"). **Static, plus one nginx line.**
