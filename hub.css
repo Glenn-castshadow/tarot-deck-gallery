@@ -2,8 +2,9 @@
 .hub-today { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 26px; align-items: start; margin: 4px 0 34px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); background: var(--cream); box-shadow: var(--shadow); }
 .hub-today p { margin: 0; }
 .hub-today .hub-today-item { display: grid; gap: 6px; }
-/* --gold is 2.9:1 on cream; this darker gold is 5:1 (WCAG AA). */
-.hub-today .section-kicker { color: #935a28; }
+.hub-today .section-kicker { color: var(--gold-ink); }
+/* Small links and the sign picker get a 44px hit area without moving the text. */
+.hub-today small a { display: inline-block; margin-block: -14px; padding-block: 14px; }
 .hub-today strong { font: 600 clamp(19px, 2.2vw, 26px)/1.2 "Playfair Display", serif; color: var(--plum); }
 .hub-today small { color: var(--ink-soft); font-size: 12px; line-height: 1.6; }
 .hub-today a { color: var(--plum); }
@@ -62,7 +63,7 @@
 @media (max-width: 700px) {
   .hub-today { gap: 16px; margin-bottom: 26px; }
 }
-#hub-sign { max-width: 100%; padding: 0 18px 2px 0; border: 0; border-bottom: 1px solid var(--gold); background-color: transparent; color: inherit; font: inherit; cursor: pointer; }
+#hub-sign { max-width: 100%; min-height: 44px; padding: 0 18px 2px 0; border: 0; border-bottom: 1px solid var(--gold); background-color: transparent; color: inherit; font: inherit; cursor: pointer; }
 #hub-sign:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 /* The animated hero lotus (site-shell.js) takes the static logo's box from site-shell.css. */
 .brand-lockup video { display: block; width: min(300px, 66vw); height: auto; aspect-ratio: 1233 / 895; filter: drop-shadow(0 0 22px rgba(255,220,160,.22)); }

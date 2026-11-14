@@ -77,7 +77,7 @@ function stylesheetLinks() {
     const tag = page.match(new RegExp(`<link rel="stylesheet" href="/${name.replace('.', '\\.')}\\?v=[^"]*">`));
     if (!tag) throw new Error(`divination/index.html no longer links ${name}`);
     return tag[0];
-  }).concat('<link rel="stylesheet" href="/reference-pages.css?v=2">').join('\n    ');
+  }).concat('<link rel="stylesheet" href="/reference-pages.css?v=3">').join('\n    ');
 }
 
 function jsonLd({url, title, description, image, crumbs}) {
@@ -94,7 +94,7 @@ function renderPage({url, section, title, description, image, crumbs, body}) {
   const shell = SiteShell.render({page: section, variant: 'compact', heading: 'p'});
   const chrome = accountChrome();
   const fullTitle = `${title} · Ishtar Insights`;
-  const ogImage = SITE + (image ? image.src : '/assets/celestial-hero.webp');
+  const ogImage = SITE + (image ? image.src : '/assets/celestial-hero-og.jpg');
   const twitterCard = image && image.height > image.width ? 'summary' : 'summary_large_image';
   const trail = crumbs.map((crumb, i) => i === crumbs.length - 1
     ? `<span aria-current="page">${esc(crumb.name)}</span>`

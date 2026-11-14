@@ -129,3 +129,11 @@ test('every hub path and every top-level section fold has a mark from the icon s
   for (const key of keys) assert.ok(SiteShell.ICONS[SiteShell.FOLD_MARKS[key]], `fold ${key} has no mark`);
   assert.match(SiteShell.mark('no-such-icon', 'x'), /<path d="M/, 'an unknown name falls back to a star');
 });
+
+test('both mastheads open with a skip link, and the nav ends with its target', () => {
+  for (const opts of [{page: 'hub', variant: 'hero'}, {page: 'tarot', variant: 'compact'}, {page: 'tarot', variant: 'compact', heading: 'p'}]) {
+    const {header, nav} = SiteShell.render(opts);
+    assert.match(header, /^<header[^>]*>\s*<a class="skip-link" href="#content">/, 'the skip link is the first thing in the masthead');
+    assert.ok(nav.endsWith('<span id="content" tabindex="-1"></span>'), 'the nav ends with the skip target');
+  }
+});

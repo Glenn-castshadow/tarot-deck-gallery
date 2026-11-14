@@ -21,6 +21,7 @@
 
   function renderHeroHeader() {
     return `<header class="masthead masthead--hero">
+        <a class="skip-link" href="#content">Skip to content</a>
         <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="brand-lockup"><img src="/assets/ishtar-insights-logo-hero.webp" alt="Ishtar Insights lotus logo" width="1233" height="895"></div>
         <h1>A little clarity. A deeper connection.</h1>
@@ -39,6 +40,7 @@
     const title = entry ? entry.label : '';
     const titleHTML = heading === 'p' ? `<p class="masthead-title">${title}</p>` : `<h1>${title}</h1>`;
     return `<header class="masthead masthead--compact">
+        <a class="skip-link" href="#content">Skip to content</a>
         <div class="account-bar"><button type="button" id="account-button" class="account-button" aria-haspopup="dialog">Sign in</button></div>
         <div class="brand-lockup"><img src="/assets/ishtar-insights-logo-hero.webp" alt="Ishtar Insights lotus logo" width="1233" height="895"></div>
         ${titleHTML}
@@ -47,6 +49,7 @@
 
   const esc = value => String(value).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
+  // The skip link in each masthead jumps to #content, an empty anchor just after the nav bar.
   // The page links and, on a page with two or more top-level sections, a row of in-page
   // links, together in one sticky bar. The [data-shell="nav"] mount point is display: contents
   // so the bar sticks within the page rather than within its own wrapper.
@@ -61,7 +64,7 @@
       : '';
     return `<div class="page-nav"><nav class="section-nav" aria-label="Site pages">
         ${items}
-      </nav>${row}</div>`;
+      </nav>${row}</div><span id="content" tabindex="-1"></span>`;
   }
 
   // Top-level [data-fold] sections with an id, in document order: the ones the section row links to.

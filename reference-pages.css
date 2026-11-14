@@ -13,7 +13,7 @@
 .ref-layout img, .ref-banner img { display: block; width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow); }
 .ref-banner { margin: 24px 0 0; }
 .ref-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 24px; margin: 24px 0 0; padding: 18px 20px; border: 1px solid var(--line); background: var(--cream); }
-.ref-facts dt { color: var(--gold); text-transform: uppercase; letter-spacing: .12em; font: 10px "DM Mono", monospace; }
+.ref-facts dt { color: var(--gold-ink); text-transform: uppercase; letter-spacing: .12em; font: 10px "DM Mono", monospace; }
 .ref-facts dd { margin: 3px 0 0; font-size: 15px; }
 .ref-hexagram { display: grid; gap: 7px; width: 120px; margin: 0; }
 .ref-hexagram i { display: block; height: 11px; background: var(--plum-dark); }
