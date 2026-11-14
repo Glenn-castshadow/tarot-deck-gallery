@@ -169,6 +169,7 @@ test('the view names the present period in all three techniques and marks it in 
   assert.match(html, /From the Lot of Spirit, in Aquarius/);
   assert.match(html, /From the Lot of Fortune, in Leo/);
   assert.match(html, /loosing of the bond/);
+  assert.doesNotMatch(html, /<\/em>\.<\/p>/, 'no full stop trails a label');
   assert.ok((html.match(/aria-current="true"/g) || []).length >= 6, 'firdar and sub-period, and both levels of both releasings');
   assert.match(html, /This is a day chart/);
   assert.match(View.render(nightChart, {now: new Date('2026-11-14T18:00:00Z')}), /This is a night chart/);

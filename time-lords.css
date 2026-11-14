@@ -37,3 +37,9 @@
 .tl-periods ol li { padding: 3px 6px; color: #b8cdd5; font-size: 12px; }
 .tl-periods li[aria-current="true"] { background: rgba(239,209,154,.10); }
 .tl-periods ol li[aria-current="true"] { background: rgba(239,209,154,.18); color: var(--cream); }
+
+@media (max-width: 700px) {
+  .tl-table :is(th, td):nth-child(2) { display: none; }
+  .tl-table :is(th, td):nth-child(5) { white-space: normal; }
+  .tl-table th, .tl-table td { padding-right: 10px; }
+}

@@ -42,7 +42,7 @@ const TimeLords = (() => {
     const result = engine.zodiacalReleasing(chart, startSign * 30 + 15, {fortuneLongitude: fortune.longitude, now});
     if (result.status !== 'ready') return '';
     const c = result.current, s = result.currentSub;
-    const nowLine = c ? `<p class="tl-now"><span>Now</span> ${esc(c.sign)}, ruled by ${glyph(c.lord)}, ${esc(span(c))}${flags(c)}${s ? `; within it ${esc(s.sign)} (${glyph(s.lord)}) until ${esc(day(s.end))}${flags(s)}` : ''}.</p>` : '';
+    const nowLine = c ? `<p class="tl-now"><span>Now</span> ${esc(c.sign)}, ruled by ${glyph(c.lord)}, ${esc(span(c))}${flags(c)}${s ? `; within it ${esc(s.sign)} (${glyph(s.lord)}) until ${esc(day(s.end))}` : ''}.${s ? flags(s) : ''}</p>` : '';
     const level1 = result.periods.map(p => `<li${here(p, c)}><strong>${esc(p.sign)}</strong> <span>${glyph(p.lord)} · ${esc(span(p))}</span>${flags(p)}</li>`).join('');
     const level2 = c ? c.subs.map(p => `<li${here(p, s)}><strong>${esc(p.sign)}</strong> <span>${glyph(p.lord)} · from ${esc(day(p.start))}</span>${flags(p)}</li>`).join('') : '';
     return `<div class="tl-release"><h6>From the Lot of ${esc(lot.name)}, in ${esc(lot.sign)}</h6>${moved ? `<p class="natal-panel-hint">Spirit and Fortune share ${esc(lot.sign)} in this chart, so Spirit is released from the next sign, ${esc(result.startSign)}.</p>` : ''}
