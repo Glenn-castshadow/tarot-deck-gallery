@@ -1,5 +1,44 @@
 # VPS deployment
 
+## 2026-11-14 Review fixes: gold text contrast, skip link, tap targets, metadata, 404 page
+
+Deployed `e74c75a` at Glenn's request ("fix the remaining issues from the review"). **Static, plus one nginx line.**
+
+- `--gold-ink` (`#935a28`, 5.4:1 on cream) in `styles.css` for gold text on light backgrounds: `.section-kicker`,
+  `.filter span`, `.deck-meta`, `.detail-copy dt`, and `.ref-facts dt` in `reference-pages.css`. `--gold` (2.9:1)
+  stays for borders, outlines and decoration. Dark sections already override to `--gold-light`.
+- Skip link: `site-shell.js` puts `<a class="skip-link" href="#content">` first in both mastheads and an empty
+  `#content` anchor after the nav bar; styles in `site-shell.css`. One new test.
+- Hub: the four small links in the today strip and `#hub-sign` have 44px hit areas (`hub.css`).
+- `cookie-policy.html` gains a description and canonical; it and `newsletter-privacy.html` use "·" in the title.
+- `og:image` on the 76 pages that used `celestial-hero.webp` is `assets/celestial-hero-og.jpg` (1200x630).
+- `index.html` carries `WebSite` JSON-LD. New `404.html` in the policy pages' layout, `noindex`.
+
+Reviewed and left alone: the section pages' JS-rendered `<h1>`; the newsletter form's Mailchimp wording (still
+accurate until listmonk ships); the homepage nav below the hero and the collapsed phone folds (deliberate).
+
+**Release.** `/opt/tarot-game/releases/20261114-review-fixes-e74c75a`, a `cp -al` hardlink copy of
+`20261114-favicon-logo-contrast-f8332f3`. 278 files: 276 replaced, 2 added (`404.html`, the JPG). The delta was
+built from `git show` blobs and extracted with `tar --unlink-first`, which removes each destination before
+writing so the previous release's hardlinks are not written through. Rollback:
+`ln -sfn /opt/tarot-game/releases/20261114-favicon-logo-contrast-f8332f3 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**nginx.** `error_page 404 /404.html;` added after the `root` line of the 443 server block in
+`/etc/nginx/sites-available/ishtarinsights.com`; `nginx -t` passed, reloaded. Backup beside it as
+`ishtarinsights.com.before-404-page`. Rolling back the release without removing this line still works: nginx
+falls back to its built-in 404 when `/404.html` is missing.
+
+**Cache keys.** `styles.css?v=site-shell-3` (265 pages), `policy-3` (5, and `404.html`), `round-decks-3` (1);
+`site-shell.css?v=9` (266); `site-shell.js?v=20` (9); `hub.css?v=paths-3`; `reference-pages.css?v=3` (257).
+
+**Validation.** Suite 720 of 720; `build_reference_pages.cjs --check` current. All 278 served files match the
+commit. Before the switch, 274 of the 276 live files matched `fcdb958` byte for byte; `about.html` and
+`styles.css` differed only by CRLF line endings. `/api/health/` `{"ok": true}`. In a browser on the live site: at
+375px the hub's four links are 47px tall and the sign picker 44px, with no overflow; kickers and reference fact
+labels compute to `rgb(147, 90, 40)`; on `/tarot/` the only remaining `--gold` text is the decorative
+`.empty-symbol`; Tab shows "Skip to content" top left and Enter moves focus to `#content`; an unknown URL
+returns 404 with the new page. Not checked: Safari, a screen reader, and how link previewers render the new JPG.
+
 ## 2026-11-14 Favicon, lighter hero video, readable hub labels
 
 Deployed `f8332f3` at Glenn's request after a site review. **Static only.**
