@@ -10,7 +10,7 @@
   const NAV = [
     {key: 'hub', href: '/', hash: '#', label: 'Home', blurb: 'Your daily card, today’s sky, and every reading path'},
     {key: 'tarot', href: '/tarot/', hash: '#tarot-readings', label: 'Tarot', blurb: 'Daily card, full readings, deck chooser, and the archive'},
-    {key: 'sky', href: '/sky/', hash: '#daily-horoscope', label: 'Sky', blurb: 'Your daily horoscope, the month’s sky, and planetary hours'},
+    {key: 'sky', href: '/sky/', hash: '#daily-horoscope', label: 'Sky', blurb: 'Your daily horoscope, the month’s sky, planetary hours, and the Moon’s mansions'},
     {key: 'charts', href: '/charts/', hash: '#birthday-room', label: 'Charts', blurb: 'Birth form, natal chart, transits, astrocartography, Four Pillars, and horary'},
     {key: 'eastern', href: '/eastern/', hash: '#jyotish', label: 'Eastern', blurb: 'Jyotish and your Chinese zodiac portrait'},
     {key: 'numerology', href: '/numerology/', hash: '#birthday-numbers', label: 'Numerology', blurb: 'The six-view numerology studio'},
@@ -138,7 +138,7 @@
   };
   const PATH_MARKS = {tarot: 'cards-three', sky: 'moon-stars', charts: 'compass', eastern: 'yin-yang', numerology: 'number-nine',
     divination: 'hand-eye', crystals: 'diamond', account: 'user-circle'};
-  const FOLD_MARKS = {tarot: 'cards-three', archive: 'stack', 'daily-horoscope': 'sun-horizon', 'sky-calendar': 'calendar-star', 'planetary-hours': 'hourglass-medium',
+  const FOLD_MARKS = {tarot: 'cards-three', archive: 'stack', 'daily-horoscope': 'sun-horizon', 'sky-calendar': 'calendar-star', 'planetary-hours': 'hourglass-medium', 'lunar-mansions': 'moon-stars',
     birthday: 'planet', world: 'globe-hemisphere-west', charts: 'chart-polar', 'chart-in-time': 'hourglass-medium', horary: 'question',
     chinese: 'yin-yang', jyotish: 'flower-lotus', numerology: 'number-nine', divination: 'hand-eye',
     'crystal-day': 'sparkle', 'your-stones': 'diamond', crystals: 'magnifying-glass'};

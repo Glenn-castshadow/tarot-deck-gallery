@@ -1,0 +1,34 @@
+/* The mansions of the Moon section on /sky/. Scoped under .lunar-mansions / .lm-*, in the sky
+   calendar's night-teal palette; it edits no shared rule. */
+.lunar-mansions { grid-column: 1/-1; min-width: 0; margin-top: 28px; padding: clamp(20px, 3vw, 38px); background: #10252e; color: #f4e8d1; border: 1px solid #61787577; }
+.lunar-mansions [hidden] { display: none !important; }
+.lunar-mansions :where(p) { margin: 0; }
+.lunar-mansions a { color: #e6b17e; }
+
+.lm-heading .section-kicker { color: #d9c18e; font: 11px/1.6 "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.lm-heading h3 { margin: 10px 0; font: 500 clamp(29px,3.5vw,44px)/1.2 "Playfair Display", serif; }
+.lm-heading p:last-child { max-width: 700px; color: #bccdce; font-size: 14px; line-height: 1.7; }
+
+.lm-now, .lm-birth { margin-top: 22px; padding: clamp(16px, 2.4vw, 26px); border: 1px solid #e6b17e66; background: #0b1c23; }
+.lm-birth { border-color: #61787599; }
+.lm-label { color: #d9c18e; font: 10px/1.6 "DM Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+.lm-now-name { margin-top: 6px; font: 500 clamp(26px, 3.2vw, 38px)/1.2 "Playfair Display", serif; }
+.lm-birth-name { margin-top: 6px; font: 500 clamp(20px, 2.4vw, 26px)/1.25 "Playfair Display", serif; }
+.lm-alt { color: #bccdce; font-size: .62em; font-weight: 400; }
+.lm-now-gloss { margin-top: 6px; color: #bccdce; font-size: 14px; line-height: 1.6; }
+.lm-note { margin-top: 12px; max-width: 640px; font-size: 15px; line-height: 1.6; }
+.lm-note span { color: #d9c18e; }
+.lm-times { margin-top: 12px; color: #9eb1b6; font-size: 12.5px; line-height: 1.6; }
+.lm-error { margin-top: 22px; padding: 14px 16px; border: 1px solid #e6b17e66; font-size: 14px; line-height: 1.6; }
+
+.lm-list-title { margin: 30px 0 4px; color: #d9c18e; font: 10px/1.6 "DM Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+.lm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.lm-list li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 14px 8px; border-bottom: 1px solid #6b8e8844; }
+.lm-list li[aria-current="true"] { background: #cfb77e1f; }
+.lm-number { color: #e6b17e; font: 500 20px/1.3 "Playfair Display", serif; text-align: right; }
+.lm-name { font: 500 18px/1.3 "Playfair Display", serif; }
+.lm-meta { margin-top: 3px; color: #9eb1b6; font-size: 12px; line-height: 1.5; }
+.lm-given { margin-top: 6px; color: #dfe6e2; font-size: 13.5px; line-height: 1.55; }
+.lm-footnote { margin-top: 20px; max-width: 720px; color: #9eb1b6; font-size: 12px; line-height: 1.65; }
+
+@media (max-width: 700px) { .lm-list { grid-template-columns: 1fr; } }

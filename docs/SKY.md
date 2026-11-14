@@ -594,3 +594,24 @@ A third section on `/sky/` (`#planetary-hours`, fold key `planetary-hours`), add
   allow-list is in `storage-preferences.js`, which is keyed on 266 pages.
 - Where the Sun does not rise and set, the engine's "undefined here" message is shown and no table.
 - No journal room, no "good time for" wording: one line of traditional association per planet.
+
+## Mansions of the Moon
+
+A fourth section on `/sky/` (`#lunar-mansions`, fold key `lunar-mansions`), added 2026-11-14. Design:
+`docs/superpowers/specs/2026-11-14-lunar-mansions-design.md`.
+
+- `lunar-mansions.js` holds the table of twenty-eight, the arithmetic and the views; `lunar-mansions.css`
+  is scoped under `.lunar-mansions` / `.lm-*`. It uses `SkyCalendarEngine.lonOf` for the Moon, so this
+  section and "Moon now" can never disagree about where the Moon is.
+- **Convention.** Twenty-eight equal parts of 360/28 degrees (12°51′26″) from 0° Aries of the tropical
+  zodiac. Agrippa says "the head of Aries, of the eighth sphere"; the tropical reading is the usual
+  modern one, and the page says so and says the name-stars have drifted about 24°.
+- **Source.** Names, alternative names, glosses and assigned uses are from Agrippa II.33 in the 1651
+  English translation, read on 2026-11-14 from esotericarchives.com (only that copy; not compared with a
+  second). Spellings are the text's. The notes are short summaries written for the site. Two clauses were
+  left out as unclear in that copy: mansion 7's "destroys magisteries" and mansion 14's first clause.
+  The Arabic names are the standard list and were not checked against a source that day.
+- The Moon's stay is bracketed by two `astro.Search` calls over a day and a half each way. The "now"
+  card refreshes once a minute while the tab is visible; the list redraws only when the mansion changes.
+- The birth Moon appears only when a birth profile is saved, with a caution when no birth time is.
+- No place input (the mansion is the same everywhere), no journal room, nothing stored.
