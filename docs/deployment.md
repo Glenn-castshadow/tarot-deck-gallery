@@ -1,5 +1,29 @@
 # VPS deployment
 
+## 2026-11-14 Mansions of the Moon on /sky/
+
+Deployed `6f57d82` at Glenn's request ("add lunar mansions to the site"). **Static only.**
+
+A fourth section on `/sky/` (`#lunar-mansions`): the Moon's mansion now with the moments it entered and
+leaves, the mansion of a saved birth Moon, and all twenty-eight with a short note each. Agrippa II.33 in the
+1651 translation; equal division from tropical 0° Aries. See `docs/SKY.md` for the convention and exactly what
+was and was not checked against the source, and `docs/superpowers/specs/2026-11-14-lunar-mansions-design.md`.
+
+**Release.** `/opt/tarot-game/releases/20261114-lunar-mansions-6f57d82`, a `cp -al` copy of
+`20261114-planetary-hours-fix-a855bdf`: 12 files, 10 replaced (`site-shell.js` and the nine pages that load it)
+and 2 added (`lunar-mansions.js`, `lunar-mansions.css`). Built from `git show` blobs with
+`tar --unlink-first`. Passed first time. Rollback:
+`ln -sfn /opt/tarot-game/releases/20261114-planetary-hours-fix-a855bdf /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `site-shell.js?v=22` (9 pages); `lunar-mansions.js?v=1` and `lunar-mansions.css?v=1` on `/sky/`.
+
+**Validation.** Suite 734 of 734 (6 new). Served files match the commit; the previous release was verified
+untouched; `/api/health/` `{"ok": true}`. In a browser on the live `/sky/`: the card reads mansion 23 of 28,
+Zabadola, with the Moon at 22°24′ Capricorn, the same position the "Moon now" tab gives; 28 list items, one
+marked current; the section is in the On this page row and is a phone fold; opened at 375px nothing is wider
+than 354px. Not checked in a browser: the birth Moon card (unit test only), Safari, a real phone. The
+modifier letters in a few Arabic names (ʿ, ʾ) come from a fallback font and sit slightly high.
+
 ## 2026-11-14 Planetary hours on /sky/
 
 Deployed `259dcd7`, then `a855bdf`, at Glenn's request ("add planetary hours to the site"). **Static only.**
