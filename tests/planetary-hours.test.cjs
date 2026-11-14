@@ -32,6 +32,7 @@ test('a Saturday is Saturn’s day: Saturn rules the first hour and Mercury the 
   assert.equal(result.hours[12].ruler, 'Mercury');
   const html = PlanetaryHours.render(result, {place: NY, live: false});
   assert.equal((html.match(/<tr/g) || []).length, 25, 'a header row and twenty-four hours');
+  assert.equal((html.match(/class="ph-night"/g) || []).length, 12);
   assert.match(html, /Saturday, the day of Saturn/);
   assert.doesNotMatch(html, /aria-current|The hour now/, 'another day has no current hour');
 });
@@ -93,6 +94,8 @@ test('attach starts at the default place, adopts a saved birthplace, and keeps a
   selection = tokyo;
   listeners['form:submit']({preventDefault() {}});
   assert.equal(api.place().label, tokyo.label);
+  assert.equal(nodes['#ph-date'].value, '2026-11-15', 'today follows the new city: it is already the 15th in Tokyo');
+  assert.match(nodes['#ph-output'].innerHTML, /The hour now/);
   subscriber({profile: {placeLocation: london}});
   assert.equal(api.place().label, tokyo.label, 'a later profile update does not override the visitor’s choice');
 

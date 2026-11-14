@@ -48,4 +48,7 @@
   .ph-form { grid-template-columns: 1fr; }
   .ph-form button[type="submit"] { margin-top: 0; }
   .ph-table-wrap th, .ph-table-wrap td { padding: 9px 8px; }
+  /* Five columns do not fit a phone: the Day or night column goes, and night hours carry a moon. */
+  .ph-table-wrap :is(th, td):nth-child(2) { display: none; }
+  .ph-table-wrap tr.ph-night th::after { content: " ☾"; color: #e6b17e; }
 }

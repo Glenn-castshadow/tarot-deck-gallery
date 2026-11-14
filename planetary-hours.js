@@ -62,7 +62,7 @@
         <p class="ph-now-span">${time(current.start)} to ${time(current.end)} · ${current.isDay ? 'day' : 'night'} hour ${current.isDay ? current.index : current.index - 12} of 12</p>
         <p class="ph-note">${esc(NOTE[current.ruler])}</p>
       </div>` : '';
-    const rows = result.hours.map((h, i) => `<tr${live && i === result.current ? ' aria-current="true"' : ''}><th scope="row">${h.index}</th><td>${h.isDay ? 'Day' : 'Night'}</td><td><span aria-hidden="true">${GLYPH[h.ruler]}</span> ${esc(h.ruler)}</td><td>${time(h.start)}</td><td>${time(h.end)}</td></tr>`).join('');
+    const rows = result.hours.map((h, i) => `<tr${h.isDay ? '' : ' class="ph-night"'}${live && i === result.current ? ' aria-current="true"' : ''}><th scope="row">${h.index}</th><td>${h.isDay ? 'Day' : 'Night'}</td><td><span aria-hidden="true">${GLYPH[h.ruler]}</span> ${esc(h.ruler)}</td><td>${time(h.start)}</td><td>${time(h.end)}</td></tr>`).join('');
     return `${nowCard}
       <p class="ph-summary">${esc(result.weekday)}, the day of ${esc(result.dayRuler === 'Sun' || result.dayRuler === 'Moon' ? 'the ' + result.dayRuler : result.dayRuler)} · sunrise ${time(result.sunrise)} · sunset ${time(result.sunset)} · times for ${esc(place.label)}</p>
       <div class="ph-table-wrap"><table><caption>The twenty-four hours, sunrise to sunrise</caption><thead><tr><th scope="col">Hour</th><th scope="col">Day or night</th><th scope="col">Ruler</th><th scope="col">Starts</th><th scope="col">Ends</th></tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -114,7 +114,12 @@
     form.addEventListener('submit', event => {
       event.preventDefault();
       const selection = picker.getSelection();
-      if (validPlace(selection)) { place = selection; chosen = true; }
+      if (validPlace(selection)) {
+        // Someone looking at today wants today where the new city is, which may be a different date.
+        const wasToday = dateInput.value === dateIn(place.timeZone, clock());
+        place = selection; chosen = true;
+        if (wasToday) dateInput.value = dateIn(place.timeZone, clock());
+      }
       else if (placeInput.value.trim() !== place.label) { status.textContent = `Choose a city from the list. Still showing ${place.label}.`; }
       draw();
     });
