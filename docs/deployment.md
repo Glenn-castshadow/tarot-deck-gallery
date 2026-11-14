@@ -1,5 +1,28 @@
 # VPS deployment
 
+## 2026-11-14 Favicon, lighter hero video, readable hub labels
+
+Deployed `f8332f3` at Glenn's request after a site review. **Static only.**
+
+- `favicon.ico` (16/32/48) and `apple-touch-icon.png` (180px, lotus on `#20152b`) at the site root, cropped from
+  `layer_flower.png` in `ishtar-logo-anim.zip`. No `<link>` tags: browsers and iOS request both root paths unasked.
+- `assets/ishtar-logo-animated.webm` re-encoded from the shipped file (libvpx-vp9, `-crf 48 -b:v 0`, yuva420p):
+  1785 KB to 749 KB, 193 frames, alpha kept, SSIM 0.95 against the old file. The Safari HEVC file is unchanged.
+- `.hub-today .section-kicker` is `#935a28` instead of `var(--gold)`: 5.4:1 on cream, was 2.9:1. Other gold text
+  on light backgrounds (`.section-kicker` in `styles.css`, the reference pages) was not measured or changed.
+
+**Release.** `/opt/tarot-game/releases/20261114-favicon-logo-contrast-f8332f3`, a `cp -al` hardlink copy of
+`20260925-look-closer-8d72f0b`. Three files replaced, each removed first (`hub.css`, `index.html`, the WebM), two
+added and asserted absent from the previous release. The delta was built from `git show` blobs. Rollback:
+`ln -sfn /opt/tarot-game/releases/20260925-look-closer-8d72f0b /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache key.** `hub.css?v=paths-2` on `/`. The WebM keeps its URL (served `no-cache`, so it revalidates).
+
+**Validation.** Suite 719 of 719. All five served files are byte-identical to the commit; the previous release's
+three files still match `7404d48`; `/api/health/` `{"ok": true}`; the WebM answers a range request with 206. In
+a browser on the live homepage the hero video plays the new WebM and the four labels compute to `rgb(147, 90, 40)`.
+The favicon was not looked at in a real tab, and Safari was not tested.
+
 ## 2026-09-25 Footer motto: "Look closer."
 
 Deployed `8d72f0b` at Glenn's request: the footer's line under the lotus changes from "Built for looking closely."
