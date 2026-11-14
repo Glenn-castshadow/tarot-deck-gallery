@@ -1,5 +1,40 @@
 # VPS deployment
 
+## 2026-11-14 The seven lots, firdaria and zodiacal releasing on /charts/
+
+Deployed `5c97eea`, then `83d5b0e`, at Glenn's request ("add zodiacal releasing, firdaria and the lots to the
+site"). **Static only.**
+
+Nested at the end of the natal report's "Traditional techniques" section: a table of the seven Hermetic lots,
+firdaria with the current period and sub-period, and zodiacal releasing from Spirit and from Fortune to two
+levels with peaks and the loosing of the bond flagged. Conventions, and exactly what was and was not confirmed
+against sources, are in `docs/NATAL-CHART.md`; the picks and who made them are in
+`docs/superpowers/specs/2026-11-14-time-lords-design.md`.
+
+**Releases.**
+- `/opt/tarot-game/releases/20261114-time-lords-5c97eea`, a `cp -al` copy of `20261114-lunar-mansions-6f57d82`:
+  5 files, 2 replaced (`chart-depth.js`, `charts/index.html`) and 3 added (`time-lords-engine.js`,
+  `time-lords.js`, `time-lords.css`).
+- `/opt/tarot-game/releases/20261114-time-lords-fix-83d5b0e`, a copy of the above: 11 files replaced. Three
+  tidy-ups seen on the live page: a full stop trailed the "peak" and "loosing of the bond" labels; the lots
+  table was 503px in a 343px box on phones (the planet column is now hidden there and formulas wrap); the phone
+  fold's subtitle did not mention the new content (`mobile-sections.js`, so its eight pages were rekeyed).
+
+Both built from `git show` blobs with `tar --unlink-first`. Rollback to before the feature:
+`ln -sfn /opt/tarot-game/releases/20261114-lunar-mansions-6f57d82 /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `chart-depth.js?v=3`, `time-lords-engine.js?v=1`, `time-lords.js?v=2`, `time-lords.css?v=2` on
+`/charts/`; `mobile-sections.js?v=data-fold-6` on its eight pages.
+
+**Validation.** Suite 747 of 747 (13 new, one of which reproduces Brennan's published dates for Al Gore's
+loosing of the bond). Served files match the commits; previous releases verified untouched; `/api/health/`
+`{"ok": true}`. In a browser on the live `/charts/`, with the sample chart 15 July 1990, 14:30, New York: seven
+lots (Fortune 11°00′ Leo, Spirit 2°52′ Aquarius); the Moon's firdar, ages 31 to 40, Sun sub-period to 19 Dec
+2027; Spirit releasing in Pisces with a Leo sub-period marked "peak"; Fortune releasing in Virgo with a Pisces
+sub-period marked "loosing of the bond"; six current markers; the section sits inside `.chart-depth`. At 375px
+the fold opens, the lots table is 343px in 343px and nothing overflows. Not checked: a night chart in the
+browser (unit tests only), the profection year selector re-rendering the section, Safari, a real phone.
+
 ## 2026-11-14 Mansions of the Moon on /sky/
 
 Deployed `6f57d82` at Glenn's request ("add lunar mansions to the site"). **Static only.**
