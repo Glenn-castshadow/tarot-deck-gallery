@@ -115,11 +115,10 @@ test('attach reads thrown or entered dice, refuses incomplete throws, and fetche
   assert.deepEqual(['#bo-die-1', '#bo-die-2', '#bo-die-3'].map(s => nodes[s].value), ['2', '3', '4']);
   assert.ok(nodes['#bo-homer-output'].innerHTML.includes(HomerOracleData[B.rollIndex([2, 3, 4])].greek));
 
-  nodes['#bo-homer-output'].innerHTML = '';
   nodes['#bo-die-2'].value = '';
   listeners['#bo-homer-form:submit']({preventDefault() {}});
   assert.match(nodes['#bo-homer-status'].textContent, /Choose a number from one to six/);
-  assert.equal(nodes['#bo-homer-output'].innerHTML, '');
+  assert.equal(nodes['#bo-homer-output'].innerHTML, '', 'the earlier answer is cleared');
   nodes['#bo-die-1'].value = '6'; nodes['#bo-die-2'].value = '6'; nodes['#bo-die-3'].value = '6';
   listeners['#bo-homer-form:submit']({preventDefault() {}});
   assert.ok(nodes['#bo-homer-output'].innerHTML.includes(HomerOracleData[215].greek));

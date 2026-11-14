@@ -198,7 +198,7 @@ const HomerOracleData = [
   {"roll":"614","work":"Odyssey","book":21,"line":180,"greek":"τόξου πειρώμεσθα καὶ ἐκτελέωμεν ἄεθλον.","support":2,"english":"Let us try the bow and bring the contest to an end."},
   {"roll":"615","work":"Odyssey","book":21,"line":209,"greek":"γιγνώσκω δʼ ὡς σφῶϊν ἐελδομένοισιν ἱκάνω","support":2,"english":"I know that my coming is what you two have longed for."},
   {"roll":"616","work":"Odyssey","book":16,"line":79,"greek":"ἕσσω μιν χλαῖνάν τε χιτῶνά τε, εἵματα καλά,","support":2,"english":"I will clothe him in a cloak and tunic, fine garments."},
-  {"roll":"621","work":"Odyssey","book":11,"line":278,"greek":"ἁψαμένη βρόχον αἰπὺν ἀφʼ ὑψηλοῖο μελάθρου,","support":2,"withheld":"This verse, about the death of Epicaste, describes a suicide. It belongs to the oracle, but this site does not offer it as an answer."},
+  {"roll":"621","work":"Odyssey","book":11,"line":278,"greek":"ἁψαμένη βρόχον αἰπὺν ἀφʼ ὑψηλοῖο μελάθρου,","support":2,"withheld":"It tells of the death of Epicaste and describes a suicide. It belongs to the oracle, and is listed here for completeness."},
   {"roll":"622","work":"Odyssey","book":8,"line":244,"greek":"ἡμετέρης ἀρετῆς μεμνημένος, οἷα καὶ ἡμῖν","support":2,"english":"Remembering our excellence, the kind that is ours as well."},
   {"roll":"623","work":"Odyssey","book":7,"line":35,"greek":"λαῖτμα μέγʼ ἐκπερόωσιν, ἐπεί σφισι δῶκʼ ἐνοσίχθων·","support":2,"english":"They cross the great gulf of the sea, for the Earth-shaker granted it to them."},
   {"roll":"624","work":"Odyssey","book":21,"line":369,"greek":"ἄττα, πρόσω φέρε τόξα· τάχʼ οὐκ εὖ πᾶσι πιθήσεις","support":2,"english":"Old man, carry the bow on; you will soon regret obeying everyone."},

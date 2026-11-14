@@ -51,7 +51,7 @@
       </figure>`;
     if (entry.withheld) return `<figure class="bo-result bo-silent">${threw}
         <p class="bo-line">This verse is not offered as an answer.</p>
-        <figcaption>${esc(entry.withheld)} It is Homer, <cite>${esc(entry.work)}</cite> ${entry.book}.${entry.line}. Throw again if you wish.</figcaption>
+        <figcaption>${esc(entry.withheld)} The verse is Homer, <cite>${esc(entry.work)}</cite> ${entry.book}.${entry.line}. Throw again if you wish.</figcaption>
       </figure>`;
     return `<figure class="bo-result">
         ${threw}
@@ -119,7 +119,7 @@
     $('#bo-homer-form').addEventListener('submit', event => {
       event.preventDefault();
       const roll = dice.map(select => Number(select.value));
-      if (!validRoll(roll)) { $('#bo-homer-status').textContent = 'Choose a number from one to six for each of the three throws.'; return; }
+      if (!validRoll(roll)) { $('#bo-homer-output').innerHTML = ''; $('#bo-homer-status').textContent = 'Choose a number from one to six for each of the three throws.'; return; }
       readHomer(roll);
     });
 
