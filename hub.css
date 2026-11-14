@@ -2,7 +2,8 @@
 .hub-today { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 26px; align-items: start; margin: 4px 0 34px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); background: var(--cream); box-shadow: var(--shadow); }
 .hub-today p { margin: 0; }
 .hub-today .hub-today-item { display: grid; gap: 6px; }
-.hub-today .section-kicker { color: var(--gold); }
+/* --gold is 2.9:1 on cream; this darker gold is 5:1 (WCAG AA). */
+.hub-today .section-kicker { color: #935a28; }
 .hub-today strong { font: 600 clamp(19px, 2.2vw, 26px)/1.2 "Playfair Display", serif; color: var(--plum); }
 .hub-today small { color: var(--ink-soft); font-size: 12px; line-height: 1.6; }
 .hub-today a { color: var(--plum); }
