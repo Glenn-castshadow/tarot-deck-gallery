@@ -1,5 +1,46 @@
 # VPS deployment
 
+## 2026-11-14 Oracles of the book on /divination/: the Homer oracle and the Virgilian lots
+
+Deployed `0b28eec`, then `5edbf8f`, at Glenn's request ("add the Homer oracle and bibliomancy to the site";
+"deploy once complete"). **Static only.**
+
+A second section on `/divination/` (`#book-oracles`). Three dice, thrown by the page or entered by hand, pick
+one of the 216 verses of the Homeromanteion, shown in English and Greek with its reference. The Virgilian lots
+draw one of 13,699 lines of Dryden's Aeneid with two lines either side. Sources, the ten lost throws, the six
+disputed identifications and the one withheld verse are set out in `docs/DIVINATION.md`; the decisions and who
+made them are in `docs/superpowers/specs/2026-11-14-book-oracles-design.md`.
+
+**Releases.**
+- `/opt/tarot-game/releases/20261114-book-oracles-0b28eec`, a `cp -al` copy of
+  `20261114-time-lords-fix-83d5b0e`: 14 files, 10 replaced (`site-shell.js` and the nine pages that load it)
+  and 4 added (`book-oracles.js`, `book-oracles.css`, `homer-oracle-data.js`,
+  `assets/texts/aeneid-dryden.json`; `assets/texts/` is a new directory, 755).
+- `/opt/tarot-game/releases/20261114-book-oracles-fix-5edbf8f`, a copy of the above: 3 files replaced. The
+  withheld verse's note repeated its own heading, and an incomplete throw left the previous answer on screen
+  beside the request to finish choosing.
+
+Both built from `git show` blobs with `tar --unlink-first`. Rollback to before the feature:
+`ln -sfn /opt/tarot-game/releases/20261114-time-lords-fix-83d5b0e /opt/tarot-game/current.new && mv -Tf /opt/tarot-game/current.new /opt/tarot-game/current`.
+
+**Cache keys.** `site-shell.js?v=23` (9 pages); `book-oracles.js?v=2`, `homer-oracle-data.js?v=2`,
+`book-oracles.css?v=1` on `/divination/`. `aeneid-dryden.json?v=1` is served `no-cache`, 298 KB gzipped.
+
+**Caught before release.** The first build of the Aeneid text had 13,702 lines: three long lines are wrapped
+in the Gutenberg text and their tails ("wine.", "lies.", "besmear'd;") were being counted as lines. A test
+failed on the five-character line; `tools/build_aeneid_text.cjs` now rejoins a line that does not begin with a
+capital, giving 13,699.
+
+**Validation.** Suite 757 of 757 (10 new). Served files match the commits; previous releases verified
+untouched; `/api/health/` `{"ok": true}`. In a browser on the live `/divination/`: a thrown 4-5-1 gave
+Odyssey 11.443 in English and Greek; entering 4-1-5 gave Iliad 4.101 and 1-1-1 gave Iliad 24.369; 2-2-3 shows
+"The verse for this throw is lost"; 6-2-1 shows the withheld note and no verse; an incomplete throw clears the
+answer and asks for three numbers; opening the book gave Aeneid V.761 with its neighbours, and a second
+opening did not fetch the text again; the six-practice room above is unchanged; the section is in the On this
+page row and is a phone fold; at 375px nothing is wider than 350px and every control is at least 44px tall.
+Not checked: Safari, a real phone, a screen reader on the dice selects, and the 205 translations against a
+published translation.
+
 ## 2026-11-14 The seven lots, firdaria and zodiacal releasing on /charts/
 
 Deployed `5c97eea`, then `83d5b0e`, at Glenn's request ("add zodiacal releasing, firdaria and the lots to the
