@@ -578,3 +578,19 @@ aspects are searched (`ASPECTS = [0, 60, 90, 120, 180]`), and no orbs are used a
 transit list is exact perfections only, so nothing is ever described as approaching or
 separating. The mean lunar nodes are computed by `NatalEngine` but deliberately skipped as natal
 targets (`natalTargets` filters to `kind === 'planet'`).
+
+## Planetary hours
+
+A third section on `/sky/` (`#planetary-hours`, fold key `planetary-hours`), added 2026-11-14. Design:
+`docs/superpowers/specs/2026-11-14-planetary-hours-design.md`.
+
+- `planetary-hours.js` chooses the instant and draws the result; the arithmetic is
+  `ClassicalEngine.planetaryHours`, shared with the horary section. `planetary-hours.css` is scoped
+  under `.planetary-hours` / `.ph-*`.
+- Today is asked about at the present moment and refreshes once a minute while the tab is visible. Any
+  other date is asked about at local noon, which always falls inside that date's own planetary day.
+- The place starts as the saved birthplace, or New York (the sky calendar's sample place). A city the
+  visitor picks lasts for the visit only: nothing is written to browser storage, because the storage
+  allow-list is in `storage-preferences.js`, which is keyed on 266 pages.
+- Where the Sun does not rise and set, the engine's "undefined here" message is shown and no table.
+- No journal room, no "good time for" wording: one line of traditional association per planet.

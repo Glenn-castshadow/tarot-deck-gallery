@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/account.css?v=c5-2">
     <link rel="stylesheet" href="/daily-horoscope.css?v=3">
     <link rel="stylesheet" href="/sky-calendar.css?v=6">
+    <link rel="stylesheet" href="/planetary-hours.css?v=1">
     <link rel="stylesheet" href="/mobile-sections.css?v=3">
   </head>
   <body>
@@ -31,6 +32,7 @@
       <section class="reading-room" aria-label="Today's sky">
         <section id="daily-horoscope" class="daily-horoscope" aria-labelledby="daily-horoscope-title" data-fold="Daily horoscope" data-fold-key="daily-horoscope" data-fold-subtitle="Your sign · today’s sky · a moment of reflection"></section>
         <section id="sky-calendar" class="sky-calendar" aria-labelledby="sky-calendar-title" data-fold="The sky this month" data-fold-key="sky-calendar" data-fold-subtitle="The Moon · this month · retrogrades · your transits" data-room="transit-calendar"></section>
+        <section id="planetary-hours" class="planetary-hours" aria-labelledby="planetary-hours-title" data-fold="Planetary hours" data-fold-key="planetary-hours" data-fold-subtitle="The hour now · today’s twenty-four · any city"></section>
       </section>
 
       <div data-shell="footer"></div>
@@ -43,7 +45,7 @@
       <p id="account-dialog-status" role="status" aria-live="polite"></p>
     </dialog>
     <div data-shell="notice"></div>
-    <script src="/site-shell.js?v=20"></script>
+    <script src="/site-shell.js?v=21"></script>
     <script>SiteShell.mount('sky');</script>
     <script src="/rooms.js?v=c5-kinds-1"></script>
     <script src="/storage-preferences.js?v=sun-sign-1"></script>
@@ -74,6 +76,9 @@
     <script src="/sky-calendar-engine.js?v=4"></script>
     <script src="/sky-calendar-text.js?v=2"></script>
     <script src="/sky-calendar.js?v=7"></script>
+    <script src="/classical-engine.js?v=2"></script>
+    <script src="/birthplace-search.js?v=atlas-3"></script>
+    <script src="/planetary-hours.js?v=1"></script>
     <script src="/mobile-sections.js?v=data-fold-5"></script>
   </body>
 </html>
